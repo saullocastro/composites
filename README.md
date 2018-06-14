@@ -12,7 +12,7 @@ Repository created from sub-modules of "compmech" and "meshless" repositories.
 The first adopted version number came from the following reasoning:
 
 - from compmech 0.7.2: composites 0.1.0
-- from meshless 0.1.19: composites 0.2.0; a second stable version was taken from meshless
+- from meshless 0.1.19: composites 0.2.0;
 - after adjusting the code to be a standalone module: 0.3.0
 
 
