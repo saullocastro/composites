@@ -79,7 +79,7 @@ Operating System :: Unix
 """
 
 is_released = True
-version = '0.1.1'
+version = '0.2.0'
 
 fullversion = write_version_py(version, is_released)
 
