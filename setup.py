@@ -84,7 +84,7 @@ version = '0.1.0'
 fullversion = write_version_py(version, is_released)
 
 data_files = [('', [
-        'README.rst',
+        'README.md',
         'LICENSE',
         'composites/version.py',
         ])]
@@ -105,7 +105,7 @@ s = setup(
     packages=find_packages(),
     package_data=package_data,
     data_files=data_files,
-    long_description=read('README.rst'),
+    long_description=read('README.md'),
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
     install_requires=install_requires,
 )
