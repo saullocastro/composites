@@ -32,7 +32,7 @@ install:
     - python setup.py install
 
 script:
-    - py.test --cov=$PACKAGENAME
+    - coverage run --source $PACKAGENAME -m py.test
     - coverage report
 
 after_success:
