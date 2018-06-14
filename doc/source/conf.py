@@ -14,10 +14,6 @@ import os
 import shutil
 import inspect
 
-THIS_FOLDER = os.path.abspath(os.path.dirname(inspect.getfile(inspect.currentframe())))
-roadmap = os.path.join(THIS_FOLDER, '..', '..', 'ROADMAP.rst')
-shutil.copy2(roadmap, './ROADMAP.rst')
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
