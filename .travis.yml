@@ -32,12 +32,13 @@ install:
     - python setup.py install
 
 script:
-  - py.test --cov=$PACKAGENAME
+    - py.test --cov=$PACKAGENAME
+    - coverage report
 
 after_success:
-  - coveralls
+    - coveralls
 
 notifications:
-  email:
-    on_success: change
-    on_failure: change
+    email:
+        on_success: change
+        on_failure: change
