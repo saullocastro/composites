@@ -9,7 +9,7 @@ python:
 env:
     global:
         # List package dependencies for conda
-        - CONDA_DEPS="pytest numpy"
+        - CONDA_DEPS="pytest coveralls pytest-cov numpy"
         # Package name for test invocation
         - PACKAGENAME="composites'
 
@@ -32,8 +32,7 @@ install:
     - python setup.py install
 
 script:
-  - coverage run --source $PACKAGENAME -m py.test
-  - coverage report
+  - py.test --cov=$PACKAGENAME
 
 after_success:
   - coveralls
