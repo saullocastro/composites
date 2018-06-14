@@ -14,7 +14,7 @@ from .matlamina import read_laminaprop
 
 
 def read_stack(stack, plyt=None, laminaprop=None, plyts=None, laminaprops=None,
-               offset=0.):
+               offset=0., calc_scf=True):
     """Read a laminate stacking sequence data.
 
     An ``Laminate`` object is returned based on the inputs given.
@@ -35,6 +35,9 @@ def read_stack(stack, plyt=None, laminaprop=None, plyts=None, laminaprops=None,
     offset : float, optional
         Offset along the normal axis about the mid-surface, which influences
         the laminate properties.
+    calc_scf : bool, optional
+        If True, use :method:`.Laminate.calc_scf` to compute shear correction
+        factors, otherwise the default value of 5/6 is used
 
     Notes
     -----
@@ -77,6 +80,8 @@ def read_stack(stack, plyt=None, laminaprop=None, plyts=None, laminaprops=None,
 
     lam.rebuild()
     lam.calc_constitutive_matrix()
+    if calc_scf:
+        lam.calc_scf()
 
     return lam
 
@@ -144,6 +149,8 @@ class Laminate(object):
     E          laminate transferse shear matrix
     ABD        laminate ABD matrix
     ABDE       laminate ABD matrix with transverse shear terms
+    scf_k13    shear correction factor 13
+    scf_k23    shear correction factor 23
     =========  ===========================================================
 
     """
@@ -162,12 +169,15 @@ class Laminate(object):
         self.xiA = None
         self.xiB = None
         self.xiD = None
+        self.xiE = None
         self.A = None
         self.B = None
         self.D = None
         self.E = None
         self.ABD = None
         self.ABDE = None
+        self.scf_k13 = 5/6.
+        self.scf_k23 = 5/6.
 
 
     def rebuild(self):
@@ -176,6 +186,75 @@ class Laminate(object):
             ply.rebuild()
             lam_thick += ply.t
         self.t = lam_thick
+
+
+    def calc_scf(self):
+        """Calculate improved shear correction factors
+
+        Reference:
+
+            Vlachoutsis, S. "Shear correction factors for plates and shells",
+            Int. Journal for Numerical Methods in Engineering, Vol. 33,
+            1537-1552, 1992.
+
+            http://onlinelibrary.wiley.com/doi/10.1002/nme.1620330712/full
+
+
+        Using "one shear correction factor" (see reference), assuming:
+
+        - constant G13, G23, E1, E2, nu12, nu21 within each ply
+        - g1 calculated using z at the middle of each ply
+        - zn1 = Laminate.offset
+
+        Returns
+        -------
+
+        k13, k23 : tuple
+            Shear correction factors. Also updates attributes: `scf_k13`
+            and `scf_k23`.
+
+        """
+        D1 = 0
+        R1 = 0
+        den1 = 0
+
+        D2 = 0
+        R2 = 0
+        den2 = 0
+
+        offset = self.offset
+        zbot = -self.t/2 + offset
+        z1 = zbot
+
+        for ply in self.plies:
+            z2 = z1 + ply.t
+            e1 = (ply.matobj.e1 * np.cos(np.deg2rad(ply.theta)) +
+                  ply.matobj.e2 * np.sin(np.deg2rad(ply.theta)))
+            e2 = (ply.matobj.e2 * np.cos(np.deg2rad(ply.theta)) +
+                  ply.matobj.e1 * np.sin(np.deg2rad(ply.theta)))
+            nu12 = (ply.matobj.nu12 * np.cos(np.deg2rad(ply.theta)) +
+                  ply.matobj.nu21 * np.sin(np.deg2rad(ply.theta)))
+            nu21 = (ply.matobj.nu21 * np.cos(np.deg2rad(ply.theta)) +
+              ply.matobj.nu12 * np.sin(np.deg2rad(ply.theta)))
+
+            D1 += e1 / (1 - nu12*nu21)
+            R1 += D1*((z2 - offset)**3/3 - (z1 - offset)**3/3)
+            g13 = ply.matobj.g13
+            d1 = g13 * ply.t
+            den1 += d1 * (self.t / ply.t) * D1**2*(15*offset*z1**4 + 30*offset*z1**2*zbot*(2*offset - zbot) - 15*offset*z2**4 + 30*offset*z2**2*zbot*(-2*offset + zbot) - 3*z1**5 + 10*z1**3*(-2*offset**2 - 2*offset*zbot + zbot**2) - 15*z1*zbot**2*(4*offset**2 - 4*offset*zbot + zbot**2) + 3*z2**5 + 10*z2**3*(2*offset**2 + 2*offset*zbot - zbot**2) + 15*z2*zbot**2*(4*offset**2 - 4*offset*zbot + zbot**2))/(60*g13)
+
+            D2 += e2 / (1 - nu12*nu21)
+            R2 += D2*((z2 - self.offset)**3/3 - (z1 - self.offset)**3/3)
+            g23 = ply.matobj.g23
+            d2 = g23 * ply.t
+            den2 += d2 * (self.t / ply.t) * D2**2*(15*offset*z1**4 + 30*offset*z1**2*zbot*(2*offset - zbot) - 15*offset*z2**4 + 30*offset*z2**2*zbot*(-2*offset + zbot) - 3*z1**5 + 10*z1**3*(-2*offset**2 - 2*offset*zbot + zbot**2) - 15*z1*zbot**2*(4*offset**2 - 4*offset*zbot + zbot**2) + 3*z2**5 + 10*z2**3*(2*offset**2 + 2*offset*zbot - zbot**2) + 15*z2*zbot**2*(4*offset**2 - 4*offset*zbot + zbot**2))/(60*g23)
+
+            z1 = z2
+
+        self.scf_k13 = R1**2 / den1
+        self.scf_k23 = R2**2 / den2
+
+        return self.scf_k13, self.scf_k23
 
 
     def calc_equivalent_modulus(self):
