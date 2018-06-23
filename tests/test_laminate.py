@@ -5,7 +5,7 @@ from composites.laminate import read_lamination_parameters, read_stack
 
 def test_lampar():
     lamprop = (71e9, 71e9, 0.33)
-    lam = read_lamination_parameters(1, lamprop,
+    lam = read_lamination_parameters(1, lamprop, None,
         0.5, 0.4, -0.3, -0.6,
         0.5, 0.4, -0.3, -0.6,
         0.5, 0.4, -0.3, -0.6,
@@ -49,6 +49,8 @@ def test_read_stack():
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
     assert np.allclose(lam.E, E)
+    lam.calc_scf()
+    lam.calc_equivalent_modulus()
     lam.calc_lamination_parameters()
     lam.calc_ABDE_from_lamination_parameters()
     #TODO A, B and D are changing from the original, check!
@@ -85,6 +87,8 @@ def test_read_stack():
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
+    lam.force_balanced_LP()
+    lam.force_symmetric_LP()
 
 
 if __name__ == '__main__':

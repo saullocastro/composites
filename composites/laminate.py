@@ -13,8 +13,8 @@ from .lamina import Lamina
 from .matlamina import read_laminaprop
 
 
-def read_stack(stack, plyt=None, laminaprop=None, plyts=None, laminaprops=None,
-               offset=0., calc_scf=True):
+def read_stack(stack, plyt=None, laminaprop=None, rho=None, plyts=None, laminaprops=None,
+        rhos=None, offset=0., calc_scf=True):
     """Read a laminate stacking sequence data.
 
     An ``Laminate`` object is returned based on the inputs given.
@@ -28,10 +28,14 @@ def read_stack(stack, plyt=None, laminaprop=None, plyts=None, laminaprops=None,
     laminaprop : tuple, optional
         When all plies have the same material properties, ``laminaprop``
         can be supplied.
+    rho : float, optional
+        Uniform material density to be used for all plies.
     plyts : list, optional
         A list of floats with the thickness of each ply.
     laminaprops : list, optional
         A list of tuples with a laminaprop for each ply.
+    rhos : list, optional
+        A list of floats with the material density of each ply.
     offset : float, optional
         Offset along the normal axis about the mid-surface, which influences
         the laminate properties.
@@ -69,13 +73,16 @@ def read_stack(stack, plyt=None, laminaprop=None, plyts=None, laminaprops=None,
         else:
             laminaprops = [laminaprop for i in stack]
 
+    if rhos is None:
+        rhos = [rho for i in stack]
+
     lam.plies = []
-    for plyt, laminaprop, theta in zip(plyts, laminaprops, stack):
+    for plyt, laminaprop, theta, rho in zip(plyts, laminaprops, stack, rhos):
         laminaprop = laminaprop
         ply = Lamina()
         ply.theta = float(theta)
-        ply.t = plyt
-        ply.matobj = read_laminaprop(laminaprop)
+        ply.h = plyt
+        ply.matobj = read_laminaprop(laminaprop, rho)
         lam.plies.append(ply)
 
     lam.rebuild()
@@ -86,7 +93,7 @@ def read_stack(stack, plyt=None, laminaprop=None, plyts=None, laminaprops=None,
     return lam
 
 
-def read_lamination_parameters(thickness, laminaprop,
+def read_lamination_parameters(thickness, laminaprop, rho,
                                xiA1, xiA2, xiA3, xiA4,
                                xiB1, xiB2, xiB3, xiB4,
                                xiD1, xiD2, xiD3, xiD4,
@@ -106,6 +113,8 @@ def read_lamination_parameters(thickness, laminaprop,
         The total thickness of the laminate
     laminaprop : tuple
         The laminaprop tuple used to define the laminate material.
+    rho : float
+        Material density.
     xiA1 to xiD4 : float
         The 16 lamination parameters used to define the laminate.
 
@@ -116,8 +125,8 @@ def read_lamination_parameters(thickness, laminaprop,
 
     """
     lam = Laminate()
-    lam.t = thickness
-    lam.matobj = read_laminaprop(laminaprop)
+    lam.h = thickness
+    lam.matobj = read_laminaprop(laminaprop, rho)
     lam.xiA = np.array([1, xiA1, xiA2, xiA3, xiA4], dtype=np.float64)
     lam.xiB = np.array([0, xiB1, xiB2, xiB3, xiB4], dtype=np.float64)
     lam.xiD = np.array([1, xiD1, xiD2, xiD3, xiD4], dtype=np.float64)
@@ -133,7 +142,7 @@ class Laminate(object):
     attribute  description
     =========  ===========================================================
     plies      list of plies
-    t          total thickness of the laminate
+    h          total thickness of the laminate
     offset     offset at the normal direction
     e1         equivalent laminate modulus in 1 direction
     e2         equivalent laminate modulus in 2 direction
@@ -157,7 +166,7 @@ class Laminate(object):
     def __init__(self):
         self.plies = []
         self.matobj = None
-        self.t = None
+        self.h = None
         self.offset = 0.
         self.e1 = None
         self.e2 = None
@@ -181,11 +190,15 @@ class Laminate(object):
 
 
     def rebuild(self):
-        lam_thick = 0
+        lam_thick = 0.
+        rho_avg = 0.
         for ply in self.plies:
             ply.rebuild()
-            lam_thick += ply.t
-        self.t = lam_thick
+            lam_thick += ply.h
+            rho = ply.matobj.rho if ply.matobj.rho is not None else 0.
+            rho_avg += rho * ply.h
+        self.h = lam_thick
+        self.rho = rho_avg / lam_thick
 
 
     def calc_scf(self):
@@ -223,11 +236,11 @@ class Laminate(object):
         den2 = 0
 
         offset = self.offset
-        zbot = -self.t/2 + offset
+        zbot = -self.h/2 + offset
         z1 = zbot
 
         for ply in self.plies:
-            z2 = z1 + ply.t
+            z2 = z1 + ply.h
             e1 = (ply.matobj.e1 * np.cos(np.deg2rad(ply.theta)) +
                   ply.matobj.e2 * np.sin(np.deg2rad(ply.theta)))
             e2 = (ply.matobj.e2 * np.cos(np.deg2rad(ply.theta)) +
@@ -240,14 +253,14 @@ class Laminate(object):
             D1 += e1 / (1 - nu12*nu21)
             R1 += D1*((z2 - offset)**3/3 - (z1 - offset)**3/3)
             g13 = ply.matobj.g13
-            d1 = g13 * ply.t
-            den1 += d1 * (self.t / ply.t) * D1**2*(15*offset*z1**4 + 30*offset*z1**2*zbot*(2*offset - zbot) - 15*offset*z2**4 + 30*offset*z2**2*zbot*(-2*offset + zbot) - 3*z1**5 + 10*z1**3*(-2*offset**2 - 2*offset*zbot + zbot**2) - 15*z1*zbot**2*(4*offset**2 - 4*offset*zbot + zbot**2) + 3*z2**5 + 10*z2**3*(2*offset**2 + 2*offset*zbot - zbot**2) + 15*z2*zbot**2*(4*offset**2 - 4*offset*zbot + zbot**2))/(60*g13)
+            d1 = g13 * ply.h
+            den1 += d1 * (self.h / ply.h) * D1**2*(15*offset*z1**4 + 30*offset*z1**2*zbot*(2*offset - zbot) - 15*offset*z2**4 + 30*offset*z2**2*zbot*(-2*offset + zbot) - 3*z1**5 + 10*z1**3*(-2*offset**2 - 2*offset*zbot + zbot**2) - 15*z1*zbot**2*(4*offset**2 - 4*offset*zbot + zbot**2) + 3*z2**5 + 10*z2**3*(2*offset**2 + 2*offset*zbot - zbot**2) + 15*z2*zbot**2*(4*offset**2 - 4*offset*zbot + zbot**2))/(60*g13)
 
             D2 += e2 / (1 - nu12*nu21)
             R2 += D2*((z2 - self.offset)**3/3 - (z1 - self.offset)**3/3)
             g23 = ply.matobj.g23
-            d2 = g23 * ply.t
-            den2 += d2 * (self.t / ply.t) * D2**2*(15*offset*z1**4 + 30*offset*z1**2*zbot*(2*offset - zbot) - 15*offset*z2**4 + 30*offset*z2**2*zbot*(-2*offset + zbot) - 3*z1**5 + 10*z1**3*(-2*offset**2 - 2*offset*zbot + zbot**2) - 15*z1*zbot**2*(4*offset**2 - 4*offset*zbot + zbot**2) + 3*z2**5 + 10*z2**3*(2*offset**2 + 2*offset*zbot - zbot**2) + 15*z2*zbot**2*(4*offset**2 - 4*offset*zbot + zbot**2))/(60*g23)
+            d2 = g23 * ply.h
+            den2 += d2 * (self.h / ply.h) * D2**2*(15*offset*z1**4 + 30*offset*z1**2*zbot*(2*offset - zbot) - 15*offset*z2**4 + 30*offset*z2**2*zbot*(-2*offset + zbot) - 3*z1**5 + 10*z1**3*(-2*offset**2 - 2*offset*zbot + zbot**2) - 15*z1*zbot**2*(4*offset**2 - 4*offset*zbot + zbot**2) + 3*z2**5 + 10*z2**3*(2*offset**2 + 2*offset*zbot - zbot**2) + 15*z2*zbot**2*(4*offset**2 - 4*offset*zbot + zbot**2))/(60*g23)
 
             z1 = z2
 
@@ -266,9 +279,9 @@ class Laminate(object):
         """
         AI = np.matrix(self.ABD, dtype=np.float64).I
         a11, a12, a22, a33 = AI[0,0], AI[0,1], AI[1,1], AI[2,2]
-        self.e1 = 1./(self.t*a11)
-        self.e2 = 1./(self.t*a22)
-        self.g12 = 1./(self.t*a33)
+        self.e1 = 1./(self.h*a11)
+        self.e2 = 1./(self.h*a22)
+        self.g12 = 1./(self.h*a33)
         self.nu12 = - a12 / a11
         self.nu21 = - a12 / a22
 
@@ -290,8 +303,8 @@ class Laminate(object):
         xiD1, xiD2, xiD3, xiD4 = 0, 0, 0, 0
         xiE1, xiE2, xiE3, xiE4 = 0, 0, 0, 0
 
-        lam_thick = sum([ply.t for ply in self.plies])
-        self.t = lam_thick
+        lam_thick = sum([ply.h for ply in self.plies])
+        self.h = lam_thick
 
         h0 = -lam_thick/2. + self.offset
         for ply in self.plies:
@@ -300,10 +313,10 @@ class Laminate(object):
             else:
                 assert np.allclose(self.matobj.u, ply.matobj.u), "Plies with different materials"
             hk_1 = h0
-            h0 += ply.t
+            h0 += ply.h
             hk = h0
 
-            Afac = ply.t / lam_thick
+            Afac = ply.h / lam_thick
             Bfac = (2. / lam_thick**2) * (hk**2 - hk_1**2)
             Dfac = (4. / lam_thick**3) * (hk**3 - hk_1**3)
             Efac = (1. / lam_thick) * (hk - hk_1)
@@ -351,16 +364,16 @@ class Laminate(object):
         du1, du2, du3, du4, du5, du6 = 0, 0, 0, 0, 0, 0
         # A matrix terms
         A11,A22,A12, du1,du2,du3, A66,A16,A26 =\
-            (self.t       ) * np.dot(self.matobj.u, self.xiA)
+            (self.h       ) * np.dot(self.matobj.u, self.xiA)
         # B matrix terms
         B11,B22,B12, du1,du2,du3, B66,B16,B26 =\
-            (self.t**2/4. ) * np.dot(self.matobj.u, self.xiB)
+            (self.h**2/4. ) * np.dot(self.matobj.u, self.xiB)
         # D matrix terms
         D11,D22,D12, du1,du2,du3, D66,D16,D26 =\
-            (self.t**3/12.) * np.dot(self.matobj.u, self.xiD)
+            (self.h**3/12.) * np.dot(self.matobj.u, self.xiD)
         # E matrix terms
         du1,du2,du3, E44,E55,E45, du4,du5,du6 =\
-            (self.t       ) * np.dot(self.matobj.u, self.xiE)
+            (self.h       ) * np.dot(self.matobj.u, self.xiE)
 
         self.A = np.array([[A11, A12, A16],
                            [A12, A22, A26],
@@ -410,13 +423,13 @@ class Laminate(object):
         self.B_general = np.zeros([5,5], dtype=np.float64)
         self.D_general = np.zeros([5,5], dtype=np.float64)
 
-        lam_thick = sum([ply.t for ply in self.plies])
-        self.t = lam_thick
+        lam_thick = sum([ply.h for ply in self.plies])
+        self.h = lam_thick
 
         h0 = -lam_thick/2 + self.offset
         for ply in self.plies:
             hk_1 = h0
-            h0 += ply.t
+            h0 += ply.h
             hk = h0
             self.A_general += ply.QL*(hk - hk_1)
             self.B_general += 1/2.*ply.QL*(hk**2 - hk_1**2)

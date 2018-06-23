@@ -79,7 +79,7 @@ Operating System :: Unix
 """
 
 is_released = True
-version = '0.2.0'
+version = '0.2.1'
 
 fullversion = write_version_py(version, is_released)
 
@@ -109,4 +109,3 @@ s = setup(
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
     install_requires=install_requires,
 )
-

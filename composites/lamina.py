@@ -20,13 +20,12 @@ class Lamina(object):
     =========  ===========================================================
     plyid      id of the composite lamina
     matobj     a pointer to a MatLamina object
-    t          ply thickness
+    h          ply thickness
     theta      ply angle in degrees
     L          transformation matrix for displacements to laminate csys
     R          transformation matrix for stresses to laminate csys
     T          transformation matrix for stresses to lamina csys
     QL         constitutive matrix for plane-stress in laminate csys
-    laminates  laminates that contain this lamina
     =========  ===========================================================
 
     References:
@@ -36,15 +35,14 @@ class Lamina(object):
 
     """
     def __init__(self):
-        self.plyid    = None
-        self.matobj   = None
-        self.t        = None
-        self.theta    = None
-        self.L        = None
-        self.R        = None
-        self.T        = None
-        self.QL       = None
-        self.laminates = []
+        self.plyid = None
+        self.matobj = None
+        self.h = None
+        self.theta = None
+        self.L = None
+        self.R = None
+        self.T = None
+        self.QL = None
 
     def rebuild(self):
         thetarad = np.deg2rad(self.theta)

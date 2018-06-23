@@ -196,7 +196,7 @@ class MatLamina(object):
             self.nu12 = nu12
 
 
-def read_laminaprop(laminaprop=None):
+def read_laminaprop(laminaprop=None, rho=None):
     """Returns a ``MatLamina`` object based on an input ``laminaprop`` tuple
 
     Parameters
@@ -227,6 +227,11 @@ def read_laminaprop(laminaprop=None):
         nu13    13 Poisson's ratio
         nu23    23 Poisson's ratio
         ======  ==============================
+
+
+    rho : float, optional
+        Material density
+
 
     Returns
     -------
@@ -262,6 +267,7 @@ def read_laminaprop(laminaprop=None):
     matlam.g12 = laminaprop[3]
     matlam.g13 = laminaprop[4]
     matlam.g23 = laminaprop[5]
+    matlam.rho = rho
 
     matlam.rebuild()
 
