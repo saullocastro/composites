@@ -41,7 +41,7 @@ def get_version_info(version, is_released):
 def write_version_py(version, is_released, filename='composites/version.py'):
     fullversion = get_version_info(version, is_released)
     with open("./composites/version.py", "wb") as f:
-        f.write(b'__version__ = "%s"\n' % fullversion.encode())
+        f.write(('__version__ = "%s"\n' % fullversion).encode())
     return fullversion
 
 
@@ -79,7 +79,7 @@ Operating System :: Unix
 """
 
 is_released = True
-version = '0.2.1'
+version = '0.2.2'
 
 fullversion = write_version_py(version, is_released)
 
