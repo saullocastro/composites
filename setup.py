@@ -79,7 +79,7 @@ Operating System :: Unix
 """
 
 is_released = True
-version = '0.2.2'
+version = '0.2.3'
 
 fullversion = write_version_py(version, is_released)
 
@@ -101,7 +101,7 @@ s = setup(
     description = ("Methods to calculate composite material properties"),
     license = "BSD",
     keywords = "mechanics composite materials composites shell classical laminated plate theory",
-    url = "https://github.com/compmech/composites",
+    url = "https://github.com/saullocastro/composites",
     packages=find_packages(),
     package_data=package_data,
     data_files=data_files,
