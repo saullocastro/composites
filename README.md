@@ -7,8 +7,15 @@ Coverage status:
 [![Coverage Status](https://coveralls.io/repos/github/saullocastro/composites/badge.svg?branch=master)](https://coveralls.io/github/saullocastro/composites?branch=master)
 
 
-Methods to calculate composite material properties
-==================================================
+Methods to calculate properties of composite materials
+======================================================
+
+Available resources are:
+
+- ABD(E) matrix for laminated composites, E matrix for first-order shear theory
+- Lamination parameters
+
+
 Repository created from sub-modules of "compmech" and "meshless" repositories.
 The first adopted version number came from the following reasoning:
 
