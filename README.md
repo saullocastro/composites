@@ -26,7 +26,7 @@ The first adopted version number came from the following reasoning:
 
 License
 -------
-Distrubuted in the 2-Clause BSD license (https://raw.github.com/compmech/composites/master/LICENSE).
+Distrubuted in the 2-Clause BSD license (https://raw.github.com/saullocastro/composites/master/LICENSE).
 
 Contact: castrosaullo@gmail.com
 
