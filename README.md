@@ -3,6 +3,7 @@ Travis-CI status:
 [![Build Status](https://travis-ci.com/saullocastro/composites.svg?branch=master)](https://travis-ci.com/saullocastro/composites)
 
 Github Actions status:
+
 [![Actions Status](https://github.com/saullocastro/composites/workflows/pytest/badge.svg)](https://github.com/saullocastro/composites/actions)
 
 Coverage status:
