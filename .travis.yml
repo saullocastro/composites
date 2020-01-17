@@ -1,16 +1,13 @@
 language: python
+
 cache: false
+
 python:
   # We don't actually use the Travis Python, but this keeps it organized.
+  - "2.7"
   - "3.5"
   - "3.6"
-
-env:
-    global:
-        # List package dependencies for conda
-        - CONDA_DEPS="pytest coveralls pytest-cov numpy"
-        # Package name for test invocation
-        - PACKAGENAME="composites'
+  - "3.7"
 
 before_install:
   # List package dependencies for conda
@@ -35,7 +32,7 @@ install:
   - python setup.py install
 
 script:
-  - coverage run --source composites -m py.test
+  - coverage run -m py.test tests
   - coverage report
 
 after_success:
