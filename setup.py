@@ -64,22 +64,28 @@ install_requires = [
 
 CLASSIFIERS = """\
 
-Development Status :: 3 - Alpha
+Development Status :: 4 - Beta
 Intended Audience :: Science/Research
 Intended Audience :: Developers
 Intended Audience :: Education
-Topic :: Scientific/Engineering :: Mathematics
-License :: OSI Approved :: BSD License
+Intended Audience :: End Users/Desktop
+Topic :: Scientific/Engineering
+Topic :: Education
+Topic :: Software Development
+Topic :: Software Development :: Libraries :: Python Modules
+Operating System :: POSIX :: BSD
 Operating System :: Microsoft :: Windows
+Operating System :: Unix
 Programming Language :: Python :: 2.7
 Programming Language :: Python :: 3.5
 Programming Language :: Python :: 3.6
-Operating System :: Unix
+Programming Language :: Python :: 3.7
+License :: OSI Approved :: BSD License
 
 """
 
-is_released = True
-version = '0.2.3'
+is_released = False
+version = '0.2.4'
 
 fullversion = write_version_py(version, is_released)
 
@@ -100,7 +106,7 @@ s = setup(
     author_email = "castrosaullo@gmail.com",
     description = ("Methods to calculate composite material properties"),
     license = "BSD",
-    keywords = "mechanics composite materials composites shell classical laminated plate theory",
+    keywords = "mechanics composite materials composites shell classical first-order laminated plate theory",
     url = "https://github.com/saullocastro/composites",
     packages=find_packages(),
     package_data=package_data,
