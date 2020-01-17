@@ -1,0 +1,792 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Documentation for the module &#8212; composites 0.2.4 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">composites 0.2.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-composites.__init__">
+<span id="documentation-for-the-composites-module"></span><h1>Documentation for the <img class="math" src="_images/math/e35e07480291a680c5b78d5da23de4ba4de42178.png" alt="composites"/> module<a class="headerlink" href="#module-composites.__init__" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="methods-to-calculate-composite-plate-properties-composite">
+<h2>Methods to calculate composite plate properties (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composite</span></code>)<a class="headerlink" href="#methods-to-calculate-composite-plate-properties-composite" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">composite</span></code> module includes functions used to calculate plate properties
+for laminated composites and isotropic plates.</p>
+<p>Classical and first-order shear deformation theories are supported. For
+classical plate theories or classical laminated plate theories (CLPT), the
+relevant matrices are A, B, D, whereas for the first-order shear deformation
+theories (FSDT) the matrices are A, B, D, E. All these matrices are part of the
+<img class="math" src="_images/math/ef9058a99ae537b9737fbeab1de3cc82991f55dd.png" alt=".Laminate"/> object. For isotropic plates, the <img class="math" src="_images/math/ef9058a99ae537b9737fbeab1de3cc82991f55dd.png" alt=".Laminate"/> object is also used
+for convenience.</p>
+<p>Offset is supported, resulting in extension-bending coupling (B matrix)
+different than zero even for isotropic plates.</p>
+<p>The most convenient usage is probably with the
+<code class="xref py py-func docutils literal notranslate"><span class="pre">composite.laminate.read_stack()</span></code> function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">composite.laminate</span> <span class="kn">import</span> <span class="n">read_stack</span>
+
+<span class="n">laminaprop</span> <span class="o">=</span> <span class="p">(</span><span class="n">E11</span><span class="p">,</span> <span class="n">E22</span><span class="p">,</span> <span class="n">nu12</span><span class="p">,</span> <span class="n">G12</span><span class="p">,</span> <span class="n">G13</span><span class="p">,</span> <span class="n">G23</span><span class="p">)</span>
+<span class="n">plyt</span> <span class="o">=</span> <span class="n">ply_thickness</span>
+<span class="n">stack</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">+</span><span class="mi">45</span><span class="p">,</span> <span class="o">-</span><span class="mi">45</span><span class="p">]</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="n">read_stack</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">plyt</span><span class="o">=</span><span class="n">plyt</span><span class="p">,</span> <span class="n">laminaprop</span><span class="o">=</span><span class="n">laminaprop</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and with the <code class="xref py py-func docutils literal notranslate"><span class="pre">composite.laminate.read_isotropic()</span></code> function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">composite.laminate</span> <span class="kn">import</span> <span class="n">read_isotropic</span>
+
+<span class="n">lam</span> <span class="o">=</span> <span class="n">read_isotropic</span><span class="p">(</span><span class="n">thickness</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="n">nu</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Where the laminate stiffness matrix, the often called <code class="docutils literal notranslate"><span class="pre">ABD</span></code> matrix, with
+<code class="docutils literal notranslate"><span class="pre">shape=(6,</span> <span class="pre">6)</span></code>, can be accessed using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lam</span><span class="o">.</span><span class="n">ABD</span>
+</pre></div>
+</div>
+<p>and when transverse shear stiffnesses are required, the <code class="docutils literal notranslate"><span class="pre">ABDE</span></code> matrix, with
+<code class="docutils literal notranslate"><span class="pre">shape=(8,</span> <span class="pre">8)</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lam</span><span class="o">.</span><span class="n">ABDE</span>
+</pre></div>
+</div>
+<span class="target" id="module-composites.laminate"></span><div class="section" id="composite-laminate-module-composites-laminate">
+<h3>Composite Laminate Module (<a class="reference internal" href="#module-composites.laminate" title="composites.laminate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.laminate</span></code></a>)<a class="headerlink" href="#composite-laminate-module-composites-laminate" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="composites.laminate.Laminate">
+<em class="property">class </em><code class="sig-prename descclassname">composites.laminate.</code><code class="sig-name descname">Laminate</code><a class="headerlink" href="#composites.laminate.Laminate" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils align-default">
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 87%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>attribute</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>plies</p></td>
+<td><p>list of plies</p></td>
+</tr>
+<tr class="row-odd"><td><p>h</p></td>
+<td><p>total thickness of the laminate</p></td>
+</tr>
+<tr class="row-even"><td><p>offset</p></td>
+<td><p>offset at the normal direction</p></td>
+</tr>
+<tr class="row-odd"><td><p>e1</p></td>
+<td><p>equivalent laminate modulus in 1 direction</p></td>
+</tr>
+<tr class="row-even"><td><p>e2</p></td>
+<td><p>equivalent laminate modulus in 2 direction</p></td>
+</tr>
+<tr class="row-odd"><td><p>g12</p></td>
+<td><p>equivalent laminate shear modulus in 12 direction</p></td>
+</tr>
+<tr class="row-even"><td><p>nu12</p></td>
+<td><p>equivalent laminate Poisson ratio in 12 direction</p></td>
+</tr>
+<tr class="row-odd"><td><p>nu21</p></td>
+<td><p>equivalent laminate Poisson ratio in 21 direction</p></td>
+</tr>
+<tr class="row-even"><td><p>xiA</p></td>
+<td><p>laminate parameters for extensional matrix A</p></td>
+</tr>
+<tr class="row-odd"><td><p>xiB</p></td>
+<td><p>laminate parameters for extension-bending matrix B</p></td>
+</tr>
+<tr class="row-even"><td><p>xiD</p></td>
+<td><p>laminate parameters for bending matrix D</p></td>
+</tr>
+<tr class="row-odd"><td><p>A</p></td>
+<td><p>laminate extension matrix</p></td>
+</tr>
+<tr class="row-even"><td><p>B</p></td>
+<td><p>laminate extension-bending matrix</p></td>
+</tr>
+<tr class="row-odd"><td><p>D</p></td>
+<td><p>laminate bending matrix</p></td>
+</tr>
+<tr class="row-even"><td><p>E</p></td>
+<td><p>laminate transferse shear matrix</p></td>
+</tr>
+<tr class="row-odd"><td><p>ABD</p></td>
+<td><p>laminate ABD matrix</p></td>
+</tr>
+<tr class="row-even"><td><p>ABDE</p></td>
+<td><p>laminate ABD matrix with transverse shear terms</p></td>
+</tr>
+<tr class="row-odd"><td><p>scf_k13</p></td>
+<td><p>shear correction factor 13</p></td>
+</tr>
+<tr class="row-even"><td><p>scf_k23</p></td>
+<td><p>shear correction factor 23</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.laminate.Laminate.calc_ABDE_from_lamination_parameters" title="composites.laminate.Laminate.calc_ABDE_from_lamination_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_ABDE_from_lamination_parameters</span></code></a>(self)</p></td>
+<td><p>Use the ABDE matrix based on lamination parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#composites.laminate.Laminate.calc_constitutive_matrix" title="composites.laminate.Laminate.calc_constitutive_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_constitutive_matrix</span></code></a>(self)</p></td>
+<td><p>Calculates the laminate constitutive matrix</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.laminate.Laminate.calc_equivalent_modulus" title="composites.laminate.Laminate.calc_equivalent_modulus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_equivalent_modulus</span></code></a>(self)</p></td>
+<td><p>Calculates the equivalent laminate properties.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#composites.laminate.Laminate.calc_lamination_parameters" title="composites.laminate.Laminate.calc_lamination_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_lamination_parameters</span></code></a>(self)</p></td>
+<td><p>Calculate the lamination parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.laminate.Laminate.calc_scf" title="composites.laminate.Laminate.calc_scf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_scf</span></code></a>(self)</p></td>
+<td><p>Calculate improved shear correction factors</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#composites.laminate.Laminate.force_balanced_LP" title="composites.laminate.Laminate.force_balanced_LP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">force_balanced_LP</span></code></a>(self)</p></td>
+<td><p>Force balanced lamination parameters</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.laminate.Laminate.force_orthotropic" title="composites.laminate.Laminate.force_orthotropic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">force_orthotropic</span></code></a>(self)</p></td>
+<td><p>Force an orthotropic laminate</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#composites.laminate.Laminate.force_symmetric" title="composites.laminate.Laminate.force_symmetric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">force_symmetric</span></code></a>(self)</p></td>
+<td><p>Force a symmetric laminate</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.laminate.Laminate.force_symmetric_LP" title="composites.laminate.Laminate.force_symmetric_LP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">force_symmetric_LP</span></code></a>(self)</p></td>
+<td><p>Force symmetric lamination parameters</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 52%" />
+<col style="width: 48%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>rebuild</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="composites.laminate.Laminate.calc_ABDE_from_lamination_parameters">
+<code class="sig-name descname">calc_ABDE_from_lamination_parameters</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.laminate.Laminate.calc_ABDE_from_lamination_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use the ABDE matrix based on lamination parameters.</p>
+<p>Given the lamination parameters <code class="docutils literal notranslate"><span class="pre">xiA</span></code>, <code class="docutils literal notranslate"><span class="pre">xiB</span></code>, <code class="docutils literal notranslate"><span class="pre">xiC</span></code> and <code class="docutils literal notranslate"><span class="pre">xiD</span></code>,
+the ABD matrix is calculated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="composites.laminate.Laminate.calc_constitutive_matrix">
+<code class="sig-name descname">calc_constitutive_matrix</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.laminate.Laminate.calc_constitutive_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the laminate constitutive matrix</p>
+<p>This is the commonly called <code class="docutils literal notranslate"><span class="pre">ABD</span></code> matrix with <code class="docutils literal notranslate"><span class="pre">shape=(6,</span> <span class="pre">6)</span></code> when
+the classical laminated plate theory is used, or the <code class="docutils literal notranslate"><span class="pre">ABDE</span></code> matrix
+when the first-order shear deformation theory is used, containing the
+transverse shear terms.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="composites.laminate.Laminate.calc_equivalent_modulus">
+<code class="sig-name descname">calc_equivalent_modulus</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.laminate.Laminate.calc_equivalent_modulus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the equivalent laminate properties.</p>
+<dl class="simple">
+<dt>The following attributes are calculated:</dt><dd><p>e1, e2, g12, nu12, nu21</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="composites.laminate.Laminate.calc_lamination_parameters">
+<code class="sig-name descname">calc_lamination_parameters</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.laminate.Laminate.calc_lamination_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the lamination parameters.</p>
+<dl class="simple">
+<dt>The following attributes are calculated:</dt><dd><p>xiA, xiB, xiD, xiE</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="composites.laminate.Laminate.calc_scf">
+<code class="sig-name descname">calc_scf</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.laminate.Laminate.calc_scf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate improved shear correction factors</p>
+<p>Reference:</p>
+<blockquote>
+<div><p>Vlachoutsis, S. “Shear correction factors for plates and shells”,
+Int. Journal for Numerical Methods in Engineering, Vol. 33,
+1537-1552, 1992.</p>
+<p><a class="reference external" href="http://onlinelibrary.wiley.com/doi/10.1002/nme.1620330712/full">http://onlinelibrary.wiley.com/doi/10.1002/nme.1620330712/full</a></p>
+</div></blockquote>
+<p>Using “one shear correction factor” (see reference), assuming:</p>
+<ul class="simple">
+<li><p>constant G13, G23, E1, E2, nu12, nu21 within each ply</p></li>
+<li><p>g1 calculated using z at the middle of each ply</p></li>
+<li><p>zn1 = <img class="math" src="_images/math/edea86fa0f55b5522a74e87ea1acbe3a23d5c926.png" alt=".Laminate.offset"/></p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>k13, k23</strong><span class="classifier">tuple</span></dt><dd><p>Shear correction factors. Also updates attributes: <img class="math" src="_images/math/22c8f78976dfa02633138b4e96531e438f8637be.png" alt="scf_k13"/>
+and <img class="math" src="_images/math/9a8c5886dbd3b0373bab65b3939992f6a407f58b.png" alt="scf_k23"/>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="composites.laminate.Laminate.force_balanced_LP">
+<code class="sig-name descname">force_balanced_LP</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.laminate.Laminate.force_balanced_LP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force balanced lamination parameters</p>
+<p>The lamination parameters <img class="math" src="_images/math/1873f6b281e84f6b3e7e92dd684bea8de0996e7f.png" alt="\xi_{A2}"/> and <img class="math" src="_images/math/3ec6c9612589d5f1955e2c0778ebe21c3d6402ad.png" alt="\xi_{A4}"/> are set to null
+to force a balanced laminate.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="composites.laminate.Laminate.force_orthotropic">
+<code class="sig-name descname">force_orthotropic</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.laminate.Laminate.force_orthotropic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force an orthotropic laminate</p>
+<p>The terms
+<img class="math" src="_images/math/9855527d4745590726a800ee3267bf45e0a1122f.png" alt="A_{13}"/>, <img class="math" src="_images/math/65d45de1e5c0270f27315bfc6364bb83b72b4335.png" alt="A_{23}"/>, <img class="math" src="_images/math/a8c3a80d9085559a9079ec87eb0d99dd881305ae.png" alt="A_{31}"/>, <img class="math" src="_images/math/b85b449537769a7c4dcc64747588e2d11d10abf2.png" alt="A_{32}"/>,
+<img class="math" src="_images/math/041476f8c263e1086e40a7417a369d8508aea82d.png" alt="B_{13}"/>, <img class="math" src="_images/math/4ce16c68269709c2478522351373823ee8d93f63.png" alt="B_{23}"/>, <img class="math" src="_images/math/56f123a21384b14dddf97b8e78afa29f67811bfd.png" alt="B_{31}"/>, <img class="math" src="_images/math/3125b1aa1672b56d7cf0de219e68d6b4110a3603.png" alt="B_{32}"/>,
+<img class="math" src="_images/math/de31e4ab41fb01e2fd96ee15a2042fb65774b3ce.png" alt="D_{13}"/>, <img class="math" src="_images/math/181f136186c58c36181c8653763a14b99208fce3.png" alt="D_{23}"/>, <img class="math" src="_images/math/73b0488ca363d7044376af31cc25ad3b725ef29f.png" alt="D_{31}"/>, <img class="math" src="_images/math/c5d467cd981be46473f2edb91c9c4fd46e802e14.png" alt="D_{32}"/> are set to zero to force an
+orthotropic laminate.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="composites.laminate.Laminate.force_symmetric">
+<code class="sig-name descname">force_symmetric</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.laminate.Laminate.force_symmetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force a symmetric laminate</p>
+<p>The <img class="math" src="_images/math/4bc3e94a67870b41b7c20179693e889251e2c136.png" alt="B"/> terms of the constitutive matrix are set to zero.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="composites.laminate.Laminate.force_symmetric_LP">
+<code class="sig-name descname">force_symmetric_LP</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.laminate.Laminate.force_symmetric_LP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force symmetric lamination parameters</p>
+<p>The lamination parameters <img class="math" src="_images/math/61acb262f24e0d10a4c57f8dcb94545de8a324dc.png" alt="\xi_{Bi}"/> are set to null
+to force a symmetric laminate.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="composites.laminate.read_isotropic">
+<code class="sig-prename descclassname">composites.laminate.</code><code class="sig-name descname">read_isotropic</code><span class="sig-paren">(</span><em class="sig-param">thickness</em>, <em class="sig-param">E</em>, <em class="sig-param">nu</em>, <em class="sig-param">offset=0.0</em>, <em class="sig-param">calc_scf=True</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.laminate.read_isotropic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read data for an isotropic plate</p>
+<p><img class="math" src="_images/math/ef9058a99ae537b9737fbeab1de3cc82991f55dd.png" alt=".Laminate"/> object is returned based on the inputs given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>thickness</strong><span class="classifier">float</span></dt><dd><p>Plate thickness.</p>
+</dd>
+<dt><strong>E</strong><span class="classifier">float</span></dt><dd><p>Young modulus.</p>
+</dd>
+<dt><strong>nu</strong><span class="classifier">float, optional</span></dt><dd><p>Poisson’s ratio.</p>
+</dd>
+<dt><strong>offset</strong><span class="classifier">float, optional</span></dt><dd><p>Offset along the normal axis about the mid-surface, which influences
+the extension-bending coupling (B matrix).</p>
+</dd>
+<dt><strong>calc_scf</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, use <img class="math" src="_images/math/63874065cb773e4070be11505fc9958e094df70b.png" alt=".Laminate.calc_scf"/> to compute shear correction
+factors, otherwise the default value of 5/6 is used.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="composites.laminate.read_lamination_parameters">
+<code class="sig-prename descclassname">composites.laminate.</code><code class="sig-name descname">read_lamination_parameters</code><span class="sig-paren">(</span><em class="sig-param">thickness</em>, <em class="sig-param">laminaprop</em>, <em class="sig-param">rho</em>, <em class="sig-param">xiA1</em>, <em class="sig-param">xiA2</em>, <em class="sig-param">xiA3</em>, <em class="sig-param">xiA4</em>, <em class="sig-param">xiB1</em>, <em class="sig-param">xiB2</em>, <em class="sig-param">xiB3</em>, <em class="sig-param">xiB4</em>, <em class="sig-param">xiD1</em>, <em class="sig-param">xiD2</em>, <em class="sig-param">xiD3</em>, <em class="sig-param">xiD4</em>, <em class="sig-param">xiE1</em>, <em class="sig-param">xiE2</em>, <em class="sig-param">xiE3</em>, <em class="sig-param">xiE4</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.laminate.read_lamination_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates a laminate based on the lamination parameters.</p>
+<p>The lamination parameters:
+<img class="math" src="_images/math/a562934eb5507ccabe78eadae3e15fb4a26c60b7.png" alt="\xi_{A1} \cdots \xi_{A4}"/>,  <img class="math" src="_images/math/d2d151ed60db975502e464dbd3e470181c555aa3.png" alt="\xi_{B1} \cdots \xi_{B4}"/>,
+<img class="math" src="_images/math/20d46aafb761f0f070c74d3a917a71b684e0a00b.png" alt="\xi_{C1} \cdots \xi_{C4}"/>,  <img class="math" src="_images/math/5cd9d8de06728881be2c1515c39ef971977ddb8b.png" alt="\xi_{D1} \cdots \xi_{D4}"/>,
+<img class="math" src="_images/math/58a2e4c5bf56e139354714f3e19ee55bcbaaa3f1.png" alt="\xi_{E1} \cdots \xi_{E4}"/></p>
+<p>are used to calculate the laminate constitutive matrix.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>thickness</strong><span class="classifier">float</span></dt><dd><p>The total thickness of the laminate</p>
+</dd>
+<dt><strong>laminaprop</strong><span class="classifier">tuple</span></dt><dd><p>The laminaprop tuple used to define the laminate material.</p>
+</dd>
+<dt><strong>rho</strong><span class="classifier">float</span></dt><dd><p>Material density.</p>
+</dd>
+<dt><strong>xiA1 to xiD4</strong><span class="classifier">float</span></dt><dd><p>The 16 lamination parameters used to define the laminate.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl>
+<dt><strong>lam</strong><span class="classifier"><img class="math" src="_images/math/ef9058a99ae537b9737fbeab1de3cc82991f55dd.png" alt=".Laminate"/></span></dt><dd><p>laminate with the ABD and ABDE matrices already calculated</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="composites.laminate.read_stack">
+<code class="sig-prename descclassname">composites.laminate.</code><code class="sig-name descname">read_stack</code><span class="sig-paren">(</span><em class="sig-param">stack</em>, <em class="sig-param">plyt=None</em>, <em class="sig-param">laminaprop=None</em>, <em class="sig-param">rho=None</em>, <em class="sig-param">plyts=None</em>, <em class="sig-param">laminaprops=None</em>, <em class="sig-param">rhos=None</em>, <em class="sig-param">offset=0.0</em>, <em class="sig-param">calc_scf=True</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.laminate.read_stack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a laminate stacking sequence data.</p>
+<p><img class="math" src="_images/math/ef9058a99ae537b9737fbeab1de3cc82991f55dd.png" alt=".Laminate"/> object is returned based on the inputs given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>stack</strong><span class="classifier">list</span></dt><dd><p>Angles of the stacking sequence in degrees.</p>
+</dd>
+<dt><strong>plyt</strong><span class="classifier">float, optional</span></dt><dd><p>When all plies have the same thickness, <code class="docutils literal notranslate"><span class="pre">plyt</span></code> can be supplied.</p>
+</dd>
+<dt><strong>laminaprop</strong><span class="classifier">tuple, optional</span></dt><dd><p>When all plies have the same material properties, <code class="docutils literal notranslate"><span class="pre">laminaprop</span></code>
+can be supplied.</p>
+</dd>
+<dt><strong>rho</strong><span class="classifier">float, optional</span></dt><dd><p>Uniform material density to be used for all plies.</p>
+</dd>
+<dt><strong>plyts</strong><span class="classifier">list, optional</span></dt><dd><p>A list of floats with the thickness of each ply.</p>
+</dd>
+<dt><strong>laminaprops</strong><span class="classifier">list, optional</span></dt><dd><p>A list of tuples with a laminaprop for each ply.</p>
+</dd>
+<dt><strong>rhos</strong><span class="classifier">list, optional</span></dt><dd><p>A list of floats with the material density of each ply.</p>
+</dd>
+<dt><strong>offset</strong><span class="classifier">float, optional</span></dt><dd><p>Offset along the normal axis about the mid-surface, which influences
+the laminate properties.</p>
+</dd>
+<dt><strong>calc_scf</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, use <img class="math" src="_images/math/63874065cb773e4070be11505fc9958e094df70b.png" alt=".Laminate.calc_scf"/> to compute shear correction
+factors, otherwise the default value of 5/6 is used</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p><code class="docutils literal notranslate"><span class="pre">plyt</span></code> or <code class="docutils literal notranslate"><span class="pre">plyts</span></code> must be supplied
+<code class="docutils literal notranslate"><span class="pre">laminaprop</span></code> or <code class="docutils literal notranslate"><span class="pre">laminaprops</span></code> must be supplied</p>
+<p>For orthotropic plies, the <code class="docutils literal notranslate"><span class="pre">laminaprop</span></code> should be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">laminaprop</span> <span class="o">=</span> <span class="p">(</span><span class="n">E11</span><span class="p">,</span> <span class="n">E22</span><span class="p">,</span> <span class="n">nu12</span><span class="p">,</span> <span class="n">G12</span><span class="p">,</span> <span class="n">G13</span><span class="p">,</span> <span class="n">G23</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For isotropic plies, the <code class="docutils literal notranslate"><span class="pre">laminaprop</span></code> should be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">laminaprop</span> <span class="o">=</span> <span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<span class="target" id="module-composites.lamina"></span><div class="section" id="composite-lamina-module-composites-lamina">
+<h3>Composite Lamina Module (<a class="reference internal" href="#module-composites.lamina" title="composites.lamina"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.lamina</span></code></a>)<a class="headerlink" href="#composite-lamina-module-composites-lamina" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="composites.lamina.Lamina">
+<em class="property">class </em><code class="sig-prename descclassname">composites.lamina.</code><code class="sig-name descname">Lamina</code><a class="headerlink" href="#composites.lamina.Lamina" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils align-default">
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 87%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>attribute</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>plyid</p></td>
+<td><p>id of the composite lamina</p></td>
+</tr>
+<tr class="row-odd"><td><p>matobj</p></td>
+<td><p>a pointer to a MatLamina object</p></td>
+</tr>
+<tr class="row-even"><td><p>h</p></td>
+<td><p>ply thickness</p></td>
+</tr>
+<tr class="row-odd"><td><p>theta</p></td>
+<td><p>ply angle in degrees</p></td>
+</tr>
+<tr class="row-even"><td><p>L</p></td>
+<td><p>transformation matrix for displacements to laminate csys</p></td>
+</tr>
+<tr class="row-odd"><td><p>R</p></td>
+<td><p>transformation matrix for stresses to laminate csys</p></td>
+</tr>
+<tr class="row-even"><td><p>T</p></td>
+<td><p>transformation matrix for stresses to lamina csys</p></td>
+</tr>
+<tr class="row-odd"><td><p>QL</p></td>
+<td><p>constitutive matrix for plane-stress in laminate csys</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.lamina.Lamina.rebuild" title="composites.lamina.Lamina.rebuild"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebuild</span></code></a>(self)</p></td>
+<td><p>Update constitutive matrices</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="composites.lamina.Lamina.rebuild">
+<code class="sig-name descname">rebuild</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.lamina.Lamina.rebuild" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update constitutive matrices</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span class="target" id="module-composites.matlamina"></span><div class="section" id="composite-matlamina-module-composites-matlamina">
+<h3>Composite Matlamina Module (<a class="reference internal" href="#module-composites.matlamina" title="composites.matlamina"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.matlamina</span></code></a>)<a class="headerlink" href="#composite-matlamina-module-composites-matlamina" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="composites.matlamina.MatLamina">
+<em class="property">class </em><code class="sig-prename descclassname">composites.matlamina.</code><code class="sig-name descname">MatLamina</code><a class="headerlink" href="#composites.matlamina.MatLamina" title="Permalink to this definition">¶</a></dt>
+<dd><p>Orthotropic material lamina</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 85%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>attributes</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>e1</p></td>
+<td><p>Young Modulus in direction 1</p></td>
+</tr>
+<tr class="row-odd"><td><p>e2</p></td>
+<td><p>Young Modulus in direction 2</p></td>
+</tr>
+<tr class="row-even"><td><p>g12</p></td>
+<td><p>in-plane shear modulus</p></td>
+</tr>
+<tr class="row-odd"><td><p>g13</p></td>
+<td><p>transverse shear modulus for plane 1-Z</p></td>
+</tr>
+<tr class="row-even"><td><p>g23</p></td>
+<td><p>transverse shear modulus for plane 2-Z</p></td>
+</tr>
+<tr class="row-odd"><td><p>nu12</p></td>
+<td><p>Poisson’s ratio 12</p></td>
+</tr>
+<tr class="row-even"><td><p>nu13</p></td>
+<td><p>Poisson’s ratio 13</p></td>
+</tr>
+<tr class="row-odd"><td><p>nu23</p></td>
+<td><p>Poisson’s ratio 23</p></td>
+</tr>
+<tr class="row-even"><td><p>nu21</p></td>
+<td><p>Poisson’s ratio 21: use formula nu12/e1 = nu21/e2</p></td>
+</tr>
+<tr class="row-odd"><td><p>nu31</p></td>
+<td><p>Poisson’s ratio 31: use formula nu31/e3 = nu13/e1</p></td>
+</tr>
+<tr class="row-even"><td><p>nu32</p></td>
+<td><p>Poisson’s ratio 32: use formula nu23/e2 = nu32/e3</p></td>
+</tr>
+<tr class="row-odd"><td><p>rho</p></td>
+<td><p>especific mass (mass / volume)</p></td>
+</tr>
+<tr class="row-even"><td><p>a1</p></td>
+<td><p>thermal expansion coeffiecient in direction 1</p></td>
+</tr>
+<tr class="row-odd"><td><p>a2</p></td>
+<td><p>thermal expansion coeffiecient in direction 2</p></td>
+</tr>
+<tr class="row-even"><td><p>a3</p></td>
+<td><p>thermal expansion coeffiecient in direction 3</p></td>
+</tr>
+<tr class="row-odd"><td><p>tref</p></td>
+<td><p>reference temperature</p></td>
+</tr>
+<tr class="row-even"><td><p>st1,st2</p></td>
+<td><p>allowable tensile stresses for directions 1 and 2</p></td>
+</tr>
+<tr class="row-odd"><td><p>sc1,sc2</p></td>
+<td><p>allowable compressive stresses for directions 1 and 2</p></td>
+</tr>
+<tr class="row-even"><td><p>ss12</p></td>
+<td><p>allowable in-plane stress for shear</p></td>
+</tr>
+<tr class="row-odd"><td><p>strn</p></td>
+<td><p>allowable strain for direction 1</p></td>
+</tr>
+<tr class="row-even"><td><p>q11</p></td>
+<td><p>lamina constitutive constant 11</p></td>
+</tr>
+<tr class="row-odd"><td><p>q12</p></td>
+<td><p>lamina constitutive constant 12</p></td>
+</tr>
+<tr class="row-even"><td><p>q13</p></td>
+<td><p>lamina constitutive constant 13</p></td>
+</tr>
+<tr class="row-odd"><td><p>q21</p></td>
+<td><p>lamina constitutive constant 21</p></td>
+</tr>
+<tr class="row-even"><td><p>q22</p></td>
+<td><p>lamina constitutive constant 22</p></td>
+</tr>
+<tr class="row-odd"><td><p>q23</p></td>
+<td><p>lamina constitutive constant 23</p></td>
+</tr>
+<tr class="row-even"><td><p>q31</p></td>
+<td><p>lamina constitutive constant 31</p></td>
+</tr>
+<tr class="row-odd"><td><p>q32</p></td>
+<td><p>lamina constitutive constant 32</p></td>
+</tr>
+<tr class="row-even"><td><p>q33</p></td>
+<td><p>lamina constitutive constant 33</p></td>
+</tr>
+<tr class="row-odd"><td><p>q44</p></td>
+<td><p>lamina constitutive constant 44</p></td>
+</tr>
+<tr class="row-even"><td><p>q55</p></td>
+<td><p>lamina constitutive constant 55</p></td>
+</tr>
+<tr class="row-odd"><td><p>q66</p></td>
+<td><p>lamina constitutive constant 66</p></td>
+</tr>
+<tr class="row-even"><td><p>u</p></td>
+<td><p>matrix with lamina invariants</p></td>
+</tr>
+<tr class="row-odd"><td><p>c</p></td>
+<td><p>matrix with lamina stiffness coefficients</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>For isotropic materials when the user defines <img class="math" src="_images/math/14eb89266154200b9c81dcfc3bd058638fa221bf.png" alt="\nu"/> and <img class="math" src="_images/math/1815f600df7845409443aed470eac2d449e4ddb0.png" alt="E"/>, <img class="math" src="_images/math/89878909dbb648acdc4a44ded1bd982d7bddef5d.png" alt="G"/> will be
+recaculated based on equation: <img class="math" src="_images/math/a559edf30f38bcdd09d9086d40ea33cd27d4bff8.png" alt="G = E/(2 \times (1+\nu))"/>; in a lower
+priority if the user defines <img class="math" src="_images/math/14eb89266154200b9c81dcfc3bd058638fa221bf.png" alt="\nu"/> and <img class="math" src="_images/math/89878909dbb648acdc4a44ded1bd982d7bddef5d.png" alt="G"/>, <img class="math" src="_images/math/1815f600df7845409443aed470eac2d449e4ddb0.png" alt="E"/> will be recaculated based
+on equation: <img class="math" src="_images/math/c84641e8071427b9ca2130c0641805cb354e9c98.png" alt="E = 2 \times (1+\nu) \times G"/>.</p>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.matlamina.MatLamina.rebuild" title="composites.matlamina.MatLamina.rebuild"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebuild</span></code></a>(self)</p></td>
+<td><p>Update constitutive and invariant matrices</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="composites.matlamina.MatLamina.rebuild">
+<code class="sig-name descname">rebuild</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.matlamina.MatLamina.rebuild" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update constitutive and invariant matrices</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="composites.matlamina.read_laminaprop">
+<code class="sig-prename descclassname">composites.matlamina.</code><code class="sig-name descname">read_laminaprop</code><span class="sig-paren">(</span><em class="sig-param">laminaprop=None</em>, <em class="sig-param">rho=None</em><span class="sig-paren">)</span><a class="headerlink" href="#composites.matlamina.read_laminaprop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="docutils literal notranslate"><span class="pre">MatLamina</span></code> object based on an input <code class="docutils literal notranslate"><span class="pre">laminaprop</span></code> tuple</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>laminaprop</strong><span class="classifier">list or tuple</span></dt><dd><p>Tuple containing the folliwing entries:</p>
+<blockquote>
+<div><p>(e1, e2, nu12, g12, g13, g23, e3, nu13, nu23)</p>
+</div></blockquote>
+<p>for othotropic materials the user can only supply:</p>
+<blockquote>
+<div><p>(e1, e2, nu12, g12, g13, g23)</p>
+</div></blockquote>
+<p>for isotropic materials the user can only supply:</p>
+<blockquote>
+<div><p>(e, nu) # new</p>
+<p>(e1, e2, nu12) # legacy, kept for compatibility with old codes</p>
+</div></blockquote>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 83%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>symbol</p></th>
+<th class="head"><p>value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>e1</p></td>
+<td><p>Young Module in direction 1</p></td>
+</tr>
+<tr class="row-odd"><td><p>e2</p></td>
+<td><p>Young Module in direction 2</p></td>
+</tr>
+<tr class="row-even"><td><p>nu12</p></td>
+<td><p>12 Poisson’s ratio</p></td>
+</tr>
+<tr class="row-odd"><td><p>g12</p></td>
+<td><p>12 Shear Modulus</p></td>
+</tr>
+<tr class="row-even"><td><p>g13</p></td>
+<td><p>13 Shear Modulus</p></td>
+</tr>
+<tr class="row-odd"><td><p>g23</p></td>
+<td><p>13 Shear Modulus</p></td>
+</tr>
+<tr class="row-even"><td><p>e3</p></td>
+<td><p>Young Module in direction 3</p></td>
+</tr>
+<tr class="row-odd"><td><p>nu13</p></td>
+<td><p>13 Poisson’s ratio</p></td>
+</tr>
+<tr class="row-even"><td><p>nu23</p></td>
+<td><p>23 Poisson’s ratio</p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>rho</strong><span class="classifier">float, optional</span></dt><dd><p>Material density</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>matlam</strong><span class="classifier">MatLamina</span></dt><dd><p>A <a class="reference internal" href="#composites.matlamina.MatLamina" title="composites.matlamina.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a> object.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="history-and-roadmap">
+<h2>History and Roadmap<a class="headerlink" href="#history-and-roadmap" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Copyright</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="mi">2012</span><span class="o">-</span><span class="mi">2020</span> <span class="n">Saullo</span> <span class="n">G</span><span class="o">.</span> <span class="n">P</span><span class="o">.</span> <span class="n">Castro</span> <span class="p">(</span><span class="n">castrosaullo</span><span class="nd">@gmail</span><span class="o">.</span><span class="n">com</span><span class="p">)</span>
+<span class="n">All</span> <span class="n">rights</span> <span class="n">reserved</span><span class="o">.</span>
+
+<span class="n">Redistribution</span> <span class="ow">and</span> <span class="n">use</span> <span class="ow">in</span> <span class="n">source</span> <span class="ow">and</span> <span class="n">binary</span> <span class="n">forms</span><span class="p">,</span> <span class="k">with</span> <span class="ow">or</span> <span class="n">without</span> <span class="n">modification</span><span class="p">,</span>
+<span class="n">are</span> <span class="n">permitted</span> <span class="n">provided</span> <span class="n">that</span> <span class="n">the</span> <span class="n">following</span> <span class="n">conditions</span> <span class="n">are</span> <span class="n">met</span><span class="p">:</span>
+
+  <span class="n">Redistributions</span> <span class="n">of</span> <span class="n">source</span> <span class="n">code</span> <span class="n">must</span> <span class="n">retain</span> <span class="n">the</span> <span class="n">above</span> <span class="n">copyright</span> <span class="n">notice</span><span class="p">,</span> <span class="n">this</span>
+  <span class="nb">list</span> <span class="n">of</span> <span class="n">conditions</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">following</span> <span class="n">disclaimer</span><span class="o">.</span>
+
+  <span class="n">Redistributions</span> <span class="ow">in</span> <span class="n">binary</span> <span class="n">form</span> <span class="n">must</span> <span class="n">reproduce</span> <span class="n">the</span> <span class="n">above</span> <span class="n">copyright</span> <span class="n">notice</span><span class="p">,</span> <span class="n">this</span>
+  <span class="nb">list</span> <span class="n">of</span> <span class="n">conditions</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">following</span> <span class="n">disclaimer</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">documentation</span> <span class="ow">and</span><span class="o">/</span><span class="ow">or</span>
+  <span class="n">other</span> <span class="n">materials</span> <span class="n">provided</span>
+  
+<span class="n">THIS</span> <span class="n">SOFTWARE</span> <span class="n">IS</span> <span class="n">PROVIDED</span> <span class="n">BY</span> <span class="n">THE</span> <span class="n">COPYRIGHT</span> <span class="n">HOLDERS</span> <span class="n">AND</span> <span class="n">CONTRIBUTORS</span> <span class="s2">&quot;AS IS&quot;</span> <span class="n">AND</span>
+<span class="n">ANY</span> <span class="n">EXPRESS</span> <span class="n">OR</span> <span class="n">IMPLIED</span> <span class="n">WARRANTIES</span><span class="p">,</span> <span class="n">INCLUDING</span><span class="p">,</span> <span class="n">BUT</span> <span class="n">NOT</span> <span class="n">LIMITED</span> <span class="n">TO</span><span class="p">,</span> <span class="n">THE</span> <span class="n">IMPLIED</span>
+<span class="n">WARRANTIES</span> <span class="n">OF</span> <span class="n">MERCHANTABILITY</span> <span class="n">AND</span> <span class="n">FITNESS</span> <span class="n">FOR</span> <span class="n">A</span> <span class="n">PARTICULAR</span> <span class="n">PURPOSE</span> <span class="n">ARE</span>
+<span class="n">DISCLAIMED</span><span class="o">.</span> <span class="n">IN</span> <span class="n">NO</span> <span class="n">EVENT</span> <span class="n">SHALL</span> <span class="n">THE</span> <span class="n">COPYRIGHT</span> <span class="n">HOLDER</span> <span class="n">OR</span> <span class="n">CONTRIBUTORS</span> <span class="n">BE</span> <span class="n">LIABLE</span> <span class="n">FOR</span>
+<span class="n">ANY</span> <span class="n">DIRECT</span><span class="p">,</span> <span class="n">INDIRECT</span><span class="p">,</span> <span class="n">INCIDENTAL</span><span class="p">,</span> <span class="n">SPECIAL</span><span class="p">,</span> <span class="n">EXEMPLARY</span><span class="p">,</span> <span class="n">OR</span> <span class="n">CONSEQUENTIAL</span> <span class="n">DAMAGES</span>
+<span class="p">(</span><span class="n">INCLUDING</span><span class="p">,</span> <span class="n">BUT</span> <span class="n">NOT</span> <span class="n">LIMITED</span> <span class="n">TO</span><span class="p">,</span> <span class="n">PROCUREMENT</span> <span class="n">OF</span> <span class="n">SUBSTITUTE</span> <span class="n">GOODS</span> <span class="n">OR</span> <span class="n">SERVICES</span><span class="p">;</span>
+<span class="n">LOSS</span> <span class="n">OF</span> <span class="n">USE</span><span class="p">,</span> <span class="n">DATA</span><span class="p">,</span> <span class="n">OR</span> <span class="n">PROFITS</span><span class="p">;</span> <span class="n">OR</span> <span class="n">BUSINESS</span> <span class="n">INTERRUPTION</span><span class="p">)</span> <span class="n">HOWEVER</span> <span class="n">CAUSED</span> <span class="n">AND</span> <span class="n">ON</span>
+<span class="n">ANY</span> <span class="n">THEORY</span> <span class="n">OF</span> <span class="n">LIABILITY</span><span class="p">,</span> <span class="n">WHETHER</span> <span class="n">IN</span> <span class="n">CONTRACT</span><span class="p">,</span> <span class="n">STRICT</span> <span class="n">LIABILITY</span><span class="p">,</span> <span class="n">OR</span> <span class="n">TORT</span>
+<span class="p">(</span><span class="n">INCLUDING</span> <span class="n">NEGLIGENCE</span> <span class="n">OR</span> <span class="n">OTHERWISE</span><span class="p">)</span> <span class="n">ARISING</span> <span class="n">IN</span> <span class="n">ANY</span> <span class="n">WAY</span> <span class="n">OUT</span> <span class="n">OF</span> <span class="n">THE</span> <span class="n">USE</span> <span class="n">OF</span> <span class="n">THIS</span>
+<span class="n">SOFTWARE</span><span class="p">,</span> <span class="n">EVEN</span> <span class="n">IF</span> <span class="n">ADVISED</span> <span class="n">OF</span> <span class="n">THE</span> <span class="n">POSSIBILITY</span> <span class="n">OF</span> <span class="n">SUCH</span> <span class="n">DAMAGE</span><span class="o">.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Documentation for the <img class="math" src="_images/math/e35e07480291a680c5b78d5da23de4ba4de42178.png" alt="composites"/> module</a><ul>
+<li><a class="reference internal" href="#methods-to-calculate-composite-plate-properties-composite">Methods to calculate composite plate properties (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composite</span></code>)</a><ul>
+<li><a class="reference internal" href="#composite-laminate-module-composites-laminate">Composite Laminate Module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.laminate</span></code>)</a></li>
+<li><a class="reference internal" href="#composite-lamina-module-composites-lamina">Composite Lamina Module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.lamina</span></code>)</a></li>
+<li><a class="reference internal" href="#composite-matlamina-module-composites-matlamina">Composite Matlamina Module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.matlamina</span></code>)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#history-and-roadmap">History and Roadmap</a></li>
+<li><a class="reference internal" href="#license">License</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">composites 0.2.4 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2012-2020, Saullo G. P. Castro.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.
+    </div>
+  </body>
+</html>
