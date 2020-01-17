@@ -111,7 +111,6 @@ s = setup(
     packages=find_packages(),
     package_data=package_data,
     data_files=data_files,
-    long_description=read('README.md'),
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
     install_requires=install_requires,
 )
