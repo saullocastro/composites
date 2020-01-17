@@ -1,6 +1,10 @@
+import sys
+sys.path.append('..')
+
 import numpy as np
 
-from composites.laminate import read_lamination_parameters, read_stack
+from composites.laminate import (read_lamination_parameters, read_stack,
+        read_isotropic)
 
 
 def test_lampar():
@@ -90,8 +94,26 @@ def test_read_stack():
     lam.force_balanced_LP()
     lam.force_symmetric_LP()
 
+def test_read_isotropic():
+    E = 71e9
+    nu = 0.28
+    thick = 0.000125
+    lam = read_isotropic(thickness=thick, E=E, nu=nu)
+    A = np.array([[9629991.31944444, 2696397.56944444,       0.   ],
+                  [2696397.56944444, 9629991.31944444,       0.   ],
+                  [      0.        ,       0.        , 3466796.875]])
+    D = np.array([[0.01253905, 0.00351093, 0.        ],
+                  [0.00351093, 0.01253905, 0.        ],
+                  [0.        , 0.        , 0.00451406]])
+    E = np.array([[3466796.875,       0.   ],
+                  [      0.   , 3466796.875]])
+    assert np.allclose(lam.A, A)
+    assert np.allclose(lam.B, 0)
+    assert np.allclose(lam.D, D)
+    assert np.allclose(lam.E, E)
 
 if __name__ == '__main__':
     test_lampar()
     test_read_stack()
+    test_read_isotropic()
 
