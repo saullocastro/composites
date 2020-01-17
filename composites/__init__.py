@@ -1,13 +1,23 @@
 r"""
-=====================================================================
-Methods to calculate composite material properties (:mod:`composite`)
-=====================================================================
+===================================================================
+Methods to calculate composite plate properties (:mod:`composite`)
+===================================================================
 
 .. currentmodule::composite
 
-The ``composite`` module includes functions used to calculate
-laminate properties based on input data of stacking sequence and lamina
-properties.
+The ``composite`` module includes functions used to calculate plate properties
+for laminated composites and isotropic plates.
+
+Classical and first-order shear deformation theories are supported. For
+classical plate theories or classical laminated plate theories (CLPT), the
+relevant matrices are A, B, D, whereas for the first-order shear deformation
+theories (FSDT) the matrices are A, B, D, E. All these matrices are part of the
+`.Laminate` object. For isotropic plates, the `.Laminate` object is also used
+for convenience.
+
+Offset is supported, resulting in extension-bending coupling (B matrix)
+different than zero even for isotropic plates.
+
 
 The most convenient usage is probably with the
 :func:`composite.laminate.read_stack()` function::
@@ -19,12 +29,19 @@ The most convenient usage is probably with the
     stack = [0, 90, +45, -45]
     lam = read_stack(stack, plyt=plyt, laminaprop=laminaprop)
 
+
+and with the :func:`composite.laminate.read_isotropic()` function::
+
+    from composite.laminate import read_isotropic
+
+    lam = read_isotropic(thickness=5., E=E, nu=nu)
+
 Where the laminate stiffness matrix, the often called ``ABD`` matrix, with
 ``shape=(6, 6)``, can be accessed using::
 
     >>> lam.ABD
 
-and when shear stiffnesses are required, the ``ABDE`` matrix, with
+and when transverse shear stiffnesses are required, the ``ABDE`` matrix, with
 ``shape=(8, 8)``::
 
     >>> lam.ABDE
