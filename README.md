@@ -11,14 +11,25 @@ Coverage status:
 [![Coverage Status](https://coveralls.io/repos/github/saullocastro/composites/badge.svg?branch=master)](https://coveralls.io/github/saullocastro/composites?branch=master)
 
 
-Methods to calculate properties of composite materials
-======================================================
+Methods to calculate properties for plates
+==========================================
 
-Available resources are:
+Usually, this module is used to calculate:
 
-- ABD(E) matrix for laminated composites, E matrix for first-order shear theory
-- Lamination parameters
+- A, B, D, E stiffness matrices for plates
+-- A, B, D, for classical plate theory (CLT, or CLPT)
+-- E for first-order shear deformation theory (FSDT)
 
+- Lamination parameters based on material invariants
+
+Documentation
+===
+
+The documentation is available on: https://saullocastro.github.io/composites/
+
+
+History
+===
 
 Repository created from sub-modules of "compmech" and "meshless" repositories.
 The first adopted version number came from the following reasoning:
