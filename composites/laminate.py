@@ -17,7 +17,7 @@ def read_stack(stack, plyt=None, laminaprop=None, rho=None, plyts=None, laminapr
         rhos=None, offset=0., calc_scf=True):
     """Read a laminate stacking sequence data.
 
-    An ``Laminate`` object is returned based on the inputs given.
+    `.Laminate` object is returned based on the inputs given.
 
     Parameters
     ----------
@@ -40,7 +40,7 @@ def read_stack(stack, plyt=None, laminaprop=None, rho=None, plyts=None, laminapr
         Offset along the normal axis about the mid-surface, which influences
         the laminate properties.
     calc_scf : bool, optional
-        If True, use :method:`.Laminate.calc_scf` to compute shear correction
+        If True, use `.Laminate.calc_scf` to compute shear correction
         factors, otherwise the default value of 5/6 is used
 
     Notes
@@ -52,9 +52,9 @@ def read_stack(stack, plyt=None, laminaprop=None, rho=None, plyts=None, laminapr
 
         laminaprop = (E11, E22, nu12, G12, G13, G23)
 
-    For isotropic pliey, the ``laminaprop`` should be::
+    For isotropic plies, the ``laminaprop`` should be::
 
-        laminaprop = (E, E, nu)
+        laminaprop = (E, nu)
 
     """
     lam = Laminate()
@@ -93,6 +93,31 @@ def read_stack(stack, plyt=None, laminaprop=None, rho=None, plyts=None, laminapr
     return lam
 
 
+def read_isotropic(thickness, E, nu, offset=0., calc_scf=True):
+    """Read data for an isotropic plate
+
+    `.Laminate` object is returned based on the inputs given.
+
+    Parameters
+    ----------
+    thickness : float
+        Plate thickness.
+    E : float
+        Young modulus.
+    nu : float, optional
+        Poisson's ratio.
+    offset : float, optional
+        Offset along the normal axis about the mid-surface, which influences
+        the extension-bending coupling (B matrix).
+    calc_scf : bool, optional
+        If True, use `.Laminate.calc_scf` to compute shear correction
+        factors, otherwise the default value of 5/6 is used.
+
+    """
+    return read_stack(plyt=thickness, stack=[0], laminaprop=(E, nu),
+            offset=offset, calc_scf=calc_scf)
+
+
 def read_lamination_parameters(thickness, laminaprop, rho,
                                xiA1, xiA2, xiA3, xiA4,
                                xiB1, xiB2, xiB3, xiB4,
@@ -120,7 +145,7 @@ def read_lamination_parameters(thickness, laminaprop, rho,
 
     Returns
     -------
-    lam : Laminate
+    lam : `.Laminate`
         laminate with the ABD and ABDE matrices already calculated
 
     """
@@ -217,7 +242,7 @@ class Laminate(object):
 
         - constant G13, G23, E1, E2, nu12, nu21 within each ply
         - g1 calculated using z at the middle of each ply
-        - zn1 = Laminate.offset
+        - zn1 = `.Laminate.offset`
 
         Returns
         -------

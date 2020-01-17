@@ -1,6 +1,6 @@
 """
 Composite Lamina Module (:mod:`composites.lamina`)
-==========================================================
+===================================================
 
 .. currentmodule:: composites.lamina
 
@@ -45,6 +45,8 @@ class Lamina(object):
         self.QL = None
 
     def rebuild(self):
+        """Update constitutive matrices
+        """
         thetarad = np.deg2rad(self.theta)
         cost = cos(thetarad)
         sint = sin(thetarad)

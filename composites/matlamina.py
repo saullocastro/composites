@@ -101,6 +101,8 @@ class MatLamina(object):
 
 
     def rebuild(self):
+        """Update constitutive and invariant matrices
+        """
         #
         # from references:
         #   Reddy, J. N., Mechanics of laminated composite plates and shells.
@@ -185,17 +187,6 @@ class MatLamina(object):
              [ 0,   0, u2/2,   0, -u3]], dtype=np.float64)  # q24
 
 
-    def read_inputs(self, inputs={}):
-        if len(inputs) > 0:
-            self = user_setattr(self, inputs)
-        if not self.nu21:
-            nu21 = np.array(self.nu12*self.e2/self.e1, dtype=np.float64)
-            self.nu21 = nu21
-        if not self.nu12:
-            nu12 = np.array(self.nu21*self.e1/self.e2, dtype=np.float64)
-            self.nu12 = nu12
-
-
 def read_laminaprop(laminaprop=None, rho=None):
     """Returns a ``MatLamina`` object based on an input ``laminaprop`` tuple
 
@@ -212,7 +203,9 @@ def read_laminaprop(laminaprop=None, rho=None):
 
         for isotropic materials the user can only supply:
 
-            (e1, e2, nu12)
+            (e, nu) # new
+
+            (e1, e2, nu12) # legacy, kept for compatibility with old codes
 
         ======  ==============================
         symbol  value
@@ -243,11 +236,15 @@ def read_laminaprop(laminaprop=None, rho=None):
 
     #laminaProp = (e1, e2, nu12, g12, g13, g23, e3, nu13, nu23)
     if laminaprop == None:
-        error('laminaprop must be a tuple in the following format:\n\t'
-              +'(e1, e2, nu12, g12, g13, g23, e3, nu13, nu23)')
-    if len(laminaprop) == 3: #ISOTROPIC
+        error('laminaprop must be a tuple. See documentation.')
+    if len(laminaprop) == 3: #ISOTROPIC legacy
         e = laminaprop[0]
         nu = laminaprop[2]
+        g = e/(2*(1+nu))
+        laminaprop = (e, e, nu, g, g, g, e, nu, nu)
+    if len(laminaprop) == 2: #ISOTROPIC new
+        e = laminaprop[0]
+        nu = laminaprop[1]
         g = e/(2*(1+nu))
         laminaprop = (e, e, nu, g, g, g, e, nu, nu)
     nu12 = laminaprop[2]
