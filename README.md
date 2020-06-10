@@ -11,8 +11,8 @@ Coverage status:
 [![Coverage Status](https://coveralls.io/repos/github/saullocastro/composites/badge.svg?branch=master)](https://coveralls.io/github/saullocastro/composites?branch=master)
 
 
-Methods to calculate properties for plates
-==========================================
+Methods to calculate structural properties of plates
+====================================================
 
 Usually, this module is used to calculate:
 
