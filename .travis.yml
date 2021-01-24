@@ -4,10 +4,11 @@ cache: false
 
 python:
   # We don't actually use the Travis Python, but this keeps it organized.
-  - "2.7"
   - "3.5"
   - "3.6"
   - "3.7"
+  - "3.8"
+  - "3.9"
 
 before_install:
   # List package dependencies for conda
