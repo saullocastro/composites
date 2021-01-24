@@ -1,11 +1,11 @@
 r"""
 ===================================================================
-Methods to calculate composite plate properties (:mod:`composite`)
+Methods to calculate composite plate properties (:mod:`composites`)
 ===================================================================
 
-.. currentmodule::composite
+.. currentmodule::composites
 
-The ``composite`` module includes functions used to calculate plate properties
+The ``composites`` module includes functions used to calculate plate properties
 for laminated composites and isotropic plates.
 
 Classical and first-order shear deformation theories are supported. For
@@ -20,9 +20,9 @@ different than zero even for isotropic plates.
 
 
 The most convenient usage is probably with the
-:func:`composite.laminate.read_stack()` function::
+:func:`composites.laminate.read_stack()` function::
 
-    from composite.laminate import read_stack
+    from composites.laminate import read_stack
 
     laminaprop = (E11, E22, nu12, G12, G13, G23)
     plyt = ply_thickness
@@ -30,9 +30,9 @@ The most convenient usage is probably with the
     lam = read_stack(stack, plyt=plyt, laminaprop=laminaprop)
 
 
-and with the :func:`composite.laminate.read_isotropic()` function::
+and with the :func:`composites.laminate.read_isotropic()` function::
 
-    from composite.laminate import read_isotropic
+    from composites.laminate import read_isotropic
 
     lam = read_isotropic(thickness=5., E=E, nu=nu)
 
