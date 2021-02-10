@@ -37,6 +37,7 @@ The first adopted version number came from the following reasoning:
 - from compmech 0.7.2: composites 0.1.0
 - from meshless 0.1.19: composites 0.2.2;
 - version 0.2.3 onwards is independent of previous packages
+- version 0.3.0 onwards with fast Cython version, not compatible with previous versions
 
 
 License

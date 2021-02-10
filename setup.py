@@ -4,7 +4,10 @@ import os
 import inspect
 import subprocess
 from setuptools import setup, find_packages
+from distutils.extension import Extension
 
+import numpy as np
+from Cython.Build import cythonize
 
 def git_version():
     def _minimal_ext_cmd(cmd):
@@ -57,9 +60,8 @@ def read(fname):
 #_____________________________________________________________________________
 
 install_requires = [
+        "cython",
         "numpy",
-        "coveralls",
-        "setuptools-git-version",
         ]
 
 CLASSIFIERS = """\
@@ -76,7 +78,6 @@ Topic :: Software Development :: Libraries :: Python Modules
 Operating System :: POSIX :: BSD
 Operating System :: Microsoft :: Windows
 Operating System :: Unix
-Programming Language :: Python :: 2.7
 Programming Language :: Python :: 3.5
 Programming Language :: Python :: 3.6
 Programming Language :: Python :: 3.7
@@ -87,7 +88,7 @@ License :: OSI Approved :: BSD License
 """
 
 is_released = False
-version = '0.2.6'
+version = '0.3.0'
 
 fullversion = write_version_py(version, is_released)
 
@@ -101,6 +102,32 @@ package_data = {
         '': ['tests/*.*'],
         }
 
+if os.name == 'nt':
+    compile_args = ['/openmp', '/O2']
+    link_args = []
+else:
+    compile_args = ['-fopenmp']
+    link_args = ['-fopenmp']
+include_dirs = [
+            np.get_include(),
+            ]
+
+extensions = [
+    Extension('composites.core',
+        sources=[
+            './composites/core.pyx',
+            ],
+        include_dirs=include_dirs,
+        extra_compile_args=compile_args,
+        extra_link_args=link_args,
+        language='c++'),
+
+    ]
+ext_modules = cythonize(extensions,
+        compiler_directives={'linetrace': True},
+        language_level = '3',
+        )
+
 s = setup(
     name = "composites",
     version = fullversion,
@@ -110,9 +137,10 @@ s = setup(
     license = "BSD",
     keywords = "mechanics composite materials composites shell classical first-order laminated plate theory",
     url = "https://github.com/saullocastro/composites",
-    packages=find_packages(),
     package_data=package_data,
     data_files=data_files,
     classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
     install_requires=install_requires,
+    ext_modules = ext_modules,
+    packages=find_packages(),
 )

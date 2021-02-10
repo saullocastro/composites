@@ -20,40 +20,38 @@ different than zero even for isotropic plates.
 
 
 The most convenient usage is probably with the
-:func:`composites.laminate.read_stack()` function::
+:func:`composites.laminated_plate()` function::
 
-    from composites.laminate import read_stack
+    from composites import laminated_plate
 
     laminaprop = (E11, E22, nu12, G12, G13, G23)
     plyt = ply_thickness
     stack = [0, 90, +45, -45]
-    lam = read_stack(stack, plyt=plyt, laminaprop=laminaprop)
+    plate = laminated_plate(stack, plyt=plyt, laminaprop=laminaprop)
 
 
-and with the :func:`composites.laminate.read_isotropic()` function::
+and with the :func:`composites.isotropic_plate()` function::
 
-    from composites.laminate import read_isotropic
+    from composites import isotropic_plate
 
-    lam = read_isotropic(thickness=5., E=E, nu=nu)
+    plate = isotropic_plate(thickness=5., E=E, nu=nu)
 
 Where the laminate stiffness matrix, the often called ``ABD`` matrix, with
 ``shape=(6, 6)``, can be accessed using::
 
-    >>> lam.ABD
+    >>> plate.ABD
 
 and when transverse shear stiffnesses are required, the ``ABDE`` matrix, with
 ``shape=(8, 8)``::
 
-    >>> lam.ABDE
+    >>> plate.ABDE
 
-.. automodule:: composites.laminate
+.. automodule:: composites.core
     :members:
 
-.. automodule:: composites.lamina
-    :members:
-
-.. automodule:: composites.matlamina
+.. automodule:: composites.utils
     :members:
 
 """
 from .version import __version__
+from .utils import isotropic_plate, laminated_plate

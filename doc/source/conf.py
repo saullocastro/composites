@@ -12,7 +12,7 @@
 #
 # import os
 import sys
-sys.path.append('../..')
+sys.path.append(r'c:\repositories\composites')
 # sys.path.insert(0, os.path.abspath('.'))
 
 
@@ -20,7 +20,7 @@ sys.path.append('../..')
 
 project = 'composites'
 author = 'Saullo G. P. Castro'
-copyright = '2012-2020, ' + author
+copyright = '2012-2021, ' + author
 
 # The full version, including alpha/beta/rc tags
 from composites.version import __version__

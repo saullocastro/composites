@@ -1,1 +1,6 @@
+cython
 numpy
+coverage
+coveralls
+pytest
+pytest-cov

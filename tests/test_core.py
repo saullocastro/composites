@@ -3,13 +3,19 @@ sys.path.append('..')
 
 import numpy as np
 
-from composites.laminate import (read_lamination_parameters, read_stack,
-        read_isotropic)
+from composites.utils import (read_laminaprop, laminated_plate,
+        isotropic_plate)
+from composites.core import (laminate_from_lamination_parameters,
+        laminate_from_lamination_parameters2,
+        force_balanced_LP, force_symmetric_LP)
 
 
 def test_lampar():
     lamprop = (71e9, 71e9, 0.33)
-    lam = read_lamination_parameters(1, lamprop, None,
+    rho = 0
+    thickness = 1
+    matlamina = read_laminaprop(lamprop, rho)
+    lam = laminate_from_lamination_parameters2(thickness, matlamina,
         0.5, 0.4, -0.3, -0.6,
         0.5, 0.4, -0.3, -0.6,
         0.5, 0.4, -0.3, -0.6,
@@ -25,19 +31,18 @@ def test_lampar():
                   [0.00000000e+00, 0.00000000e+00, 2.22431078e+09]])
     E = np.array([[2.66917293e+10,  0.00000000e+00],
                   [0.00000000e+00,  2.66917293e+10]])
-    lam.calc_lamination_parameters()
-    lam.calc_ABDE_from_lamination_parameters()
     assert np.allclose(lam.A, A)
+    lam.force_symmetric()
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
     assert np.allclose(lam.E, E)
 
 
-def test_read_stack():
+def test_laminated_plate():
     lamprop = (71e9, 7e9, 0.28, 7e9, 7e9, 7e9)
     stack = [0, 45, 90]
     plyt = 0.000125
-    lam = read_stack(stack, plyt, lamprop)
+    lam = laminated_plate(stack, plyt, lamprop)
     A = np.array([[ 13280892.30559593, 2198758.85719477, 2015579.57848837],
                   [  2198758.85719477,13280892.30559593, 2015579.57848837],
                   [  2015579.57848837, 2015579.57848837, 4083033.36210029]])
@@ -55,8 +60,10 @@ def test_read_stack():
     assert np.allclose(lam.E, E)
     lam.calc_scf()
     lam.calc_equivalent_modulus()
-    lam.calc_lamination_parameters()
-    lam.calc_ABDE_from_lamination_parameters()
+    lp = lam.calc_lamination_parameters()
+    matlamina = lam.plies[0].matlamina
+    thickness = lam.h
+    lam = laminate_from_lamination_parameters(thickness, matlamina, lp)
     #TODO A, B and D are changing from the original, check!
     A = np.array([[ 13589503.90225179,  2502486.88587513,  2026742.01957523],
                   [  2502486.88587513, 13589503.90225179,  2026742.01957523],
@@ -70,14 +77,10 @@ def test_read_stack():
     E = np.array([[ 2625000.,       0.],
                   [       0., 2625000.]])
     assert np.allclose(lam.A, A)
-    assert np.allclose(lam.B, B)
+    assert np.allclose(lam.B, B), print(np.asarray(lam.B), B)
     assert np.allclose(lam.D, D)
     assert np.allclose(lam.E, E)
 
-    lam.force_symmetric()
-    assert np.allclose(lam.B, 0*B)
-
-    lam.calc_ABDE_from_lamination_parameters()
     lam.force_orthotropic()
     A = np.array([[ 13589503.90225179,  2502486.88587513,  0],
                   [  2502486.88587513, 13589503.90225179,  0],
@@ -91,14 +94,18 @@ def test_read_stack():
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
-    lam.force_balanced_LP()
-    lam.force_symmetric_LP()
 
-def test_read_isotropic():
+    lam.force_symmetric()
+    assert np.allclose(lam.B, 0*B)
+
+    force_balanced_LP(lp)
+    force_symmetric_LP(lp)
+
+def test_isotropic_plate():
     E = 71e9
     nu = 0.28
     thick = 0.000125
-    lam = read_isotropic(thickness=thick, E=E, nu=nu)
+    lam = isotropic_plate(thickness=thick, E=E, nu=nu)
     A = np.array([[9629991.31944444, 2696397.56944444,       0.   ],
                   [2696397.56944444, 9629991.31944444,       0.   ],
                   [      0.        ,       0.        , 3466796.875]])
@@ -114,6 +121,6 @@ def test_read_isotropic():
 
 if __name__ == '__main__':
     test_lampar()
-    test_read_stack()
-    test_read_isotropic()
+    test_laminated_plate()
+    test_isotropic_plate()
 

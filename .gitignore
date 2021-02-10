@@ -1,4 +1,5 @@
 version.py
+core.cpp
 # Build related
 build
 dist
