@@ -23,8 +23,8 @@ class Lamina(object):
     h          ply thickness
     theta      ply angle in degrees
     L          transformation matrix for displacements to laminate csys
-    R          transformation matrix for stresses to laminate csys
-    T          transformation matrix for stresses to lamina csys
+    R          transformation matrix for stresses to lamina csys
+    T          transformation matrix for stresses to laminate csys
     QL         constitutive matrix for plane-stress in laminate csys
     =========  ===========================================================
 
