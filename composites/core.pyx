@@ -338,6 +338,12 @@ cdef class Laminate(object):
     nu21       equivalent laminate Poisson ratio in 21 direction
     scf_k13    shear correction factor 13
     scf_k23    shear correction factor 23
+    intrho     integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z) dz`,
+               used in equivalent single layer finite element mass
+               matrices
+    intrhoz2   integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^2 dz`,
+               used in equivalent single layer finite element mass
+               matrices
     =========  ===========================================================
 
     """
@@ -346,7 +352,7 @@ cdef class Laminate(object):
     cdef public double D11, D12, D16, D22, D26, D66
     cdef public double E44, E45, E55
     cdef public double e1, e2, g12, nu12, nu21
-    cdef public double scf_k13, scf_k23, h, offset, rho
+    cdef public double scf_k13, scf_k23, h, offset, rho, intrho, intrhoz2
     cdef public list plies
     cdef public list stack
 
@@ -409,15 +415,16 @@ cdef class Laminate(object):
 
     cpdef void rebuild(Laminate self):
         """Update thickness and density"""
-        cdef double rho_weighted = 0
+        cdef double rhoh
         self.h = 0.
+        rhoh = 0.
         for ply in self.plies:
             self.h += ply.h
         for ply in self.plies:
             ply.rebuild()
             self.h += ply.h
-            rho_weighted += ply.matlamina.rho * ply.h
-        self.rho = rho_weighted / self.h
+            rhoh += ply.matlamina.rho * ply.h
+        self.rho = rhoh / self.h
 
     cpdef void calc_scf(Laminate self):
         """Update shear correction factors of the :class:`.Laminate` object
@@ -512,6 +519,8 @@ cdef class Laminate(object):
         """
         cdef double h0, hk_1, hk
         self.h = 0.
+        self.intrho = 0.
+        self.intrhoz2 = 0.
         for ply in self.plies:
             self.h += ply.h
         h0 = -self.h/2. + self.offset
@@ -523,6 +532,10 @@ cdef class Laminate(object):
             hk_1 = h0
             h0 += ply.h
             hk = h0
+
+            self.intrho += ply.matlamina.rho*(hk - hk_1)
+            self.intrhoz2 += ply.matlamina.rho*(hk*hk*hk/3. - hk_1*hk_1*hk_1/3.)
+
             self.A11 += ply.q11L*(hk - hk_1)
             self.A12 += ply.q12L*(hk - hk_1)
             self.A16 += ply.q16L*(hk - hk_1)
