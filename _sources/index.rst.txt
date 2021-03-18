@@ -1,18 +1,8 @@
 Documentation for the `composites` module
 =========================================
 
-.. automodule:: composites.__init__
+.. automodule:: composites
     :members:
-    :show-inheritance:
-
-
-History and Roadmap
--------------------
-
-.. toctree::
-    :maxdepth: 4
-
-    ../../../ROADMAP.md
 
 
 License
