@@ -19,6 +19,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
+      if: matrix.runs-on == 'windows-latest' || (matrix.runs-on == 'ubuntu-latest' && matrix.python-version == 3.9)
       run: |
         python3 -m pip install --upgrade pip
         pip3 install setuptools wheel twine
