@@ -12,15 +12,16 @@ Classical and first-order shear deformation theories are supported. For
 classical plate theories or classical laminated plate theories (CLPT), the
 relevant matrices are A, B, D, whereas for the first-order shear deformation
 theories (FSDT) the matrices are A, B, D, E. All these matrices are part of the
-`.Laminate` object. For isotropic plates, the `.Laminate` object is also used
-for convenience.
+:class:`.Laminate` object. For isotropic plates, the :class:`.Laminate` object
+is also used for convenience.
 
 Offset is supported, resulting in extension-bending coupling (B matrix)
 different than zero even for isotropic plates.
 
 
 The most convenient usage is probably with the
-:func:`composites.laminated_plate()` function::
+:func:`composites.utils.isotropic_plate` or the
+:func:`composites.utils.laminated_plate` functions::
 
     from composites import laminated_plate
 
@@ -30,7 +31,7 @@ The most convenient usage is probably with the
     plate = laminated_plate(stack, plyt=plyt, laminaprop=laminaprop)
 
 
-and with the :func:`composites.isotropic_plate()` function::
+and with the :func:`composites.utils.isotropic_plate` function::
 
     from composites import isotropic_plate
 

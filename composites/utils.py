@@ -1,8 +1,8 @@
 """
-Composites Core Utils Module (:mod:`composites.core_utils`)
+Composites Core Utils Module (:mod:`composites.utils`)
 ==============================================================
 
-.. currentmodule:: composites.core_utils
+.. currentmodule:: composites.utils
 
 """
 import numpy as np
