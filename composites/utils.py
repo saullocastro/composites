@@ -138,7 +138,7 @@ def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None, lamin
     """
     lam = Laminate()
     lam.offset = offset
-    lam.stack = stack
+    lam.stack = list(stack)
 
     if plyts is None:
         if plyt is None:
