@@ -491,7 +491,7 @@ cdef class Laminate(object):
         self.scf_k23 = R2**2 / den2
 
 
-    cpdef void calc_equivalent_modulus(Laminate self):
+    cpdef void calc_equivalent_properties(Laminate self):
         """Calculate the equivalent laminate properties
 
         The following attributes are updated:
@@ -499,7 +499,7 @@ cdef class Laminate(object):
             ``e1``, ``e2``, ``g12``, ```u12``, ``nu21``
 
         """
-        AI = np.matrix(self.get_ABD()).I
+        AI = np.linalg.inv(self.get_ABD())
         a11, a12, a22, a33 = AI[0,0], AI[0,1], AI[1,1], AI[2,2]
         self.e1 = 1./(self.h*a11)
         self.e2 = 1./(self.h*a22)

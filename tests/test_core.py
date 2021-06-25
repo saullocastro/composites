@@ -59,7 +59,7 @@ def test_laminated_plate():
     assert np.allclose(lam.D, D)
     assert np.allclose(lam.E, E)
     lam.calc_scf()
-    lam.calc_equivalent_modulus()
+    lam.calc_equivalent_properties()
     lp = lam.calc_lamination_parameters()
     matlamina = lam.plies[0].matlamina
     thickness = lam.h
