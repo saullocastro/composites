@@ -173,7 +173,7 @@ def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None, lamin
     return lam
 
 
-def isotropic_plate(thickness, E, nu, offset=0., calc_scf=True):
+def isotropic_plate(thickness, E, nu, offset=0., calc_scf=True, rho=0.):
     """Read data for an isotropic plate
 
     :class:`.Laminate` object is returned based on the inputs given.
@@ -186,6 +186,8 @@ def isotropic_plate(thickness, E, nu, offset=0., calc_scf=True):
         Young modulus.
     nu : float, optional
         Poisson's ratio.
+    rho : float, optional
+        Material density
     offset : float, optional
         Offset along the normal axis about the mid-surface, which influences
         the extension-bending coupling (B matrix).
@@ -195,6 +197,6 @@ def isotropic_plate(thickness, E, nu, offset=0., calc_scf=True):
 
     """
     return laminated_plate(plyt=thickness, stack=[0], laminaprop=(E, nu),
-            offset=offset, calc_scf=calc_scf)
+            rho=rho, offset=offset, calc_scf=calc_scf)
 
 
