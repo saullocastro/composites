@@ -341,6 +341,9 @@ cdef class Laminate(object):
     intrho     integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z) dz`,
                used in equivalent single layer finite element mass
                matrices
+    intrhoz    integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z)z dz`,
+               used in equivalent single layer finite element mass
+               matrices
     intrhoz2   integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^2 dz`,
                used in equivalent single layer finite element mass
                matrices
@@ -352,7 +355,7 @@ cdef class Laminate(object):
     cdef public double D11, D12, D16, D22, D26, D66
     cdef public double E44, E45, E55
     cdef public double e1, e2, g12, nu12, nu21
-    cdef public double scf_k13, scf_k23, h, offset, rho, intrho, intrhoz2
+    cdef public double scf_k13, scf_k23, h, offset, rho, intrho, intrhoz, intrhoz2
     cdef public list plies
     cdef public list stack
 
@@ -520,6 +523,7 @@ cdef class Laminate(object):
         cdef double h0, hk_1, hk
         self.h = 0.
         self.intrho = 0.
+        self.intrhoz = 0.
         self.intrhoz2 = 0.
         for ply in self.plies:
             self.h += ply.h
@@ -534,6 +538,7 @@ cdef class Laminate(object):
             hk = h0
 
             self.intrho += ply.matlamina.rho*(hk - hk_1)
+            self.intrhoz += ply.matlamina.rho*(hk*hk/2. - hk_1*hk_1/2.)
             self.intrhoz2 += ply.matlamina.rho*(hk*hk*hk/3. - hk_1*hk_1*hk_1/3.)
 
             self.A11 += ply.q11L*(hk - hk_1)
