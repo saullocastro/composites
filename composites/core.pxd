@@ -1,7 +1,16 @@
 cimport numpy as np
+from libcpp.vector cimport vector
 
 ctypedef np.int64_t cINT
 ctypedef np.double_t cDOUBLE
+
+cdef extern from "math.h":
+    double cos(double t) nogil
+    double sin(double t) nogil
+    double atan(double t) nogil
+
+cdef inline double deg2rad(double thetadeg) nogil:
+    return thetadeg*4*atan(1.)/180.
 
 cdef class LaminationParameters(object):
     cdef public double xiA1, xiA2, xiA3, xiA4
