@@ -156,10 +156,10 @@ def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None, lamin
         rhos = [rho for i in stack]
 
     plies = []
-    for plyt, laminaprop, theta, rho in zip(plyts, laminaprops, stack, rhos):
+    for plyt, laminaprop, thetadeg, rho in zip(plyts, laminaprops, stack, rhos):
         laminaprop = laminaprop
         ply = Lamina()
-        ply.theta = float(theta)
+        ply.thetadeg = float(thetadeg)
         ply.h = plyt
         ply.matlamina = read_laminaprop(laminaprop, rho)
         plies.append(ply)
