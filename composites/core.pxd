@@ -42,3 +42,4 @@ cdef class Laminate(object):
     cpdef void force_orthotropic(Laminate)
     cpdef void force_symmetric(Laminate)
     cpdef LaminationParameters calc_lamination_parameters(Laminate)
+
