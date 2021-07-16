@@ -87,12 +87,6 @@ cdef class MatLamina(object):
     on equation: `E = 2 \times (1+\nu) \times G`.
 
     """
-    cdef public double e1, e2, e3, g12, g13, g23, nu12, nu21, nu13, nu31, nu23, nu32
-    cdef public double rho, a1, a2, a3, tref
-    cdef public double st1, st2, sc1, sc2, ss12
-    cdef public double q11, q12, q13, q21, q22, q23, q31, q32, q33, q44, q55, q66
-    cdef public double c11, c12, c13, c22, c23, c33, c44, c55, c66
-    cdef public double u1, u2, u3, u4, u5, u6, u7
     def __init__(MatLamina self):
         pass
 
