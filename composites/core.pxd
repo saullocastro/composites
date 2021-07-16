@@ -29,6 +29,18 @@ cdef class MatLamina(object):
     cpdef cDOUBLE[:, :] get_constitutive_matrix(MatLamina)
     cpdef cDOUBLE[:, :] get_invariant_matrix(MatLamina)
 
+
+cdef class Lamina(object):
+    cdef public cINT plyid
+    cdef public double h, thetadeg, cost, cos2t, cos4t, sint, sin2t, sin4t
+    cdef public double q11L, q12L, q22L, q16L, q26L, q66L, q44L, q45L, q55L
+    cdef public MatLamina matlamina
+    cpdef void rebuild(Lamina)
+    cpdef cDOUBLE[:, :] get_transf_matrix_displ_to_laminate(Lamina)
+    cpdef cDOUBLE[:, :] get_constitutive_matrix(Lamina)
+    cpdef cDOUBLE[:, :] get_transf_matrix_stress_to_lamina(Lamina)
+    cpdef cDOUBLE[:, :] get_transf_matrix_stress_to_laminate(Lamina)
+
 cdef class Laminate(object):
     cdef public double A11, A12, A16, A22, A26, A66
     cdef public double B11, B12, B16, B22, B26, B66

@@ -182,7 +182,7 @@ cdef class Lamina(object):
     plyid      id of the composite lamina
     matlamina  a pointer to a :class:`.MatLamina` object
     h          ply thickness
-    theta      ply angle in degrees
+    thetadeg   ply angle in degrees
     =========  ===========================================================
 
     References:
@@ -191,10 +191,6 @@ cdef class Lamina(object):
        Shells - Theory and Analysys. Second Edition. CRC PRESS, 2004.
 
     """
-    cdef public cINT plyid
-    cdef public double h, theta, cost, cos2t, cos4t, sint, sin2t, sin4t
-    cdef public double q11L, q12L, q22L, q16L, q26L, q66L, q44L, q45L, q55L
-    cdef public MatLamina matlamina
     def __init__(Lamina self):
         pass
 
@@ -204,7 +200,7 @@ cdef class Lamina(object):
         cdef double thetarad, e1, e2, nu12, nu21, g12, g13, g23
         cdef double q11, q12, q22, q44, q55, q16, q26, q66
         cdef double cos2, cos3, cos4, sin2, sin3, sin4, sincos
-        thetarad = deg2rad(self.theta)
+        thetarad = deg2rad(self.thetadeg)
         self.cost = cos(thetarad)
         self.cos2t = cos(2*thetarad)
         self.cos4t = cos(4*thetarad)
@@ -424,7 +420,7 @@ cdef class Laminate(object):
             and ``scf_k23``.
 
         """
-        cdef double D1, R1, den1, D2, R2, den2, offset, zbot, z1, z2
+        cdef double D1, R1, den1, D2, R2, den2, offset, zbot, z1, z2, thetarad
         cdef double e1, e2, nu12, nu21
         D1 = 0
         R1 = 0
@@ -440,14 +436,15 @@ cdef class Laminate(object):
 
         for ply in self.plies:
             z2 = z1 + ply.h
-            e1 = (ply.matlamina.e1 * np.cos(deg2rad(ply.theta)) +
-                  ply.matlamina.e2 * np.sin(deg2rad(ply.theta)))
-            e2 = (ply.matlamina.e2 * np.cos(deg2rad(ply.theta)) +
-                  ply.matlamina.e1 * np.sin(deg2rad(ply.theta)))
-            nu12 = (ply.matlamina.nu12 * np.cos(deg2rad(ply.theta)) +
-                  ply.matlamina.nu21 * np.sin(deg2rad(ply.theta)))
-            nu21 = (ply.matlamina.nu21 * np.cos(deg2rad(ply.theta)) +
-              ply.matlamina.nu12 * np.sin(deg2rad(ply.theta)))
+            thetarad = deg2rad(ply.thetadeg)
+            e1 = (ply.matlamina.e1 * np.cos(thetarad) +
+                  ply.matlamina.e2 * np.sin(thetarad))
+            e2 = (ply.matlamina.e2 * np.cos(thetarad) +
+                  ply.matlamina.e1 * np.sin(thetarad))
+            nu12 = (ply.matlamina.nu12 * np.cos(thetarad) +
+                  ply.matlamina.nu21 * np.sin(thetarad))
+            nu21 = (ply.matlamina.nu21 * np.cos(thetarad) +
+              ply.matlamina.nu12 * np.sin(thetarad))
 
             D1 += e1 / (1 - nu12*nu21)
             R1 += D1*((z2 - offset)**3/3. - (z1 - offset)**3/3.)

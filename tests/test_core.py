@@ -7,7 +7,7 @@ from composites.utils import (read_laminaprop, laminated_plate,
         isotropic_plate)
 from composites.core import (laminate_from_lamination_parameters,
         laminate_from_lamination_parameters2,
-        force_balanced_LP, force_symmetric_LP)
+        force_balanced_LP, force_symmetric_LP, Lamina)
 
 
 def test_lampar():
@@ -15,6 +15,17 @@ def test_lampar():
     rho = 0
     thickness = 1
     matlamina = read_laminaprop(lamprop, rho)
+    matlamina.get_constitutive_matrix()
+    matlamina.get_invariant_matrix()
+    ply = Lamina()
+    ply.thetadeg = 45.
+    ply.h = 3.
+    ply.matlamina = matlamina
+    ply.get_transf_matrix_displ_to_laminate()
+    ply.get_constitutive_matrix()
+    ply.get_transf_matrix_stress_to_lamina()
+    ply.get_transf_matrix_stress_to_laminate()
+
     lam = laminate_from_lamination_parameters2(thickness, matlamina,
         0.5, 0.4, -0.3, -0.6,
         0.5, 0.4, -0.3, -0.6,
@@ -36,6 +47,13 @@ def test_lampar():
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
     assert np.allclose(lam.E, E)
+    ABD = lam.ABD
+    assert np.allclose(ABD[:3, :3], A)
+    assert np.allclose(ABD[3:, 3:], D)
+    ABDE = lam.ABDE
+    assert np.allclose(ABDE[:3, :3], A)
+    assert np.allclose(ABDE[3:6, 3:6], D)
+
 
 
 def test_laminated_plate():
@@ -118,9 +136,28 @@ def test_isotropic_plate():
     assert np.allclose(lam.B, 0)
     assert np.allclose(lam.D, D)
     assert np.allclose(lam.E, E)
+    return lam
+
+def test_errors():
+    lam = test_isotropic_plate()
+    lam.offset = 1.
+    try:
+        lam.force_orthotropic()
+    except RuntimeError:
+        pass
+    try:
+        lam.force_symmetric()
+    except RuntimeError:
+        pass
+    try:
+        lam.plies = []
+        lam.calc_lamination_parameters()
+    except ValueError:
+        pass
 
 if __name__ == '__main__':
     test_lampar()
     test_laminated_plate()
     test_isotropic_plate()
+    test_errors()
 
