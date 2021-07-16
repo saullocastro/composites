@@ -32,10 +32,7 @@ The documentation is available on: https://saullocastro.github.io/composites/
 History
 ===
 
-Repository created from sub-modules of "compmech" and "meshless" repositories.
-The first adopted version number came from the following reasoning:
-
-- version 0.1.0, form sub-module of compmech 0.7.2
+- version 0.1.0, from sub-module of compmech 0.7.2
 - version 0.2.2, from sub-module of meshless 0.1.19
 - version 0.2.3 onwards, independent of previous packages
 - version 0.3.0 onwards, with fast Cython version, not compatible with previous versions
