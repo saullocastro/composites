@@ -86,7 +86,7 @@ License :: OSI Approved :: BSD License
 """
 
 is_released = True
-version = '0.3.7'
+version = '0.3.8'
 
 fullversion = write_version_py(version, is_released)
 
@@ -97,6 +97,7 @@ data_files = [('', [
         ])]
 
 package_data = {
+        'composites': ['*.pxd'],
         '': ['tests/*.*'],
         }
 
@@ -123,7 +124,7 @@ extensions = [
     ]
 ext_modules = cythonize(extensions,
         compiler_directives={'linetrace': True},
-        language_level = '3',
+        language_level='3',
         )
 
 s = setup(
@@ -135,10 +136,10 @@ s = setup(
     license = "BSD",
     keywords = "mechanics composite materials composites shell classical first-order laminated plate theory",
     url = "https://github.com/saullocastro/composites",
-    package_data=package_data,
-    data_files=data_files,
-    classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
-    install_requires=install_requires,
+    package_data = package_data,
+    data_files = data_files,
+    classifiers = [_f for _f in CLASSIFIERS.split('\n') if _f],
+    install_requires = install_requires,
     ext_modules = ext_modules,
-    packages=find_packages(),
+    packages = find_packages(),
 )
