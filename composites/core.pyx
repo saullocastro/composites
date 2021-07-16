@@ -14,9 +14,7 @@ import numpy as np
 cimport numpy as np
 from libcpp.vector cimport vector
 
-ctypedef np.int64_t cINT
 INT = np.int64
-ctypedef np.double_t cDOUBLE
 DOUBLE = np.float64
 
 cdef extern from "math.h":
@@ -33,10 +31,6 @@ cdef class LaminationParameters(object):
     #xiB lamination parameters for extension-bending matrix B
     #xiD lamination parameters for bending matrix D
     #xiD lamination parameters for transverse shear matrix E
-    cdef public double xiA1, xiA2, xiA3, xiA4
-    cdef public double xiB1, xiB2, xiB3, xiB4
-    cdef public double xiD1, xiD2, xiD3, xiD4
-    cdef public double xiE1, xiE2, xiE3, xiE4
     def __init__(LaminationParameters self):
         self.xiA1=0; self.xiA2=0; self.xiA3=0; self.xiA4=0
         self.xiB1=0; self.xiB2=0; self.xiB3=0; self.xiB4=0
@@ -350,15 +344,6 @@ cdef class Laminate(object):
     =========  ===========================================================
 
     """
-    cdef public double A11, A12, A16, A22, A26, A66
-    cdef public double B11, B12, B16, B22, B26, B66
-    cdef public double D11, D12, D16, D22, D26, D66
-    cdef public double E44, E45, E55
-    cdef public double e1, e2, g12, nu12, nu21
-    cdef public double scf_k13, scf_k23, h, offset, rho, intrho, intrhoz, intrhoz2
-    cdef public list plies
-    cdef public list stack
-
     def __init__(Laminate self):
         self.offset = 0.
         self.scf_k13 = 5/6.

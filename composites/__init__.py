@@ -12,11 +12,12 @@ Classical and first-order shear deformation theories are supported. For
 classical plate theories or classical laminated plate theories (CLPT), the
 relevant matrices are A, B, D, whereas for the first-order shear deformation
 theories (FSDT) the matrices are A, B, D, E. All these matrices are part of the
-:class:`.Laminate` object. For isotropic plates, the :class:`.Laminate` object
-is also used for convenience.
+:class:`.Laminate` object.
 
-Offset is supported, resulting in extension-bending coupling (B matrix)
-different than zero even for isotropic plates.
+For isotropic plates, the :class:`.Laminate` object is also used for
+convenience, and since offsetting the mid-surface is supported, there can be an
+extension-bending coupling (B matrix) different than zero even for isotropic
+plates.
 
 
 The most convenient usage is probably with the
@@ -54,5 +55,10 @@ and when transverse shear stiffnesses are required, the ``ABDE`` matrix, with
     :members:
 
 """
+import os
+
 from .version import __version__
 from .utils import isotropic_plate, laminated_plate
+
+def get_include():
+    return os.path.join(os.path.dirname(__file__))
