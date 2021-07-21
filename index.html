@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Documentation for the composites module &#8212; composites 0.4.0 documentation</title>
+    <title>Documentation for the composites module &#8212; composites 0.4.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">composites 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">composites 0.4.1 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Documentation for the <span class="math">composites</span> module</a></li> 
       </ul>
     </div>  
@@ -84,53 +84,17 @@ plates.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="composites.core.Lamina">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">Lamina</span></span><a class="headerlink" href="#composites.core.Lamina" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils align-default">
-<colgroup>
-<col style="width: 13%" />
-<col style="width: 87%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>attribute</p></th>
-<th class="head"><p>description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>plyid</p></td>
-<td><p>id of the composite lamina</p></td>
-</tr>
-<tr class="row-odd"><td><p>matlamina</p></td>
-<td><p>a pointer to a <a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a> object</p></td>
-</tr>
-<tr class="row-even"><td><p>h</p></td>
-<td><p>ply thickness</p></td>
-</tr>
-<tr class="row-odd"><td><p>thetadeg</p></td>
-<td><p>ply angle in degrees</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="field-list simple">
+<dd><dl class="field-list">
 <dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>cos2t</strong></dt><dd></dd>
-<dt><strong>cos4t</strong></dt><dd></dd>
-<dt><strong>cost</strong></dt><dd></dd>
-<dt><strong>h</strong></dt><dd></dd>
-<dt><strong>matlamina</strong></dt><dd></dd>
-<dt><strong>plyid</strong></dt><dd></dd>
-<dt><strong>q11L</strong></dt><dd></dd>
-<dt><strong>q12L</strong></dt><dd></dd>
-<dt><strong>q16L</strong></dt><dd></dd>
-<dt><strong>q22L</strong></dt><dd></dd>
-<dt><strong>q26L</strong></dt><dd></dd>
-<dt><strong>q44L</strong></dt><dd></dd>
-<dt><strong>q45L</strong></dt><dd></dd>
-<dt><strong>q55L</strong></dt><dd></dd>
-<dt><strong>q66L</strong></dt><dd></dd>
-<dt><strong>sin2t</strong></dt><dd></dd>
-<dt><strong>sin4t</strong></dt><dd></dd>
-<dt><strong>sint</strong></dt><dd></dd>
-<dt><strong>thetadeg</strong></dt><dd></dd>
+<dd class="field-odd"><dl>
+<dt><strong>plyid</strong><span class="classifier">int</span></dt><dd><p>Identificaiton of the composite lamina</p>
+</dd>
+<dt><strong>matlamina</strong><span class="classifier"><a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a> object</span></dt><dd><p>A <a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a> object</p>
+</dd>
+<dt><strong>h</strong><span class="classifier">float</span></dt><dd><p>Ply thickness</p>
+</dd>
+<dt><strong>thetadeg</strong><span class="classifier">float</span></dt><dd><p>Ply angle in degrees</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -186,6 +150,11 @@ plates.</p>
 <dt class="sig sig-object py" id="composites.core.Lamina.rebuild">
 <span class="sig-name descname"><span class="pre">rebuild</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Lamina.rebuild" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update constitutive matrices</p>
+<p>Reference:</p>
+<blockquote>
+<div><p>Reddy, J. N., Mechanics of Laminated Composite Plates and
+Shells - Theory and Analysys. Second Edition. CRC PRESS, 2004.</p>
+</div></blockquote>
 </dd></dl>
 
 </dd></dl>
@@ -193,109 +162,32 @@ plates.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="composites.core.Laminate">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">Laminate</span></span><a class="headerlink" href="#composites.core.Laminate" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils align-default">
-<colgroup>
-<col style="width: 13%" />
-<col style="width: 87%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>attribute</p></th>
-<th class="head"><p>description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>plies</p></td>
-<td><p>list of plies</p></td>
-</tr>
-<tr class="row-odd"><td><p>h</p></td>
-<td><p>total thickness of the laminate</p></td>
-</tr>
-<tr class="row-even"><td><p>offset</p></td>
-<td><p>offset at the normal direction</p></td>
-</tr>
-<tr class="row-odd"><td><p>e1</p></td>
-<td><p>equivalent laminate modulus in 1 direction</p></td>
-</tr>
-<tr class="row-even"><td><p>e2</p></td>
-<td><p>equivalent laminate modulus in 2 direction</p></td>
-</tr>
-<tr class="row-odd"><td><p>g12</p></td>
-<td><p>equivalent laminate shear modulus in 12 direction</p></td>
-</tr>
-<tr class="row-even"><td><p>nu12</p></td>
-<td><p>equivalent laminate Poisson ratio in 12 direction</p></td>
-</tr>
-<tr class="row-odd"><td><p>nu21</p></td>
-<td><p>equivalent laminate Poisson ratio in 21 direction</p></td>
-</tr>
-<tr class="row-even"><td><p>scf_k13</p></td>
-<td><p>shear correction factor 13</p></td>
-</tr>
-<tr class="row-odd"><td><p>scf_k23</p></td>
-<td><p>shear correction factor 23</p></td>
-</tr>
-<tr class="row-even"><td><p>intrho</p></td>
-<td><p>integral <span class="math">\int_{-h/2+offset}^{+h/2+offset} \rho(z) dz</span>,
-used in equivalent single layer finite element mass
-matrices</p></td>
-</tr>
-<tr class="row-odd"><td><p>intrhoz</p></td>
-<td><p>integral <span class="math">\int_{-h/2+offset}^{+h/2+offset} \rho(z)z dz</span>,
-used in equivalent single layer finite element mass
-matrices</p></td>
-</tr>
-<tr class="row-even"><td><p>intrhoz2</p></td>
-<td><p>integral <span class="math">\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^2 dz</span>,
-used in equivalent single layer finite element mass
-matrices</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>A</strong></dt><dd></dd>
-<dt><strong>A11</strong></dt><dd></dd>
-<dt><strong>A12</strong></dt><dd></dd>
-<dt><strong>A16</strong></dt><dd></dd>
-<dt><strong>A22</strong></dt><dd></dd>
-<dt><strong>A26</strong></dt><dd></dd>
-<dt><strong>A66</strong></dt><dd></dd>
-<dt><strong>ABD</strong></dt><dd></dd>
-<dt><strong>ABDE</strong></dt><dd></dd>
-<dt><strong>B</strong></dt><dd></dd>
-<dt><strong>B11</strong></dt><dd></dd>
-<dt><strong>B12</strong></dt><dd></dd>
-<dt><strong>B16</strong></dt><dd></dd>
-<dt><strong>B22</strong></dt><dd></dd>
-<dt><strong>B26</strong></dt><dd></dd>
-<dt><strong>B66</strong></dt><dd></dd>
-<dt><strong>D</strong></dt><dd></dd>
-<dt><strong>D11</strong></dt><dd></dd>
-<dt><strong>D12</strong></dt><dd></dd>
-<dt><strong>D16</strong></dt><dd></dd>
-<dt><strong>D22</strong></dt><dd></dd>
-<dt><strong>D26</strong></dt><dd></dd>
-<dt><strong>D66</strong></dt><dd></dd>
-<dt><strong>E</strong></dt><dd></dd>
-<dt><strong>E44</strong></dt><dd></dd>
-<dt><strong>E45</strong></dt><dd></dd>
-<dt><strong>E55</strong></dt><dd></dd>
-<dt><strong>e1</strong></dt><dd></dd>
-<dt><strong>e2</strong></dt><dd></dd>
-<dt><strong>g12</strong></dt><dd></dd>
-<dt><strong>h</strong></dt><dd></dd>
-<dt><strong>intrho</strong></dt><dd></dd>
-<dt><strong>intrhoz</strong></dt><dd></dd>
-<dt><strong>intrhoz2</strong></dt><dd></dd>
-<dt><strong>nu12</strong></dt><dd></dd>
-<dt><strong>nu21</strong></dt><dd></dd>
-<dt><strong>offset</strong></dt><dd></dd>
-<dt><strong>plies</strong></dt><dd></dd>
-<dt><strong>rho</strong></dt><dd></dd>
-<dt><strong>scf_k13</strong></dt><dd></dd>
-<dt><strong>scf_k23</strong></dt><dd></dd>
-<dt><strong>stack</strong></dt><dd></dd>
+<dt><strong>plies</strong><span class="classifier">list</span></dt><dd><p>List of plies</p>
+</dd>
+<dt><strong>h</strong><span class="classifier">float</span></dt><dd><p>Total thickness of the laminate</p>
+</dd>
+<dt><strong>offset</strong><span class="classifier">float</span></dt><dd><p>Offset at the normal direction</p>
+</dd>
+<dt><strong>e1, e2</strong><span class="classifier">float</span></dt><dd><p>Equivalent laminate moduli in directions 1 and 2</p>
+</dd>
+<dt><strong>g12</strong><span class="classifier">float</span></dt><dd><p>Equivalent laminate shear modulus in the 12 direction</p>
+</dd>
+<dt><strong>nu12, n21</strong><span class="classifier">float</span></dt><dd><p>Equivalent laminate Poisson ratios in the 12 and 21 directions</p>
+</dd>
+<dt><strong>scf_k13, scf_k23</strong><span class="classifier">float</span></dt><dd><p>Shear correction factor in the 13 and 23 directions</p>
+</dd>
+<dt><strong>intrho</strong><span class="classifier">float</span></dt><dd><p>Integral <span class="math">\int_{-h/2+offset}^{+h/2+offset} \rho(z) dz</span>, used in
+equivalent single layer finite element mass matrices</p>
+</dd>
+<dt><strong>intrhoz</strong><span class="classifier">float</span></dt><dd><p>Integral <span class="math">\int_{-h/2+offset}^{+h/2+offset} \rho(z)z dz</span>, used in
+equivalent single layer finite element mass matrices</p>
+</dd>
+<dt><strong>intrhoz2</strong><span class="classifier">float</span></dt><dd><p>Integral <span class="math">\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^2 dz</span>, used in
+equivalent single layer finite element mass matrices</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -418,22 +310,14 @@ and <code class="docutils literal notranslate"><span class="pre">scf_k23</span><
 <dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>xiA1</strong></dt><dd></dd>
-<dt><strong>xiA2</strong></dt><dd></dd>
-<dt><strong>xiA3</strong></dt><dd></dd>
-<dt><strong>xiA4</strong></dt><dd></dd>
-<dt><strong>xiB1</strong></dt><dd></dd>
-<dt><strong>xiB2</strong></dt><dd></dd>
-<dt><strong>xiB3</strong></dt><dd></dd>
-<dt><strong>xiB4</strong></dt><dd></dd>
-<dt><strong>xiD1</strong></dt><dd></dd>
-<dt><strong>xiD2</strong></dt><dd></dd>
-<dt><strong>xiD3</strong></dt><dd></dd>
-<dt><strong>xiD4</strong></dt><dd></dd>
-<dt><strong>xiE1</strong></dt><dd></dd>
-<dt><strong>xiE2</strong></dt><dd></dd>
-<dt><strong>xiE3</strong></dt><dd></dd>
-<dt><strong>xiE4</strong></dt><dd></dd>
+<dt><strong>xiA1, xiA2, xiA3, xiA4</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math">\xi_{Ai}</span> (in-plane)</p>
+</dd>
+<dt><strong>xiB1, xiB2, xiB3, xiB4</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math">\xi_{Bi}</span> (in-plane coupling with bending)</p>
+</dd>
+<dt><strong>xiD1, xiD2, xiD3, xiD4</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math">\xi_{Di}</span> (bending)</p>
+</dd>
+<dt><strong>xiE1, xiE2, xiE3, xiE4</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math">\xi_{Ei}</span> (transverse shear)</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -443,118 +327,6 @@ and <code class="docutils literal notranslate"><span class="pre">scf_k23</span><
 <dt class="sig sig-object py" id="composites.core.MatLamina">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">MatLamina</span></span><a class="headerlink" href="#composites.core.MatLamina" title="Permalink to this definition">¶</a></dt>
 <dd><p>Orthotropic material lamina</p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 15%" />
-<col style="width: 85%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>attributes</p></th>
-<th class="head"><p>description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>e1</p></td>
-<td><p>Young Modulus in direction 1</p></td>
-</tr>
-<tr class="row-odd"><td><p>e2</p></td>
-<td><p>Young Modulus in direction 2</p></td>
-</tr>
-<tr class="row-even"><td><p>g12</p></td>
-<td><p>in-plane shear modulus</p></td>
-</tr>
-<tr class="row-odd"><td><p>g13</p></td>
-<td><p>transverse shear modulus for plane 1-Z</p></td>
-</tr>
-<tr class="row-even"><td><p>g23</p></td>
-<td><p>transverse shear modulus for plane 2-Z</p></td>
-</tr>
-<tr class="row-odd"><td><p>nu12</p></td>
-<td><p>Poisson’s ratio 12</p></td>
-</tr>
-<tr class="row-even"><td><p>nu13</p></td>
-<td><p>Poisson’s ratio 13</p></td>
-</tr>
-<tr class="row-odd"><td><p>nu23</p></td>
-<td><p>Poisson’s ratio 23</p></td>
-</tr>
-<tr class="row-even"><td><p>nu21</p></td>
-<td><p>Poisson’s ratio 21: use formula nu12/e1 = nu21/e2</p></td>
-</tr>
-<tr class="row-odd"><td><p>nu31</p></td>
-<td><p>Poisson’s ratio 31: use formula nu31/e3 = nu13/e1</p></td>
-</tr>
-<tr class="row-even"><td><p>nu32</p></td>
-<td><p>Poisson’s ratio 32: use formula nu23/e2 = nu32/e3</p></td>
-</tr>
-<tr class="row-odd"><td><p>rho</p></td>
-<td><p>especific mass (mass / volume)</p></td>
-</tr>
-<tr class="row-even"><td><p>a1</p></td>
-<td><p>thermal expansion coeffiecient in direction 1</p></td>
-</tr>
-<tr class="row-odd"><td><p>a2</p></td>
-<td><p>thermal expansion coeffiecient in direction 2</p></td>
-</tr>
-<tr class="row-even"><td><p>a3</p></td>
-<td><p>thermal expansion coeffiecient in direction 3</p></td>
-</tr>
-<tr class="row-odd"><td><p>tref</p></td>
-<td><p>reference temperature</p></td>
-</tr>
-<tr class="row-even"><td><p>st1,st2</p></td>
-<td><p>allowable tensile stresses for directions 1 and 2</p></td>
-</tr>
-<tr class="row-odd"><td><p>sc1,sc2</p></td>
-<td><p>allowable compressive stresses for directions 1 and 2</p></td>
-</tr>
-<tr class="row-even"><td><p>ss12</p></td>
-<td><p>allowable in-plane stress for shear</p></td>
-</tr>
-<tr class="row-odd"><td><p>q11</p></td>
-<td><p>lamina constitutive constant 11</p></td>
-</tr>
-<tr class="row-even"><td><p>q12</p></td>
-<td><p>lamina constitutive constant 12</p></td>
-</tr>
-<tr class="row-odd"><td><p>q13</p></td>
-<td><p>lamina constitutive constant 13</p></td>
-</tr>
-<tr class="row-even"><td><p>q21</p></td>
-<td><p>lamina constitutive constant 21</p></td>
-</tr>
-<tr class="row-odd"><td><p>q22</p></td>
-<td><p>lamina constitutive constant 22</p></td>
-</tr>
-<tr class="row-even"><td><p>q23</p></td>
-<td><p>lamina constitutive constant 23</p></td>
-</tr>
-<tr class="row-odd"><td><p>q31</p></td>
-<td><p>lamina constitutive constant 31</p></td>
-</tr>
-<tr class="row-even"><td><p>q32</p></td>
-<td><p>lamina constitutive constant 32</p></td>
-</tr>
-<tr class="row-odd"><td><p>q33</p></td>
-<td><p>lamina constitutive constant 33</p></td>
-</tr>
-<tr class="row-even"><td><p>q44</p></td>
-<td><p>lamina constitutive constant 44</p></td>
-</tr>
-<tr class="row-odd"><td><p>q55</p></td>
-<td><p>lamina constitutive constant 55</p></td>
-</tr>
-<tr class="row-even"><td><p>q66</p></td>
-<td><p>lamina constitutive constant 66</p></td>
-</tr>
-<tr class="row-odd"><td><p>ci</p></td>
-<td><p>lamina stiffness constants</p></td>
-</tr>
-<tr class="row-even"><td><p>ui</p></td>
-<td><p>lamina material invariants</p></td>
-</tr>
-</tbody>
-</table>
 <p class="rubric">Notes</p>
 <p>For isotropic materials when the user defines <span class="math">\nu</span> and <span class="math">E</span>, <span class="math">G</span> will be
 recaculated based on equation: <span class="math">G = E/(2 \times (1+\nu))</span>; in a lower
@@ -563,56 +335,72 @@ on equation: <span class="math">E = 2 \times (1+\nu) \times G</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>a1</strong></dt><dd></dd>
-<dt><strong>a2</strong></dt><dd></dd>
-<dt><strong>a3</strong></dt><dd></dd>
-<dt><strong>c11</strong></dt><dd></dd>
-<dt><strong>c12</strong></dt><dd></dd>
-<dt><strong>c13</strong></dt><dd></dd>
-<dt><strong>c22</strong></dt><dd></dd>
-<dt><strong>c23</strong></dt><dd></dd>
-<dt><strong>c33</strong></dt><dd></dd>
-<dt><strong>c44</strong></dt><dd></dd>
-<dt><strong>c55</strong></dt><dd></dd>
-<dt><strong>c66</strong></dt><dd></dd>
-<dt><strong>e1</strong></dt><dd></dd>
-<dt><strong>e2</strong></dt><dd></dd>
-<dt><strong>e3</strong></dt><dd></dd>
-<dt><strong>g12</strong></dt><dd></dd>
-<dt><strong>g13</strong></dt><dd></dd>
-<dt><strong>g23</strong></dt><dd></dd>
-<dt><strong>nu12</strong></dt><dd></dd>
-<dt><strong>nu13</strong></dt><dd></dd>
-<dt><strong>nu21</strong></dt><dd></dd>
-<dt><strong>nu23</strong></dt><dd></dd>
-<dt><strong>nu31</strong></dt><dd></dd>
-<dt><strong>nu32</strong></dt><dd></dd>
-<dt><strong>q11</strong></dt><dd></dd>
-<dt><strong>q12</strong></dt><dd></dd>
-<dt><strong>q13</strong></dt><dd></dd>
-<dt><strong>q21</strong></dt><dd></dd>
-<dt><strong>q22</strong></dt><dd></dd>
-<dt><strong>q23</strong></dt><dd></dd>
-<dt><strong>q31</strong></dt><dd></dd>
-<dt><strong>q32</strong></dt><dd></dd>
-<dt><strong>q33</strong></dt><dd></dd>
-<dt><strong>q44</strong></dt><dd></dd>
-<dt><strong>q55</strong></dt><dd></dd>
-<dt><strong>q66</strong></dt><dd></dd>
-<dt><strong>rho</strong></dt><dd></dd>
-<dt><strong>sc1</strong></dt><dd></dd>
-<dt><strong>sc2</strong></dt><dd></dd>
-<dt><strong>ss12</strong></dt><dd></dd>
-<dt><strong>st1</strong></dt><dd></dd>
-<dt><strong>st2</strong></dt><dd></dd>
-<dt><strong>tref</strong></dt><dd></dd>
-<dt><strong>u1</strong></dt><dd></dd>
-<dt><strong>u2</strong></dt><dd></dd>
-<dt><strong>u3</strong></dt><dd></dd>
-<dt><strong>u4</strong></dt><dd></dd>
-<dt><strong>u5</strong></dt><dd></dd>
-<dt><strong>u6</strong></dt><dd></dd>
-<dt><strong>u7</strong></dt><dd></dd>
+<dt><strong>e1</strong><span class="classifier">float</span></dt><dd><p>Young Modulus in direction 1</p>
+</dd>
+<dt><strong>e2</strong><span class="classifier">float</span></dt><dd><p>Young Modulus in direction 2</p>
+</dd>
+<dt><strong>g12</strong><span class="classifier">float</span></dt><dd><p>in-plane shear modulus</p>
+</dd>
+<dt><strong>g13</strong><span class="classifier">float</span></dt><dd><p>transverse shear modulus for plane 1-Z</p>
+</dd>
+<dt><strong>g23</strong><span class="classifier">float</span></dt><dd><p>transverse shear modulus for plane 2-Z</p>
+</dd>
+<dt><strong>nu12 :</strong></dt><dd><p>Poisson’s ratio 12</p>
+</dd>
+<dt><strong>nu13 :</strong></dt><dd><p>Poisson’s ratio 13</p>
+</dd>
+<dt><strong>nu23 :</strong></dt><dd><p>Poisson’s ratio 23</p>
+</dd>
+<dt><strong>nu21 :</strong></dt><dd><p>Poisson’s ratio 21: use formula nu12/e1 = nu21/e2</p>
+</dd>
+<dt><strong>nu31 :</strong></dt><dd><p>Poisson’s ratio 31: use formula nu31/e3 = nu13/e1</p>
+</dd>
+<dt><strong>nu32 :</strong></dt><dd><p>Poisson’s ratio 32: use formula nu23/e2 = nu32/e3</p>
+</dd>
+<dt><strong>rho :</strong></dt><dd><p>especific mass (mass / volume)</p>
+</dd>
+<dt><strong>a1 :</strong></dt><dd><p>thermal expansion coeffiecient in direction 1</p>
+</dd>
+<dt><strong>a2 :</strong></dt><dd><p>thermal expansion coeffiecient in direction 2</p>
+</dd>
+<dt><strong>a3 :</strong></dt><dd><p>thermal expansion coeffiecient in direction 3</p>
+</dd>
+<dt><strong>tref :</strong></dt><dd><p>reference temperature</p>
+</dd>
+<dt><strong>st1,st2 :</strong></dt><dd><p>allowable tensile stresses for directions 1 and 2</p>
+</dd>
+<dt><strong>sc1,sc2 :</strong></dt><dd><p>allowable compressive stresses for directions 1 and 2</p>
+</dd>
+<dt><strong>ss12 :</strong></dt><dd><p>allowable in-plane stress for shear</p>
+</dd>
+<dt><strong>q11 :</strong></dt><dd><p>lamina constitutive constant 11</p>
+</dd>
+<dt><strong>q12 :</strong></dt><dd><p>lamina constitutive constant 12</p>
+</dd>
+<dt><strong>q13 :</strong></dt><dd><p>lamina constitutive constant 13</p>
+</dd>
+<dt><strong>q21 :</strong></dt><dd><p>lamina constitutive constant 21</p>
+</dd>
+<dt><strong>q22 :</strong></dt><dd><p>lamina constitutive constant 22</p>
+</dd>
+<dt><strong>q23 :</strong></dt><dd><p>lamina constitutive constant 23</p>
+</dd>
+<dt><strong>q31 :</strong></dt><dd><p>lamina constitutive constant 31</p>
+</dd>
+<dt><strong>q32 :</strong></dt><dd><p>lamina constitutive constant 32</p>
+</dd>
+<dt><strong>q33 :</strong></dt><dd><p>lamina constitutive constant 33</p>
+</dd>
+<dt><strong>q44 :</strong></dt><dd><p>lamina constitutive constant 44</p>
+</dd>
+<dt><strong>q55 :</strong></dt><dd><p>lamina constitutive constant 55</p>
+</dd>
+<dt><strong>q66 :</strong></dt><dd><p>lamina constitutive constant 66</p>
+</dd>
+<dt><strong>ci :</strong></dt><dd><p>lamina stiffness constants</p>
+</dd>
+<dt><strong>ui :</strong></dt><dd><p>lamina material invariants</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -650,6 +438,11 @@ on equation: <span class="math">E = 2 \times (1+\nu) \times G</span>.</p>
 <dt class="sig sig-object py" id="composites.core.MatLamina.rebuild">
 <span class="sig-name descname"><span class="pre">rebuild</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.MatLamina.rebuild" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update constitutive and invariant terms</p>
+<p>Reference:</p>
+<blockquote>
+<div><p>Reddy, J. N., Mechanics of laminated composite plates and shells.
+Theory and analysis. Second Edition. CRC Press, 2004.</p>
+</div></blockquote>
 </dd></dl>
 
 </dd></dl>
@@ -962,7 +755,7 @@ factors, otherwise the default value of 5/6 is used</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">composites 0.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">composites 0.4.1 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Documentation for the <span class="math">composites</span> module</a></li> 
       </ul>
     </div>
