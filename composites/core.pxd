@@ -1,5 +1,4 @@
 cimport numpy as np
-from libcpp.vector cimport vector
 
 ctypedef np.int64_t cINT
 ctypedef np.double_t cDOUBLE
