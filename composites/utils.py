@@ -73,7 +73,7 @@ def read_laminaprop(laminaprop, rho=0):
     nu12 = laminaprop[2]
     if len(laminaprop) < 9:
         e2 = laminaprop[1]
-        laminaprop = tuple(list(laminaprop)[:6] + [e2, nu12, nu12])
+        laminaprop = tuple(list(laminaprop)[:6] + [0, 0, 0])
     matlam.e1 = laminaprop[0]
     matlam.e2 = laminaprop[1]
     matlam.e3 = laminaprop[6]
