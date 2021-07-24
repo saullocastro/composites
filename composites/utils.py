@@ -6,29 +6,38 @@ Composites Core Utils Module (:mod:`composites.utils`)
 
 """
 import numpy as np
+from numpy import cos, sin, deg2rad
 
 from .core import (MatLamina, Lamina, Laminate, LaminationParameters,
         laminate_from_lamination_parameters)
 
 def read_laminaprop(laminaprop, rho=0):
-    """Returns a :class:`.MatLamina` object based on an input ``laminaprop`` tuple
+    r"""Returns a :class:`.MatLamina` object based on an input ``laminaprop`` tuple
 
     Parameters
     ----------
     laminaprop : list or tuple
-        Tuple containing the folliwing entries:
+        For the most general case of tri-axial stress, use a tuple containing
+        the folliwing entries::
 
-            (e1, e2, nu12, g12, g13, g23, e3, nu13, nu23)
+            laminaprop = (e1, e2, nu12, g12, g13, g23, e3, nu13, nu23)
 
-        for othotropic materials the user can only supply:
+        For isotropic materials aiming calculations with tri-axial stresses,
+        use::
 
-            (e1, e2, nu12, g12, g13, g23)
+            g = e/(2*(1+nu))
+            laminaprop = (e, e, nu, g, g, g, e, nu, nu)
 
-        for isotropic materials the user can only supply:
+        For othotropic materials with in-plane stresses the user can only
+        supply::
 
-            (e, nu) # new
+            laminaprop = (e1, e2, nu12, g12, g13, g23)
 
-            (e1, e2, nu12) # legacy, kept for compatibility with old codes
+        For isotropic materials with in-plane stresses the user can only
+        supply::
+
+            laminaprop = (e, nu) # new
+
 
         ======  ==============================
         symbol  value
@@ -58,22 +67,15 @@ def read_laminaprop(laminaprop, rho=0):
     matlam = MatLamina()
 
     #laminaProp = (e1, e2, nu12, g12, g13, g23, e3, nu13, nu23)
-    if laminaprop == None:
-        raise ValueError('laminaprop must be a tuple')
-    if len(laminaprop) == 3: #ISOTROPIC legacy
-        e = laminaprop[0]
-        nu = laminaprop[2]
-        g = e/(2*(1+nu))
-        laminaprop = (e, e, nu, g, g, g, e, nu, nu)
-    if len(laminaprop) == 2: #ISOTROPIC new
+    assert len(laminaprop) in (2, 6, 9), ('Invalid entry for laminaprop: ' +
+                                          str(laminaprop))
+    if len(laminaprop) == 2: #ISOTROPIC in-plane stress new
         e = laminaprop[0]
         nu = laminaprop[1]
         g = e/(2*(1+nu))
-        laminaprop = (e, e, nu, g, g, g, e, nu, nu)
-    nu12 = laminaprop[2]
-    if len(laminaprop) < 9:
-        e2 = laminaprop[1]
-        laminaprop = tuple(list(laminaprop)[:6] + [e2, nu12, nu12])
+        laminaprop = (e, e, nu, g, g, g, 0, 0, 0)
+    elif len(laminaprop) == 6: #ORTHOTROPIC in-plane stress
+        laminaprop = tuple(list(laminaprop) + [0, 0, 0])
     matlam.e1 = laminaprop[0]
     matlam.e2 = laminaprop[1]
     matlam.e3 = laminaprop[6]
@@ -92,9 +94,9 @@ def read_laminaprop(laminaprop, rho=0):
     return matlam
 
 
-def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None, laminaprops=None,
-        rhos=None, offset=0., calc_scf=True):
-    """Read a laminate stacking sequence data.
+def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None,
+        laminaprops=None, rhos=None, offset=0., calc_scf=True):
+    r"""Read a laminate stacking sequence data.
 
     :class:`.Laminate` object is returned based on the inputs given.
 
@@ -156,16 +158,18 @@ def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None, lamin
         rhos = [rho for i in stack]
 
     plies = []
+    lam.h = 0.
     for plyt, laminaprop, thetadeg, rho in zip(plyts, laminaprops, stack, rhos):
         laminaprop = laminaprop
         ply = Lamina()
         ply.thetadeg = float(thetadeg)
         ply.h = plyt
+        lam.h += ply.h
         ply.matlamina = read_laminaprop(laminaprop, rho)
+        ply.rebuild()
         plies.append(ply)
     lam.plies = plies
 
-    lam.rebuild()
     lam.calc_constitutive_matrix()
     if calc_scf:
         lam.calc_scf()
@@ -174,7 +178,7 @@ def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None, lamin
 
 
 def isotropic_plate(thickness, E, nu, offset=0., calc_scf=True, rho=0.):
-    """Read data for an isotropic plate
+    r"""Read data for an isotropic plate
 
     :class:`.Laminate` object is returned based on the inputs given.
 
@@ -198,5 +202,80 @@ def isotropic_plate(thickness, E, nu, offset=0., calc_scf=True, rho=0.):
     """
     return laminated_plate(plyt=thickness, stack=[0], laminaprop=(E, nu),
             rho=rho, offset=offset, calc_scf=calc_scf)
+
+def double_double_plate(thickness, phideg, psideg, laminaprop=None,
+        rho=0., calc_scf=True):
+    r"""Create a double-double laminated plate
+
+    A double-double (DD) laminate consists of :math:`[\pm\phi,\pm\psi]`, with
+    ``phideg=`` :math:`\phi`, and ``psideg=`` :math:`\psi`. With the
+    principle of homogenization, at the limit where many plies are used
+    we have that :math:`B=0`. Reference:
+
+        Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., 2020,
+        “D and DD-Drop Layup Optimization of Aircraft Wing Panels under
+        Multi-Load Case Design Environment,” Compos. Struct., 248(January), p.
+        112518.
+
+    Parameters
+    ----------
+    thickness : float
+        Total plate thickness.
+    phideg : float
+        Angle :math:`\psi` of the DD laminate.
+    psideg : float
+        Angle :math:`\phi` of the DD laminate.
+    laminaprop : tuple
+        See :func:`.read_laminaprop` for details.
+    rho : float, optional
+        Material density
+    calc_scf : bool, optional
+        If True, use :func:`.Laminate.calc_scf` to compute shear correction
+        factors, otherwise the default value of 5/6 is used.
+
+    """
+    m = read_laminaprop(laminaprop, rho)
+    tr = m.q11 + m.q22 + 2*m.q66
+    m.trace_normalize_plane_stress()
+    lam = Laminate()
+    lam.h = thickness
+    phi = deg2rad(phideg + psideg)/2.
+    psi = deg2rad(phideg - psideg)/2.
+    A11_star = m.u1 + m.u2*cos(2*phi)*cos(2*psi) + m.u3*cos(4*phi)*cos(4*psi)
+    A12_star = m.u4 - m.u3*cos(4*phi)*cos(4*psi)
+    A16_star = (m.u2/2.*(+sin(2*deg2rad(phideg))
+                         +sin(-2*deg2rad(phideg))
+                         +sin(2*deg2rad(psideg))
+                         +sin(-2*deg2rad(psideg)))
+                + m.u3*(+sin(4*deg2rad(phideg))
+                        +sin(-4*deg2rad(phideg))
+                        +sin(4*deg2rad(psideg))
+                        +sin(-4*deg2rad(psideg))
+                    ))
+    A22_star = m.u1 - m.u2*cos(2*phi)*cos(2*psi) + m.u3*cos(4*phi)*cos(4*psi)
+    A26_star = (m.u2/2.*(+sin(2*deg2rad(phideg))
+                         +sin(-2*deg2rad(phideg))
+                         +sin(2*deg2rad(psideg))
+                         +sin(-2*deg2rad(psideg)))
+                - m.u3*(+sin(4*deg2rad(phideg))
+                        +sin(-4*deg2rad(phideg))
+                        +sin(4*deg2rad(psideg))
+                        +sin(-4*deg2rad(psideg))
+                    ))
+    A66_star = m.u5 - m.u3*cos(4*phi)*cos(4*psi)
+    lam.A11 = tr*A11_star*lam.h
+    lam.A12 = tr*A12_star*lam.h
+    lam.A16 = tr*A16_star*lam.h
+    lam.A22 = tr*A22_star*lam.h
+    lam.A26 = tr*A26_star*lam.h
+    lam.A66 = tr*A66_star*lam.h
+    lam.D11 = tr*A11_star*lam.h**3/12.
+    lam.D12 = tr*A12_star*lam.h**3/12.
+    lam.D16 = tr*A16_star*lam.h**3/12.
+    lam.D22 = tr*A22_star*lam.h**3/12.
+    lam.D26 = tr*A26_star*lam.h**3/12.
+    lam.D66 = tr*A66_star*lam.h**3/12.
+
+    return lam
 
 
