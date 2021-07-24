@@ -6,7 +6,7 @@ Composites Core Utils Module (:mod:`composites.utils`)
 
 """
 import numpy as np
-from numpy import cos, sin
+from numpy import cos, sin, deg2rad
 
 from .core import (MatLamina, Lamina, Laminate, LaminationParameters,
         laminate_from_lamination_parameters)
@@ -218,7 +218,7 @@ def double_double_plate(thickness, phideg, psideg, laminaprop=None,
     principle of homogenization, at the limit where many plies are used
     we have that :math:`B=0`. Reference:
 
-        [1] Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., 2020,
+        Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., 2020,
         “D and DD-Drop Layup Optimization of Aircraft Wing Panels under
         Multi-Load Case Design Environment,” Compos. Struct., 248(January), p.
         112518.
@@ -245,13 +245,29 @@ def double_double_plate(thickness, phideg, psideg, laminaprop=None,
     m.trace_normalize_plane_stress()
     lam = Laminate()
     lam.h = thickness
-    phi = np.deg2rad(phideg)
-    psi = np.deg2rad(psideg)
+    phi = deg2rad(phideg + psideg)/2.
+    psi = deg2rad(phideg - psideg)/2.
     A11_star = m.u1 + m.u2*cos(2*phi)*cos(2*psi) + m.u3*cos(4*phi)*cos(4*psi)
     A12_star = m.u4 - m.u3*cos(4*phi)*cos(4*psi)
-    A16_star = 0 #m.u2/2.*sin(2*phi)*sin(2*psi) + m.u3*sin(4*phi)*sin(4*psi)
+    A16_star = (m.u2/2.*(+sin(2*deg2rad(phideg))
+                         +sin(-2*deg2rad(phideg))
+                         +sin(2*deg2rad(psideg))
+                         +sin(-2*deg2rad(psideg)))
+                + m.u3*(+sin(4*deg2rad(phideg))
+                        +sin(-4*deg2rad(phideg))
+                        +sin(4*deg2rad(psideg))
+                        +sin(-4*deg2rad(psideg))
+                    ))
     A22_star = m.u1 - m.u2*cos(2*phi)*cos(2*psi) + m.u3*cos(4*phi)*cos(4*psi)
-    A26_star = 0 #m.u2/2.*sin(2*phi)*sin(2*psi) - m.u3*sin(4*phi)*sin(4*psi)
+    A26_star = (m.u2/2.*(+sin(2*deg2rad(phideg))
+                         +sin(-2*deg2rad(phideg))
+                         +sin(2*deg2rad(psideg))
+                         +sin(-2*deg2rad(psideg)))
+                - m.u3*(+sin(4*deg2rad(phideg))
+                        +sin(-4*deg2rad(phideg))
+                        +sin(4*deg2rad(psideg))
+                        +sin(-4*deg2rad(psideg))
+                    ))
     A66_star = m.u5 - m.u3*cos(4*phi)*cos(4*psi)
     lam.A11 = tr*A11_star*lam.h
     lam.A12 = tr*A12_star*lam.h
@@ -259,12 +275,12 @@ def double_double_plate(thickness, phideg, psideg, laminaprop=None,
     lam.A22 = tr*A22_star*lam.h
     lam.A26 = tr*A26_star*lam.h
     lam.A66 = tr*A66_star*lam.h
-    lam.D11 = tr*A11_star*lam.h**3/12
-    lam.D12 = tr*A12_star*lam.h**3/12
-    lam.D16 = tr*A16_star*lam.h**3/12
-    lam.D22 = tr*A22_star*lam.h**3/12
-    lam.D26 = tr*A26_star*lam.h**3/12
-    lam.D66 = tr*A66_star*lam.h**3/12
+    lam.D11 = tr*A11_star*lam.h**3/12.
+    lam.D12 = tr*A12_star*lam.h**3/12.
+    lam.D16 = tr*A16_star*lam.h**3/12.
+    lam.D22 = tr*A22_star*lam.h**3/12.
+    lam.D26 = tr*A26_star*lam.h**3/12.
+    lam.D66 = tr*A66_star*lam.h**3/12.
 
     return lam
 
