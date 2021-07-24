@@ -6,6 +6,7 @@ Composites Core Utils Module (:mod:`composites.utils`)
 
 """
 import numpy as np
+from numpy import cos, sin
 
 from .core import (MatLamina, Lamina, Laminate, LaminationParameters,
         laminate_from_lamination_parameters)
@@ -99,8 +100,8 @@ def read_laminaprop(laminaprop, rho=0):
     return matlam
 
 
-def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None, laminaprops=None,
-        rhos=None, offset=0., calc_scf=True):
+def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None,
+        laminaprops=None, rhos=None, offset=0., calc_scf=True):
     """Read a laminate stacking sequence data.
 
     :class:`.Laminate` object is returned based on the inputs given.
@@ -207,5 +208,64 @@ def isotropic_plate(thickness, E, nu, offset=0., calc_scf=True, rho=0.):
     """
     return laminated_plate(plyt=thickness, stack=[0], laminaprop=(E, nu),
             rho=rho, offset=offset, calc_scf=calc_scf)
+
+def double_double_plate(thickness, phideg, psideg, laminaprop=None,
+        rho=0., calc_scf=True):
+    """Create a double-double laminated plate
+
+    A double-double (DD) laminate consists of :math:`[\pm\phi,\pm\psi]`, with
+    ``phideg=`` :math:`\phi`, and ``psideg=`` :math:`\psi`. With the
+    principle of homogenization, at the limit where many plies are used
+    we have that :math:`B=0`. Reference:
+
+        [1] Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., 2020,
+        “D and DD-Drop Layup Optimization of Aircraft Wing Panels under
+        Multi-Load Case Design Environment,” Compos. Struct., 248(January), p.
+        112518.
+
+    Parameters
+    ----------
+    thickness : float
+        Total plate thickness.
+    phideg : float
+        Angle :math:`\psi` of the DD laminate.
+    psideg : float
+        Angle :math:`\phi` of the DD laminate.
+    laminaprop : tuple
+        See :func:`.read_laminaprop` for details.
+    rho : float, optional
+        Material density
+    calc_scf : bool, optional
+        If True, use :func:`.Laminate.calc_scf` to compute shear correction
+        factors, otherwise the default value of 5/6 is used.
+
+    """
+    m = read_laminaprop(laminaprop, rho)
+    tr = m.q11 + m.q22 + 2*m.q66
+    m.trace_normalize_plane_stress()
+    lam = Laminate()
+    lam.h = thickness
+    phi = np.deg2rad(phideg)
+    psi = np.deg2rad(psideg)
+    A11_star = m.u1 + m.u2*cos(2*phi)*cos(2*psi) + m.u3*cos(4*phi)*cos(4*psi)
+    A12_star = m.u4 - m.u3*cos(4*phi)*cos(4*psi)
+    A16_star = 0 #m.u2/2.*sin(2*phi)*sin(2*psi) + m.u3*sin(4*phi)*sin(4*psi)
+    A22_star = m.u1 - m.u2*cos(2*phi)*cos(2*psi) + m.u3*cos(4*phi)*cos(4*psi)
+    A26_star = 0 #m.u2/2.*sin(2*phi)*sin(2*psi) - m.u3*sin(4*phi)*sin(4*psi)
+    A66_star = m.u5 - m.u3*cos(4*phi)*cos(4*psi)
+    lam.A11 = tr*A11_star*lam.h
+    lam.A12 = tr*A12_star*lam.h
+    lam.A16 = tr*A16_star*lam.h
+    lam.A22 = tr*A22_star*lam.h
+    lam.A26 = tr*A26_star*lam.h
+    lam.A66 = tr*A66_star*lam.h
+    lam.D11 = tr*A11_star*lam.h**3/12
+    lam.D12 = tr*A12_star*lam.h**3/12
+    lam.D16 = tr*A16_star*lam.h**3/12
+    lam.D22 = tr*A22_star*lam.h**3/12
+    lam.D26 = tr*A26_star*lam.h**3/12
+    lam.D66 = tr*A66_star*lam.h**3/12
+
+    return lam
 
 
