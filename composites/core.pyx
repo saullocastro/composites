@@ -220,13 +220,13 @@ cdef class MatLamina:
         self.q44 /= tr
         self.q55 /= tr
         self.q66 /= tr
-        self.u1 = (3*self.q11 + 3*self.q22 + 2*self.q12 + 4*self.q44) / 8.
-        self.u2 = (self.q11 - self.q22) / 2.
-        self.u3 = (self.q11 + self.q22 - 2*self.q12 - 4*self.q44) / 8.
-        self.u4 = (self.q11 + self.q22 + 6*self.q12 - 4*self.q44) / 8.
-        self.u5 = (self.u1 - self.u4) / 2.
-        self.u6 = (self.q55 + self.q66) / 2.
-        self.u7 = (self.q55 - self.q66) / 2.
+        self.u1 /= tr
+        self.u2 /= tr
+        self.u3 /= tr
+        self.u4 /= tr
+        self.u5 /= tr
+        self.u6 /= tr
+        self.u7 /= tr
 
     cpdef cDOUBLE[:, :] get_constitutive_matrix(MatLamina self):
         """Return the constitutive matrix
