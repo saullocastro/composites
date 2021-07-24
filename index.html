@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Documentation for the composites module &#8212; composites 0.4.1 documentation</title>
+    <title>Documentation for the composites module &#8212; composites 0.4.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">composites 0.4.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">composites 0.4.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Documentation for the <span class="math">composites</span> module</a></li> 
       </ul>
     </div>  
@@ -175,7 +175,7 @@ Shells - Theory and Analysys. Second Edition. CRC PRESS, 2004.</p>
 </dd>
 <dt><strong>g12</strong><span class="classifier">float</span></dt><dd><p>Equivalent laminate shear modulus in the 12 direction</p>
 </dd>
-<dt><strong>nu12, n21</strong><span class="classifier">float</span></dt><dd><p>Equivalent laminate Poisson ratios in the 12 and 21 directions</p>
+<dt><strong>nu12, nu21</strong><span class="classifier">float</span></dt><dd><p>Equivalent laminate Poisson ratios in the 12 and 21 directions</p>
 </dd>
 <dt><strong>scf_k13, scf_k23</strong><span class="classifier">float</span></dt><dd><p>Shear correction factor in the 13 and 23 directions</p>
 </dd>
@@ -185,8 +185,8 @@ equivalent single layer finite element mass matrices</p>
 <dt><strong>intrhoz</strong><span class="classifier">float</span></dt><dd><p>Integral <span class="math">\int_{-h/2+offset}^{+h/2+offset} \rho(z)z dz</span>, used in
 equivalent single layer finite element mass matrices</p>
 </dd>
-<dt><strong>intrhoz2</strong><span class="classifier">float</span></dt><dd><p>Integral <span class="math">\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^2 dz</span>, used in
-equivalent single layer finite element mass matrices</p>
+<dt><strong>intrhoz2</strong><span class="classifier">float</span></dt><dd><p>Integral <span class="math">\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^2 dz</span>, used
+in equivalent single layer finite element mass matrices</p>
 </dd>
 </dl>
 </dd>
@@ -215,9 +215,6 @@ equivalent single layer finite element mass matrices</p>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Laminate.force_symmetric" title="composites.core.Laminate.force_symmetric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">force_symmetric</span></code></a></p></td>
 <td><p>Force a symmetric laminate</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.rebuild" title="composites.core.Laminate.rebuild"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebuild</span></code></a></p></td>
-<td><p>Update thickness and density</p></td>
 </tr>
 </tbody>
 </table>
@@ -283,9 +280,8 @@ and <code class="docutils literal notranslate"><span class="pre">scf_k23</span><
 <dt class="sig sig-object py" id="composites.core.Laminate.force_orthotropic">
 <span class="sig-name descname"><span class="pre">force_orthotropic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.force_orthotropic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Force an orthotropic laminate</p>
-<p>The attributes</p>
-<p><span class="math">A_{16}</span>, <span class="math">A_{26}</span>, <span class="math">B_{16}</span>, <span class="math">B_{26}</span>, <span class="math">D_{16}</span>, <span class="math">D_{26}</span></p>
-<p>are set to zero to force an orthotropic laminate.</p>
+<p>The attributes <span class="math">A_{16}</span>, <span class="math">A_{26}</span>, <span class="math">B_{16}</span>, <span class="math">B_{26}</span>, <span class="math">D_{16}</span>,
+<span class="math">D_{26}</span> are set to zero to force an orthotropic laminate.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -293,12 +289,6 @@ and <code class="docutils literal notranslate"><span class="pre">scf_k23</span><
 <span class="sig-name descname"><span class="pre">force_symmetric</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.force_symmetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Force a symmetric laminate</p>
 <p>The <span class="math">B_{ij}</span> terms of the constitutive matrix are set to zero.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="composites.core.Laminate.rebuild">
-<span class="sig-name descname"><span class="pre">rebuild</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.rebuild" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update thickness and density</p>
 </dd></dl>
 
 </dd></dl>
@@ -328,10 +318,11 @@ and <code class="docutils literal notranslate"><span class="pre">scf_k23</span><
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">MatLamina</span></span><a class="headerlink" href="#composites.core.MatLamina" title="Permalink to this definition">¶</a></dt>
 <dd><p>Orthotropic material lamina</p>
 <p class="rubric">Notes</p>
-<p>For isotropic materials when the user defines <span class="math">\nu</span> and <span class="math">E</span>, <span class="math">G</span> will be
-recaculated based on equation: <span class="math">G = E/(2 \times (1+\nu))</span>; in a lower
-priority if the user defines <span class="math">\nu</span> and <span class="math">G</span>, <span class="math">E</span> will be recaculated based
-on equation: <span class="math">E = 2 \times (1+\nu) \times G</span>.</p>
+<p>For isotropic materials when the user defines <span class="math">\nu</span> and <span class="math">E</span>,
+<span class="math">G</span> will be recaculated based on equation: <span class="math">G = E/(2 \times
+(1+\nu))</span>; in a lower priority if the user defines <span class="math">\nu</span> and
+<span class="math">G</span>, <span class="math">E</span> will be recaculated based on equation: <span class="math">E = 2
+\times (1+\nu) \times G</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl class="simple">
@@ -420,6 +411,9 @@ on equation: <span class="math">E = 2 \times (1+\nu) \times G</span>.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebuild</span></code></a></p></td>
 <td><p>Update constitutive and invariant terms</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.MatLamina.trace_normalize_plane_stress" title="composites.core.MatLamina.trace_normalize_plane_stress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace_normalize_plane_stress</span></code></a></p></td>
+<td><p>Trace-normalize the lamina properties for plane stress</p></td>
+</tr>
 </tbody>
 </table>
 <dl class="py method">
@@ -445,22 +439,43 @@ Theory and analysis. Second Edition. CRC Press, 2004.</p>
 </div></blockquote>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="composites.core.MatLamina.trace_normalize_plane_stress">
+<span class="sig-name descname"><span class="pre">trace_normalize_plane_stress</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.MatLamina.trace_normalize_plane_stress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trace-normalize the lamina properties for plane stress</p>
+<p>Modify the original <a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a> object with a
+trace-normalization performed after calculating the trace according to
+Eq. 1 of reference:</p>
+<blockquote>
+<div><p>Melo, J. D. D., Bi, J., and Tsai, S. W., 2017, “A Novel
+Invariant-Based Design Approach to Carbon Fiber Reinforced
+Laminates,” Compos. Struct., 159, pp. 44–52.</p>
+</div></blockquote>
+<p>The trace calculated as <span class="math">tr = Q_{11} + Q_{22} + 2Q_{66}</span>.  The
+universal in-plane stress stiffness components
+<span class="math">Q_{11},Q_{12},Q_{22},Q_{44},Q_{55},Q_{66}</span> are divided by
+<span class="math">tr</span>, and the invariants <span class="math">U_1,U_2,U_3,U_4,U_5,U_6,U_7</span> are
+calculated with the normalized stiffnesses, such they also become
+trace-normalized invariants. These can be accessed using the
+<code class="docutils literal notranslate"><span class="pre">u1,u2,u3,u4,u5,u6,u7</span></code> attributes.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.core.force_balanced_LP">
 <span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">force_balanced_LP</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.force_balanced_LP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Force balanced lamination parameters</p>
-<p>The lamination parameters <span class="math">\xi_{A2}</span> and <span class="math">\xi_{A4}</span> are set to null
-to force a balanced laminate.</p>
+<p>The lamination parameters <span class="math">\xi_{A2}</span> and <span class="math">\xi_{A4}</span> are set to
+null to force a balanced laminate.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.core.force_symmetric_LP">
 <span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">force_symmetric_LP</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.force_symmetric_LP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Force symmetric lamination parameters</p>
-<p>The lamination parameters <span class="math">\xi_{Bi}</span> are set to null
-to force a symmetric laminate.</p>
+<p>The lamination parameters <span class="math">\xi_{Bi}</span> are set to null to force a
+symmetric laminate.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -500,9 +515,9 @@ lamination parameters</p>
 </dd>
 <dt><strong>matlamina</strong><span class="classifier"><a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a> object</span></dt><dd><p>Material object</p>
 </dd>
-<dt><strong>xiA1 to xiD4</strong><span class="classifier">float</span></dt><dd><p>The 16 lamination parameters <span class="math">\xi_{A1} \cdots \xi_{A4}</span>,  <span class="math">\xi_{B1}
-\cdots \xi_{B4}</span>, <span class="math">\xi_{C1} \cdots \xi_{C4}</span>,  <span class="math">\xi_{D1} \cdots
-\xi_{D4}</span>, <span class="math">\xi_{E1} \cdots \xi_{E4}</span></p>
+<dt><strong>xiA1 to xiD4</strong><span class="classifier">float</span></dt><dd><p>The 16 lamination parameters <span class="math">\xi_{A1} \cdots \xi_{A4}</span>,
+<span class="math">\xi_{B1} \cdots \xi_{B4}</span>, <span class="math">\xi_{C1} \cdots \xi_{C4}</span>,
+<span class="math">\xi_{D1} \cdots \xi_{D4}</span>, <span class="math">\xi_{E1} \cdots \xi_{E4}</span></p>
 </dd>
 </dl>
 </dd>
@@ -518,6 +533,41 @@ lamination parameters</p>
 </section>
 <span class="target" id="module-composites.utils"></span><section id="composites-core-utils-module-composites-utils">
 <h3>Composites Core Utils Module (<a class="reference internal" href="#module-composites.utils" title="composites.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.utils</span></code></a>)<a class="headerlink" href="#composites-core-utils-module-composites-utils" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="composites.utils.double_double_plate">
+<span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">double_double_plate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phideg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psideg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminaprop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_scf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.double_double_plate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a double-double laminated plate</p>
+<p>A double-double (DD) laminate consists of <span class="math">[\pm\phi,\pm\psi]</span>, with
+<code class="docutils literal notranslate"><span class="pre">phideg=</span></code> <span class="math">\phi</span>, and <code class="docutils literal notranslate"><span class="pre">psideg=</span></code> <span class="math">\psi</span>. With the
+principle of homogenization, at the limit where many plies are used
+we have that <span class="math">B=0</span>. Reference:</p>
+<blockquote>
+<div><p>Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., 2020,
+“D and DD-Drop Layup Optimization of Aircraft Wing Panels under
+Multi-Load Case Design Environment,” Compos. Struct., 248(January), p.
+112518.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>thickness</strong><span class="classifier">float</span></dt><dd><p>Total plate thickness.</p>
+</dd>
+<dt><strong>phideg</strong><span class="classifier">float</span></dt><dd><p>Angle <span class="math">\psi</span> of the DD laminate.</p>
+</dd>
+<dt><strong>psideg</strong><span class="classifier">float</span></dt><dd><p>Angle <span class="math">\phi</span> of the DD laminate.</p>
+</dd>
+<dt><strong>laminaprop</strong><span class="classifier">tuple</span></dt><dd><p>See <a class="reference internal" href="#composites.utils.read_laminaprop" title="composites.utils.read_laminaprop"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_laminaprop()</span></code></a> for details.</p>
+</dd>
+<dt><strong>rho</strong><span class="classifier">float, optional</span></dt><dd><p>Material density</p>
+</dd>
+<dt><strong>calc_scf</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, use <code class="xref py py-func docutils literal notranslate"><span class="pre">Laminate.calc_scf()</span></code> to compute shear correction
+factors, otherwise the default value of 5/6 is used.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.utils.isotropic_plate">
 <span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">isotropic_plate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_scf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.isotropic_plate" title="Permalink to this definition">¶</a></dt>
@@ -597,19 +647,27 @@ factors, otherwise the default value of 5/6 is used</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>laminaprop</strong><span class="classifier">list or tuple</span></dt><dd><p>Tuple containing the folliwing entries:</p>
-<blockquote>
-<div><p>(e1, e2, nu12, g12, g13, g23, e3, nu13, nu23)</p>
-</div></blockquote>
-<p>for othotropic materials the user can only supply:</p>
-<blockquote>
-<div><p>(e1, e2, nu12, g12, g13, g23)</p>
-</div></blockquote>
-<p>for isotropic materials the user can only supply:</p>
-<blockquote>
-<div><p>(e, nu) # new</p>
-<p>(e1, e2, nu12) # legacy, kept for compatibility with old codes</p>
-</div></blockquote>
+<dt><strong>laminaprop</strong><span class="classifier">list or tuple</span></dt><dd><p>For the most general case of tri-axial stress, use a tuple containing
+the folliwing entries:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">laminaprop</span> <span class="o">=</span> <span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">nu12</span><span class="p">,</span> <span class="n">g12</span><span class="p">,</span> <span class="n">g13</span><span class="p">,</span> <span class="n">g23</span><span class="p">,</span> <span class="n">e3</span><span class="p">,</span> <span class="n">nu13</span><span class="p">,</span> <span class="n">nu23</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For isotropic materials aiming calculations with tri-axial stresses,
+use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">e</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">nu</span><span class="p">))</span>
+<span class="n">laminaprop</span> <span class="o">=</span> <span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">nu</span><span class="p">,</span> <span class="n">nu</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For othotropic materials with in-plane stresses the user can only
+supply:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">laminaprop</span> <span class="o">=</span> <span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">nu12</span><span class="p">,</span> <span class="n">g12</span><span class="p">,</span> <span class="n">g13</span><span class="p">,</span> <span class="n">g23</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For isotropic materials with in-plane stresses the user can only
+supply:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">laminaprop</span> <span class="o">=</span> <span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">nu</span><span class="p">)</span> <span class="c1"># new</span>
+</pre></div>
+</div>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 17%" />
@@ -755,7 +813,7 @@ factors, otherwise the default value of 5/6 is used</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">composites 0.4.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">composites 0.4.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Documentation for the <span class="math">composites</span> module</a></li> 
       </ul>
     </div>
