@@ -16,19 +16,28 @@ def read_laminaprop(laminaprop, rho=0):
     Parameters
     ----------
     laminaprop : list or tuple
-        Tuple containing the folliwing entries:
+        For the most general case of tri-axial stress, use a tuple containing
+        the folliwing entries::
 
-            (e1, e2, nu12, g12, g13, g23, e3, nu13, nu23)
+            laminaprop = (e1, e2, nu12, g12, g13, g23, e3, nu13, nu23)
 
-        for othotropic materials the user can only supply:
+        For isotropic materials aiming calculations with tri-axial stresses,
+        use::
 
-            (e1, e2, nu12, g12, g13, g23)
+            g = e/(2*(1+nu))
+            laminaprop = (e, e, nu, g, g, g, e, nu, nu)
 
-        for isotropic materials the user can only supply:
+        For othotropic materials with in-plane stresses the user can only
+        supply::
 
-            (e, nu) # new
+            laminaprop = (e1, e2, nu12, g12, g13, g23)
 
-            (e1, e2, nu12) # legacy, kept for compatibility with old codes
+        For isotropic materials with in-plane stresses the user can only
+        supply::
+
+            laminaprop = (e, nu) # new
+
+            laminaprop = (e1, e2, nu12) # legacy, kept for compatibility with old codes
 
         ======  ==============================
         symbol  value
@@ -58,22 +67,20 @@ def read_laminaprop(laminaprop, rho=0):
     matlam = MatLamina()
 
     #laminaProp = (e1, e2, nu12, g12, g13, g23, e3, nu13, nu23)
-    if laminaprop == None:
-        raise ValueError('laminaprop must be a tuple')
-    if len(laminaprop) == 3: #ISOTROPIC legacy
+    assert len(laminaprop) in (2, 3, 6, 9), ('Invalid entry for laminaprop: ' +
+                                             str(laminaprop))
+    if len(laminaprop) == 3: #ISOTROPIC in-plane stress legacy
         e = laminaprop[0]
         nu = laminaprop[2]
         g = e/(2*(1+nu))
-        laminaprop = (e, e, nu, g, g, g, e, nu, nu)
-    if len(laminaprop) == 2: #ISOTROPIC new
+        laminaprop = (e, e, nu, g, g, g, 0, 0, 0)
+    elif len(laminaprop) == 2: #ISOTROPIC in-plane stress new
         e = laminaprop[0]
         nu = laminaprop[1]
         g = e/(2*(1+nu))
-        laminaprop = (e, e, nu, g, g, g, e, nu, nu)
-    nu12 = laminaprop[2]
-    if len(laminaprop) < 9:
-        e2 = laminaprop[1]
-        laminaprop = tuple(list(laminaprop)[:6] + [0, 0, 0])
+        laminaprop = (e, e, nu, g, g, g, 0, 0, 0)
+    elif len(laminaprop) == 6: #ORTHOTROPIC in-plane stress
+        laminaprop = tuple(list(laminaprop) + [0, 0, 0])
     matlam.e1 = laminaprop[0]
     matlam.e2 = laminaprop[1]
     matlam.e3 = laminaprop[6]
@@ -156,16 +163,18 @@ def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None, lamin
         rhos = [rho for i in stack]
 
     plies = []
+    lam.h = 0.
     for plyt, laminaprop, thetadeg, rho in zip(plyts, laminaprops, stack, rhos):
         laminaprop = laminaprop
         ply = Lamina()
         ply.thetadeg = float(thetadeg)
         ply.h = plyt
+        lam.h += ply.h
         ply.matlamina = read_laminaprop(laminaprop, rho)
+        ply.rebuild()
         plies.append(ply)
     lam.plies = plies
 
-    lam.rebuild()
     lam.calc_constitutive_matrix()
     if calc_scf:
         lam.calc_scf()
