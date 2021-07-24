@@ -211,7 +211,7 @@ def isotropic_plate(thickness, E, nu, offset=0., calc_scf=True, rho=0.):
 
 def double_double_plate(thickness, phideg, psideg, laminaprop=None,
         rho=0., calc_scf=True):
-    """Create a double-double laminated plate
+    r"""Create a double-double laminated plate
 
     A double-double (DD) laminate consists of :math:`[\pm\phi,\pm\psi]`, with
     ``phideg=`` :math:`\phi`, and ``psideg=`` :math:`\psi`. With the
