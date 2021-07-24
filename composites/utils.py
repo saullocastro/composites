@@ -12,7 +12,7 @@ from .core import (MatLamina, Lamina, Laminate, LaminationParameters,
         laminate_from_lamination_parameters)
 
 def read_laminaprop(laminaprop, rho=0):
-    """Returns a :class:`.MatLamina` object based on an input ``laminaprop`` tuple
+    r"""Returns a :class:`.MatLamina` object based on an input ``laminaprop`` tuple
 
     Parameters
     ----------
@@ -96,7 +96,7 @@ def read_laminaprop(laminaprop, rho=0):
 
 def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None,
         laminaprops=None, rhos=None, offset=0., calc_scf=True):
-    """Read a laminate stacking sequence data.
+    r"""Read a laminate stacking sequence data.
 
     :class:`.Laminate` object is returned based on the inputs given.
 
@@ -178,7 +178,7 @@ def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None,
 
 
 def isotropic_plate(thickness, E, nu, offset=0., calc_scf=True, rho=0.):
-    """Read data for an isotropic plate
+    r"""Read data for an isotropic plate
 
     :class:`.Laminate` object is returned based on the inputs given.
 
