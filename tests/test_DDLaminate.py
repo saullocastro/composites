@@ -56,17 +56,21 @@ def test_ABD():
     phideg = 15
     psideg = 30
     lam = double_double_plate(thickness, phideg, psideg, laminaprop)
-    print(lam.A)
 
-    num_repeats = 16
+    num_repeats = 32
     stack = [phideg, -phideg, psideg, -psideg]*num_repeats
     plyt = thickness/len(stack)
     lam_ref = laminated_plate(stack, plyt, laminaprop)
-    print(lam_ref.A)
 
-    #TODO, add ref value...
+    assert np.allclose(lam.A11, lam_ref.A11)
+    assert np.allclose(lam.A12, lam_ref.A12)
+    assert np.allclose(lam.A22, lam_ref.A22)
+    assert np.allclose(lam.A66, lam_ref.A66)
+    assert np.allclose(lam.D11, lam_ref.D11)
+    assert np.allclose(lam.D12, lam_ref.D12)
+    assert np.allclose(lam.D22, lam_ref.D22)
+    assert np.allclose(lam.D66, lam_ref.D66)
 
-    #assert np.allclose(lam.A, lam_ref.A)
-    #assert np.allclose(lam.B, lam_ref.B)
-    #assert np.allclose(lam.D, lam_ref.D)
-
+if __name__ == '__main__':
+    test_trace_normalized()
+    test_ABD()
