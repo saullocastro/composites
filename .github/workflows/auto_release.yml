@@ -16,12 +16,11 @@ jobs:
           PENULTIMATE_TAG=`git tag --sort=committerdate | tail --lines=-2 |  head --lines=1`
           LAST_TAG=`git tag --sort=committerdate | tail --lines=-1`
           BODY_TEXT=`git shortlog ${PENULTIMATE_TAG}...${LAST_TAG}`
-          echo "::set-output name=BODY_TEXT::$BODY_TEXT"
-        id: generate-changelog
+          echo "body_text=${BODY_TEXT}" >> $GITHUB_ENV
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          body: ${{ steps.generate-changelog.outputs.BODY_TEXT }}
+          body: ${{ env.body_text }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
