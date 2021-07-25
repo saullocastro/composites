@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Documentation for the composites module &#8212; composites 0.4.2 documentation</title>
+    <title>Documentation for the \(composites\) module &#8212; composites 0.4.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -14,6 +14,7 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -27,8 +28,8 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">composites 0.4.2 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Documentation for the <span class="math">composites</span> module</a></li> 
+        <li class="nav-item nav-item-0"><a href="#">composites 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Documentation for the <span class="math notranslate nohighlight">\(composites\)</span> module</a></li> 
       </ul>
     </div>  
 
@@ -38,7 +39,7 @@
           <div class="body" role="main">
             
   <section id="module-composites">
-<span id="documentation-for-the-composites-module"></span><h1>Documentation for the <span class="math">composites</span> module<a class="headerlink" href="#module-composites" title="Permalink to this headline">¶</a></h1>
+<span id="documentation-for-the-composites-module"></span><h1>Documentation for the <span class="math notranslate nohighlight">\(composites\)</span> module<a class="headerlink" href="#module-composites" title="Permalink to this headline">¶</a></h1>
 <section id="methods-to-calculate-composite-plate-properties-composites">
 <h2>Methods to calculate composite plate properties (<a class="reference internal" href="#module-composites" title="composites"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites</span></code></a>)<a class="headerlink" href="#methods-to-calculate-composite-plate-properties-composites" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">composites</span></code> module includes functions used to calculate plate properties
@@ -179,14 +180,14 @@ Shells - Theory and Analysys. Second Edition. CRC PRESS, 2004.</p>
 </dd>
 <dt><strong>scf_k13, scf_k23</strong><span class="classifier">float</span></dt><dd><p>Shear correction factor in the 13 and 23 directions</p>
 </dd>
-<dt><strong>intrho</strong><span class="classifier">float</span></dt><dd><p>Integral <span class="math">\int_{-h/2+offset}^{+h/2+offset} \rho(z) dz</span>, used in
+<dt><strong>intrho</strong><span class="classifier">float</span></dt><dd><p>Integral <span class="math notranslate nohighlight">\(\int_{-h/2+offset}^{+h/2+offset} \rho(z) dz\)</span>, used in
 equivalent single layer finite element mass matrices</p>
 </dd>
-<dt><strong>intrhoz</strong><span class="classifier">float</span></dt><dd><p>Integral <span class="math">\int_{-h/2+offset}^{+h/2+offset} \rho(z)z dz</span>, used in
+<dt><strong>intrhoz</strong><span class="classifier">float</span></dt><dd><p>Integral <span class="math notranslate nohighlight">\(\int_{-h/2+offset}^{+h/2+offset} \rho(z)z dz\)</span>, used in
 equivalent single layer finite element mass matrices</p>
 </dd>
-<dt><strong>intrhoz2</strong><span class="classifier">float</span></dt><dd><p>Integral <span class="math">\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^2 dz</span>, used
-in equivalent single layer finite element mass matrices</p>
+<dt><strong>intrhoz2</strong><span class="classifier">float</span></dt><dd><p>Integral <span class="math notranslate nohighlight">\(\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^2 dz\)</span>, used in
+equivalent single layer finite element mass matrices</p>
 </dd>
 </dl>
 </dd>
@@ -268,8 +269,8 @@ Int. Journal for Numerical Methods in Engineering, Vol. 33,
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>k13, k23</strong><span class="classifier">tuple</span></dt><dd><p>Shear correction factors. Also updates attributes: <code class="docutils literal notranslate"><span class="pre">scf_k13</span></code>
-and <code class="docutils literal notranslate"><span class="pre">scf_k23</span></code>.</p>
+<dt><strong>k13, k23</strong><span class="classifier">tuple</span></dt><dd><p>Shear correction factors. Also updates attributes: <code class="docutils literal notranslate"><span class="pre">scf_k13</span></code> and
+<code class="docutils literal notranslate"><span class="pre">scf_k23</span></code>.</p>
 </dd>
 </dl>
 </dd>
@@ -280,15 +281,15 @@ and <code class="docutils literal notranslate"><span class="pre">scf_k23</span><
 <dt class="sig sig-object py" id="composites.core.Laminate.force_orthotropic">
 <span class="sig-name descname"><span class="pre">force_orthotropic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.force_orthotropic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Force an orthotropic laminate</p>
-<p>The attributes <span class="math">A_{16}</span>, <span class="math">A_{26}</span>, <span class="math">B_{16}</span>, <span class="math">B_{26}</span>, <span class="math">D_{16}</span>,
-<span class="math">D_{26}</span> are set to zero to force an orthotropic laminate.</p>
+<p>The attributes <span class="math notranslate nohighlight">\(A_{16}\)</span>, <span class="math notranslate nohighlight">\(A_{26}\)</span>, <span class="math notranslate nohighlight">\(B_{16}\)</span>, <span class="math notranslate nohighlight">\(B_{26}\)</span>, <span class="math notranslate nohighlight">\(D_{16}\)</span>,
+<span class="math notranslate nohighlight">\(D_{26}\)</span> are set to zero to force an orthotropic laminate.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Laminate.force_symmetric">
 <span class="sig-name descname"><span class="pre">force_symmetric</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.force_symmetric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Force a symmetric laminate</p>
-<p>The <span class="math">B_{ij}</span> terms of the constitutive matrix are set to zero.</p>
+<p>The <span class="math notranslate nohighlight">\(B_{ij}\)</span> terms of the constitutive matrix are set to zero.</p>
 </dd></dl>
 
 </dd></dl>
@@ -300,13 +301,13 @@ and <code class="docutils literal notranslate"><span class="pre">scf_k23</span><
 <dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>xiA1, xiA2, xiA3, xiA4</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math">\xi_{Ai}</span> (in-plane)</p>
+<dt><strong>xiA1, xiA2, xiA3, xiA4</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math notranslate nohighlight">\(\xi_{Ai}\)</span> (in-plane)</p>
 </dd>
-<dt><strong>xiB1, xiB2, xiB3, xiB4</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math">\xi_{Bi}</span> (in-plane coupling with bending)</p>
+<dt><strong>xiB1, xiB2, xiB3, xiB4</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math notranslate nohighlight">\(\xi_{Bi}\)</span> (in-plane coupling with bending)</p>
 </dd>
-<dt><strong>xiD1, xiD2, xiD3, xiD4</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math">\xi_{Di}</span> (bending)</p>
+<dt><strong>xiD1, xiD2, xiD3, xiD4</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math notranslate nohighlight">\(\xi_{Di}\)</span> (bending)</p>
 </dd>
-<dt><strong>xiE1, xiE2, xiE3, xiE4</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math">\xi_{Ei}</span> (transverse shear)</p>
+<dt><strong>xiE1, xiE2, xiE3, xiE4</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math notranslate nohighlight">\(\xi_{Ei}\)</span> (transverse shear)</p>
 </dd>
 </dl>
 </dd>
@@ -318,11 +319,10 @@ and <code class="docutils literal notranslate"><span class="pre">scf_k23</span><
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">MatLamina</span></span><a class="headerlink" href="#composites.core.MatLamina" title="Permalink to this definition">¶</a></dt>
 <dd><p>Orthotropic material lamina</p>
 <p class="rubric">Notes</p>
-<p>For isotropic materials when the user defines <span class="math">\nu</span> and <span class="math">E</span>,
-<span class="math">G</span> will be recaculated based on equation: <span class="math">G = E/(2 \times
-(1+\nu))</span>; in a lower priority if the user defines <span class="math">\nu</span> and
-<span class="math">G</span>, <span class="math">E</span> will be recaculated based on equation: <span class="math">E = 2
-\times (1+\nu) \times G</span>.</p>
+<p>For isotropic materials when the user defines <span class="math notranslate nohighlight">\(\nu\)</span> and <span class="math notranslate nohighlight">\(E\)</span>, <span class="math notranslate nohighlight">\(G\)</span> will be
+recaculated based on equation: <span class="math notranslate nohighlight">\(G = E/(2 \times (1+\nu))\)</span>; in a lower
+priority if the user defines <span class="math notranslate nohighlight">\(\nu\)</span> and <span class="math notranslate nohighlight">\(G\)</span>, <span class="math notranslate nohighlight">\(E\)</span> will be recaculated based
+on equation: <span class="math notranslate nohighlight">\(E = 2 \times (1+\nu) \times G\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl class="simple">
@@ -451,13 +451,13 @@ Eq. 1 of reference:</p>
 Invariant-Based Design Approach to Carbon Fiber Reinforced
 Laminates,” Compos. Struct., 159, pp. 44–52.</p>
 </div></blockquote>
-<p>The trace calculated as <span class="math">tr = Q_{11} + Q_{22} + 2Q_{66}</span>.  The
+<p>The trace calculated as <span class="math notranslate nohighlight">\(tr = Q_{11} + Q_{22} + 2Q_{66}\)</span>.  The
 universal in-plane stress stiffness components
-<span class="math">Q_{11},Q_{12},Q_{22},Q_{44},Q_{55},Q_{66}</span> are divided by
-<span class="math">tr</span>, and the invariants <span class="math">U_1,U_2,U_3,U_4,U_5,U_6,U_7</span> are
-calculated with the normalized stiffnesses, such they also become
-trace-normalized invariants. These can be accessed using the
-<code class="docutils literal notranslate"><span class="pre">u1,u2,u3,u4,u5,u6,u7</span></code> attributes.</p>
+<span class="math notranslate nohighlight">\(Q_{11},Q_{12},Q_{22},Q_{44},Q_{55},Q_{66}\)</span> are divided by <span class="math notranslate nohighlight">\(tr\)</span>, and
+the invariants <span class="math notranslate nohighlight">\(U_1,U_2,U_3,U_4,U_5,U_6,U_7\)</span> are calculated with the
+normalized stiffnesses, such they also become trace-normalized
+invariants. These can be accessed using the <code class="docutils literal notranslate"><span class="pre">u1,u2,u3,u4,u5,u6,u7</span></code>
+attributes.</p>
 </dd></dl>
 
 </dd></dl>
@@ -466,16 +466,16 @@ trace-normalized invariants. These can be accessed using the
 <dt class="sig sig-object py" id="composites.core.force_balanced_LP">
 <span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">force_balanced_LP</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.force_balanced_LP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Force balanced lamination parameters</p>
-<p>The lamination parameters <span class="math">\xi_{A2}</span> and <span class="math">\xi_{A4}</span> are set to
-null to force a balanced laminate.</p>
+<p>The lamination parameters <span class="math notranslate nohighlight">\(\xi_{A2}\)</span> and <span class="math notranslate nohighlight">\(\xi_{A4}\)</span> are set to null to
+force a balanced laminate.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.core.force_symmetric_LP">
 <span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">force_symmetric_LP</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.force_symmetric_LP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Force symmetric lamination parameters</p>
-<p>The lamination parameters <span class="math">\xi_{Bi}</span> are set to null to force a
-symmetric laminate.</p>
+<p>The lamination parameters <span class="math notranslate nohighlight">\(\xi_{Bi}\)</span> are set to null to force a symmetric
+laminate.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -515,9 +515,9 @@ lamination parameters</p>
 </dd>
 <dt><strong>matlamina</strong><span class="classifier"><a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a> object</span></dt><dd><p>Material object</p>
 </dd>
-<dt><strong>xiA1 to xiD4</strong><span class="classifier">float</span></dt><dd><p>The 16 lamination parameters <span class="math">\xi_{A1} \cdots \xi_{A4}</span>,
-<span class="math">\xi_{B1} \cdots \xi_{B4}</span>, <span class="math">\xi_{C1} \cdots \xi_{C4}</span>,
-<span class="math">\xi_{D1} \cdots \xi_{D4}</span>, <span class="math">\xi_{E1} \cdots \xi_{E4}</span></p>
+<dt><strong>xiA1 to xiD4</strong><span class="classifier">float</span></dt><dd><p>The 16 lamination parameters <span class="math notranslate nohighlight">\(\xi_{A1} \cdots \xi_{A4}\)</span>, <span class="math notranslate nohighlight">\(\xi_{B1}
+\cdots \xi_{B4}\)</span>, <span class="math notranslate nohighlight">\(\xi_{C1} \cdots \xi_{C4}\)</span>, <span class="math notranslate nohighlight">\(\xi_{D1} \cdots
+\xi_{D4}\)</span>, <span class="math notranslate nohighlight">\(\xi_{E1} \cdots \xi_{E4}\)</span></p>
 </dd>
 </dl>
 </dd>
@@ -537,10 +537,10 @@ lamination parameters</p>
 <dt class="sig sig-object py" id="composites.utils.double_double_plate">
 <span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">double_double_plate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phideg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psideg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminaprop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_scf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.double_double_plate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a double-double laminated plate</p>
-<p>A double-double (DD) laminate consists of <span class="math">[\pm\phi,\pm\psi]</span>, with
-<code class="docutils literal notranslate"><span class="pre">phideg=</span></code> <span class="math">\phi</span>, and <code class="docutils literal notranslate"><span class="pre">psideg=</span></code> <span class="math">\psi</span>. With the
-principle of homogenization, at the limit where many plies are used
-we have that <span class="math">B=0</span>. Reference:</p>
+<p>A double-double (DD) laminate consists of <span class="math notranslate nohighlight">\([\pm\phi,\pm\psi]\)</span>, with
+<code class="docutils literal notranslate"><span class="pre">phideg=</span></code> <span class="math notranslate nohighlight">\(\phi\)</span>, and <code class="docutils literal notranslate"><span class="pre">psideg=</span></code> <span class="math notranslate nohighlight">\(\psi\)</span>. With the principle of
+homogenization, at the limit where many plies are used we have that <span class="math notranslate nohighlight">\(B=0\)</span>.
+Reference:</p>
 <blockquote>
 <div><p>Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., 2020,
 “D and DD-Drop Layup Optimization of Aircraft Wing Panels under
@@ -552,9 +552,9 @@ Multi-Load Case Design Environment,” Compos. Struct., 248(January), p.
 <dd class="field-odd"><dl class="simple">
 <dt><strong>thickness</strong><span class="classifier">float</span></dt><dd><p>Total plate thickness.</p>
 </dd>
-<dt><strong>phideg</strong><span class="classifier">float</span></dt><dd><p>Angle <span class="math">\psi</span> of the DD laminate.</p>
+<dt><strong>phideg</strong><span class="classifier">float</span></dt><dd><p>Angle <span class="math notranslate nohighlight">\(\psi\)</span> of the DD laminate.</p>
 </dd>
-<dt><strong>psideg</strong><span class="classifier">float</span></dt><dd><p>Angle <span class="math">\phi</span> of the DD laminate.</p>
+<dt><strong>psideg</strong><span class="classifier">float</span></dt><dd><p>Angle <span class="math notranslate nohighlight">\(\phi\)</span> of the DD laminate.</p>
 </dd>
 <dt><strong>laminaprop</strong><span class="classifier">tuple</span></dt><dd><p>See <a class="reference internal" href="#composites.utils.read_laminaprop" title="composites.utils.read_laminaprop"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_laminaprop()</span></code></a> for details.</p>
 </dd>
@@ -771,7 +771,7 @@ supply:</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Documentation for the <span class="math">composites</span> module</a><ul>
+<li><a class="reference internal" href="#">Documentation for the <span class="math notranslate nohighlight">\(composites\)</span> module</a><ul>
 <li><a class="reference internal" href="#methods-to-calculate-composite-plate-properties-composites">Methods to calculate composite plate properties (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites</span></code>)</a><ul>
 <li><a class="reference internal" href="#composites-core-module-composites-core">Composites Core Module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.core</span></code>)</a></li>
 <li><a class="reference internal" href="#composites-core-utils-module-composites-utils">Composites Core Utils Module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.utils</span></code>)</a></li>
@@ -813,8 +813,8 @@ supply:</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">composites 0.4.2 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Documentation for the <span class="math">composites</span> module</a></li> 
+        <li class="nav-item nav-item-0"><a href="#">composites 0.4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Documentation for the <span class="math notranslate nohighlight">\(composites\)</span> module</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
