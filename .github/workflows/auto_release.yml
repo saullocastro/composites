@@ -11,7 +11,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Generate changelog text
       - name: Release
         uses: softprops/action-gh-release@v1
         run: |
