@@ -207,10 +207,10 @@ def double_double_plate(thickness, phideg, psideg, laminaprop=None,
         rho=0., calc_scf=True):
     r"""Create a double-double laminated plate
 
-    A double-double (DD) laminate consists of :math:`[\pm\phi,\pm\psi]`, with
-    ``phideg=`` :math:`\phi`, and ``psideg=`` :math:`\psi`. With the
-    principle of homogenization, at the limit where many plies are used
-    we have that :math:`B=0`. Reference:
+    A double-double (DD) laminate consists of `[\pm\phi,\pm\psi]`, with
+    ``phideg=`` `\phi`, and ``psideg=`` `\psi`. With the principle of
+    homogenization, at the limit where many plies are used we have that `B=0`.
+    Reference:
 
         Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., 2020,
         “D and DD-Drop Layup Optimization of Aircraft Wing Panels under
@@ -222,9 +222,9 @@ def double_double_plate(thickness, phideg, psideg, laminaprop=None,
     thickness : float
         Total plate thickness.
     phideg : float
-        Angle :math:`\psi` of the DD laminate.
+        Angle `\psi` of the DD laminate.
     psideg : float
-        Angle :math:`\phi` of the DD laminate.
+        Angle `\phi` of the DD laminate.
     laminaprop : tuple
         See :func:`.read_laminaprop` for details.
     rho : float, optional

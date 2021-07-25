@@ -21,13 +21,13 @@ cdef class LaminationParameters:
     Attributes
     ----------
     xiA1, xiA2, xiA3, xiA4 : float
-        Lamination parameters :math:`\xi_{Ai}` (in-plane)
+        Lamination parameters `\xi_{Ai}` (in-plane)
     xiB1, xiB2, xiB3, xiB4 : float
-        Lamination parameters :math:`\xi_{Bi}` (in-plane coupling with bending)
+        Lamination parameters `\xi_{Bi}` (in-plane coupling with bending)
     xiD1, xiD2, xiD3, xiD4 : float
-        Lamination parameters :math:`\xi_{Di}` (bending)
+        Lamination parameters `\xi_{Di}` (bending)
     xiE1, xiE2, xiE3, xiE4 : float
-        Lamination parameters :math:`\xi_{Ei}` (transverse shear)
+        Lamination parameters `\xi_{Ei}` (transverse shear)
 
     """
     def __init__(LaminationParameters self):
@@ -112,11 +112,10 @@ cdef class MatLamina:
 
     Notes
     -----
-    For isotropic materials when the user defines :math:`\nu` and :math:`E`,
-    :math:`G` will be recaculated based on equation: :math:`G = E/(2 \times
-    (1+\nu))`; in a lower priority if the user defines :math:`\nu` and
-    :math:`G`, :math:`E` will be recaculated based on equation: :math:`E = 2
-    \times (1+\nu) \times G`.
+    For isotropic materials when the user defines `\nu` and `E`, `G` will be
+    recaculated based on equation: `G = E/(2 \times (1+\nu))`; in a lower
+    priority if the user defines `\nu` and `G`, `E` will be recaculated based
+    on equation: `E = 2 \times (1+\nu) \times G`.
 
     """
     def __init__(MatLamina self):
@@ -203,13 +202,13 @@ cdef class MatLamina:
             Invariant-Based Design Approach to Carbon Fiber Reinforced
             Laminates,” Compos. Struct., 159, pp. 44–52.
 
-        The trace calculated as :math:`tr = Q_{11} + Q_{22} + 2Q_{66}`.  The
+        The trace calculated as `tr = Q_{11} + Q_{22} + 2Q_{66}`.  The
         universal in-plane stress stiffness components
-        :math:`Q_{11},Q_{12},Q_{22},Q_{44},Q_{55},Q_{66}` are divided by
-        :math:`tr`, and the invariants `U_1,U_2,U_3,U_4,U_5,U_6,U_7` are
-        calculated with the normalized stiffnesses, such they also become
-        trace-normalized invariants. These can be accessed using the
-        ``u1,u2,u3,u4,u5,u6,u7`` attributes.
+        `Q_{11},Q_{12},Q_{22},Q_{44},Q_{55},Q_{66}` are divided by `tr`, and
+        the invariants `U_1,U_2,U_3,U_4,U_5,U_6,U_7` are calculated with the
+        normalized stiffnesses, such they also become trace-normalized
+        invariants. These can be accessed using the ``u1,u2,u3,u4,u5,u6,u7``
+        attributes.
 
         """
         cdef double tr
@@ -400,14 +399,14 @@ cdef class Laminate:
     scf_k13, scf_k23 : float
         Shear correction factor in the 13 and 23 directions
     intrho : float
-        Integral :math:`\int_{-h/2+offset}^{+h/2+offset} \rho(z) dz`, used in
+        Integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z) dz`, used in
         equivalent single layer finite element mass matrices
     intrhoz : float
-        Integral :math:`\int_{-h/2+offset}^{+h/2+offset} \rho(z)z dz`, used in
+        Integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z)z dz`, used in
         equivalent single layer finite element mass matrices
     intrhoz2 : float
-        Integral :math:`\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^2 dz`, used
-        in equivalent single layer finite element mass matrices
+        Integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^2 dz`, used in
+        equivalent single layer finite element mass matrices
 
     """
     def __init__(Laminate self):
@@ -499,8 +498,8 @@ cdef class Laminate:
         -------
 
         k13, k23 : tuple
-            Shear correction factors. Also updates attributes: ``scf_k13``
-            and ``scf_k23``.
+            Shear correction factors. Also updates attributes: ``scf_k13`` and
+            ``scf_k23``.
 
         """
         cdef double D1, R1, den1, D2, R2, den2, offset, zbot, z1, z2, thetarad
@@ -617,7 +616,7 @@ cdef class Laminate:
     cpdef void force_orthotropic(Laminate self):
         r"""Force an orthotropic laminate
 
-        The attributes :math:`A_{16}`, `A_{26}`, `B_{16}`, `B_{26}`, `D_{16}`,
+        The attributes `A_{16}`, `A_{26}`, `B_{16}`, `B_{26}`, `D_{16}`,
         `D_{26}` are set to zero to force an orthotropic laminate.
 
         """
@@ -633,7 +632,7 @@ cdef class Laminate:
     cpdef void force_symmetric(Laminate self):
         """Force a symmetric laminate
 
-        The :math:`B_{ij}` terms of the constitutive matrix are set to zero.
+        The `B_{ij}` terms of the constitutive matrix are set to zero.
 
         """
         if self.offset != 0.:
@@ -702,8 +701,8 @@ cdef class Laminate:
 cpdef LaminationParameters force_balanced_LP(LaminationParameters lp):
     r"""Force balanced lamination parameters
 
-    The lamination parameters :math:`\xi_{A2}` and :math:`\xi_{A4}` are set to
-    null to force a balanced laminate.
+    The lamination parameters `\xi_{A2}` and `\xi_{A4}` are set to null to
+    force a balanced laminate.
 
     """
     lp.xiA2 = 0
@@ -713,8 +712,8 @@ cpdef LaminationParameters force_balanced_LP(LaminationParameters lp):
 cpdef LaminationParameters force_symmetric_LP(LaminationParameters lp):
     r"""Force symmetric lamination parameters
 
-    The lamination parameters :math:`\xi_{Bi}` are set to null to force a
-    symmetric laminate.
+    The lamination parameters `\xi_{Bi}` are set to null to force a symmetric
+    laminate.
 
     """
     lp.xiB1 = 0
@@ -779,9 +778,9 @@ cpdef Laminate laminate_from_lamination_parameters2(double thickness, MatLamina
     matlamina : :class:`.MatLamina` object
         Material object
     xiA1 to xiD4 : float
-        The 16 lamination parameters :math:`\xi_{A1} \cdots \xi_{A4}`,
-        :math:`\xi_{B1} \cdots \xi_{B4}`, :math:`\xi_{C1} \cdots \xi_{C4}`,
-        :math:`\xi_{D1} \cdots \xi_{D4}`, :math:`\xi_{E1} \cdots \xi_{E4}`
+        The 16 lamination parameters `\xi_{A1} \cdots \xi_{A4}`, `\xi_{B1}
+        \cdots \xi_{B4}`, `\xi_{C1} \cdots \xi_{C4}`, `\xi_{D1} \cdots
+        \xi_{D4}`, `\xi_{E1} \cdots \xi_{E4}`
 
 
     Returns
