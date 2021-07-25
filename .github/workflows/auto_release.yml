@@ -15,12 +15,12 @@ jobs:
         run: |
           PENULTIMATE_TAG=`git tag --sort=committerdate | tail --lines=-2 |  head --lines=1`
           LAST_TAG=`git tag --sort=committerdate | tail --lines=-1`
-          git shortlog ${PENULTIMATE_TAG}...${LAST_TAG} > body.txt
+          BODY_TEXT=`git shortlog ${PENULTIMATE_TAG}...${LAST_TAG}`
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          body_path: body.txt
-          name: Version ${{ github.workflow }} 
+          name: Version ${{ github.ref }} 
+          body: ${BODY_TEXT}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
