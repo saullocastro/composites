@@ -11,7 +11,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Generate changelog text
+        run: |
+          PENULTIMATE_TAG=`git tag --sort=committerdate | tail --lines=-2 |  head --lines=1`
+          LAST_TAG=`git tag --sort=committerdate | tail --lines=-1`
+          git shortlog ${PENULTIMATE_TAG}...${LAST_TAG} > body.txt
       - name: Release
         uses: softprops/action-gh-release@v1
+        with:
+          body_path: body.txt
+          name: Version ${{ github.workflow }} 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
