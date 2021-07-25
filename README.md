@@ -12,25 +12,27 @@ Coverage status:
 [![Codecov Status](https://codecov.io/gh/saullocastro/composites/branch/master/graph/badge.svg?token=KD9D8G8D2P)](https://codecov.io/gh/saullocastro/composites)
 
 
-Methods to calculate structural properties of plates
-====================================================
+The composites module
+=====================
 
-Usually, this module is used to calculate:
+High-performance utilities to calculate properties of laminated composite
+materials. Usually, this module is used to calculate:
 
-- A, B, D, E stiffness matrices for plates
+- A, B, D, E plane-stress stiffness matrices for plates
 -- A, B, D, for classical plate theory (CLT, or CLPT)
 -- E for first-order shear deformation theory (FSDT)
-
+- Material invariants, trace-normalized or not
 - Lamination parameters based on material invariants
+- Stiffness matrices based on lamination parameters
 
 Documentation
-===
+-------------
 
 The documentation is available on: https://saullocastro.github.io/composites/
 
 
 History
-===
+-------
 
 - version 0.1.0, from sub-module of compmech 0.7.2
 - version 0.2.2, from sub-module of meshless 0.1.19
