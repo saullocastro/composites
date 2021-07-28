@@ -1,3 +1,7 @@
 [run]
 plugins = Cython.Coverage
 source = composites
+
+[report]
+exclude_lines =
+    pragma: no cover
