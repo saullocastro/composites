@@ -278,4 +278,3 @@ def double_double_plate(thickness, phideg, psideg, laminaprop=None,
 
     return lam
 
-
