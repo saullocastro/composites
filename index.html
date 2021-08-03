@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Documentation for the \(composites\) module &#8212; composites 0.4.11 documentation</title>
+    <title>Documentation for the \(composites\) module &#8212; composites 0.4.12 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">composites 0.4.11 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">composites 0.4.12 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Documentation for the <span class="math notranslate nohighlight">\(composites\)</span> module</a></li> 
       </ul>
     </div>  
@@ -641,6 +641,39 @@ factors, otherwise the default value of 5/6 is used</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="composites.utils.n_double_plate">
+<span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">n_double_plate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angles_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminaprop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_scf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.n_double_plate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a N-double laminated plate</p>
+<p>A N-double (ND) laminate consists of <span class="math notranslate nohighlight">\([\pm\phi_1,\pm\phi_2, \cdots,
+\pm\phi_n]\)</span>. With the principle of homogenization, at the limit where many
+plies are used we have that <span class="math notranslate nohighlight">\(B=0\)</span>.  Based on the double-double laminate as
+described by:</p>
+<blockquote>
+<div><p>Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., 2020,
+“D and DD-Drop Layup Optimization of Aircraft Wing Panels under
+Multi-Load Case Design Environment,” Compos. Struct., 248(January), p.
+112518.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>thickness</strong><span class="classifier">float</span></dt><dd><p>Total plate thickness.</p>
+</dd>
+<dt><strong>angles_deg</strong><span class="classifier">float</span></dt><dd><p>List of <span class="math notranslate nohighlight">\(\phi_n\)</span> of the ND laminate.</p>
+</dd>
+<dt><strong>laminaprop</strong><span class="classifier">tuple</span></dt><dd><p>See <a class="reference internal" href="#composites.utils.read_laminaprop" title="composites.utils.read_laminaprop"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_laminaprop()</span></code></a> for details.</p>
+</dd>
+<dt><strong>rho</strong><span class="classifier">float, optional</span></dt><dd><p>Material density</p>
+</dd>
+<dt><strong>calc_scf</strong><span class="classifier">bool, optional</span></dt><dd><p>If True, use <code class="xref py py-func docutils literal notranslate"><span class="pre">Laminate.calc_scf()</span></code> to compute shear correction
+factors, otherwise the default value of 5/6 is used.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="composites.utils.read_laminaprop">
 <span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">read_laminaprop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">laminaprop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.read_laminaprop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a> object based on an input <code class="docutils literal notranslate"><span class="pre">laminaprop</span></code> tuple</p>
@@ -813,13 +846,13 @@ supply:</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">composites 0.4.11 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">composites 0.4.12 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Documentation for the <span class="math notranslate nohighlight">\(composites\)</span> module</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2012-2021, Saullo G. P. Castro.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
     </div>
   </body>
 </html>
