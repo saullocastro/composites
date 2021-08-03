@@ -278,3 +278,70 @@ def double_double_plate(thickness, phideg, psideg, laminaprop=None,
 
     return lam
 
+
+def n_double_plate(thickness, angles_deg, laminaprop=None,
+        rho=0., calc_scf=True):
+    r"""Create a N-double laminated plate
+
+    A N-double (ND) laminate consists of `[\pm\phi_1,\pm\phi_2, \cdots,
+    \pm\phi_n]`. With the principle of homogenization, at the limit where many
+    plies are used we have that `B=0`.  Based on the double-double laminate as
+    described by:
+
+        Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., 2020,
+        “D and DD-Drop Layup Optimization of Aircraft Wing Panels under
+        Multi-Load Case Design Environment,” Compos. Struct., 248(January), p.
+        112518.
+
+    Parameters
+    ----------
+    thickness : float
+        Total plate thickness.
+    angles_deg : float
+        List of `\phi_n` of the ND laminate.
+    laminaprop : tuple
+        See :func:`.read_laminaprop` for details.
+    rho : float, optional
+        Material density
+    calc_scf : bool, optional
+        If True, use :func:`.Laminate.calc_scf` to compute shear correction
+        factors, otherwise the default value of 5/6 is used.
+
+    """
+    m = read_laminaprop(laminaprop, rho)
+    tr = m.q11 + m.q22 + 2*m.q66
+    m.trace_normalize_plane_stress()
+    lam = Laminate()
+    lam.h = thickness
+    A11_star = m.u1
+    A12_star = m.u4
+    A22_star = m.u1
+    A16_star = 0
+    A26_star = 0
+    A66_star = m.u5
+    for angle_deg in angles_deg:
+        angle = deg2rad(angle_deg)
+        A11_star += m.u2*(cos(2*angle) + cos(-2*angle))/(2*len(angles_deg))
+        A11_star += m.u3*(cos(4*angle) + cos(-4*angle))/(2*len(angles_deg))
+
+        A12_star -= m.u3*(cos(4*angle) + cos(-4*angle))/(2*len(angles_deg))
+
+        A22_star -= m.u2*(cos(2*angle) + cos(-2*angle))/(2*len(angles_deg))
+        A22_star += m.u3*(cos(4*angle) + cos(-4*angle))/(2*len(angles_deg))
+
+        A66_star -= m.u3*(cos(4*angle) + cos(-4*angle))/(2*len(angles_deg))
+
+    lam.A11 = tr*A11_star*lam.h
+    lam.A12 = tr*A12_star*lam.h
+    lam.A16 = tr*A16_star*lam.h
+    lam.A22 = tr*A22_star*lam.h
+    lam.A26 = tr*A26_star*lam.h
+    lam.A66 = tr*A66_star*lam.h
+    lam.D11 = tr*A11_star*lam.h**3/12.
+    lam.D12 = tr*A12_star*lam.h**3/12.
+    lam.D16 = tr*A16_star*lam.h**3/12.
+    lam.D22 = tr*A22_star*lam.h**3/12.
+    lam.D26 = tr*A26_star*lam.h**3/12.
+    lam.D66 = tr*A66_star*lam.h**3/12.
+
+    return lam
