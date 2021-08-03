@@ -28,7 +28,7 @@ materials. Usually, this module is used to calculate:
 Documentation
 -------------
 
-The documentation is available on: https://saullocastro.github.io/composites/
+The documentation is available on: https://saullocastro.github.io/composites.
 
 
 History
