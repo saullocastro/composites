@@ -34,5 +34,4 @@ def test_ABD():
     assert np.allclose(lam.D66, lam_ref.D66)
 
 if __name__ == '__main__':
-    test_trace_normalized()
     test_ABD()
