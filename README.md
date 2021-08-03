@@ -8,7 +8,7 @@ Github Actions status:
 
 Coverage status:
 
-[![Coverage Status](https://coveralls.io/repos/github/saullocastro/composites/badge.svg?branch=master)](https://coveralls.io/github/saullocastro/composites?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/saullocastro/composites/badge.png?branch=master)](https://coveralls.io/github/saullocastro/composites?branch=master)
 [![Codecov Status](https://codecov.io/gh/saullocastro/composites/branch/master/graph/badge.svg?token=KD9D8G8D2P)](https://codecov.io/gh/saullocastro/composites)
 
 
