@@ -31,8 +31,7 @@ Citing this repository
 Castro, S. G. P. Methods to calculate composite plate properties (Version
 0.4.12) [Computer software]. https://doi.org/10.5281/zenodo.2871782
 
-Bibtex ::
-    
+Bibtex :
     @misc{composites2021,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
