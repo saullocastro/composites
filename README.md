@@ -25,18 +25,19 @@ materials. Usually, this module is used to calculate:
 - Lamination parameters based on material invariants
 - Stiffness matrices (ABDE) based on lamination parameters
 
+
 Citing this repository
 ----------------------
 
 Castro, S. G. P. Methods to calculate composite plate properties (Version
-0.4.14) [Computer software]. https://doi.org/10.5281/zenodo.2871782
+0.4.15) [Computer software]. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex :
     
     @misc{composites2021,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods to calculate composite plate properties, Version 0.4.14}}
+        title = {{Methods to calculate composite plate properties, Version 0.4.15}}
         }
 
 Documentation
