@@ -12,10 +12,10 @@ Coverage status:
 [![Codecov Status](https://codecov.io/gh/saullocastro/composites/branch/master/graph/badge.svg?token=KD9D8G8D2P)](https://codecov.io/gh/saullocastro/composites)
 
 
-The composites module
-=====================
+Methods to calculate composite plate properties
+===============================================
 
-High-performance utilities to calculate properties of laminated composite
+High-performance module to calculate properties of laminated composite
 materials. Usually, this module is used to calculate:
 
 - A, B, D, E plane-stress stiffness matrices for plates
@@ -23,7 +23,10 @@ materials. Usually, this module is used to calculate:
 -- E for first-order shear deformation theory (FSDT)
 - Material invariants, trace-normalized or not
 - Lamination parameters based on material invariants
-- Stiffness matrices based on lamination parameters
+- Stiffness matrices (ABDE) based on lamination parameters
+
+Citing this repository
+----------------------
 
 Documentation
 -------------
