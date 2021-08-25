@@ -11,15 +11,5 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Generate changelog
-        run: |
-          PENULTIMATE_TAG=`git tag --sort=committerdate | tail --lines=-2 |  head --lines=1`
-          LAST_TAG=`git tag --sort=committerdate | tail --lines=-1`
-          echo `git shortlog ${PENULTIMATE_TAG}...${LAST_TAG}` > ${{ github.workflow }}-BODY.txt
       - name: Release
         uses: softprops/action-gh-release@v1
-        with:
-          body_path: ${{ github.workflow }}-BODY.txt
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
