@@ -1,5 +1,5 @@
-Documentation for the `composites` module
-=========================================
+Documentation for the ``composites`` module
+===========================================
 
 .. automodule:: composites
     :members:
