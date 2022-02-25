@@ -65,7 +65,7 @@ install_requires = [
 
 CLASSIFIERS = """\
 
-Development Status :: 4 - Beta
+Development Status :: 5 - Production/Stable
 Intended Audience :: Science/Research
 Intended Audience :: Developers
 Intended Audience :: Education
@@ -77,16 +77,16 @@ Topic :: Software Development :: Libraries :: Python Modules
 Operating System :: POSIX :: BSD
 Operating System :: Microsoft :: Windows
 Operating System :: Unix
-Programming Language :: Python :: 3.6
 Programming Language :: Python :: 3.7
 Programming Language :: Python :: 3.8
 Programming Language :: Python :: 3.9
+Programming Language :: Python :: 3.10
 License :: OSI Approved :: BSD License
 
 """
 
 is_released = True
-version = '0.4.18'
+version = '0.4.19'
 
 fullversion = write_version_py(version, is_released)
 
