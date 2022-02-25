@@ -60,7 +60,8 @@ History
 
 License
 -------
-Distrubuted in the 3-Clause BSD license (https://raw.github.com/saullocastro/composites/master/LICENSE).
+Distrubuted under the 3-Clause BSD license
+(https://raw.github.com/saullocastro/composites/master/LICENSE).
 
-Contact: S.G.P.Castro@tudelft.nl
+Contact: S.G.P.Castro@tudelft.nl.
 
