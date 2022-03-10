@@ -171,6 +171,7 @@ def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None,
     lam.plies = plies
 
     lam.calc_constitutive_matrix()
+    lam.calc_equivalent_properties()
     if calc_scf:
         lam.calc_scf()
 
@@ -275,6 +276,7 @@ def double_double_plate(thickness, phideg, psideg, laminaprop=None,
     lam.D22 = tr*A22_star*lam.h**3/12.
     lam.D26 = tr*A26_star*lam.h**3/12.
     lam.D66 = tr*A66_star*lam.h**3/12.
+    lam.calc_equivalent_properties()
 
     return lam
 
@@ -343,5 +345,6 @@ def n_double_plate(thickness, angles_deg, laminaprop=None,
     lam.D22 = tr*A22_star*lam.h**3/12.
     lam.D26 = tr*A26_star*lam.h**3/12.
     lam.D66 = tr*A66_star*lam.h**3/12.
+    lam.calc_equivalent_properties()
 
     return lam
