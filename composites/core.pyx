@@ -15,6 +15,7 @@ import numpy as np
 INT = np.int64
 DOUBLE = np.float64
 
+
 cdef class LaminationParameters:
     r"""Lamination parameters
 
@@ -35,6 +36,7 @@ cdef class LaminationParameters:
         self.xiB1=0; self.xiB2=0; self.xiB3=0; self.xiB4=0
         self.xiD1=0; self.xiD2=0; self.xiD3=0; self.xiD4=0
         self.xiE1=0; self.xiE2=0; self.xiE3=0; self.xiE4=0
+
 
 cdef class MatLamina:
     r"""

@@ -11,6 +11,7 @@ from numpy import cos, sin, deg2rad
 from .core import (MatLamina, Lamina, Laminate, LaminationParameters,
         laminate_from_lamination_parameters)
 
+
 def read_laminaprop(laminaprop, rho=0):
     r"""Returns a :class:`.MatLamina` object based on an input ``laminaprop`` tuple
 
@@ -203,6 +204,7 @@ def isotropic_plate(thickness, E, nu, offset=0., calc_scf=True, rho=0.):
     """
     return laminated_plate(plyt=thickness, stack=[0], laminaprop=(E, nu),
             rho=rho, offset=offset, calc_scf=calc_scf)
+
 
 def double_double_plate(thickness, phideg, psideg, laminaprop=None,
         rho=0., calc_scf=True):
