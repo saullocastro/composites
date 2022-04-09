@@ -279,6 +279,7 @@ def double_double_plate(thickness, phideg, psideg, laminaprop=None,
     lam.D26 = tr*A26_star*lam.h**3/12.
     lam.D66 = tr*A66_star*lam.h**3/12.
     lam.calc_equivalent_properties()
+    lam.stack = [phideg, psideg]
 
     return lam
 
@@ -348,5 +349,6 @@ def n_double_plate(thickness, angles_deg, laminaprop=None,
     lam.D26 = tr*A26_star*lam.h**3/12.
     lam.D66 = tr*A66_star*lam.h**3/12.
     lam.calc_equivalent_properties()
+    lam.stack = angles_deg
 
     return lam
