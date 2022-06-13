@@ -792,4 +792,20 @@ cpdef Laminate laminate_from_lamination_parameters2(double thickness, MatLamina
 
     """
     lp = LaminationParameters()
+    lp.xiA1 = xiA1
+    lp.xiA2 = xiA2
+    lp.xiA3 = xiA3
+    lp.xiA4 = xiA4
+    lp.xiB1 = xiB1
+    lp.xiB2 = xiB2
+    lp.xiB3 = xiB3
+    lp.xiB4 = xiB4
+    lp.xiD1 = xiD1
+    lp.xiD2 = xiD2
+    lp.xiD3 = xiD3
+    lp.xiD4 = xiD4
+    lp.xiE1 = xiE1
+    lp.xiE2 = xiE2
+    lp.xiE3 = xiE3
+    lp.xiE4 = xiE4
     return laminate_from_lamination_parameters(thickness, matlamina, lp)
