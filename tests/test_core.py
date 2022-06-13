@@ -2,6 +2,7 @@ import sys
 sys.path.append('..')
 
 import numpy as np
+import pytest
 
 from composites.utils import (read_laminaprop, laminated_plate,
         isotropic_plate)
@@ -254,19 +255,13 @@ def test_isotropic_plate():
 def test_errors():
     lam = test_isotropic_plate()
     lam.offset = 1.
-    try:
+    with pytest.raises(RuntimeError):
         lam.force_orthotropic()
-    except RuntimeError:
-        pass
-    try:
+    with pytest.raises(RuntimeError):
         lam.force_symmetric()
-    except RuntimeError:
-        pass
-    try:
+    with pytest.raises(ValueError):
         lam.plies = []
         lam.calc_lamination_parameters()
-    except ValueError:
-        pass
 
 if __name__ == '__main__':
     test_lampar_tri_axial()
