@@ -711,6 +711,7 @@ cpdef LaminationParameters force_balanced_LP(LaminationParameters lp):
     lp.xiA4 = 0
     return lp
 
+
 cpdef LaminationParameters force_symmetric_LP(LaminationParameters lp):
     r"""Force symmetric lamination parameters
 
