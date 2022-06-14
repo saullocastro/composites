@@ -648,7 +648,7 @@ cdef class Laminate:
         self.B66 = 0
 
     cpdef LaminationParameters calc_lamination_parameters(Laminate self):
-        """Calculate the lamination parameters.
+        r"""Calculate the lamination parameters.
 
         The following attributes are calculated:
 
@@ -673,8 +673,8 @@ cdef class Laminate:
             hk = h0
 
             Afac = ply.h / h
-            Bfac = (2. / h**2) * (hk**2 - hk_1**2)
-            Dfac = (4. / h**3) * (hk**3 - hk_1**3)
+            Bfac = (2. / h*h) * (hk*hk - hk_1*hk_1)
+            Dfac = (4. / h*h*h) * (hk*hk*hk - hk_1*hk_1*hk_1)
             Efac = (1. / h) * (hk - hk_1)
 
             lp.xiA1 += Afac * ply.cos2t
@@ -726,7 +726,7 @@ cpdef LaminationParameters force_symmetric_LP(LaminationParameters lp):
     return lp
 
 
-cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
+cpdef Laminate laminate_from_LaminationParameters(double thickness, MatLamina
         matlamina, LaminationParameters lp):
     r"""Return a :class:`.Laminate` object based in the thickness, material and
     lamination parameters
@@ -738,7 +738,7 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
     matlamina : :class:`.MatLamina` object
         Material object
     lp : :class:`.LaminationParameters` object
-        Lamination parameters
+        The container class with all lamination parameters already defined
 
     Returns
     -------
@@ -756,17 +756,17 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
         (lam.h       ) * np.dot(u, np.array([1, lp.xiA1, lp.xiA2, lp.xiA3, lp.xiA4]))
     # B matrix terms
     lam.B11, lam.B22, lam.B12, du1,du2,du3, lam.B66, lam.B16, lam.B26 =\
-        (lam.h**2/4. ) * np.dot(u, np.array([0, lp.xiB1, lp.xiB2, lp.xiB3, lp.xiB4]))
+        (lam.h*lam.h/4. ) * np.dot(u, np.array([0, lp.xiB1, lp.xiB2, lp.xiB3, lp.xiB4]))
     # D matrix terms
     lam.D11, lam.D22, lam.D12, du1,du2,du3, lam.D66, lam.D16, lam.D26 =\
-        (lam.h**3/12.) * np.dot(u, np.array([1, lp.xiD1, lp.xiD2, lp.xiD3, lp.xiD4]))
+        (lam.h*lam.h*lam.h/12.) * np.dot(u, np.array([1, lp.xiD1, lp.xiD2, lp.xiD3, lp.xiD4]))
     # E matrix terms
     du1,du2,du3, lam.E44, lam.E55, lam.E45, du4,du5,du6 =\
         (lam.h       ) * np.dot(u, np.array([1, lp.xiE1, lp.xiE2, lp.xiE3, lp.xiE4]))
     return lam
 
 
-cpdef Laminate laminate_from_lamination_parameters2(double thickness, MatLamina
+cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
         matlamina, double xiA1, double xiA2, double xiA3, double xiA4,
         double xiB1, double xiB2, double xiB3, double xiB4,
         double xiD1, double xiD2, double xiD3, double xiD4,
@@ -780,10 +780,10 @@ cpdef Laminate laminate_from_lamination_parameters2(double thickness, MatLamina
         The total thickness of the laminate
     matlamina : :class:`.MatLamina` object
         Material object
-    xiA1 to xiD4 : float
-        The 16 lamination parameters `\xi_{A1} \cdots \xi_{A4}`, `\xi_{B1}
-        \cdots \xi_{B4}`, `\xi_{C1} \cdots \xi_{C4}`, `\xi_{D1} \cdots
-        \xi_{D4}`, `\xi_{E1} \cdots \xi_{E4}`
+    xiA1 to xiE4 : float
+        The 16 lamination parameters according to the first-order shear
+        deformation theory: `\xi_{A1} \cdots \xi_{A4}`, `\xi_{B1} \cdots
+        \xi_{B4}`, `\xi_{D1} \cdots \xi_{D4}`, `\xi_{E1} \cdots \xi_{E4}`
 
 
     Returns
@@ -809,4 +809,4 @@ cpdef Laminate laminate_from_lamination_parameters2(double thickness, MatLamina
     lp.xiE2 = xiE2
     lp.xiE3 = xiE3
     lp.xiE4 = xiE4
-    return laminate_from_lamination_parameters(thickness, matlamina, lp)
+    return laminate_from_LaminationParameters(thickness, matlamina, lp)
