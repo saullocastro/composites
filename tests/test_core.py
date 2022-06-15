@@ -210,6 +210,10 @@ def test_errors():
     lam = test_isotropic_plate()
     lam.offset = 1.
     try:
+        lam.force_balanced()
+    except RuntimeError:
+        pass
+    try:
         lam.force_orthotropic()
     except RuntimeError:
         pass
