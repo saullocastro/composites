@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import os
 import inspect
 import subprocess
@@ -86,7 +84,7 @@ License :: OSI Approved :: BSD License
 """
 
 is_released = True
-version = '0.4.22'
+version = '0.5.0'
 
 fullversion = write_version_py(version, is_released)
 
@@ -101,12 +99,15 @@ package_data = {
         '': ['tests/*.*'],
         }
 
-if os.name == 'nt':
+if os.name == 'nt': # Windows
     compile_args = ['/openmp', '/O2']
     link_args = []
-else:
-    compile_args = ['-fopenmp']
-    link_args = ['-fopenmp']
+elif os.name == 'posix': # MAC-OS
+    compile_args = []
+    link_args = []
+else: # Linux
+    compile_args = ['-fopenmp', '-static', '-static-libgcc', '-static-libstdc++']
+    link_args = ['-fopenmp', '-static-libgcc', '-static-libstdc++']
 include_dirs = [
             np.get_include(),
             ]
