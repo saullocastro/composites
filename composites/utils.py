@@ -77,6 +77,9 @@ def read_laminaprop(laminaprop, rho=0):
         laminaprop = (e, e, nu, g, g, g, 0, 0, 0)
     elif len(laminaprop) == 6: #ORTHOTROPIC in-plane stress
         laminaprop = tuple(list(laminaprop) + [0, 0, 0])
+    elif len(laminaprop) == 9: #ORTHOTROPIC 3D stress state
+        laminaprop = tuple(laminaprop)
+
     matlam.e1 = laminaprop[0]
     matlam.e2 = laminaprop[1]
     matlam.e3 = laminaprop[6]
