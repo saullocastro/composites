@@ -27,7 +27,7 @@ cdef class LaminationParameters:
         Lamination parameters `\xi_{Bi}` (in-plane coupling with bending)
     xiD1, xiD2, xiD3, xiD4 : float
         Lamination parameters `\xi_{Di}` (bending)
-    xiE1, xiE2, xiE3, xiE4 : float
+    xiE1, xiE2 : float
         Lamination parameters `\xi_{Ei}` (transverse shear)
 
     """
@@ -35,7 +35,7 @@ cdef class LaminationParameters:
         self.xiA1=0; self.xiA2=0; self.xiA3=0; self.xiA4=0
         self.xiB1=0; self.xiB2=0; self.xiB3=0; self.xiB4=0
         self.xiD1=0; self.xiD2=0; self.xiD3=0; self.xiD4=0
-        self.xiE1=0; self.xiE2=0; self.xiE3=0; self.xiE4=0
+        self.xiE1=0; self.xiE2=0
 
 
 cdef class MatLamina:
@@ -172,9 +172,9 @@ cdef class MatLamina:
         self.q31 = self.e3*(self.nu13 + self.nu12 * self.nu32) / den
         self.q32 = self.e3*(self.nu23 + self.nu13 * self.nu21) / den
         self.q33 = self.e3*(1         - self.nu12 * self.nu21) / den
-        self.q44 = self.g12
-        self.q55 = self.g23
-        self.q66 = self.g13
+        self.q66 = self.g12
+        self.q44 = self.g23
+        self.q55 = self.g13
         #
         # from reference:
         #   Jones R. M. (1999), Mechanics of Composite Materials, second edn,
@@ -185,13 +185,13 @@ cdef class MatLamina:
         #   Laminated composite shell: buckling of a
         #   cylindrical panel with a circular hole
         #
-        self.u1 = (3*self.q11 + 3*self.q22 + 2*self.q12 + 4*self.q44) / 8.
+        self.u1 = (3*self.q11 + 3*self.q22 + 2*self.q12 + 4*self.q66) / 8.
         self.u2 = (self.q11 - self.q22) / 2.
-        self.u3 = (self.q11 + self.q22 - 2*self.q12 - 4*self.q44) / 8.
-        self.u4 = (self.q11 + self.q22 + 6*self.q12 - 4*self.q44) / 8.
+        self.u3 = (self.q11 + self.q22 - 2*self.q12 - 4*self.q66) / 8.
+        self.u4 = (self.q11 + self.q22 + 6*self.q12 - 4*self.q66) / 8.
         self.u5 = (self.u1 - self.u4) / 2.
-        self.u6 = (self.q55 + self.q66) / 2.
-        self.u7 = (self.q55 - self.q66) / 2.
+        self.u6 = (self.q44 + self.q55) / 2.
+        self.u7 = (self.q44 - self.q55) / 2.
 
     cpdef void trace_normalize_plane_stress(MatLamina self):
         """Trace-normalize the lamina properties for plane stress
@@ -247,12 +247,12 @@ cdef class MatLamina:
             [[self.u1,  self.u2,    0,  self.u3,   0],            # q11
              [self.u1, -self.u2,    0,  self.u3,   0],            # q22
              [self.u4,   0,    0, -self.u3,   0],                 # q12
-             [self.u6,  self.u7,    0,   0,   0],                 # q55
-             [self.u6, -self.u7,    0,   0,   0],                 # q66
-             [ 0,   0, -self.u7,    0,   0],                      # q56
-             [self.u5,   0,    0, -self.u3,   0],                 # q44
-             [ 0,   0, self.u2/2.,   0,  self.u3],                # q14
-             [ 0,   0, self.u2/2.,   0, -self.u3]], dtype=DOUBLE) # q24
+             [self.u5,   0,    0, -self.u3,   0],                 # q66
+             [ 0,   0, self.u2/2.,   0,  self.u3],                # q16
+             [ 0,   0, self.u2/2.,   0, -self.u3],                # q26
+             [self.u6,  self.u7,    0,   0,   0],                 # q44
+             [ 0,   0, -self.u7,    0,   0],                      # q45
+             [self.u6, -self.u7,    0,   0,   0]], dtype=DOUBLE)  # q55
 
 
 cdef class Lamina:
@@ -597,9 +597,6 @@ cdef class Laminate:
             self.A22 += ply.q22L*(hk - hk_1)
             self.A26 += ply.q26L*(hk - hk_1)
             self.A66 += ply.q66L*(hk - hk_1)
-            self.E44 += ply.q44L*(hk - hk_1)
-            self.E45 += ply.q45L*(hk - hk_1)
-            self.E55 += ply.q55L*(hk - hk_1)
 
             self.B11 += 1/2.*ply.q11L*(hk*hk - hk_1*hk_1)
             self.B12 += 1/2.*ply.q12L*(hk*hk - hk_1*hk_1)
@@ -614,6 +611,24 @@ cdef class Laminate:
             self.D22 += 1/3.*ply.q22L*(hk*hk*hk - hk_1*hk_1*hk_1)
             self.D26 += 1/3.*ply.q26L*(hk*hk*hk - hk_1*hk_1*hk_1)
             self.D66 += 1/3.*ply.q66L*(hk*hk*hk - hk_1*hk_1*hk_1)
+
+            self.E44 += ply.q44L*(hk - hk_1)
+            self.E45 += ply.q45L*(hk - hk_1)
+            self.E55 += ply.q55L*(hk - hk_1)
+
+    cpdef void force_balanced(Laminate self):
+        r"""Force a balanced laminate
+
+        The attributes `A_{16}`, `A_{26}`, `B_{16}`, `B_{26}` are set to zero
+        to force a balanced laminate.
+
+        """
+        if self.offset != 0.:
+            raise RuntimeError('Laminates with offset cannot be forced balanced!')
+        self.A16 = 0.
+        self.A26 = 0.
+        self.B16 = 0.
+        self.B26 = 0.
 
     cpdef void force_orthotropic(Laminate self):
         r"""Force an orthotropic laminate
@@ -655,7 +670,7 @@ cdef class Laminate:
             ``xiA``, ``xiB``, ``xiD``, ``xiE``
 
         """
-        cdef double h0, hk, hk_1, h, Afac, Bfac, Dfac, Efac
+        cdef double h0, hk, hk_1, h, zbar1, zbar2, Afac, Bfac, Dfac, Efac
         cdef LaminationParameters lp = LaminationParameters()
 
         if len(self.plies) == 0:
@@ -671,11 +686,13 @@ cdef class Laminate:
             hk_1 = h0
             h0 += ply.h
             hk = h0
+            zbar2 = hk/h
+            zbar1 = hk_1/h
 
-            Afac = ply.h / h
-            Bfac = (2. / h*h) * (hk*hk - hk_1*hk_1)
-            Dfac = (4. / h*h*h) * (hk*hk*hk - hk_1*hk_1*hk_1)
-            Efac = (1. / h) * (hk - hk_1)
+            Afac = zbar2 - zbar1
+            Bfac = 2*(zbar2*zbar2 - zbar1*zbar1)
+            Dfac = 4*(zbar2*zbar2*zbar2 - zbar1*zbar1*zbar1)
+            Efac = zbar2 - zbar1
 
             lp.xiA1 += Afac * ply.cos2t
             lp.xiA2 += Afac * ply.sin2t
@@ -694,8 +711,6 @@ cdef class Laminate:
 
             lp.xiE1 += Efac * ply.cos2t
             lp.xiE2 += Efac * ply.sin2t
-            lp.xiE3 += Efac * ply.cos4t
-            lp.xiE4 += Efac * ply.sin4t
 
         return lp
 
@@ -726,8 +741,27 @@ cpdef LaminationParameters force_symmetric_LP(LaminationParameters lp):
     return lp
 
 
+cpdef LaminationParameters force_orthotropic_LP(LaminationParameters lp):
+    r"""Force orthotropic lamination parameters
+
+    The lamination parameters `\xi_{A2}`, `\xi_{A4}`, `\xi_{B2}`, `\xi_{B4}`,
+    `\xi_{D2}` and `\xi_{D4}` are set to null to force an orthotropic laminate.
+    The `\xi_{D2}` and `\xi_{D4}` are related to the bend-twist coupling and
+    become often very small for balanced laminates with a large amount of
+    plies.
+
+    """
+    lp.xiA2 = 0
+    lp.xiA4 = 0
+    lp.xiB2 = 0
+    lp.xiB4 = 0
+    lp.xiD2 = 0
+    lp.xiD4 = 0
+    return lp
+
+
 cpdef Laminate laminate_from_LaminationParameters(double thickness, MatLamina
-        matlamina, LaminationParameters lp):
+        mat, LaminationParameters lp):
     r"""Return a :class:`.Laminate` object based in the thickness, material and
     lamination parameters
 
@@ -735,7 +769,7 @@ cpdef Laminate laminate_from_LaminationParameters(double thickness, MatLamina
     ----------
     thickness : float
         The total thickness of the laminate
-    matlamina : :class:`.MatLamina` object
+    mat : :class:`.MatLamina` object
         Material object
     lp : :class:`.LaminationParameters` object
         The container class with all lamination parameters already defined
@@ -748,21 +782,32 @@ cpdef Laminate laminate_from_LaminationParameters(double thickness, MatLamina
     """
     lam = Laminate()
     lam.h = thickness
-    u = matlamina.get_invariant_matrix()
-    # dummies used to unpack vector results
-    du1, du2, du3, du4, du5, du6 = 0, 0, 0, 0, 0, 0
-    # A matrix terms
-    lam.A11, lam.A22, lam.A12, du1,du2,du3, lam.A66, lam.A16, lam.A26 =\
-        (lam.h       ) * np.dot(u, np.array([1, lp.xiA1, lp.xiA2, lp.xiA3, lp.xiA4]))
-    # B matrix terms
-    lam.B11, lam.B22, lam.B12, du1,du2,du3, lam.B66, lam.B16, lam.B26 =\
-        (lam.h*lam.h/4. ) * np.dot(u, np.array([0, lp.xiB1, lp.xiB2, lp.xiB3, lp.xiB4]))
-    # D matrix terms
-    lam.D11, lam.D22, lam.D12, du1,du2,du3, lam.D66, lam.D16, lam.D26 =\
-        (lam.h*lam.h*lam.h/12.) * np.dot(u, np.array([1, lp.xiD1, lp.xiD2, lp.xiD3, lp.xiD4]))
-    # E matrix terms
-    du1,du2,du3, lam.E44, lam.E55, lam.E45, du4,du5,du6 =\
-        (lam.h       ) * np.dot(u, np.array([1, lp.xiE1, lp.xiE2, lp.xiE3, lp.xiE4]))
+
+    lam.A11 = lam.h*(mat.u1 + mat.u2*lp.xiA1 + 0*lp.xiA2 + mat.u3*lp.xiA3 + 0*lp.xiA4)
+    lam.A12 = lam.h*(mat.u4 + 0*lp.xiA1 + 0*lp.xiA2 + (-1)*mat.u3*lp.xiA3 + 0*lp.xiA4)
+    lam.A22 = lam.h*(mat.u1 + (-1)*mat.u2*lp.xiA1 + 0*lp.xiA2 + mat.u3*lp.xiA3 + 0*lp.xiA4)
+    lam.A16 = lam.h*(0 + 0*lp.xiA1 + mat.u2/2.*lp.xiA2 + 0*lp.xiA3 + mat.u3*lp.xiA4)
+    lam.A26 = lam.h*(0 + 0*lp.xiA1 + mat.u2/2.*lp.xiA2 + 0*lp.xiA3 + (-1)*mat.u3*lp.xiA4)
+    lam.A66 = lam.h*(mat.u5 + 0*lp.xiA1 + 0*lp.xiA2 + (-1)*mat.u3*lp.xiA3 + 0*lp.xiA4)
+
+    lam.B11 = lam.h*lam.h/4.*(mat.u2*lp.xiB1 + 0*lp.xiB2 + mat.u3*lp.xiB3 + 0*lp.xiB4)
+    lam.B12 = lam.h*lam.h/4.*(0*lp.xiB1 + 0*lp.xiB2 + (-1)*mat.u3*lp.xiB3 + 0*lp.xiB4)
+    lam.B22 = lam.h*lam.h/4.*((-1)*mat.u2*lp.xiB1 + 0*lp.xiB2 + mat.u3*lp.xiB3 + 0*lp.xiB4)
+    lam.B16 = lam.h*lam.h/4.*(0*lp.xiB1 + mat.u2/2.*lp.xiB2 + 0*lp.xiB3 + mat.u3*lp.xiB4)
+    lam.B26 = lam.h*lam.h/4.*(0*lp.xiB1 + mat.u2/2.*lp.xiB2 + 0*lp.xiB3 + (-1)*mat.u3*lp.xiB4)
+    lam.B66 = lam.h*lam.h/4.*(0*lp.xiB1 + 0*lp.xiB2 + (-1)*mat.u3*lp.xiB3 + 0*lp.xiB4)
+
+    lam.D11 = lam.h*lam.h*lam.h/12.*(mat.u1 + mat.u2*lp.xiD1 + 0*lp.xiD2 + mat.u3*lp.xiD3 + 0*lp.xiD4)
+    lam.D12 = lam.h*lam.h*lam.h/12.*(mat.u4 + 0*lp.xiD1 + 0*lp.xiD2 + (-1)*mat.u3*lp.xiD3 + 0*lp.xiD4)
+    lam.D22 = lam.h*lam.h*lam.h/12.*(mat.u1 + (-1)*mat.u2*lp.xiD1 + 0*lp.xiD2 + mat.u3*lp.xiD3 + 0*lp.xiD4)
+    lam.D16 = lam.h*lam.h*lam.h/12.*(0 + 0*lp.xiD1 + mat.u2/2.*lp.xiD2 + 0*lp.xiD3 + mat.u3*lp.xiD4)
+    lam.D26 = lam.h*lam.h*lam.h/12.*(0 + 0*lp.xiD1 + mat.u2/2.*lp.xiD2 + 0*lp.xiD3 + (-1)*mat.u3*lp.xiD4)
+    lam.D66 = lam.h*lam.h*lam.h/12.*(mat.u5 + 0*lp.xiD1 + 0*lp.xiD2 + (-1)*mat.u3*lp.xiD3 + 0*lp.xiD4)
+
+    lam.E44 = lam.h*(mat.u6 + mat.u7*lp.xiE1 + 0*lp.xiE2)
+    lam.E45 = lam.h*(0 + 0*lp.xiE1 + (-1)*mat.u7*lp.xiE2)
+    lam.E55 = lam.h*(mat.u6 + (-1)*mat.u7*lp.xiE1 + 0*lp.xiE2)
+
     return lam
 
 
@@ -770,7 +815,7 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
         matlamina, double xiA1, double xiA2, double xiA3, double xiA4,
         double xiB1, double xiB2, double xiB3, double xiB4,
         double xiD1, double xiD2, double xiD3, double xiD4,
-        double xiE1, double xiE2, double xiE3, double xiE4):
+        double xiE1, double xiE2):
     r"""Return a :class:`.Laminate` object based in the thickness, material and
     lamination parameters
 
@@ -780,10 +825,10 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
         The total thickness of the laminate
     matlamina : :class:`.MatLamina` object
         Material object
-    xiA1 to xiE4 : float
-        The 16 lamination parameters according to the first-order shear
+    xiAj, xiBj, xiDj, xiEj : float
+        The 14 lamination parameters according to the first-order shear
         deformation theory: `\xi_{A1} \cdots \xi_{A4}`, `\xi_{B1} \cdots
-        \xi_{B4}`, `\xi_{D1} \cdots \xi_{D4}`, `\xi_{E1} \cdots \xi_{E4}`
+        \xi_{B4}`, `\xi_{D1} \cdots \xi_{D4}`, `\xi_{E1} \text{ and } \xi_{E2}`
 
 
     Returns
@@ -807,6 +852,4 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
     lp.xiD4 = xiD4
     lp.xiE1 = xiE1
     lp.xiE2 = xiE2
-    lp.xiE3 = xiE3
-    lp.xiE4 = xiE4
     return laminate_from_LaminationParameters(thickness, matlamina, lp)

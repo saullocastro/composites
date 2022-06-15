@@ -58,6 +58,7 @@ cdef class Laminate:
     cpdef void calc_scf(Laminate)
     cpdef void calc_equivalent_properties(Laminate)
     cpdef void calc_constitutive_matrix(Laminate)
+    cpdef void force_balanced(Laminate)
     cpdef void force_orthotropic(Laminate)
     cpdef void force_symmetric(Laminate)
     cpdef LaminationParameters calc_lamination_parameters(Laminate)
