@@ -7,7 +7,8 @@ from composites.utils import (read_laminaprop, laminated_plate,
         isotropic_plate)
 from composites.core import (laminate_from_LaminationParameters,
         laminate_from_lamination_parameters, force_balanced_LP,
-        force_orthotropic_LP, force_symmetric_LP, Lamina)
+        force_orthotropic_LP, force_symmetric_LP, Lamina,
+        laminate_LP_gradients, LaminationParameters)
 
 
 def test_lampar_tri_axial():
@@ -226,6 +227,31 @@ def test_errors():
         lam.calc_lamination_parameters()
     except ValueError:
         pass
+
+
+def test_laminate_LP_gradients():
+    E = 71e9
+    nu = 0.33
+    lamprop = (E, nu)
+    rho = 0
+    thickness = 1
+    matlamina = read_laminaprop(lamprop, rho)
+    lp = LaminationParameters()
+    lp.xiA1 = 0.5
+    lp.xiA2 = 0.4
+    lp.xiA3 = -0.3
+    lp.xiA4 = -0.6
+    lp.xiB1 = 0.5
+    lp.xiB2 = 0.4
+    lp.xiB3 = -0.3
+    lp.xiB4 = -0.6
+    lp.xiD1 = 0.5
+    lp.xiD2 = 0.4
+    lp.xiD3 = -0.3
+    lp.xiD4 = -0.6
+
+    laminate_LP_gradients(thickness, matlamina, lp)
+
 
 if __name__ == '__main__':
     test_lampar_tri_axial()
