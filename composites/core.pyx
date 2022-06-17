@@ -815,9 +815,13 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
         matlamina, double xiA1, double xiA2, double xiA3, double xiA4,
         double xiB1, double xiB2, double xiB3, double xiB4,
         double xiD1, double xiD2, double xiD3, double xiD4,
-        double xiE1, double xiE2):
+        double xiE1=0, double xiE2=0):
     r"""Return a :class:`.Laminate` object based in the thickness, material and
     lamination parameters
+
+    Note that `\xi_{E1}` and `\xi_{E2}` are optional and usually equal to zero,
+    becoming important only when the transverse shear modulus is different in
+    the two directions, i.e.  when `G_{13} \ne G{23}`.
 
     Parameters
     ----------
@@ -828,7 +832,7 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
     xiAj, xiBj, xiDj, xiEj : float
         The 14 lamination parameters according to the first-order shear
         deformation theory: `\xi_{A1} \cdots \xi_{A4}`, `\xi_{B1} \cdots
-        \xi_{B4}`, `\xi_{D1} \cdots \xi_{D4}`, `\xi_{E1} \text{ and } \xi_{E2}`
+        \xi_{B4}`, `\xi_{D1} \cdots \xi_{D4}`, `\xi_{E1}` and `\xi_{E2}`
 
 
     Returns
@@ -853,3 +857,134 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
     lp.xiE1 = xiE1
     lp.xiE2 = xiE2
     return laminate_from_LaminationParameters(thickness, matlamina, lp)
+
+
+def laminate_LP_gradients(double thickness, MatLamina mat, LaminationParameters lp):
+    r"""Calculate the gradients of the laminate with respect to the lamination
+    parameters
+
+    Parameters
+    ----------
+    thickness : float
+        The total thickness of the laminate
+    mat : :class:`.MatLamina` object
+        Material object
+    lp : :class:`.LaminationParameters` object
+        The container class with all lamination parameters already defined
+
+    Returns
+    -------
+    gradAij, gradBij, gradDij, gradEij : tuple of 2D np.array objects
+        The shapes of these gradient matrices are:
+
+            gradAij: (6, 5)
+            gradBij: (6, 5)
+            gradDij: (6, 5)
+            gradEij: (3, 3)
+
+        They contain the gradients of each laminate stiffness with respect to
+        the thickness and respective lamination parameters. The rows and
+        columns correspond to::
+
+            gradAij
+            -------
+
+                h xiA1 xiA2 xiA3 xiA4
+            A11
+            A12
+            A16
+            A22
+            A26
+            A66
+
+            gradBij
+            -------
+
+                h xiB1 xiB2 xiB3 xiB4
+            B11
+            B12
+            B16
+            B22
+            B26
+            B66
+
+            gradDij
+            -------
+
+                h xiD1 xiD2 xiD3 xiD4
+            D11
+            D12
+            D16
+            D22
+            D26
+            D66
+
+            gradEij
+            -------
+
+                h xiE1 xiE2
+            E44
+            E45
+            E55
+
+    """
+    cdef double h
+    cdef np.ndarray[ndim=2, dtype=cDOUBLE] gradAij, gradBij, gradDij, gradEij, gradinv
+    gradAij = np.zeros((6, 5), dtype=DOUBLE)
+    gradBij = np.zeros((6, 5), dtype=DOUBLE)
+    gradDij = np.zeros((6, 5), dtype=DOUBLE)
+    gradEij = np.zeros((3, 3), dtype=DOUBLE)
+    gradinv = np.zeros((6, 4), dtype=DOUBLE)
+    h = thickness
+
+    gradinv = np.array([[mat.u2, 0, mat.u3, 0],
+                        [0, 0, -mat.u3, 0],
+                        [0, mat.u2/2., 0, mat.u3],
+                        [-mat.u2, 0, mat.u3, 0],
+                        [0, mat.u2/2., 0, -mat.u3],
+                        [0, 0, -mat.u3, 0]])
+
+    # d(A11 A12 A16 A22 A26 A66) / dh
+    gradAij[0, 0] = (mat.u1 + mat.u2*lp.xiA1 + 0*lp.xiA2 + mat.u3*lp.xiA3 + 0*lp.xiA4)
+    gradAij[1, 0] = (mat.u4 + 0*lp.xiA1 + 0*lp.xiA2 + (-1)*mat.u3*lp.xiA3 + 0*lp.xiA4)
+    gradAij[2, 0] = (0 + 0*lp.xiA1 + mat.u2/2.*lp.xiA2 + 0*lp.xiA3 + mat.u3*lp.xiA4)
+    gradAij[3, 0] = (mat.u1 + (-1)*mat.u2*lp.xiA1 + 0*lp.xiA2 + mat.u3*lp.xiA3 + 0*lp.xiA4)
+    gradAij[4, 0] = (0 + 0*lp.xiA1 + mat.u2/2.*lp.xiA2 + 0*lp.xiA3 + (-1)*mat.u3*lp.xiA4)
+    gradAij[5, 0] = (mat.u5 + 0*lp.xiA1 + 0*lp.xiA2 + (-1)*mat.u3*lp.xiA3 + 0*lp.xiA4)
+
+    # d(A11 A12 A16 A22 A26 A66) / d(xiA1, xiA2, xiA3, xiA4)
+    gradAij[:, 1:] = h*gradinv
+
+    # d(B11 B12 B16 B22 B26 B66) / dh
+    gradBij[0, 0] = h/2.*(mat.u2*lp.xiB1 + 0*lp.xiB2 + mat.u3*lp.xiB3 + 0*lp.xiB4)
+    gradBij[1, 0] = h/2.*(0*lp.xiB1 + 0*lp.xiB2 + (-1)*mat.u3*lp.xiB3 + 0*lp.xiB4)
+    gradBij[2, 0] = h/2.*(0*lp.xiB1 + mat.u2/2.*lp.xiB2 + 0*lp.xiB3 + mat.u3*lp.xiB4)
+    gradBij[3, 0] = h/2.*((-1)*mat.u2*lp.xiB1 + 0*lp.xiB2 + mat.u3*lp.xiB3 + 0*lp.xiB4)
+    gradBij[4, 0] = h/2.*(0*lp.xiB1 + mat.u2/2.*lp.xiB2 + 0*lp.xiB3 + (-1)*mat.u3*lp.xiB4)
+    gradBij[5, 0] = h/2.*(0*lp.xiB1 + 0*lp.xiB2 + (-1)*mat.u3*lp.xiB3 + 0*lp.xiB4)
+
+    # d(B11 B12 B16 B22 B26 B66) / d(xiB1, xiB2, xiB3, xiB4)
+    gradBij[:, 1:] = h*h/4.*gradinv
+
+    # d(D11 D12 D16 D22 D26 D66) / dh
+    gradDij[0, 0] = h*h/4.*(mat.u1 + mat.u2*lp.xiD1 + 0*lp.xiD2 + mat.u3*lp.xiD3 + 0*lp.xiD4)
+    gradDij[1, 0] = h*h/4.*(mat.u4 + 0*lp.xiD1 + 0*lp.xiD2 + (-1)*mat.u3*lp.xiD3 + 0*lp.xiD4)
+    gradDij[2, 0] = h*h/4.*(0 + 0*lp.xiD1 + mat.u2/2.*lp.xiD2 + 0*lp.xiD3 + mat.u3*lp.xiD4)
+    gradDij[3, 0] = h*h/4.*(mat.u1 + (-1)*mat.u2*lp.xiD1 + 0*lp.xiD2 + mat.u3*lp.xiD3 + 0*lp.xiD4)
+    gradDij[4, 0] = h*h/4.*(0 + 0*lp.xiD1 + mat.u2/2.*lp.xiD2 + 0*lp.xiD3 + (-1)*mat.u3*lp.xiD4)
+    gradDij[5, 0] = h*h/4.*(mat.u5 + 0*lp.xiD1 + 0*lp.xiD2 + (-1)*mat.u3*lp.xiD3 + 0*lp.xiD4)
+
+    # d(D11 D12 D16 D22 D26 D66) / d(xiD1, xiD2, xiD3, xiD4)
+    gradDij[:, 1:] = h*h*h/12.*gradinv
+
+    # d(E11 E12 E16 E22 E26 E66) / dh
+    gradEij[0, 0] = (mat.u6 + mat.u7*lp.xiE1 + 0*lp.xiE2)
+    gradEij[1, 0] = (0 + 0*lp.xiE1 + (-1)*mat.u7*lp.xiE2)
+    gradEij[2, 0] = (mat.u6 + (-1)*mat.u7*lp.xiE1 + 0*lp.xiE2)
+
+    # d(E11 E12 E16 E22 E26 E66) / d(xiE1, xiE2)
+    gradEij[0, 1:] = h*np.array([mat.u7, 0])
+    gradEij[1, 1:] = h*np.array([0, -mat.u7])
+    gradEij[2, 1:] = h*np.array([-mat.u7, 0])
+
+    return gradAij, gradBij, gradDij, gradEij
