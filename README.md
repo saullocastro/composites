@@ -37,7 +37,7 @@ Bibtex :
     @misc{composites2022,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods to calculate composite plate properties (Version 0.5.1) [Computer software]. 2022}}
+        title = {{Methods to calculate composite plate properties (Version 0.5.2) [Computer software]. 2022}}
         }
 
 Documentation
