@@ -56,8 +56,8 @@ History
 - version 0.4.0 onwards, fast Cython and cimportable by other packages, full
   compatibility with finite element mass matrices of plates and shells,
   supporting laminated plates with materials of different densities
-- version 0.5.0 onwards, verified lamination parameters, towards analytical
-  gradients of Aij, Bij, Dij with respect to lamination parameters
+- version 0.5.0 onwards, verified lamination parameters, analytical gradients
+  of Aij, Bij, Dij with respect to lamination parameters
   
 
 License
