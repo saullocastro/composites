@@ -124,7 +124,7 @@ cdef class MatLamina:
         pass
 
     cpdef void rebuild(MatLamina self):
-        """Update constitutive and invariant terms
+        r"""Update constitutive and invariant terms
 
         Reference:
 
@@ -194,7 +194,7 @@ cdef class MatLamina:
         self.u7 = (self.q44 - self.q55) / 2.
 
     cpdef void trace_normalize_plane_stress(MatLamina self):
-        """Trace-normalize the lamina properties for plane stress
+        r"""Trace-normalize the lamina properties for plane stress
 
         Modify the original :class:`.MatLamina` object with a
         trace-normalization performed after calculating the trace according to
@@ -230,7 +230,7 @@ cdef class MatLamina:
         self.u7 /= tr
 
     cpdef cDOUBLE[:, :] get_constitutive_matrix(MatLamina self):
-        """Return the constitutive matrix
+        r"""Return the constitutive matrix
         """
         return np.array(
             [[self.c11, self.c12, self.c13,   0,   0,   0],
@@ -241,7 +241,7 @@ cdef class MatLamina:
              [  0,   0,   0,   0,   0, self.c66]], dtype=DOUBLE)
 
     cpdef cDOUBLE[:, :] get_invariant_matrix(MatLamina self):
-        """Return the invariant matrix
+        r"""Return the invariant matrix
         """
         return np.array(
             [[self.u1,  self.u2,    0,  self.u3,   0],            # q11
@@ -256,7 +256,7 @@ cdef class MatLamina:
 
 
 cdef class Lamina:
-    """
+    r"""
     Attributes
     ----------
 
@@ -274,7 +274,7 @@ cdef class Lamina:
         pass
 
     cpdef void rebuild(Lamina self):
-        """Update constitutive matrices
+        r"""Update constitutive matrices
 
         Reference:
 
@@ -339,13 +339,13 @@ cdef class Lamina:
         #     contractions
 
     cpdef cDOUBLE[:, :] get_transf_matrix_displ_to_laminate(Lamina self):
-        """Return displacement transformation matrix from lamina to laminate"""
+        r"""Return displacement transformation matrix from lamina to laminate"""
         return np.array([[ self.cost, self.sint, 0],
                          [-self.sint, self.cost, 0],
                          [   0,     0, 1]], dtype=DOUBLE)
 
     cpdef cDOUBLE[:, :] get_constitutive_matrix(Lamina self):
-        """Return the constitutive matrix"""
+        r"""Return the constitutive matrix"""
         return np.array([[self.q11L, self.q12L, self.q16L,    0,    0],
                          [self.q12L, self.q22L, self.q26L,    0,    0],
                          [self.q16L, self.q26L, self.q66L,    0,    0],
@@ -353,7 +353,7 @@ cdef class Lamina:
                          [   0,    0,    0, self.q45L, self.q55L]], dtype=DOUBLE)
 
     cpdef cDOUBLE[:, :] get_transf_matrix_stress_to_lamina(Lamina self):
-        """Return stress transformation matrix from laminate to lamina"""
+        r"""Return stress transformation matrix from laminate to lamina"""
         cdef double cos2, sin2, sincos
         cos2 = self.cost**2
         sin2 = self.sint**2
@@ -367,7 +367,7 @@ cdef class Lamina:
              [-sincos, sincos, 0, 0, 0, cos2-sin2]], dtype=DOUBLE)
 
     cpdef cDOUBLE[:, :] get_transf_matrix_stress_to_laminate(Lamina self):
-        """Return stress transformation matrix from lamina to laminate"""
+        r"""Return stress transformation matrix from lamina to laminate"""
         cdef double cos2, sin2, sincos
         cos2 = self.cost**2
         sin2 = self.sint**2
@@ -479,7 +479,7 @@ cdef class Laminate:
 
 
     cpdef void calc_scf(Laminate self):
-        """Update shear correction factors of the :class:`.Laminate` object
+        r"""Update shear correction factors of the :class:`.Laminate` object
 
         Reference:
 
@@ -545,7 +545,7 @@ cdef class Laminate:
 
 
     cpdef void calc_equivalent_properties(Laminate self):
-        """Calculate the equivalent laminate properties
+        r"""Calculate the equivalent laminate properties
 
         The following attributes are updated:
 
@@ -860,8 +860,8 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
 
 
 def laminate_LP_gradients(double thickness, MatLamina mat, LaminationParameters lp):
-    r"""Calculate the gradients of the laminate with respect to the lamination
-    parameters
+    r"""Gradients of the laminate stiffnesses with respect to the thickness and
+    lamination parameters
 
     Parameters
     ----------

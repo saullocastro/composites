@@ -249,14 +249,4 @@ def test_laminate_LP_gradients():
     lp.xiD2 = 0.4
     lp.xiD3 = -0.3
     lp.xiD4 = -0.6
-
     laminate_LP_gradients(thickness, matlamina, lp)
-
-
-if __name__ == '__main__':
-    test_lampar_tri_axial()
-    test_lampar_plane_stress()
-    test_laminated_plate_tri_axial()
-    test_isotropic_plate()
-    test_errors()
-
