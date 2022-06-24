@@ -30,14 +30,14 @@ Citing this repository
 ----------------------
 
 Castro, S. G. P. Methods to calculate composite plate properties (Version
-0.5.3) [Computer software]. 2022. https://doi.org/10.5281/zenodo.2871782
+0.5.4) [Computer software]. 2022. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex :
     
     @misc{composites2022,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods to calculate composite plate properties (Version 0.5.3) [Computer software]. 2022}}
+        title = {{Methods to calculate composite plate properties (Version 0.5.4) [Computer software]. 2022}}
         }
 
 Documentation
@@ -56,7 +56,7 @@ History
 - version 0.4.0 onwards, fast Cython and cimportable by other packages, full
   compatibility with finite element mass matrices of plates and shells,
   supporting laminated plates with materials of different densities
-- version 0.5.3 onwards, verified lamination parameters, analytical gradients
+- version 0.5.4 onwards, verified lamination parameters, analytical gradients
   of Aij, Bij, Dij with respect to lamination parameters, supportting MAC-OS
   
 
