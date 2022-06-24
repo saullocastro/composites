@@ -27,7 +27,7 @@ jobs:
     - name: Build Windows or MAC-OS Python wheels
       if: matrix.runs-on == 'windows-latest' || matrix.runs-on == 'macos-latest'
       run: |
-        python3 setup.py sdist --formats=gztar,zip
+        python3 setup.py sdist
         python3 setup.py bdist_wheel
     - name: Publish Windows or MAC-OS Python wheels and source
       if: matrix.runs-on == 'windows-latest' || matrix.runs-on == 'macos-latest'
@@ -43,7 +43,6 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
         python3 -m twine upload dist/*.tar.gz
-        python3 -m twine upload dist/*.zip
     - name: Build manylinux Python wheels
       if: matrix.runs-on == 'ubuntu-latest' && matrix.python-version == '3.10'
       uses: RalfG/python-wheels-manylinux-build@v0.4.2-manylinux2014_x86_64
