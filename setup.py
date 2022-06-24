@@ -72,9 +72,9 @@ Topic :: Scientific/Engineering
 Topic :: Education
 Topic :: Software Development
 Topic :: Software Development :: Libraries :: Python Modules
-Operating System :: POSIX :: BSD
 Operating System :: Microsoft :: Windows
 Operating System :: Unix
+Operating System :: POSIX :: BSD
 Programming Language :: Python :: 3.7
 Programming Language :: Python :: 3.8
 Programming Language :: Python :: 3.9
@@ -84,7 +84,7 @@ License :: OSI Approved :: BSD License
 """
 
 is_released = True
-version = '0.5.2'
+version = '0.5.3'
 
 fullversion = write_version_py(version, is_released)
 
