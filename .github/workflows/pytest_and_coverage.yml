@@ -31,10 +31,10 @@ jobs:
     - name: Install module
       if: env.USE_COVERAGE == 'false'
       run: |
-        python3 setup.py install
+        python3 -m pip install .
     - name: Lint with flake8
       run: |
-        pip install flake8
+        python3 -m pip install flake8
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
