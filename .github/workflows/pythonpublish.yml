@@ -23,7 +23,7 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install --upgrade setuptools wheel twine
-        python3 -m pip install -r requirements.txt
+        python3 -m pip install -r ci_requirements.txt
     - name: Build Windows or MAC-OS Python wheels
       if: matrix.runs-on == 'windows-latest' || matrix.runs-on == 'macos-latest'
       run: |
