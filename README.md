@@ -1,10 +1,8 @@
-Travis-CI status:
-
-[![Build Status](https://travis-ci.com/saullocastro/composites.svg?branch=master)](https://travis-ci.com/saullocastro/composites)
-
 Github Actions status:
-
-[![Actions Status](https://github.com/saullocastro/composites/workflows/pytest/badge.svg)](https://github.com/saullocastro/composites/actions)
+[![Unit tests and code coverage](https://github.com/saullocastro/composites/actions/workflows/pytest_and_coverage.yml/badge.svg)](https://github.com/saullocastro/composites/actions/workflows/pytest_and_coverage.yml)
+[![Release](https://github.com/saullocastro/composites/actions/workflows/auto_release.yml/badge.svg)](https://github.com/saullocastro/composites/actions/workflows/auto_release.yml)
+[![Documentation](https://github.com/saullocastro/composites/actions/workflows/auto_doc.yml/badge.svg)](https://github.com/saullocastro/composites/actions/workflows/auto_doc.yml)
+[![Deploy](https://github.com/saullocastro/composites/actions/workflows/pythonpublish.yml/badge.svg)](https://github.com/saullocastro/composites/actions/workflows/pythonpublish.yml)
 
 Coverage status:
 

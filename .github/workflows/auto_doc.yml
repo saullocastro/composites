@@ -1,4 +1,4 @@
-name: auto-doc-deploy
+name: Documentation
 
 on:
   push:

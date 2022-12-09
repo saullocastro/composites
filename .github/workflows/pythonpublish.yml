@@ -1,4 +1,4 @@
-name: Upload Python Package
+name: Deploy
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
       run: |
         python3 setup.py sdist
         python3 setup.py bdist_wheel
-    - name: Publish Windows or MAC-OS Python wheels and source
+    - name: Publish Windows or MAC-OS Python wheels
       if: matrix.runs-on == 'windows-latest' || matrix.runs-on == 'macos-latest'
       env:
         TWINE_USERNAME: __token__

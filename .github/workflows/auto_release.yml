@@ -1,4 +1,4 @@
-name: auto-release
+name: Release
 
 on:
   push:
