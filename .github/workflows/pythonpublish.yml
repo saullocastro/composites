@@ -45,7 +45,7 @@ jobs:
         python3 -m twine upload dist/*.tar.gz
     - name: Build manylinux Python wheels
       if: matrix.runs-on == 'ubuntu-latest' && matrix.python-version == '3.11'
-      uses: RalfG/python-wheels-manylinux-build@v0.6.0-manylinux2010_x86_64
+      uses: RalfG/python-wheels-manylinux-build@v0.6.0-manylinux2014_x86_64
       with:
         python-versions: 'cp37-cp37m cp38-cp38 cp39-cp39 cp310-cp310 cp311-cp311'
         build-requirements: 'pip cython numpy setuptools wheel twine'
