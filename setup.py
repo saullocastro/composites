@@ -58,7 +58,7 @@ def read(fname):
 #_____________________________________________________________________________
 
 install_requires = [
-        "numpy >= 1.23.0",
+        "numpy",
         ]
 
 CLASSIFIERS = """\
@@ -84,7 +84,7 @@ License :: OSI Approved :: BSD License
 """
 
 is_released = True
-version = '0.5.13'
+version = '0.5.14'
 
 fullversion = write_version_py(version, is_released)
 
