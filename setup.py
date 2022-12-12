@@ -84,7 +84,7 @@ License :: OSI Approved :: BSD License
 """
 
 is_released = True
-version = '0.5.17'
+version = '0.5.18'
 
 fullversion = write_version_py(version, is_released)
 
@@ -112,6 +112,8 @@ include_dirs = [
             np.get_include(),
             ]
 
+macros = [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')]
+
 extensions = [
     Extension('composites.core',
         sources=[
@@ -120,6 +122,7 @@ extensions = [
         include_dirs=include_dirs,
         extra_compile_args=compile_args,
         extra_link_args=link_args,
+        define_macros = macros,
         language='c++'),
 
     ]
