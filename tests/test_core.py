@@ -204,11 +204,14 @@ def test_isotropic_plate():
 
     assert np.allclose(lam.D, D)
     assert np.allclose(lam.E, E)
-    return lam
+
 
 
 def test_errors():
-    lam = test_isotropic_plate()
+    E = 71e9
+    nu = 0.28
+    thick = 0.000125
+    lam = isotropic_plate(thickness=thick, E=E, nu=nu)
     lam.offset = 1.
     try:
         lam.force_balanced()
