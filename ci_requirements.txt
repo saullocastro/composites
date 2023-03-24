@@ -1,5 +1,5 @@
 cython
-numpy>=1.20.0
+numpy
 coverage
 coveralls
 pytest
