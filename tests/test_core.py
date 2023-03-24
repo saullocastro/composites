@@ -8,7 +8,7 @@ from composites.utils import (read_laminaprop, laminated_plate,
 from composites.core import (laminate_from_LaminationParameters,
         laminate_from_lamination_parameters, force_balanced_LP,
         force_orthotropic_LP, force_symmetric_LP, Lamina,
-        laminate_LP_gradients, LaminationParameters)
+        GradABDE, LaminationParameters)
 
 
 def test_lampar_tri_axial():
@@ -252,4 +252,6 @@ def test_laminate_LP_gradients():
     lp.xiD2 = 0.4
     lp.xiD3 = -0.3
     lp.xiD4 = -0.6
-    laminate_LP_gradients(thickness, matlamina, lp)
+    gradABDE = GradABDE()
+    gradABDE.calc_LP_grad(thickness, matlamina, lp)
+    print(gradABDE.gradAij)
