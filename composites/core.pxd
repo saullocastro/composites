@@ -21,8 +21,8 @@ cdef class MatLamina:
     cdef public double u1, u2, u3, u4, u5, u6, u7
     cpdef void rebuild(MatLamina)
     cpdef void trace_normalize_plane_stress(MatLamina)
-    cpdef cDOUBLE[:, :] get_constitutive_matrix(MatLamina)
-    cpdef cDOUBLE[:, :] get_invariant_matrix(MatLamina)
+    cpdef double [:, ::1] get_constitutive_matrix(MatLamina)
+    cpdef double [:, ::1] get_invariant_matrix(MatLamina)
 
 cdef class Lamina:
     cdef public cINT plyid
@@ -30,10 +30,10 @@ cdef class Lamina:
     cdef public double q11L, q12L, q22L, q16L, q26L, q66L, q44L, q45L, q55L
     cdef public MatLamina matlamina
     cpdef void rebuild(Lamina)
-    cpdef cDOUBLE[:, :] get_transf_matrix_displ_to_laminate(Lamina)
-    cpdef cDOUBLE[:, :] get_constitutive_matrix(Lamina)
-    cpdef cDOUBLE[:, :] get_transf_matrix_stress_to_lamina(Lamina)
-    cpdef cDOUBLE[:, :] get_transf_matrix_stress_to_laminate(Lamina)
+    cpdef double [:, ::1] get_transf_matrix_displ_to_laminate(Lamina)
+    cpdef double [:, ::1] get_constitutive_matrix(Lamina)
+    cpdef double [:, ::1] get_transf_matrix_stress_to_lamina(Lamina)
+    cpdef double [:, ::1] get_transf_matrix_stress_to_laminate(Lamina)
 
 cdef class Laminate:
     cdef public double A11, A12, A16, A22, A26, A66
@@ -44,12 +44,12 @@ cdef class Laminate:
     cdef public double scf_k13, scf_k23, h, offset, intrho, intrhoz, intrhoz2
     cdef public list plies
     cdef public list stack
-    cdef cDOUBLE[:, :] get_A(Laminate)
-    cdef cDOUBLE[:, :] get_B(Laminate)
-    cdef cDOUBLE[:, :] get_D(Laminate)
-    cdef cDOUBLE[:, :] get_E(Laminate)
-    cdef cDOUBLE[:, :] get_ABD(Laminate)
-    cdef cDOUBLE[:, :] get_ABDE(Laminate)
+    cdef double [:, ::1] get_A(Laminate)
+    cdef double [:, ::1] get_B(Laminate)
+    cdef double [:, ::1] get_D(Laminate)
+    cdef double [:, ::1] get_E(Laminate)
+    cdef double [:, ::1] get_ABD(Laminate)
+    cdef double [:, ::1] get_ABDE(Laminate)
     cpdef void calc_scf(Laminate)
     cpdef void calc_equivalent_properties(Laminate)
     cpdef void calc_constitutive_matrix(Laminate)
