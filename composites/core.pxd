@@ -1,8 +1,3 @@
-cimport numpy as np
-
-ctypedef np.int64_t cINT
-ctypedef np.double_t cDOUBLE
-
 cdef extern from "math.h":
     double cos(double t) nogil
     double sin(double t) nogil
@@ -62,4 +57,11 @@ cdef class Laminate:
     cpdef void force_orthotropic(Laminate)
     cpdef void force_symmetric(Laminate)
     cpdef LaminationParameters calc_lamination_parameters(Laminate)
+
+cdef class GradABDE:
+    cdef public double [:, ::1] gradAij
+    cdef public double [:, ::1] gradBij
+    cdef public double [:, ::1] gradDij
+    cdef public double [:, ::1] gradEij
+    cpdef void calc_LP_grad(GradABDE, double, MatLamina, LaminationParameters)
 
