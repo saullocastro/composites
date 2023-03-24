@@ -1,10 +1,10 @@
+import platform
 import os
 import inspect
 import subprocess
 from setuptools import setup, find_packages
 from distutils.extension import Extension
 
-import numpy as np
 from Cython.Build import cythonize
 
 def git_version():
@@ -84,7 +84,7 @@ License :: OSI Approved :: BSD License
 """
 
 is_released = True
-version = '0.5.18'
+version = '0.5.20'
 
 fullversion = write_version_py(version, is_released)
 
@@ -99,20 +99,18 @@ package_data = {
         '': ['tests/*.*'],
         }
 
-if os.name == 'nt': # Windows
-    compile_args = ['/openmp', '/O2']
+if platform.system() == 'Windows':
+    compile_args = ['/openmp']
     link_args = []
-elif os.name == 'posix': # MAC-OS
-    compile_args = []
-    link_args = []
-else: # Linux
+elif platform.system() == 'Linux':
     compile_args = ['-fopenmp', '-static', '-static-libgcc', '-static-libstdc++']
     link_args = ['-fopenmp', '-static-libgcc', '-static-libstdc++']
+else: # MAC-OS
+    compile_args = []
+    link_args = []
 include_dirs = [
-            np.get_include(),
             ]
 
-macros = [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')]
 
 extensions = [
     Extension('composites.core',
@@ -122,7 +120,6 @@ extensions = [
         include_dirs=include_dirs,
         extra_compile_args=compile_args,
         extra_link_args=link_args,
-        define_macros = macros,
         language='c++'),
 
     ]
@@ -139,7 +136,7 @@ s = setup(
     description = ("Methods to calculate properties of laminated composite materials"),
     long_description = read('README.md'),
     long_description_content_type = 'text/markdown',
-    license = "BSD",
+    license = "3-Clause BSD",
     keywords = "mechanics composite materials composites shell classical first-order laminated plate theory",
     url = "https://github.com/saullocastro/composites",
     package_data = package_data,
