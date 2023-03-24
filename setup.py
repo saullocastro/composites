@@ -84,7 +84,7 @@ License :: OSI Approved :: BSD License
 """
 
 is_released = True
-version = '0.5.24'
+version = '0.5.25'
 
 fullversion = write_version_py(version, is_released)
 
@@ -95,7 +95,7 @@ data_files = [('', [
         ])]
 
 package_data = {
-        'composites': ['*.pxd'],
+        'composites': ['*.pxd', '*.pyx'],
         '': ['tests/*.*'],
         }
 
