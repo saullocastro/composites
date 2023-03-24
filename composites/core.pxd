@@ -25,7 +25,7 @@ cdef class MatLamina:
     cpdef double [:, ::1] get_invariant_matrix(MatLamina)
 
 cdef class Lamina:
-    cdef public cINT plyid
+    cdef public int plyid
     cdef public double h, thetadeg, cost, cos2t, cos4t, sint, sin2t, sin4t
     cdef public double q11L, q12L, q22L, q16L, q26L, q66L, q44L, q45L, q55L
     cdef public MatLamina matlamina
