@@ -15,12 +15,15 @@ Methods to calculate composite plate properties
 High-performance module to calculate properties of laminated composite
 materials. Usually, this module is used to calculate:
 
-- A, B, D, E plane-stress stiffness matrices for plates
--- A, B, D, for classical plate theory (CLT, or CLPT)
--- E for first-order shear deformation theory (FSDT)
-- Material invariants, trace-normalized or not
-- Lamination parameters based on material invariants
-- Stiffness matrices (ABDE) based on lamination parameters
+* A, B, D, E plane-stress stiffness matrices for plates
+    - A, B, D, for classical plate theory (CLT, or CLPT)
+    - E for first-order shear deformation theory (FSDT)
+
+* Material invariants, trace-normalized or not
+
+* Lamination parameters based on material invariants
+
+* Stiffness matrices (ABDE) based on lamination parameters
 
 
 Citing this repository
