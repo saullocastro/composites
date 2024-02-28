@@ -1,11 +1,14 @@
 version.py
 core.cpp
+
 # Build related
 build
 dist
 .coverage
 .pytest_cache
 *.egg-info
+*.so
+
 # Temp files
 .ipynb_checkpoints
 tmp*
