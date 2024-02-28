@@ -2,3 +2,4 @@ cython
 numpy
 sphinx
 numpydoc
+pydata-sphinx-theme

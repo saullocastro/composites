@@ -79,12 +79,13 @@ Programming Language :: Python :: 3.8
 Programming Language :: Python :: 3.9
 Programming Language :: Python :: 3.10
 Programming Language :: Python :: 3.11
+Programming Language :: Python :: 3.12
 License :: OSI Approved :: BSD License
 
 """
 
 is_released = True
-version = '0.5.25'
+version = '0.6.0'
 
 fullversion = write_version_py(version, is_released)
 
