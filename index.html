@@ -1,46 +1,305 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+
+<html lang="en" data-content_root="./" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Documentation for the composites module &#8212; composites 0.5.25 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
-    
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <title>Documentation for the composites module &#8212; composites 0.6.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="_static/documentation_options.js?v=8fa8b3e9"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
+    <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">composites 0.5.25 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Documentation for the <code class="docutils literal notranslate"><span class="pre">composites</span></code> module</a></li> 
-      </ul>
-    </div>  
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <section id="module-composites">
-<span id="documentation-for-the-composites-module"></span><h1>Documentation for the <code class="docutils literal notranslate"><span class="pre">composites</span></code> module<a class="headerlink" href="#module-composites" title="Permalink to this heading">¶</a></h1>
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="#">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">composites 0.6.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article"></div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="documentation-for-the-composites-module">
+<h1>Documentation for the <code class="docutils literal notranslate"><span class="pre">composites</span></code> module<a class="headerlink" href="#documentation-for-the-composites-module" title="Link to this heading">#</a></h1>
+<p>High-performance module to calculate properties of laminated composite
+materials. Usually, this module is used to calculate:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>A, B, D, E plane-stress stiffness matrices for plates</dt><dd><ul>
+<li><p>A, B, D, for classical plate theory (CLT, or CLPT)</p></li>
+<li><p>E for first-order shear deformation theory (FSDT)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Material invariants, trace-normalized or not</p></li>
+<li><p>Lamination parameters based on material invariants</p></li>
+<li><p>Stiffness matrices (ABDE) based on lamination parameters</p></li>
+</ul>
+<section id="code-repository">
+<h2>Code repository<a class="headerlink" href="#code-repository" title="Link to this heading">#</a></h2>
+<p><a class="github reference external" href="https://github.com/saullocastro/composites">saullocastro/composites</a></p>
+</section>
+<section id="citing-this-library">
+<h2>Citing this library<a class="headerlink" href="#citing-this-library" title="Link to this heading">#</a></h2>
+<p>Castro, S. G. P. Methods to calculate composite plate properties (Version
+0.6.0) [Computer software]. 2024. <a class="reference external" href="https://doi.org/10.5281/zenodo.2871782">https://doi.org/10.5281/zenodo.2871782</a></p>
+<p>Bibtex :</p>
+<blockquote>
+<div><dl class="simple">
+<dt>&#64;misc{composites2024,</dt><dd><p>author = {Castro, Saullo G. P.},
+doi = {10.5281/zenodo.2871782},
+title = {{Methods to calculate composite plate properties (Version 0.6.0) [Computer software]. 2024}}
+}</p>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+<section id="module-composites">
+<span id="classes-and-functions"></span><h2>Classes and functions<a class="headerlink" href="#module-composites" title="Link to this heading">#</a></h2>
 <section id="methods-to-calculate-composite-plate-properties-composites">
-<h2>Methods to calculate composite plate properties (<a class="reference internal" href="#module-composites" title="composites"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites</span></code></a>)<a class="headerlink" href="#methods-to-calculate-composite-plate-properties-composites" title="Permalink to this heading">¶</a></h2>
+<h3>Methods to calculate composite plate properties (<a class="reference internal" href="#module-composites" title="composites"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites</span></code></a>)<a class="headerlink" href="#methods-to-calculate-composite-plate-properties-composites" title="Link to this heading">#</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">composites</span></code> module includes functions used to calculate plate properties
 for laminated composites and isotropic plates.</p>
 <p>Classical and first-order shear deformation theories are supported. For
@@ -79,12 +338,12 @@ plates.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plate</span><span class="o">.</span><span class="n">ABDE</span>
 </pre></div>
 </div>
-<span class="target" id="module-composites.core"></span><section id="composites-core-module-composites-core">
-<h3>Composites Core Module (<a class="reference internal" href="#module-composites.core" title="composites.core"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.core</span></code></a>)<a class="headerlink" href="#composites-core-module-composites-core" title="Permalink to this heading">¶</a></h3>
+<section id="composites-core-module-composites-core">
+<span id="module-composites.core"></span><h4>Composites Core Module (<a class="reference internal" href="#module-composites.core" title="composites.core"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.core</span></code></a>)<a class="headerlink" href="#composites-core-module-composites-core" title="Link to this heading">#</a></h4>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="composites.core.GradABDE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">GradABDE</span></span><a class="headerlink" href="#composites.core.GradABDE" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">GradABDE</span></span><a class="headerlink" href="#composites.core.GradABDE" title="Link to this definition">#</a></dt>
 <dd><p>Container to store the gradients of the ABDE matrices with respect to
 the lamination parameters</p>
 <dl class="field-list">
@@ -105,16 +364,16 @@ columns correspond to:</p>
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
+<table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.GradABDE.calc_LP_grad" title="composites.core.GradABDE.calc_LP_grad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_LP_grad</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.GradABDE.calc_LP_grad" title="composites.core.GradABDE.calc_LP_grad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_LP_grad</span></code></a>(thickness, mat, lp)</p></td>
 <td><p>Gradients of the shell stiffnesses with respect to the thickness and lamination parameters</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.GradABDE.calc_LP_grad">
-<span class="sig-name descname"><span class="pre">calc_LP_grad</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.GradABDE.calc_LP_grad" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">calc_LP_grad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.GradABDE.calc_LP_grad" title="Link to this definition">#</a></dt>
 <dd><p>Gradients of the shell stiffnesses with respect to the thickness and
 lamination parameters</p>
 <dl class="field-list">
@@ -141,7 +400,7 @@ lamination parameters</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="composites.core.Lamina">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">Lamina</span></span><a class="headerlink" href="#composites.core.Lamina" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">Lamina</span></span><a class="headerlink" href="#composites.core.Lamina" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
@@ -157,52 +416,52 @@ lamination parameters</p>
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
+<table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Lamina.get_constitutive_matrix" title="composites.core.Lamina.get_constitutive_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_constitutive_matrix</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Lamina.get_constitutive_matrix" title="composites.core.Lamina.get_constitutive_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_constitutive_matrix</span></code></a>()</p></td>
 <td><p>Return the constitutive matrix</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Lamina.get_transf_matrix_displ_to_laminate" title="composites.core.Lamina.get_transf_matrix_displ_to_laminate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transf_matrix_displ_to_laminate</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Lamina.get_transf_matrix_displ_to_laminate" title="composites.core.Lamina.get_transf_matrix_displ_to_laminate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transf_matrix_displ_to_laminate</span></code></a>()</p></td>
 <td><p>Return displacement transformation matrix from lamina to laminate</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Lamina.get_transf_matrix_stress_to_lamina" title="composites.core.Lamina.get_transf_matrix_stress_to_lamina"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transf_matrix_stress_to_lamina</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Lamina.get_transf_matrix_stress_to_lamina" title="composites.core.Lamina.get_transf_matrix_stress_to_lamina"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transf_matrix_stress_to_lamina</span></code></a>()</p></td>
 <td><p>Return stress transformation matrix from laminate to lamina</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Lamina.get_transf_matrix_stress_to_laminate" title="composites.core.Lamina.get_transf_matrix_stress_to_laminate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transf_matrix_stress_to_laminate</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Lamina.get_transf_matrix_stress_to_laminate" title="composites.core.Lamina.get_transf_matrix_stress_to_laminate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transf_matrix_stress_to_laminate</span></code></a>()</p></td>
 <td><p>Return stress transformation matrix from lamina to laminate</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Lamina.rebuild" title="composites.core.Lamina.rebuild"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebuild</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Lamina.rebuild" title="composites.core.Lamina.rebuild"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebuild</span></code></a>()</p></td>
 <td><p>Update constitutive matrices</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Lamina.get_constitutive_matrix">
-<span class="sig-name descname"><span class="pre">get_constitutive_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Lamina.get_constitutive_matrix" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_constitutive_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Lamina.get_constitutive_matrix" title="Link to this definition">#</a></dt>
 <dd><p>Return the constitutive matrix</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Lamina.get_transf_matrix_displ_to_laminate">
-<span class="sig-name descname"><span class="pre">get_transf_matrix_displ_to_laminate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Lamina.get_transf_matrix_displ_to_laminate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_transf_matrix_displ_to_laminate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Lamina.get_transf_matrix_displ_to_laminate" title="Link to this definition">#</a></dt>
 <dd><p>Return displacement transformation matrix from lamina to laminate</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Lamina.get_transf_matrix_stress_to_lamina">
-<span class="sig-name descname"><span class="pre">get_transf_matrix_stress_to_lamina</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Lamina.get_transf_matrix_stress_to_lamina" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_transf_matrix_stress_to_lamina</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Lamina.get_transf_matrix_stress_to_lamina" title="Link to this definition">#</a></dt>
 <dd><p>Return stress transformation matrix from laminate to lamina</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Lamina.get_transf_matrix_stress_to_laminate">
-<span class="sig-name descname"><span class="pre">get_transf_matrix_stress_to_laminate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Lamina.get_transf_matrix_stress_to_laminate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_transf_matrix_stress_to_laminate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Lamina.get_transf_matrix_stress_to_laminate" title="Link to this definition">#</a></dt>
 <dd><p>Return stress transformation matrix from lamina to laminate</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Lamina.rebuild">
-<span class="sig-name descname"><span class="pre">rebuild</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Lamina.rebuild" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">rebuild</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Lamina.rebuild" title="Link to this definition">#</a></dt>
 <dd><p>Update constitutive matrices</p>
 <p>Reference:</p>
 <blockquote>
@@ -215,7 +474,7 @@ Shells - Theory and Analysys. Second Edition. CRC PRESS, 2004.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="composites.core.Laminate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">Laminate</span></span><a class="headerlink" href="#composites.core.Laminate" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">Laminate</span></span><a class="headerlink" href="#composites.core.Laminate" title="Link to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -246,34 +505,34 @@ equivalent single layer finite element mass matrices</p>
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
+<table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_constitutive_matrix" title="composites.core.Laminate.calc_constitutive_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_constitutive_matrix</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_constitutive_matrix" title="composites.core.Laminate.calc_constitutive_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_constitutive_matrix</span></code></a>()</p></td>
 <td><p>Calculate the laminate constitutive terms</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_equivalent_properties" title="composites.core.Laminate.calc_equivalent_properties"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_equivalent_properties</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_equivalent_properties" title="composites.core.Laminate.calc_equivalent_properties"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_equivalent_properties</span></code></a>()</p></td>
 <td><p>Calculate the equivalent laminate properties</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_lamination_parameters" title="composites.core.Laminate.calc_lamination_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_lamination_parameters</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_lamination_parameters" title="composites.core.Laminate.calc_lamination_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_lamination_parameters</span></code></a>()</p></td>
 <td><p>Calculate the lamination parameters.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_scf" title="composites.core.Laminate.calc_scf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_scf</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_scf" title="composites.core.Laminate.calc_scf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_scf</span></code></a>()</p></td>
 <td><p>Update shear correction factors of the <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> object</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.force_balanced" title="composites.core.Laminate.force_balanced"><code class="xref py py-obj docutils literal notranslate"><span class="pre">force_balanced</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.force_balanced" title="composites.core.Laminate.force_balanced"><code class="xref py py-obj docutils literal notranslate"><span class="pre">force_balanced</span></code></a>()</p></td>
 <td><p>Force a balanced laminate</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Laminate.force_orthotropic" title="composites.core.Laminate.force_orthotropic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">force_orthotropic</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Laminate.force_orthotropic" title="composites.core.Laminate.force_orthotropic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">force_orthotropic</span></code></a>()</p></td>
 <td><p>Force an orthotropic laminate</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.force_symmetric" title="composites.core.Laminate.force_symmetric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">force_symmetric</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.force_symmetric" title="composites.core.Laminate.force_symmetric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">force_symmetric</span></code></a>()</p></td>
 <td><p>Force a symmetric laminate</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Laminate.calc_constitutive_matrix">
-<span class="sig-name descname"><span class="pre">calc_constitutive_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_constitutive_matrix" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">calc_constitutive_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_constitutive_matrix" title="Link to this definition">#</a></dt>
 <dd><p>Calculate the laminate constitutive terms</p>
 <p>This is the commonly called <code class="docutils literal notranslate"><span class="pre">ABD</span></code> matrix with <code class="docutils literal notranslate"><span class="pre">shape=(6,</span> <span class="pre">6)</span></code> when
 the classical laminated plate theory is used, or the <code class="docutils literal notranslate"><span class="pre">ABDE</span></code> matrix
@@ -283,7 +542,7 @@ transverse shear terms.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Laminate.calc_equivalent_properties">
-<span class="sig-name descname"><span class="pre">calc_equivalent_properties</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_equivalent_properties" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">calc_equivalent_properties</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_equivalent_properties" title="Link to this definition">#</a></dt>
 <dd><p>Calculate the equivalent laminate properties</p>
 <p>The following attributes are updated:</p>
 <blockquote>
@@ -293,7 +552,7 @@ transverse shear terms.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Laminate.calc_lamination_parameters">
-<span class="sig-name descname"><span class="pre">calc_lamination_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_lamination_parameters" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">calc_lamination_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_lamination_parameters" title="Link to this definition">#</a></dt>
 <dd><p>Calculate the lamination parameters.</p>
 <p>The following attributes are calculated:</p>
 <blockquote>
@@ -303,7 +562,7 @@ transverse shear terms.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Laminate.calc_scf">
-<span class="sig-name descname"><span class="pre">calc_scf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_scf" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">calc_scf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_scf" title="Link to this definition">#</a></dt>
 <dd><p>Update shear correction factors of the <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> object</p>
 <p>Reference:</p>
 <blockquote>
@@ -331,7 +590,7 @@ Int. Journal for Numerical Methods in Engineering, Vol. 33,
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Laminate.force_balanced">
-<span class="sig-name descname"><span class="pre">force_balanced</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.force_balanced" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">force_balanced</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.force_balanced" title="Link to this definition">#</a></dt>
 <dd><p>Force a balanced laminate</p>
 <p>The attributes <span class="math notranslate nohighlight">\(A_{16}\)</span>, <span class="math notranslate nohighlight">\(A_{26}\)</span>, <span class="math notranslate nohighlight">\(B_{16}\)</span>, <span class="math notranslate nohighlight">\(B_{26}\)</span> are set to zero
 to force a balanced laminate.</p>
@@ -339,7 +598,7 @@ to force a balanced laminate.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Laminate.force_orthotropic">
-<span class="sig-name descname"><span class="pre">force_orthotropic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.force_orthotropic" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">force_orthotropic</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.force_orthotropic" title="Link to this definition">#</a></dt>
 <dd><p>Force an orthotropic laminate</p>
 <p>The attributes <span class="math notranslate nohighlight">\(A_{16}\)</span>, <span class="math notranslate nohighlight">\(A_{26}\)</span>, <span class="math notranslate nohighlight">\(B_{16}\)</span>, <span class="math notranslate nohighlight">\(B_{26}\)</span>, <span class="math notranslate nohighlight">\(D_{16}\)</span>,
 <span class="math notranslate nohighlight">\(D_{26}\)</span> are set to zero to force an orthotropic laminate.</p>
@@ -347,7 +606,7 @@ to force a balanced laminate.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Laminate.force_symmetric">
-<span class="sig-name descname"><span class="pre">force_symmetric</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.force_symmetric" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">force_symmetric</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.force_symmetric" title="Link to this definition">#</a></dt>
 <dd><p>Force a symmetric laminate</p>
 <p>The <span class="math notranslate nohighlight">\(B_{ij}\)</span> terms of the constitutive matrix are set to zero.</p>
 </dd></dl>
@@ -356,7 +615,7 @@ to force a balanced laminate.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="composites.core.LaminationParameters">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">LaminationParameters</span></span><a class="headerlink" href="#composites.core.LaminationParameters" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">LaminationParameters</span></span><a class="headerlink" href="#composites.core.LaminationParameters" title="Link to this definition">#</a></dt>
 <dd><p>Lamination parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
@@ -376,7 +635,7 @@ to force a balanced laminate.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="composites.core.MatLamina">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">MatLamina</span></span><a class="headerlink" href="#composites.core.MatLamina" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">MatLamina</span></span><a class="headerlink" href="#composites.core.MatLamina" title="Link to this definition">#</a></dt>
 <dd><p>Orthotropic material lamina</p>
 <p class="rubric">Notes</p>
 <p>For isotropic materials when the user defines <span class="math notranslate nohighlight">\(\nu\)</span> and <span class="math notranslate nohighlight">\(E\)</span>, <span class="math notranslate nohighlight">\(G\)</span> will be
@@ -456,37 +715,37 @@ on equation: <span class="math notranslate nohighlight">\(E = 2 \times (1+\nu) \
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
+<table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.MatLamina.get_constitutive_matrix" title="composites.core.MatLamina.get_constitutive_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_constitutive_matrix</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.MatLamina.get_constitutive_matrix" title="composites.core.MatLamina.get_constitutive_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_constitutive_matrix</span></code></a>()</p></td>
 <td><p>Return the constitutive matrix</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.MatLamina.get_invariant_matrix" title="composites.core.MatLamina.get_invariant_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_invariant_matrix</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.MatLamina.get_invariant_matrix" title="composites.core.MatLamina.get_invariant_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_invariant_matrix</span></code></a>()</p></td>
 <td><p>Return the invariant matrix</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebuild</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebuild</span></code></a>()</p></td>
 <td><p>Update constitutive and invariant terms</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.MatLamina.trace_normalize_plane_stress" title="composites.core.MatLamina.trace_normalize_plane_stress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace_normalize_plane_stress</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.MatLamina.trace_normalize_plane_stress" title="composites.core.MatLamina.trace_normalize_plane_stress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace_normalize_plane_stress</span></code></a>()</p></td>
 <td><p>Trace-normalize the lamina properties for plane stress</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.MatLamina.get_constitutive_matrix">
-<span class="sig-name descname"><span class="pre">get_constitutive_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.MatLamina.get_constitutive_matrix" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_constitutive_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.MatLamina.get_constitutive_matrix" title="Link to this definition">#</a></dt>
 <dd><p>Return the constitutive matrix</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.MatLamina.get_invariant_matrix">
-<span class="sig-name descname"><span class="pre">get_invariant_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.MatLamina.get_invariant_matrix" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_invariant_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.MatLamina.get_invariant_matrix" title="Link to this definition">#</a></dt>
 <dd><p>Return the invariant matrix</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.MatLamina.rebuild">
-<span class="sig-name descname"><span class="pre">rebuild</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.MatLamina.rebuild" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">rebuild</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.MatLamina.rebuild" title="Link to this definition">#</a></dt>
 <dd><p>Update constitutive and invariant terms</p>
 <p>Reference:</p>
 <blockquote>
@@ -497,7 +756,7 @@ Theory and analysis. Second Edition. CRC Press, 2004.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.MatLamina.trace_normalize_plane_stress">
-<span class="sig-name descname"><span class="pre">trace_normalize_plane_stress</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.MatLamina.trace_normalize_plane_stress" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">trace_normalize_plane_stress</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.MatLamina.trace_normalize_plane_stress" title="Link to this definition">#</a></dt>
 <dd><p>Trace-normalize the lamina properties for plane stress</p>
 <p>Modify the original <a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a> object with a
 trace-normalization performed after calculating the trace according to
@@ -520,7 +779,7 @@ attributes.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.core.force_balanced_LP">
-<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">force_balanced_LP</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.force_balanced_LP" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">force_balanced_LP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.force_balanced_LP" title="Link to this definition">#</a></dt>
 <dd><p>Force balanced lamination parameters</p>
 <p>The lamination parameters <span class="math notranslate nohighlight">\(\xi_{A2}\)</span> and <span class="math notranslate nohighlight">\(\xi_{A4}\)</span> are set to null to
 force a balanced laminate.</p>
@@ -528,7 +787,7 @@ force a balanced laminate.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.core.force_orthotropic_LP">
-<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">force_orthotropic_LP</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.force_orthotropic_LP" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">force_orthotropic_LP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.force_orthotropic_LP" title="Link to this definition">#</a></dt>
 <dd><p>Force orthotropic lamination parameters</p>
 <p>The lamination parameters <span class="math notranslate nohighlight">\(\xi_{A2}\)</span>, <span class="math notranslate nohighlight">\(\xi_{A4}\)</span>, <span class="math notranslate nohighlight">\(\xi_{B2}\)</span>, <span class="math notranslate nohighlight">\(\xi_{B4}\)</span>,
 <span class="math notranslate nohighlight">\(\xi_{D2}\)</span> and <span class="math notranslate nohighlight">\(\xi_{D4}\)</span> are set to null to force an orthotropic laminate.
@@ -539,7 +798,7 @@ plies.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.core.force_symmetric_LP">
-<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">force_symmetric_LP</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.force_symmetric_LP" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">force_symmetric_LP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.force_symmetric_LP" title="Link to this definition">#</a></dt>
 <dd><p>Force symmetric lamination parameters</p>
 <p>The lamination parameters <span class="math notranslate nohighlight">\(\xi_{Bi}\)</span> are set to null to force a symmetric
 laminate.</p>
@@ -547,7 +806,7 @@ laminate.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.core.laminate_from_LaminationParameters">
-<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">laminate_from_LaminationParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.laminate_from_LaminationParameters" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">laminate_from_LaminationParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.laminate_from_LaminationParameters" title="Link to this definition">#</a></dt>
 <dd><p>Return a <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> object based in the thickness, material and
 lamination parameters</p>
 <dl class="field-list">
@@ -572,7 +831,7 @@ lamination parameters</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.core.laminate_from_lamination_parameters">
-<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">laminate_from_lamination_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.laminate_from_lamination_parameters" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">laminate_from_lamination_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matlamina</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiE1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiE2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.laminate_from_lamination_parameters" title="Link to this definition">#</a></dt>
 <dd><p>Return a <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> object based in the thickness, material and
 lamination parameters</p>
 <p>Note that <span class="math notranslate nohighlight">\(\xi_{E1}\)</span> and <span class="math notranslate nohighlight">\(\xi_{E2}\)</span> are optional and usually equal to zero,
@@ -600,12 +859,12 @@ deformation theory: <span class="math notranslate nohighlight">\(\xi_{A1} \cdots
 </dl>
 </dd></dl>
 
-<span class="target" id="module-composites.utils"></span><section id="composites-core-utils-module-composites-utils">
-<h3>Composites Core Utils Module (<a class="reference internal" href="#module-composites.utils" title="composites.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.utils</span></code></a>)<a class="headerlink" href="#composites-core-utils-module-composites-utils" title="Permalink to this heading">¶</a></h3>
+<section id="composites-core-utils-module-composites-utils">
+<span id="module-composites.utils"></span><h4>Composites Core Utils Module (<a class="reference internal" href="#module-composites.utils" title="composites.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.utils</span></code></a>)<a class="headerlink" href="#composites-core-utils-module-composites-utils" title="Link to this heading">#</a></h4>
 </section>
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.utils.double_double_plate">
-<span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">double_double_plate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phideg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psideg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminaprop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_scf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.double_double_plate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">double_double_plate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phideg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psideg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminaprop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_scf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.double_double_plate" title="Link to this definition">#</a></dt>
 <dd><p>Create a double-double laminated plate</p>
 <p>A double-double (DD) laminate consists of <span class="math notranslate nohighlight">\([\pm\phi,\pm\psi]\)</span>, with
 <code class="docutils literal notranslate"><span class="pre">phideg=</span></code> <span class="math notranslate nohighlight">\(\phi\)</span>, and <code class="docutils literal notranslate"><span class="pre">psideg=</span></code> <span class="math notranslate nohighlight">\(\psi\)</span>. With the principle of
@@ -640,7 +899,7 @@ factors, otherwise the default value of 5/6 is used.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.utils.isotropic_plate">
-<span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">isotropic_plate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_scf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.isotropic_plate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">isotropic_plate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_scf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.isotropic_plate" title="Link to this definition">#</a></dt>
 <dd><p>Read data for an isotropic plate</p>
 <p><a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> object is returned based on the inputs given.</p>
 <dl class="field-list simple">
@@ -667,7 +926,7 @@ factors, otherwise the default value of 5/6 is used.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.utils.laminated_plate">
-<span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">laminated_plate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stack</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plyt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminaprop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plyts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminaprops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_scf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.laminated_plate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">laminated_plate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stack</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plyt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminaprop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plyts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminaprops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rhos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_scf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.laminated_plate" title="Link to this definition">#</a></dt>
 <dd><p>Read a laminate stacking sequence data.</p>
 <p><a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> object is returned based on the inputs given.</p>
 <dl class="field-list simple">
@@ -712,7 +971,7 @@ factors, otherwise the default value of 5/6 is used</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.utils.n_double_plate">
-<span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">n_double_plate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angles_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminaprop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_scf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.n_double_plate" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">n_double_plate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angles_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laminaprop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_scf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.n_double_plate" title="Link to this definition">#</a></dt>
 <dd><p>Create a N-double laminated plate</p>
 <p>A N-double (ND) laminate consists of <span class="math notranslate nohighlight">\([\pm\phi_1,\pm\phi_2, \cdots,
 \pm\phi_n]\)</span>. With the principle of homogenization, at the limit where many
@@ -745,7 +1004,7 @@ factors, otherwise the default value of 5/6 is used.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.utils.read_laminaprop">
-<span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">read_laminaprop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">laminaprop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.read_laminaprop" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">composites.utils.</span></span><span class="sig-name descname"><span class="pre">read_laminaprop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">laminaprop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.utils.read_laminaprop" title="Link to this definition">#</a></dt>
 <dd><p>Returns a <a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a> object based on an input <code class="docutils literal notranslate"><span class="pre">laminaprop</span></code> tuple</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -771,7 +1030,7 @@ supply:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">laminaprop</span> <span class="o">=</span> <span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">nu</span><span class="p">)</span> <span class="c1"># new</span>
 </pre></div>
 </div>
-<table class="docutils align-default">
+<table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>symbol</p></th>
 <th class="head"><p>value</p></th>
@@ -822,9 +1081,10 @@ supply:</p>
 </dd></dl>
 
 </section>
+</section>
 <section id="license">
-<h2>License<a class="headerlink" href="#license" title="Permalink to this heading">¶</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Copyright</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="mi">2012</span><span class="o">-</span><span class="mi">2023</span><span class="p">,</span> <span class="n">Saullo</span> <span class="n">G</span><span class="o">.</span> <span class="n">P</span><span class="o">.</span> <span class="n">Castro</span> <span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">G</span><span class="o">.</span><span class="n">P</span><span class="o">.</span><span class="n">Castro</span><span class="nd">@tudelft</span><span class="o">.</span><span class="n">nl</span><span class="p">)</span><span class="o">.</span>
+<h2>License<a class="headerlink" href="#license" title="Link to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Copyright</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="mi">2012</span><span class="o">-</span><span class="mi">2024</span><span class="p">,</span> <span class="n">Saullo</span> <span class="n">G</span><span class="o">.</span> <span class="n">P</span><span class="o">.</span> <span class="n">Castro</span> <span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">G</span><span class="o">.</span><span class="n">P</span><span class="o">.</span><span class="n">Castro</span><span class="nd">@tudelft</span><span class="o">.</span><span class="n">nl</span><span class="p">)</span><span class="o">.</span>
 <span class="n">All</span> <span class="n">rights</span> <span class="n">reserved</span><span class="o">.</span>
 
 <span class="n">Redistribution</span> <span class="ow">and</span> <span class="n">use</span> <span class="ow">in</span> <span class="n">source</span> <span class="ow">and</span> <span class="n">binary</span> <span class="n">forms</span><span class="p">,</span> <span class="k">with</span> <span class="ow">or</span> <span class="n">without</span> <span class="n">modification</span><span class="p">,</span> <span class="n">are</span> <span class="n">permitted</span> <span class="n">provided</span> <span class="n">that</span> <span class="n">the</span> <span class="n">following</span> <span class="n">conditions</span> <span class="n">are</span> <span class="n">met</span><span class="p">:</span>
@@ -840,7 +1100,7 @@ supply:</p>
 </div>
 </section>
 <section id="indices-and-tables">
-<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h2>
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
@@ -850,105 +1110,151 @@ supply:</p>
 </section>
 
 
-            <div class="clearer"></div>
-          </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <div>
-    <h3><a href="#">Table of Contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#">Documentation for the <code class="docutils literal notranslate"><span class="pre">composites</span></code> module</a><ul>
-<li><a class="reference internal" href="#methods-to-calculate-composite-plate-properties-composites">Methods to calculate composite plate properties (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites</span></code>)</a><ul>
-<li><a class="reference internal" href="#composites-core-module-composites-core">Composites Core Module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.core</span></code>)</a></li>
-<li><a class="reference internal" href="#composites.core.GradABDE"><code class="docutils literal notranslate"><span class="pre">GradABDE</span></code></a><ul>
-<li><a class="reference internal" href="#composites.core.GradABDE.calc_LP_grad"><code class="docutils literal notranslate"><span class="pre">GradABDE.calc_LP_grad()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#composites.core.Lamina"><code class="docutils literal notranslate"><span class="pre">Lamina</span></code></a><ul>
-<li><a class="reference internal" href="#composites.core.Lamina.get_constitutive_matrix"><code class="docutils literal notranslate"><span class="pre">Lamina.get_constitutive_matrix()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.Lamina.get_transf_matrix_displ_to_laminate"><code class="docutils literal notranslate"><span class="pre">Lamina.get_transf_matrix_displ_to_laminate()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.Lamina.get_transf_matrix_stress_to_lamina"><code class="docutils literal notranslate"><span class="pre">Lamina.get_transf_matrix_stress_to_lamina()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.Lamina.get_transf_matrix_stress_to_laminate"><code class="docutils literal notranslate"><span class="pre">Lamina.get_transf_matrix_stress_to_laminate()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.Lamina.rebuild"><code class="docutils literal notranslate"><span class="pre">Lamina.rebuild()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#composites.core.Laminate"><code class="docutils literal notranslate"><span class="pre">Laminate</span></code></a><ul>
-<li><a class="reference internal" href="#composites.core.Laminate.calc_constitutive_matrix"><code class="docutils literal notranslate"><span class="pre">Laminate.calc_constitutive_matrix()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.Laminate.calc_equivalent_properties"><code class="docutils literal notranslate"><span class="pre">Laminate.calc_equivalent_properties()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.Laminate.calc_lamination_parameters"><code class="docutils literal notranslate"><span class="pre">Laminate.calc_lamination_parameters()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.Laminate.calc_scf"><code class="docutils literal notranslate"><span class="pre">Laminate.calc_scf()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.Laminate.force_balanced"><code class="docutils literal notranslate"><span class="pre">Laminate.force_balanced()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.Laminate.force_orthotropic"><code class="docutils literal notranslate"><span class="pre">Laminate.force_orthotropic()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.Laminate.force_symmetric"><code class="docutils literal notranslate"><span class="pre">Laminate.force_symmetric()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#composites.core.LaminationParameters"><code class="docutils literal notranslate"><span class="pre">LaminationParameters</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.MatLamina"><code class="docutils literal notranslate"><span class="pre">MatLamina</span></code></a><ul>
-<li><a class="reference internal" href="#composites.core.MatLamina.get_constitutive_matrix"><code class="docutils literal notranslate"><span class="pre">MatLamina.get_constitutive_matrix()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.MatLamina.get_invariant_matrix"><code class="docutils literal notranslate"><span class="pre">MatLamina.get_invariant_matrix()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.MatLamina.rebuild"><code class="docutils literal notranslate"><span class="pre">MatLamina.rebuild()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.MatLamina.trace_normalize_plane_stress"><code class="docutils literal notranslate"><span class="pre">MatLamina.trace_normalize_plane_stress()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#composites.core.force_balanced_LP"><code class="docutils literal notranslate"><span class="pre">force_balanced_LP()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.force_orthotropic_LP"><code class="docutils literal notranslate"><span class="pre">force_orthotropic_LP()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.force_symmetric_LP"><code class="docutils literal notranslate"><span class="pre">force_symmetric_LP()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.laminate_from_LaminationParameters"><code class="docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a></li>
-<li><a class="reference internal" href="#composites.core.laminate_from_lamination_parameters"><code class="docutils literal notranslate"><span class="pre">laminate_from_lamination_parameters()</span></code></a></li>
-<li><a class="reference internal" href="#composites-core-utils-module-composites-utils">Composites Core Utils Module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.utils</span></code>)</a></li>
-<li><a class="reference internal" href="#composites.utils.double_double_plate"><code class="docutils literal notranslate"><span class="pre">double_double_plate()</span></code></a></li>
-<li><a class="reference internal" href="#composites.utils.isotropic_plate"><code class="docutils literal notranslate"><span class="pre">isotropic_plate()</span></code></a></li>
-<li><a class="reference internal" href="#composites.utils.laminated_plate"><code class="docutils literal notranslate"><span class="pre">laminated_plate()</span></code></a></li>
-<li><a class="reference internal" href="#composites.utils.n_double_plate"><code class="docutils literal notranslate"><span class="pre">n_double_plate()</span></code></a></li>
-<li><a class="reference internal" href="#composites.utils.read_laminaprop"><code class="docutils literal notranslate"><span class="pre">read_laminaprop()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#license">License</a></li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
-</ul>
-</li>
-</ul>
-
-  </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/index.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
 </div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-repository">Code repository</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-this-library">Citing this library</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-composites">Classes and functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#methods-to-calculate-composite-plate-properties-composites">Methods to calculate composite plate properties (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites</span></code>)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites-core-module-composites-core">Composites Core Module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.core</span></code>)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.GradABDE"><code class="docutils literal notranslate"><span class="pre">GradABDE</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.GradABDE.calc_LP_grad"><code class="docutils literal notranslate"><span class="pre">GradABDE.calc_LP_grad()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Lamina"><code class="docutils literal notranslate"><span class="pre">Lamina</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Lamina.get_constitutive_matrix"><code class="docutils literal notranslate"><span class="pre">Lamina.get_constitutive_matrix()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Lamina.get_transf_matrix_displ_to_laminate"><code class="docutils literal notranslate"><span class="pre">Lamina.get_transf_matrix_displ_to_laminate()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Lamina.get_transf_matrix_stress_to_lamina"><code class="docutils literal notranslate"><span class="pre">Lamina.get_transf_matrix_stress_to_lamina()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Lamina.get_transf_matrix_stress_to_laminate"><code class="docutils literal notranslate"><span class="pre">Lamina.get_transf_matrix_stress_to_laminate()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Lamina.rebuild"><code class="docutils literal notranslate"><span class="pre">Lamina.rebuild()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate"><code class="docutils literal notranslate"><span class="pre">Laminate</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.calc_constitutive_matrix"><code class="docutils literal notranslate"><span class="pre">Laminate.calc_constitutive_matrix()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.calc_equivalent_properties"><code class="docutils literal notranslate"><span class="pre">Laminate.calc_equivalent_properties()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.calc_lamination_parameters"><code class="docutils literal notranslate"><span class="pre">Laminate.calc_lamination_parameters()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.calc_scf"><code class="docutils literal notranslate"><span class="pre">Laminate.calc_scf()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.force_balanced"><code class="docutils literal notranslate"><span class="pre">Laminate.force_balanced()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.force_orthotropic"><code class="docutils literal notranslate"><span class="pre">Laminate.force_orthotropic()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.force_symmetric"><code class="docutils literal notranslate"><span class="pre">Laminate.force_symmetric()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.LaminationParameters"><code class="docutils literal notranslate"><span class="pre">LaminationParameters</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.MatLamina"><code class="docutils literal notranslate"><span class="pre">MatLamina</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.MatLamina.get_constitutive_matrix"><code class="docutils literal notranslate"><span class="pre">MatLamina.get_constitutive_matrix()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.MatLamina.get_invariant_matrix"><code class="docutils literal notranslate"><span class="pre">MatLamina.get_invariant_matrix()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.MatLamina.rebuild"><code class="docutils literal notranslate"><span class="pre">MatLamina.rebuild()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.MatLamina.trace_normalize_plane_stress"><code class="docutils literal notranslate"><span class="pre">MatLamina.trace_normalize_plane_stress()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.force_balanced_LP"><code class="docutils literal notranslate"><span class="pre">force_balanced_LP()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.force_orthotropic_LP"><code class="docutils literal notranslate"><span class="pre">force_orthotropic_LP()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.force_symmetric_LP"><code class="docutils literal notranslate"><span class="pre">force_symmetric_LP()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.laminate_from_LaminationParameters"><code class="docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.laminate_from_lamination_parameters"><code class="docutils literal notranslate"><span class="pre">laminate_from_lamination_parameters()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites-core-utils-module-composites-utils">Composites Core Utils Module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.utils</span></code>)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.utils.double_double_plate"><code class="docutils literal notranslate"><span class="pre">double_double_plate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.utils.isotropic_plate"><code class="docutils literal notranslate"><span class="pre">isotropic_plate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.utils.laminated_plate"><code class="docutils literal notranslate"><span class="pre">laminated_plate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.utils.n_double_plate"><code class="docutils literal notranslate"><span class="pre">n_double_plate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.utils.read_laminaprop"><code class="docutils literal notranslate"><span class="pre">read_laminaprop()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#license">License</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="_sources/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">composites 0.5.25 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Documentation for the <code class="docutils literal notranslate"><span class="pre">composites</span></code> module</a></li> 
-      </ul>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2012-2024, Saullo G. P. Castro.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
     </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2012-2022, Saullo G. P. Castro.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
     </div>
+  
+</div>
+
+  </footer>
   </body>
 </html>
