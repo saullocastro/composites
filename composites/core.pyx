@@ -950,15 +950,13 @@ cdef class GradABDE:
         cdef double h
         cdef double [:, ::1] gradinv
 
-        gradinv = np.zeros((6, 4), dtype=DOUBLE)
         h = thickness
-
         gradinv = np.array([[mat.u2, 0, mat.u3, 0],
                             [0, 0, -mat.u3, 0],
                             [0, mat.u2/2., 0, mat.u3],
                             [-mat.u2, 0, mat.u3, 0],
                             [0, mat.u2/2., 0, -mat.u3],
-                            [0, 0, -mat.u3, 0]])
+                            [0, 0, -mat.u3, 0]], dtype=DOUBLE)
 
         # d(A11 A12 A16 A22 A26 A66) / dh
         self.gradAij[0, 0] = (mat.u1 + mat.u2*lp.xiA1 + 0*lp.xiA2 + mat.u3*lp.xiA3 + 0*lp.xiA4)
