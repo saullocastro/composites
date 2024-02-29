@@ -1003,7 +1003,7 @@ cdef class GradABDE:
         self.gradEij[2, 0] = (mat.u6 + (-1)*mat.u7*lp.xiE1 + 0*lp.xiE2)
 
         # d(E11 E12 E16 E22 E26 E66) / d(xiE1, xiE2)
-        self.gradEij[0, 0] = h*mat.u7
-        self.gradEij[1, 1] = h*(-mat.u7)
-        self.gradEij[2, 0] = h*(-mat.u7)
+        self.gradEij[0, 1] = h*mat.u7
+        self.gradEij[1, 2] = h*(-mat.u7)
+        self.gradEij[2, 1] = h*(-mat.u7)
 
