@@ -29,14 +29,14 @@ Citing this repository
 ----------------------
 
 Castro, S. G. P. Methods to calculate composite plate properties (Version
-0.6.2) [Computer software]. 2024. https://doi.org/10.5281/zenodo.2871782
+0.6.3) [Computer software]. 2024. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex :
     
     @misc{composites2024,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods to calculate composite plate properties (Version 0.6.2) [Computer software]. 2024}}
+        title = {{Methods to calculate composite plate properties (Version 0.6.3) [Computer software]. 2024}}
         }
 
 Documentation
