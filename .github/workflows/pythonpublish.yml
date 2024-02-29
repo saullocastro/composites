@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         runs-on: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: [3.8, 3.9, '3.10', '3.11', '3.12']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
     runs-on: ${{ matrix.runs-on }}
     steps:
     - uses: actions/checkout@v4
@@ -49,6 +49,8 @@ jobs:
         python -m pip install cibuildwheel==2.16.5
     - name: Build Linux Python wheels
       if: matrix.runs-on == 'ubuntu-latest'
+      env:
+        CIBW_BUILD: ('cp%s-*' % matrix.python-version.replace('.', ''))
       run: |
         python -m cibuildwheel --output-dir dist
     - name: Publish Linux Python wheels
