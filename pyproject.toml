@@ -1,6 +1,2 @@
 [build-system]
 requires = ["setuptools", "wheel", "numpy", "cython"]
-
-[project]
-name = "composites"
-requires-python = ">= 3.8"
