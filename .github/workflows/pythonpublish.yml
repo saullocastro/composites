@@ -52,7 +52,7 @@ jobs:
       run: |
         python -m cibuildwheel --output-dir dist
     - name: Publish Linux Python wheels
-      if: matrix.runs-on == 'ubuntu-latest'
+      if: matrix.runs-on == 'ubuntu-latest' && matrix.python-version == '3.12'
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
