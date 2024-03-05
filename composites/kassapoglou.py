@@ -9,6 +9,38 @@ Implementations based on Kassapoglou's book (:mod:`composites.kassapoglou`)
 import numpy as np
 from numpy import pi, tan
 
+
+def calc_Nxx_crit(a, b, m, n, D11, D12, D22, D66):
+    r"""Calculate uniaxial compression buckling for a composite plate
+
+    The output of this function is the result of Eq. 6.6, section 6.2 page 129.
+
+    Reference:
+
+        Kassapoglou. Design and Analysis of Composite Structures. 2nd Edition. John Wiley & Sons Ltd, 2013.
+
+    Parameters
+    ----------
+    a, b : float
+        Plate length and width.
+    m, n : int
+        Number of half-waves along the plate length and width, respectively.
+    D11, D12, D22, D66 : float
+        Terms of the D matrix.
+
+    Result
+    ------
+    Nxx_crit : float
+        Critical uniaxial compression buckling load.
+
+    """
+    AR = a/b
+    Nxx_crit = pi**2*(D11*m**4
+                      + 2*(D12 + 2*D66)*m**2*n**2*AR**2
+                      + D22*n**4*AR**4)/(a**2*m**2)
+    return Nxx_crit
+
+
 def calc_Nxy_crit(a, D11, D12, D16, D22, D66):
     r"""Calculate shear buckling for a composite plate
 
