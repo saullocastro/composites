@@ -54,6 +54,9 @@ and when transverse shear stiffnesses are required, the ``ABDE`` matrix, with
 .. automodule:: composites.utils
     :members:
 
+.. automodule:: composites.kassapoglou
+    :members:
+
 """
 import os
 
