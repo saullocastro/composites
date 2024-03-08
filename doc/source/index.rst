@@ -2,7 +2,8 @@ Documentation for the ``composites`` module
 ===========================================
 
 High-performance module to calculate properties of laminated composite
-materials. Usually, this module is used to calculate:
+materials, and constraints such as buckling. Usually, this module is used to
+calculate:
 
 * A, B, D, E plane-stress stiffness matrices for plates
     - A, B, D, for classical plate theory (CLT, or CLPT)
@@ -25,14 +26,14 @@ Citing this library
 -------------------
 
 Castro, S. G. P. Methods to calculate composite plate properties (Version
-0.6.5) [Computer software]. 2024. https://doi.org/10.5281/zenodo.2871782
+0.7.0) [Computer software]. 2024. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex :
     
     @misc{composites2024,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods to calculate composite plate properties (Version 0.6.5) [Computer software]. 2024}}
+        title = {{Methods to calculate composite plate properties (Version 0.7.0) [Computer software]. 2024}}
         }
 
 
