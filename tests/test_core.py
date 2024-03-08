@@ -6,9 +6,10 @@ import numpy as np
 from composites.utils import (read_laminaprop, laminated_plate,
         isotropic_plate)
 from composites.core import (laminate_from_LaminationParameters,
-        laminate_from_lamination_parameters, force_balanced_LP,
-        force_orthotropic_LP, force_symmetric_LP, Lamina,
-        GradABDE, LaminationParameters)
+                             laminate_from_lamination_parameters,
+                             make_balanced_LP, make_orthotropic_LP,
+                             make_symmetric_LP, Lamina, GradABDE,
+                             LaminationParameters)
 
 
 def test_lampar_tri_axial():
@@ -47,7 +48,7 @@ def test_lampar_tri_axial():
     E = np.array([[2.66917293e+10,  0.00000000e+00],
                   [0.00000000e+00,  2.66917293e+10]])
     assert np.allclose(lam.A, A)
-    lam.force_symmetric()
+    lam.make_symmetric()
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
     assert np.allclose(lam.E, E)
@@ -94,7 +95,7 @@ def test_lampar_plane_stress():
     E = np.array([[2.66917293e+10, 0.00000000e+00],
                   [0.00000000e+00, 2.66917293e+10]])
     assert np.allclose(lam.A, A)
-    lam.force_symmetric()
+    lam.make_symmetric()
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
     assert np.allclose(lam.E, E)
@@ -159,16 +160,16 @@ def test_laminated_plate_plane_stress():
     assert np.allclose(lam_2.D, lam.D)
     assert np.allclose(lam_2.E, lam.E)
 
-    lam.force_balanced()
-    force_balanced_LP(lp)
+    lam.make_balanced()
+    make_balanced_LP(lp)
     lam_2 = laminate_from_LaminationParameters(thickness, matlamina, lp)
     assert np.allclose(lam_2.A, lam.A)
     assert np.allclose(lam_2.B, lam.B)
     assert np.allclose(lam_2.D, lam.D)
     assert np.allclose(lam_2.E, lam.E)
 
-    lam.force_orthotropic()
-    force_orthotropic_LP(lp)
+    lam.make_orthotropic()
+    make_orthotropic_LP(lp)
     lam_2 = laminate_from_LaminationParameters(thickness, matlamina, lp)
     assert np.allclose(lam_2.A, lam.A)
     assert np.allclose(lam_2.B, lam.B)
@@ -177,13 +178,19 @@ def test_laminated_plate_plane_stress():
 
     lam = laminated_plate(stack, plyt, lamprop)
     lp = lam.calc_lamination_parameters()
-    lam.force_symmetric()
-    force_symmetric_LP(lp)
+    lam.make_symmetric()
+    make_symmetric_LP(lp)
     lam_2 = laminate_from_LaminationParameters(thickness, matlamina, lp)
     assert np.allclose(lam_2.A, lam.A)
     assert np.allclose(lam_2.B, lam.B)
     assert np.allclose(lam_2.D, lam.D)
     assert np.allclose(lam_2.E, lam.E)
+
+    lam = laminated_plate(stack, plyt, lamprop)
+    lp = lam.calc_lamination_parameters()
+    lam.make_smeared()
+    assert np.allclose(lam.D, lam.h**2/12*lam.A)
+    assert np.allclose(lam.B, 0)
 
 
 def test_isotropic_plate():
@@ -214,15 +221,19 @@ def test_errors():
     lam = isotropic_plate(thickness=thick, E=E, nu=nu)
     lam.offset = 1.
     try:
-        lam.force_balanced()
+        lam.make_balanced()
     except RuntimeError:
         pass
     try:
-        lam.force_orthotropic()
+        lam.make_orthotropic()
     except RuntimeError:
         pass
     try:
-        lam.force_symmetric()
+        lam.make_symmetric()
+    except RuntimeError:
+        pass
+    try:
+        lam.make_smeared()
     except RuntimeError:
         pass
     try:
