@@ -1,2 +1,0 @@
-.. automodule:: composites.kassapoglou
-    :members:

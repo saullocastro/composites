@@ -1,12 +1,12 @@
 r"""
-===================================================================
-Methods to calculate composite plate properties (:mod:`composites`)
-===================================================================
+=====================================
+API documentation (:mod:`composites`)
+=====================================
 
 .. currentmodule::composites
 
-The ``composites`` module includes functions used to calculate plate properties
-for laminated composites and isotropic plates.
+The ``composites`` module includes functions used to calculate properties and
+perform analysis on laminated composites and isotropic plates.
 
 Classical and first-order shear deformation theories are supported. For
 classical plate theories or classical laminated plate theories (CLPT), the

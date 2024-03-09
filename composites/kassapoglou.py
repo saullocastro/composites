@@ -1,9 +1,12 @@
 r"""
-===========================================================================
-Implementations based on Kassapoglou's book (:mod:`composites.kassapoglou`)
-===========================================================================
+=====================================================
+Kassapoglou's methods (:mod:`composites.kassapoglou`)
+=====================================================
 
 .. currentmodule::composites.kassapoglou
+
+
+Methods based on Kassapoglou's book.
 
 
 Reference:

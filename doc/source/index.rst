@@ -1,9 +1,8 @@
 Documentation for the ``composites`` module
 ===========================================
 
-High-performance module to calculate properties of laminated composite
-materials, and constraints such as buckling. Usually, this module is used to
-calculate:
+High-performance module to calculate properties and perform analysis on
+composites. With the ``composites`` module, you are able to calculate:
 
 * A, B, D, E plane-stress stiffness matrices for plates
     - A, B, D, for classical plate theory (CLT, or CLPT)
@@ -14,6 +13,9 @@ calculate:
 * Lamination parameters based on material invariants
 
 * Stiffness matrices (ABDE) based on lamination parameters
+
+* Based on Kassapoglou's book, local buckling under compression, shear, and
+  post-buckling 
 
 
 Code repository
@@ -37,11 +39,13 @@ Bibtex :
         }
 
 
-Classes and functions
----------------------
+API Documentation
+-----------------
 
-.. automodule:: composites
-    :members:
+.. toctree::
+    :maxdepth: 1
+
+    api.rst
 
 
 License
