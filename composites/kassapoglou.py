@@ -169,21 +169,23 @@ def calc_Nxx_crit_combined_shear(k, a, b, D11, D12, D22, D66):
 
     """
     den = 2 - 8192/81*a**2*k**2/(b**2*pi**4)
-    rhs_term1 = 5 + sqrt(9 + 65536/81*a**2*k**2/(b**2*pi**4))
-    rhs_term2 = 5 - sqrt(9 + 65536/81*a**2*k**2/(b**2*pi**4))
+    term = 9 + 65536/81*a**2*k**2/(b**2*pi**4)
+    rhs_term1 = 5 + sqrt(term)
+    rhs_term2 = 5 - sqrt(term)
     Nxx_crit1 = pi**2/a**2*(D11 + 2*(D12 + 2*D66)*a**2/b**2 + D22*a**4/b**4)/den*rhs_term1
     Nxx_crit2 = pi**2/a**2*(D11 + 2*(D12 + 2*D66)*a**2/b**2 + D22*a**4/b**4)/den*rhs_term2
     return min(abs(Nxx_crit1), abs(Nxx_crit2))
 
 
-def calc_Nxx_crit_combined_shear_full(k, a, b, D11, D12, D16, D22, D26, D66):
+def calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22, D26, D66):
     r"""Calculate combined uniaxial-shear buckling load for a composite plate
 
-    This solution does not ignore the D16 and D26 terms.
+    This solution does not ignore the D16 and D26 terms. Furthermore, this
+    solution takes as input `N_{xy}` instead of the `k=N_{xy}/N_{xx}`
+    originally used by Kassapoglou.
 
-    Based on section 6.5. This function calculates the critical `N_{xx}`
-    buckling load under the current level of shear load given by `N_{xy} = k
-    N_{xx}`.
+    Based on section 6.5. This function calculates the critical `N_{xx}` by
+    `N_{xy}`.
 
     Reference:
 
@@ -191,9 +193,8 @@ def calc_Nxx_crit_combined_shear_full(k, a, b, D11, D12, D16, D22, D26, D66):
 
     Parameters
     ----------
-    k : float
-        Load ratio defined as `k=N_{xy}/N_{xx}`, where `N_{xy}` is the current
-        shear load, and `N_{xx}` the current compression load.
+    Nxy : float
+        Shear load `N_{xy}`.
     a, b : float
         Plate length and width.
     D11, D12, D16, D22, D26, D66 : float
@@ -201,13 +202,18 @@ def calc_Nxx_crit_combined_shear_full(k, a, b, D11, D12, D16, D22, D26, D66):
 
     Result
     ------
-    N0 : float
+    Nxx_crit : float
         Critical `N_{xx}` buckling load under the current level of shear load
-        given by `N_{xy} = k N_{xx}`.
+        given by `N_{xy}`.
 
     """
-    Nxx_crit1 = pi**2*(-405*pi**4*D11*b**5 - 810*pi**4*D12*a**2*b**3 + 20480*D16*a**2*b**3*k - 405*pi**4*D22*a**4*b + 20480*D26*a**4*b*k - 1620*pi**4*D66*a**2*b**3 - 9*pi**2*sqrt(16384*D11**2*a**2*b**8*k**2 + 729*pi**4*D11**2*b**10 + 65536*D11*D12*a**4*b**6*k**2 + 2916*pi**4*D11*D12*a**2*b**8 - 204800*D11*D16*a**2*b**8*k + 32768*D11*D22*a**6*b**4*k**2 + 1458*pi**4*D11*D22*a**4*b**6 - 204800*D11*D26*a**4*b**6*k + 131072*D11*D66*a**4*b**6*k**2 + 5832*pi**4*D11*D66*a**2*b**8 + 65536*D12**2*a**6*b**4*k**2 + 2916*pi**4*D12**2*a**4*b**6 - 409600*D12*D16*a**4*b**6*k + 65536*D12*D22*a**8*b**2*k**2 + 2916*pi**4*D12*D22*a**6*b**4 - 409600*D12*D26*a**6*b**4*k + 262144*D12*D66*a**6*b**4*k**2 + 11664*pi**4*D12*D66*a**4*b**6 + 409600*D16**2*a**2*b**8 - 204800*D16*D22*a**6*b**4*k + 819200*D16*D26*a**4*b**6 - 819200*D16*D66*a**4*b**6*k + 16384*D22**2*a**10*k**2 + 729*pi**4*D22**2*a**8*b**2 - 204800*D22*D26*a**8*b**2*k + 131072*D22*D66*a**8*b**2*k**2 + 5832*pi**4*D22*D66*a**6*b**4 + 409600*D26**2*a**6*b**4 - 819200*D26*D66*a**6*b**4*k + 262144*D66**2*a**6*b**4*k**2 + 11664*pi**4*D66**2*a**4*b**6))/(2*a**2*b**3*(1024*a**2*k**2 - 81*pi**4*b**2))
-    Nxx_crit2 = pi**2*(-405*pi**4*D11*b**5 - 810*pi**4*D12*a**2*b**3 + 20480*D16*a**2*b**3*k - 405*pi**4*D22*a**4*b + 20480*D26*a**4*b*k - 1620*pi**4*D66*a**2*b**3 + 9*pi**2*sqrt(16384*D11**2*a**2*b**8*k**2 + 729*pi**4*D11**2*b**10 + 65536*D11*D12*a**4*b**6*k**2 + 2916*pi**4*D11*D12*a**2*b**8 - 204800*D11*D16*a**2*b**8*k + 32768*D11*D22*a**6*b**4*k**2 + 1458*pi**4*D11*D22*a**4*b**6 - 204800*D11*D26*a**4*b**6*k + 131072*D11*D66*a**4*b**6*k**2 + 5832*pi**4*D11*D66*a**2*b**8 + 65536*D12**2*a**6*b**4*k**2 + 2916*pi**4*D12**2*a**4*b**6 - 409600*D12*D16*a**4*b**6*k + 65536*D12*D22*a**8*b**2*k**2 + 2916*pi**4*D12*D22*a**6*b**4 - 409600*D12*D26*a**6*b**4*k + 262144*D12*D66*a**6*b**4*k**2 + 11664*pi**4*D12*D66*a**4*b**6 + 409600*D16**2*a**2*b**8 - 204800*D16*D22*a**6*b**4*k + 819200*D16*D26*a**4*b**6 - 819200*D16*D66*a**4*b**6*k + 16384*D22**2*a**10*k**2 + 729*pi**4*D22**2*a**8*b**2 - 204800*D22*D26*a**8*b**2*k + 131072*D22*D66*a**8*b**2*k**2 + 5832*pi**4*D22*D66*a**6*b**4 + 409600*D26**2*a**6*b**4 - 819200*D26*D66*a**6*b**4*k + 262144*D66**2*a**6*b**4*k**2 + 11664*pi**4*D66**2*a**4*b**6))/(2*a**2*b**3*(1024*a**2*k**2 - 81*pi**4*b**2))
+    a11 = pi**4*D11*b/(4*a**3) + pi**4*D12/(2*a*b) + pi**4*D22*a/(4*b**3) + pi**4*D66/(a*b)
+    a12 = -160*pi**2*D16/(9*a**2) - 160*pi**2*D26/(9*b**2)
+    a21 = -160*pi**2*D16/(9*a**2) - 160*pi**2*D26/(9*b**2)
+    a22 = 4*pi**4*D11*b/a**3 + 8*pi**4*D12/(a*b) + 4*pi**4*D22*a/b**3 + 16*pi**4*D66/(a*b)
+    term = 16384*Nxy**2 + 4608*Nxy*a12 + 4608*Nxy*a21 + 1296*a11**2 - 648*a11*a22 + 1296*a12*a21 + 81*a22**2
+    Nxx_crit1 = a*(36*a11 + 9*a22 - sqrt(term))/(18*pi**2*b)
+    Nxx_crit2 = a*(36*a11 + 9*a22 + sqrt(term))/(18*pi**2*b)
     return min(abs(Nxx_crit1), abs(Nxx_crit2))
 
 

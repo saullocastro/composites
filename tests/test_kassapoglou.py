@@ -101,31 +101,14 @@ def test_calc_Nxx_crit_combined_shear_full():
     x_values = []
     y_values = []
     for Nxy in np.linspace(0.01*Nxy_crit, 0.99*Nxy_crit):
-        Nxx = 0.01*Nxx_crit
-        for i in range(100):
-            k = Nxy/Nxx
-            #N0 = calc_Nxx_crit_combined_shear(k, a, b, D11, D12, D22, D66)
-            #N0 = calc_Nxx_crit_combined_shear_full(k, a, b, D11, D12, 0, D22, 0, D66)
-            N01 = (405*pi**6*D11*b**5 + 810*pi**6*D12*a**2*b**3 + 405*pi**6*D22*a**4*b + 1620*pi**6*D66*a**2*b**3 - 9*pi**4*sqrt(16384*D11**2*a**2*b**8*k**2 + 729*pi**4*D11**2*b**10 + 65536*D11*D12*a**4*b**6*k**2 + 2916*pi**4*D11*D12*a**2*b**8 + 32768*D11*D22*a**6*b**4*k**2 + 1458*pi**4*D11*D22*a**4*b**6 + 131072*D11*D66*a**4*b**6*k**2 + 5832*pi**4*D11*D66*a**2*b**8 + 65536*D12**2*a**6*b**4*k**2 + 2916*pi**4*D12**2*a**4*b**6 + 65536*D12*D22*a**8*b**2*k**2 + 2916*pi**4*D12*D22*a**6*b**4 + 262144*D12*D66*a**6*b**4*k**2 + 11664*pi**4*D12*D66*a**4*b**6 + 16384*D22**2*a**10*k**2 + 729*pi**4*D22**2*a**8*b**2 + 131072*D22*D66*a**8*b**2*k**2 + 5832*pi**4*D22*D66*a**6*b**4 + 262144*D66**2*a**6*b**4*k**2 + 11664*pi**4*D66**2*a**4*b**6))/(2048*a**4*b**3*k**2 - 162*pi**4*a**2*b**5)
-            N02 = (405*pi**6*D11*b**5 + 810*pi**6*D12*a**2*b**3 + 405*pi**6*D22*a**4*b + 1620*pi**6*D66*a**2*b**3 + 9*pi**4*sqrt(16384*D11**2*a**2*b**8*k**2 + 729*pi**4*D11**2*b**10 + 65536*D11*D12*a**4*b**6*k**2 + 2916*pi**4*D11*D12*a**2*b**8 + 32768*D11*D22*a**6*b**4*k**2 + 1458*pi**4*D11*D22*a**4*b**6 + 131072*D11*D66*a**4*b**6*k**2 + 5832*pi**4*D11*D66*a**2*b**8 + 65536*D12**2*a**6*b**4*k**2 + 2916*pi**4*D12**2*a**4*b**6 + 65536*D12*D22*a**8*b**2*k**2 + 2916*pi**4*D12*D22*a**6*b**4 + 262144*D12*D66*a**6*b**4*k**2 + 11664*pi**4*D12*D66*a**4*b**6 + 16384*D22**2*a**10*k**2 + 729*pi**4*D22**2*a**8*b**2 + 131072*D22*D66*a**8*b**2*k**2 + 5832*pi**4*D22*D66*a**6*b**4 + 262144*D66**2*a**6*b**4*k**2 + 11664*pi**4*D66**2*a**4*b**6))/(2048*a**4*b**3*k**2 - 162*pi**4*a**2*b**5)
-            N0 = min(abs(N01), abs(N02))
-            k_new = Nxy/N0
-            if np.isclose(k_new, k):
-                break
-            Nxx = N0
-        else:
-            raise
+        Nxx = calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, 0, D22, 0, D66)
+        assert np.isclose(Nxx, calc_Nxx_crit_combined_shear(Nxy/Nxx, a, b, D11, D12, D22, D66))
         x_values.append(Nxx/Nxx_crit)
         y_values.append(Nxy/Nxy_crit)
-
-    #res1_expected = [760.4492762134736, 728.400368245419, 703.8761399336366, 685.191127113606, 671.1307610092099, 660.8018833650219, 653.5358314008664, 648.8239785928772, 646.2738786053692, 645.5788159767615, 646.4962762781008, 648.8324700409954, 652.4310404371092, 657.1647103179126, 662.9290256450245, 669.6376148748768, 677.2185585936345, 685.6115818818151, 694.7658630211979, 704.6383086268357, 715.192185097175, 726.3960246767871, 738.2227449149805, 750.6489352387343, 763.6542753519922, 777.2210583401934, 791.3337974784167, 805.9789003643929, 821.1443975169391, 836.8197152790613, 852.995484948758, 869.6633816801207, 886.8159879639275, 904.4466774933751, 922.5495160089763, 941.119176343723, 960.1508653910068, 979.6402611206446, 999.5834580935449, 1019.9769201892686, 1040.817439475499, 1062.102100324078, 1083.828248022461, 1105.9934612482962, 1128.5955278731656, 1151.6324236431244, 1175.1022933516867, 1199.003434177715, 1223.3342809083138, 1248.093392806889]
-
-    #assert np.allclose(res1, res1_expected)
 
     #import matplotlib.pyplot as plt
     #plt.plot(x_values, y_values)
     #plt.ylim(0., 1.1)
-    #plt.legend()
     #plt.xlabel('Length/Width')
     #plt.ylabel('Buckling load ${N_{xx}}_{crit}$ [N/mm]')
     #plt.title("Reproducing Kassapoglou's Figs. 6.4 and 6.5")
@@ -181,20 +164,21 @@ if __name__ == '__main__':
     test_calc_Nxx_crit_combined_shear_full()
     test_calc_beff()
 
-    laminaprop = (68.9e9, 68.0e9, 0.05, 4.83e9, 4.83e9, 4.83e9)
-    plyt = 0.1905e-3/2/16
-    lam = laminated_plate(stack=[0]*8, plyt=plyt, laminaprop=laminaprop)
+    if False:
+        laminaprop = (68.9e9, 68.0e9, 0.05, 4.83e9, 4.83e9, 4.83e9)
+        plyt = 0.1905e-3/2/16
+        lam = laminated_plate(stack=[0]*8, plyt=plyt, laminaprop=laminaprop)
 
-    Px = np.linspace(10, 1, 40)
-    Pcr = 1
+        Px = np.linspace(10, 1, 40)
+        Pcr = 1
 
-    b = 1
+        b = 1
 
-    A11 = lam.A11
-    A22 = A11*10.
-    A12 = A11*0.7
-    beffs1 = calc_beff(b, Px, Pcr, A11, A12, A22)
+        A11 = lam.A11
+        A22 = A11*10.
+        A12 = A11*0.7
+        beffs1 = calc_beff(b, Px, Pcr, A11, A12, A22)
 
-    import matplotlib.pyplot as plt
-    plt.plot(Pcr/Px, beffs1/a)
-    plt.show()
+        import matplotlib.pyplot as plt
+        plt.plot(Pcr/Px, beffs1/a)
+        plt.show()
