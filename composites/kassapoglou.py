@@ -216,10 +216,3 @@ def calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22, D26, D66):
     Nxx_crit2 = a*(36*a11 + 9*a22 + sqrt(term))/(18*pi**2*b)
     return min(abs(Nxx_crit1), abs(Nxx_crit2))
 
-
-if __name__ == '__main__':
-    # NOTE a difficult convergence case...
-    args = '0.8 14089642.804130534 2011013.713237885 5.359101079856173e-12 5453279.395887981 2582673.2451443337'.split(' ')
-    args = map(float, args)
-    test = calc_Nxy_crit(*args)
-
