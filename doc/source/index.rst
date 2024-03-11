@@ -39,8 +39,8 @@ Bibtex :
         }
 
 
-API Documentation
------------------
+composites API
+--------------
 
 .. toctree::
     :maxdepth: 1
