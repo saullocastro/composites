@@ -1,7 +1,7 @@
 r"""
-=====================================
-API documentation (:mod:`composites`)
-=====================================
+==================================
+composites API (:mod:`composites`)
+==================================
 
 .. currentmodule::composites
 
