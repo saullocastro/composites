@@ -1,12 +1,12 @@
 r"""
-===================================================================
-Methods to calculate composite plate properties (:mod:`composites`)
-===================================================================
+==================================
+composites API (:mod:`composites`)
+==================================
 
 .. currentmodule::composites
 
-The ``composites`` module includes functions used to calculate plate properties
-for laminated composites and isotropic plates.
+The ``composites`` module includes functions used to calculate properties and
+perform analysis on laminated composites and isotropic plates.
 
 Classical and first-order shear deformation theories are supported. For
 classical plate theories or classical laminated plate theories (CLPT), the
@@ -52,6 +52,9 @@ and when transverse shear stiffnesses are required, the ``ABDE`` matrix, with
     :members:
 
 .. automodule:: composites.utils
+    :members:
+
+.. automodule:: composites.kassapoglou
     :members:
 
 """

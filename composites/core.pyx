@@ -616,29 +616,31 @@ cdef class Laminate:
             self.E45 += ply.q45L*(hk - hk_1)
             self.E55 += ply.q55L*(hk - hk_1)
 
-    cpdef void force_balanced(Laminate self):
-        r"""Force a balanced laminate
+
+    cpdef void make_balanced(Laminate self):
+        r"""Make a balanced laminate
 
         The attributes `A_{16}`, `A_{26}`, `B_{16}`, `B_{26}` are set to zero
-        to force a balanced laminate.
+        to make a balanced laminate.
 
         """
         if self.offset != 0.:
-            raise RuntimeError('Laminates with offset cannot be forced balanced!')
+            raise RuntimeError('Laminates with offset cannot be made balanced!')
         self.A16 = 0.
         self.A26 = 0.
         self.B16 = 0.
         self.B26 = 0.
 
-    cpdef void force_orthotropic(Laminate self):
-        r"""Force an orthotropic laminate
+
+    cpdef void make_orthotropic(Laminate self):
+        r"""Make an orthotropic laminate
 
         The attributes `A_{16}`, `A_{26}`, `B_{16}`, `B_{26}`, `D_{16}`,
-        `D_{26}` are set to zero to force an orthotropic laminate.
+        `D_{26}` are set to zero to make an orthotropic laminate.
 
         """
         if self.offset != 0.:
-            raise RuntimeError('Laminates with offset cannot be forced orthotropic!')
+            raise RuntimeError('Laminates with offset cannot be made orthotropic!')
         self.A16 = 0.
         self.A26 = 0.
         self.B16 = 0.
@@ -646,21 +648,52 @@ cdef class Laminate:
         self.D16 = 0.
         self.D26 = 0.
 
-    cpdef void force_symmetric(Laminate self):
-        """Force a symmetric laminate
+
+    cpdef void make_symmetric(Laminate self):
+        """Make a symmetric laminate
 
         The `B_{ij}` terms of the constitutive matrix are set to zero.
 
         """
         if self.offset != 0.:
             raise RuntimeError(
-                    'Laminates with offset cannot be forced symmetric!')
+                    'Laminates with offset cannot be made symmetric!')
         self.B11 = 0
         self.B12 = 0
         self.B16 = 0
         self.B22 = 0
         self.B26 = 0
         self.B66 = 0
+
+
+    cpdef void make_smeared(Laminate self):
+        r"""Make a laminated with smeared properties
+
+        The `B_{ij}` terms of the constitutive matrix are set to zero.
+
+        The `D_{ij}` terms are calculated from the membrane terms `A_{ij}`
+        according to `D_{ij} = (h^2 A_{ij})/12`, where `h` is the
+        laminate thickness.
+
+        """
+        if self.offset != 0.:
+            raise NotImplementedError(
+                    'Laminates with offset cannot be made smeared!')
+
+        self.B11 = 0
+        self.B12 = 0
+        self.B16 = 0
+        self.B22 = 0
+        self.B26 = 0
+        self.B66 = 0
+
+        self.D11 = self.h**2/12 * self.A11
+        self.D12 = self.h**2/12 * self.A12
+        self.D16 = self.h**2/12 * self.A16
+        self.D22 = self.h**2/12 * self.A22
+        self.D26 = self.h**2/12 * self.A26
+        self.D66 = self.h**2/12 * self.A66
+
 
     cpdef LaminationParameters calc_lamination_parameters(Laminate self):
         r"""Calculate the lamination parameters.
@@ -715,11 +748,11 @@ cdef class Laminate:
         return lp
 
 
-cpdef LaminationParameters force_balanced_LP(LaminationParameters lp):
-    r"""Force balanced lamination parameters
+cpdef LaminationParameters make_balanced_LP(LaminationParameters lp):
+    r"""Make balanced lamination parameters
 
     The lamination parameters `\xi_{A2}` and `\xi_{A4}` are set to null to
-    force a balanced laminate.
+    make a balanced laminate.
 
     """
     lp.xiA2 = 0
@@ -727,10 +760,10 @@ cpdef LaminationParameters force_balanced_LP(LaminationParameters lp):
     return lp
 
 
-cpdef LaminationParameters force_symmetric_LP(LaminationParameters lp):
-    r"""Force symmetric lamination parameters
+cpdef LaminationParameters make_symmetric_LP(LaminationParameters lp):
+    r"""Make symmetric lamination parameters
 
-    The lamination parameters `\xi_{Bi}` are set to null to force a symmetric
+    The lamination parameters `\xi_{Bi}` are set to null to make a symmetric
     laminate.
 
     """
@@ -741,11 +774,11 @@ cpdef LaminationParameters force_symmetric_LP(LaminationParameters lp):
     return lp
 
 
-cpdef LaminationParameters force_orthotropic_LP(LaminationParameters lp):
-    r"""Force orthotropic lamination parameters
+cpdef LaminationParameters make_orthotropic_LP(LaminationParameters lp):
+    r"""Make orthotropic lamination parameters
 
     The lamination parameters `\xi_{A2}`, `\xi_{A4}`, `\xi_{B2}`, `\xi_{B4}`,
-    `\xi_{D2}` and `\xi_{D4}` are set to null to force an orthotropic laminate.
+    `\xi_{D2}` and `\xi_{D4}` are set to null to make an orthotropic laminate.
     The `\xi_{D2}` and `\xi_{D4}` are related to the bend-twist coupling and
     become often very small for balanced laminates with a large amount of
     plies.
