@@ -85,7 +85,7 @@ License :: OSI Approved :: BSD License
 """
 
 is_released = True
-version = '0.7.0'
+version = '0.7.1'
 
 fullversion = write_version_py(version, is_released)
 
@@ -134,7 +134,7 @@ s = setup(
     version = fullversion,
     author = "Saullo G. P. Castro",
     author_email = "S.G.P.Castro@tudelft.nl",
-    description = ("Methods to calculate properties of laminated composite materials"),
+    description = ("Methods for analysis and design of composites"),
     long_description = read('README.md'),
     long_description_content_type = 'text/markdown',
     license = "3-Clause BSD",

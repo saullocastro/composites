@@ -8,8 +8,8 @@ Coverage status:
 [![Codecov Status](https://codecov.io/gh/saullocastro/composites/branch/master/graph/badge.svg?token=KD9D8G8D2P)](https://codecov.io/gh/saullocastro/composites)
 
 
-Methods to calculate composite plate properties
-===============================================
+Methods for analysis and design of composites
+=============================================
 
 High-performance module to calculate properties of laminated composite
 materials. Usually, this module is used to calculate:
@@ -28,15 +28,15 @@ materials. Usually, this module is used to calculate:
 Citing this repository
 ----------------------
 
-Castro, S. G. P. Methods to calculate composite plate properties (Version
-0.7.0) [Computer software]. 2024. https://doi.org/10.5281/zenodo.2871782
+Castro, SGP. Methods for analysis and design of composites (Version
+0.7.1) [Computer software]. 2024. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex :
     
     @misc{composites2024,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods to calculate composite plate properties (Version 0.7.0) [Computer software]. 2024}}
+        title = {{Methods for analysis and design of composites}}
         }
 
 Documentation
