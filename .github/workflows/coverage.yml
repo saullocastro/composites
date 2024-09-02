@@ -1,0 +1,37 @@
+name: codecov
+
+on: [push]
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        runs-on: [ubuntu-latest]
+        python-version: ['3.11']
+    runs-on: ${{ matrix.runs-on }}
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -r ci_requirements.txt
+        python3 -m pip install --upgrade -r ci_requirements.txt
+    - name: Install module for coverage
+      run: |
+        python3 setup.py build_ext --inplace --force --define CYTHON_TRACE_NOGIL
+    - name: Test with pytest and coverage report
+      run: |
+        coverage run -m pytest tests
+        coverage report
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_UPLOAD_TOKEN }} 
+        fail_ci_if_error: true
+        verbose: true
