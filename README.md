@@ -1,10 +1,11 @@
 Github Actions status:
-[![Unit tests and code coverage](https://github.com/saullocastro/composites/actions/workflows/pytest_and_coverage.yml/badge.svg)](https://github.com/saullocastro/composites/actions/workflows/pytest_and_coverage.yml)
+[![pytest](https://github.com/saullocastro/composites/actions/workflows/pytest.yml/badge.svg)](https://github.com/saullocastro/composites/actions/workflows/pytest.yml)
 [![Documentation](https://github.com/saullocastro/composites/actions/workflows/auto_doc.yml/badge.svg)](https://github.com/saullocastro/composites/actions/workflows/auto_doc.yml)
 [![Deploy](https://github.com/saullocastro/composites/actions/workflows/pythonpublish.yml/badge.svg)](https://github.com/saullocastro/composites/actions/workflows/pythonpublish.yml)
 
 Coverage status:
 
+[![codecov](https://github.com/saullocastro/composites/actions/workflows/coverage.yml/badge.svg)](https://github.com/saullocastro/composites/actions/workflows/coverage.yml)
 [![Codecov Status](https://codecov.io/gh/saullocastro/composites/branch/master/graph/badge.svg?token=KD9D8G8D2P)](https://codecov.io/gh/saullocastro/composites)
 
 
