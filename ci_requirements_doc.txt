@@ -3,3 +3,4 @@ numpy
 sphinx
 numpydoc
 pydata-sphinx-theme
+nbsphinx

@@ -37,6 +37,14 @@ Bibtex :
         title = {{Methods for analysis and design of composites (Version 0.7.1) [Computer software]. 2024}}
         }
 
+Tutorials
+---------
+
+.. toctree::
+    :maxdepth: 2
+
+    tutorials.rst
+
 
 composites API
 --------------
