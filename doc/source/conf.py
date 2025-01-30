@@ -20,7 +20,7 @@ sys.path.append(r'c:\repositories\composites')
 
 project = 'composites'
 author = 'Saullo G. P. Castro'
-copyright = '2012-2024, ' + author
+copyright = '2012-2025, ' + author
 
 # The full version, including alpha/beta/rc tags
 from composites.version import __version__

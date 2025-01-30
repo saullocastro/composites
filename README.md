@@ -30,11 +30,11 @@ Citing this repository
 ----------------------
 
 Castro, SGP. Methods for analysis and design of composites (Version
-0.7.1) [Computer software]. 2024. https://doi.org/10.5281/zenodo.2871782
+0.7.2) [Computer software]. 2025. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex :
     
-    @misc{composites2024,
+    @misc{composites2025,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
         title = {{Methods for analysis and design of composites}}
