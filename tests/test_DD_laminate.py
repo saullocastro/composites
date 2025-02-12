@@ -3,8 +3,8 @@ sys.path.append('..')
 
 import numpy as np
 
-from composites.utils import (read_laminaprop, double_double_plate,
-        laminated_plate)
+from composites.utils import (read_laminaprop, double_double_laminate,
+                              laminated_plate)
 
 data = {
 'IM6/epoxy': dict(Ex=203e9, Ey=11.20e9, vx=0.32, Es=8.40e9, tr=232e9),
@@ -55,7 +55,7 @@ def test_ABD():
     thickness = 2.3
     phideg = 15
     psideg = 30
-    lam = double_double_plate(thickness, phideg, psideg, laminaprop)
+    lam = double_double_laminate(thickness, phideg, psideg, laminaprop)
 
     num_repeats = 32
     stack = [phideg, -phideg, psideg, -psideg]*num_repeats

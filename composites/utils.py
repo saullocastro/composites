@@ -209,9 +209,8 @@ def isotropic_plate(thickness, E, nu, offset=0., calc_scf=True, rho=0.):
             rho=rho, offset=offset, calc_scf=calc_scf)
 
 
-def double_double_plate(thickness, phideg, psideg, laminaprop=None,
-        rho=0., calc_scf=True):
-    r"""Create a double-double laminated plate
+def double_double_laminate(thickness, phideg, psideg, laminaprop=None, rho=0.):
+    r"""Create a double-double laminate
 
     A double-double (DD) laminate consists of `[\pm\phi,\pm\psi]`, with
     ``phideg=`` `\phi`, and ``psideg=`` `\psi`. With the principle of
@@ -235,9 +234,6 @@ def double_double_plate(thickness, phideg, psideg, laminaprop=None,
         See :func:`.read_laminaprop` for details.
     rho : float, optional
         Material density
-    calc_scf : bool, optional
-        If True, use :func:`.Laminate.calc_scf` to compute shear correction
-        factors, otherwise the default value of 5/6 is used.
 
     """
     m = read_laminaprop(laminaprop, rho)
@@ -287,11 +283,12 @@ def double_double_plate(thickness, phideg, psideg, laminaprop=None,
     return lam
 
 
-def n_double_plate(thickness, angles_deg, laminaprop=None,
-        rho=0., calc_scf=True):
-    r"""Create a N-double laminated plate
+def n_double_laminate(thickness, angles_deg, laminaprop=None, rho=0.):
+    r"""Create a N-double laminate
 
-    A N-double (ND) laminate consists of `[\pm\phi_1,\pm\phi_2, \cdots,
+    This code is considerably slower than :func:`composites.core.n_double_laminate`.
+
+    An N-double laminate consists of `[\pm\phi_1,\pm\phi_2, \cdots,
     \pm\phi_n]`. With the principle of homogenization, at the limit where many
     plies are used we have that `B=0`.  Based on the double-double laminate as
     described by:
@@ -306,14 +303,11 @@ def n_double_plate(thickness, angles_deg, laminaprop=None,
     thickness : float
         Total plate thickness.
     angles_deg : float
-        List of `\phi_n` of the ND laminate.
+        List of `\phi_n` of the N-double laminate.
     laminaprop : tuple
         See :func:`.read_laminaprop` for details.
     rho : float, optional
         Material density
-    calc_scf : bool, optional
-        If True, use :func:`.Laminate.calc_scf` to compute shear correction
-        factors, otherwise the default value of 5/6 is used.
 
     """
     m = read_laminaprop(laminaprop, rho)
@@ -355,3 +349,8 @@ def n_double_plate(thickness, angles_deg, laminaprop=None,
     lam.stack = angles_deg
 
     return lam
+
+
+# NOTE aliases for back-compatibility
+double_double_plate = double_double_laminate
+n_double_plate = n_double_laminate
