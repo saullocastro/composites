@@ -1042,3 +1042,73 @@ cdef class GradABDE:
         self.gradEij[1, 2] = h*(-mat.u7)
         self.gradEij[2, 1] = h*(-mat.u7)
 
+
+cpdef Laminate n_double_laminate(double thickness, int n, double[::1] angles_deg, MatLamina matlamina):
+    r"""Create a N-double laminated plate using a faster code
+
+    This code is considerably faster than :func:`composites.utils.n_double_laminate`.
+
+    An N-double laminate consists of `[\pm\phi_1,\pm\phi_2, \cdots,
+    \pm\phi_n]`. With the principle of homogenization, at the limit where many
+    plies are used we have that `B=0`.  Based on the double-double laminate as
+    described by:
+
+        Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., 2020,
+        “D and DD-Drop Layup Optimization of Aircraft Wing Panels under
+        Multi-Load Case Design Environment,” Compos. Struct., 248(January), p.
+        112518.
+
+    Parameters
+    ----------
+    thickness : float
+        Total plate thickness.
+    n : int
+        Number of angle pairs,m defines the "N" in "N-double".
+    angles_deg : array-like
+        List of `\phi_n` of the N-double laminate.
+    matlamina : MatLamina
+        See :class:`.MatLamina` for details.
+
+    """
+    cdef int i
+    cdef double tr
+
+    lam = Laminate()
+    lam.h = thickness
+
+    tr = matlamina.q11 + matlamina.q22 + 2*matlamina.q66
+    matlamina.trace_normalize_plane_stress()
+    A11_star = matlamina.u1
+    A12_star = matlamina.u4
+    A22_star = matlamina.u1
+    A16_star = 0
+    A26_star = 0
+    A66_star = matlamina.u5
+    for i in range(n):
+        angle_deg = angles_deg[i]
+        angle = deg2rad(angle_deg)
+        A11_star += matlamina.u2*(cos(2*angle) + cos(-2*angle))/(2*n)
+        A11_star += matlamina.u3*(cos(4*angle) + cos(-4*angle))/(2*n)
+
+        A12_star -= matlamina.u3*(cos(4*angle) + cos(-4*angle))/(2*n)
+
+        A22_star -= matlamina.u2*(cos(2*angle) + cos(-2*angle))/(2*n)
+        A22_star += matlamina.u3*(cos(4*angle) + cos(-4*angle))/(2*n)
+
+        A66_star -= matlamina.u3*(cos(4*angle) + cos(-4*angle))/(2*n)
+
+    lam.A11 = tr*A11_star*lam.h
+    lam.A12 = tr*A12_star*lam.h
+    lam.A16 = tr*A16_star*lam.h
+    lam.A22 = tr*A22_star*lam.h
+    lam.A26 = tr*A26_star*lam.h
+    lam.A66 = tr*A66_star*lam.h
+    lam.D11 = tr*A11_star*lam.h**3/12.
+    lam.D12 = tr*A12_star*lam.h**3/12.
+    lam.D16 = tr*A16_star*lam.h**3/12.
+    lam.D22 = tr*A22_star*lam.h**3/12.
+    lam.D26 = tr*A26_star*lam.h**3/12.
+    lam.D66 = tr*A66_star*lam.h**3/12.
+    lam.calc_equivalent_properties()
+
+    return lam
