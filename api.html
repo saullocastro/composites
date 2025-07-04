@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>composites API (composites) &#8212; composites 0.7.3 documentation</title>
+    <title>composites API (composites) &#8212; composites 0.8.0 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=c98573da"></script>
+    <script src="_static/documentation_options.js?v=486e5634"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -112,7 +112,7 @@
   
   
   
-    <p class="title logo__title">composites 0.7.3 documentation</p>
+    <p class="title logo__title">composites 0.8.0 documentation</p>
   
 </a></div>
     
@@ -352,19 +352,19 @@ plates.</p>
 <span id="module-composites.core"></span><h2>Composites Core Module (<a class="reference internal" href="#module-composites.core" title="composites.core"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.core</span></code></a>)<a class="headerlink" href="#composites-core-module-composites-core" title="Link to this heading">#</a></h2>
 </section>
 <dl class="py class">
-<dt class="sig sig-object py" id="composites.core.GradABDE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">GradABDE</span></span><a class="headerlink" href="#composites.core.GradABDE" title="Link to this definition">#</a></dt>
-<dd><p>Container to store the gradients of the ABDE matrices with respect to
+<dt class="sig sig-object py" id="composites.core.GradABD">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">GradABD</span></span><a class="headerlink" href="#composites.core.GradABD" title="Link to this definition">#</a></dt>
+<dd><p>Container to store the gradients of the ABD matrices with respect to
 the lamination parameters</p>
 <dl class="field-list">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>gradAij, gradBij, gradDij, gradEij</strong><span class="classifier">tuple of 2D np.array objects</span></dt><dd><p>The shapes of these gradient matrices are:</p>
+<dt><strong>gradAij, gradBij, gradDij, gradAtransij</strong><span class="classifier">tuple of 2D np.array objects</span></dt><dd><p>The shapes of these gradient matrices are:</p>
 <blockquote>
 <div><p>gradAij: (6, 5)
 gradBij: (6, 5)
 gradDij: (6, 5)
-gradEij: (3, 3)</p>
+gradAtransij: (3, 3)</p>
 </div></blockquote>
 <p>They contain the gradients of each laminate stiffness with respect to
 the thickness and respective lamination parameters. The rows and
@@ -376,15 +376,15 @@ columns correspond to:</p>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.GradABDE.calc_LP_grad" title="composites.core.GradABDE.calc_LP_grad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_LP_grad</span></code></a>(thickness, mat, lp)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.GradABD.calc_LP_grad" title="composites.core.GradABD.calc_LP_grad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_LP_grad</span></code></a>(thickness, mat, lp)</p></td>
 <td><p>Gradients of the shell stiffnesses with respect to the thickness and lamination parameters</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="composites.core.GradABDE.calc_LP_grad">
-<span class="sig-name descname"><span class="pre">calc_LP_grad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.GradABDE.calc_LP_grad" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="composites.core.GradABD.calc_LP_grad">
+<span class="sig-name descname"><span class="pre">calc_LP_grad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.GradABD.calc_LP_grad" title="Link to this definition">#</a></dt>
 <dd><p>Gradients of the shell stiffnesses with respect to the thickness and
 lamination parameters</p>
 <dl class="field-list">
@@ -553,7 +553,7 @@ equivalent single layer finite element mass matrices</p>
 <span class="sig-name descname"><span class="pre">calc_constitutive_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_constitutive_matrix" title="Link to this definition">#</a></dt>
 <dd><p>Calculate the laminate constitutive terms</p>
 <p>This is the commonly called <code class="docutils literal notranslate"><span class="pre">ABD</span></code> matrix with <code class="docutils literal notranslate"><span class="pre">shape=(6,</span> <span class="pre">6)</span></code> when
-the classical laminated plate theory is used, or the <code class="docutils literal notranslate"><span class="pre">ABDE</span></code> matrix
+the classical laminated plate theory is used, or the <code class="docutils literal notranslate"><span class="pre">ABD</span></code> matrix
 when the first-order shear deformation theory is used, containing the
 transverse shear terms.</p>
 </dd></dl>
@@ -654,7 +654,7 @@ laminate thickness.</p>
 </dd>
 <dt><strong>xiD1, xiD2, xiD3, xiD4</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math notranslate nohighlight">\(\xi_{Di}\)</span> (bending)</p>
 </dd>
-<dt><strong>xiE1, xiE2</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math notranslate nohighlight">\(\xi_{Ei}\)</span> (transverse shear)</p>
+<dt><strong>xiAtrans1, xiAtrans2</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math notranslate nohighlight">\(\xi_{{A_{trans}}i}\)</span> (transverse shear)</p>
 </dd>
 </dl>
 </dd>
@@ -824,7 +824,7 @@ lamination parameters</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
-<dt><strong>lam</strong><span class="classifier"><a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a></span></dt><dd><p>laminate with the ABD and ABDE matrices already calculated</p>
+<dt><strong>lam</strong><span class="classifier"><a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a></span></dt><dd><p>laminate with the constitutive matrices already calculated</p>
 </dd>
 </dl>
 </dd>
@@ -833,7 +833,7 @@ lamination parameters</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.core.laminate_from_lamination_parameters">
-<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">laminate_from_lamination_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matlamina</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiE1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiE2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.laminate_from_lamination_parameters" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">laminate_from_lamination_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matlamina</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAtrans1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAtrans2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.laminate_from_lamination_parameters" title="Link to this definition">#</a></dt>
 <dd><p>Return a <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> object based in the thickness, material and
 lamination parameters</p>
 <p>Note that <span class="math notranslate nohighlight">\(\xi_{E1}\)</span> and <span class="math notranslate nohighlight">\(\xi_{E2}\)</span> are optional and usually equal to zero,
@@ -854,7 +854,7 @@ deformation theory: <span class="math notranslate nohighlight">\(\xi_{A1} \cdots
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
-<dt><strong>lam</strong><span class="classifier"><a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a></span></dt><dd><p>laminate with the ABD and ABDE matrices already calculated</p>
+<dt><strong>lam</strong><span class="classifier"><a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a></span></dt><dd><p>laminate with the constitutive matrices already calculated</p>
 </dd>
 </dl>
 </dd>
@@ -1380,8 +1380,8 @@ that finds the solution of Eqs. 6.29 and 6.30 simultaneously.</p>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites-core-module-composites-core">Composites Core Module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.core</span></code>)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.GradABDE"><code class="docutils literal notranslate"><span class="pre">GradABDE</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.GradABDE.calc_LP_grad"><code class="docutils literal notranslate"><span class="pre">GradABDE.calc_LP_grad()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.GradABD"><code class="docutils literal notranslate"><span class="pre">GradABD</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.GradABD.calc_LP_grad"><code class="docutils literal notranslate"><span class="pre">GradABD.calc_LP_grad()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Lamina"><code class="docutils literal notranslate"><span class="pre">Lamina</span></code></a><ul class="nav section-nav flex-column">
