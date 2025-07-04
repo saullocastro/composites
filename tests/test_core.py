@@ -140,12 +140,31 @@ def test_laminated_plate_plane_stress():
     D = np.array([[ 0.1708233 , 0.01057886, 0.00262445],
                   [ 0.01057886, 0.1708233 , 0.00262445],
                   [ 0.00262445, 0.00262445, 0.0326602 ]])
+    E = np.array([[-1.96833943e-05, 0.00000000e+00, 1.66698533e-22],
+                  [0.00000000e+00, 1.96833943e-05, 1.03856176e-21],
+                  [1.66698533e-22, 1.03856176e-21, 0.00000000e+00]])
+    F = np.array([[3.63890059e-09, 1.87551265e-10, 6.15106073e-12],
+                  [1.87551265e-10, 3.63890059e-09, 6.15106073e-12],
+                  [6.15106073e-12, 6.15106073e-12, 6.53329570e-10]])
+    H = np.array([[9.14779627e-17, 4.61039304e-18, 1.71625578e-20],
+                  [4.61039304e-18, 9.14779627e-17, 1.71625578e-20],
+                  [1.71625578e-20, 1.71625578e-20, 1.63068348e-17]])
     Atrans = np.array([[ 2625000.,       0.],
                        [       0., 2625000.]])
+    Dtrans = np.array([[0.03076172, 0.],
+                       [0., 0.03076172]])
+    Ftrans = np.array([[6.48880005e-10, 0.00000000e+00],
+                       [0.00000000e+00, 6.48880005e-10]])
+
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
+    assert np.allclose(lam.E, E)
+    assert np.allclose(lam.F, F)
+    assert np.allclose(lam.H, H)
     assert np.allclose(lam.Atrans, Atrans)
+    assert np.allclose(lam.Dtrans, Dtrans)
+    assert np.allclose(lam.Ftrans, Ftrans)
     lam.calc_scf()
     lam.calc_equivalent_properties()
     lp = lam.calc_lamination_parameters()
