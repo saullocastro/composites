@@ -15,22 +15,23 @@ Methods for analysis and design of composites
 High-performance module to calculate properties of laminated composite
 materials. Usually, this module is used to calculate:
 
-* A, B, D, E plane-stress stiffness matrices for plates
+* A, B, D, E, F, H plane-stress stiffness matrices
     - A, B, D, for classical plate theory (CLT, or CLPT)
-    - E for first-order shear deformation theory (FSDT)
+    - A44, A45, A55 for first-order shear deformation theory (FSDT)
+    - E, F, H for third-order shear deformation theory (TSDT)
 
 * Material invariants, trace-normalized or not
 
 * Lamination parameters based on material invariants
 
-* Stiffness matrices (ABDE) based on lamination parameters
+* Stiffness matrices (ABD) based on lamination parameters
 
 
 Citing this repository
 ----------------------
 
 Castro, SGP. Methods for analysis and design of composites (Version
-0.7.3) [Computer software]. 2025. https://doi.org/10.5281/zenodo.2871782
+0.8.0) [Computer software]. 2025. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex :
     
@@ -61,6 +62,7 @@ History
 - version 0.5.17 onwards: installing with pip
 - version 0.6.0 onwards: cibuildwheel to distribute for Linux
 - version 0.7.0 onwards: added Kassapoglou's module
+- version 0.8.0 onwards: support for Third-order Shear Deformation Theory (TSDT)
 
 
 License
