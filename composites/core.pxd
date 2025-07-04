@@ -12,7 +12,7 @@ cdef class LaminationParameters:
     cdef public double xiA1, xiA2, xiA3, xiA4
     cdef public double xiB1, xiB2, xiB3, xiB4
     cdef public double xiD1, xiD2, xiD3, xiD4
-    cdef public double xiE1, xiE2, xiE3, xiE4
+    cdef public double xiAtrans1, xiAtrans2
 
 
 cdef class MatLamina:
@@ -44,7 +44,12 @@ cdef class Laminate:
     cdef public double A11, A12, A16, A22, A26, A66
     cdef public double B11, B12, B16, B22, B26, B66
     cdef public double D11, D12, D16, D22, D26, D66
-    cdef public double E44, E45, E55
+    cdef public double E11, E12, E16, E22, E26, E66
+    cdef public double F11, F12, F16, F22, F26, F66
+    cdef public double H11, H12, H16, H22, H26, H66
+    cdef public double A44, A45, A55
+    cdef public double D44, D45, D55
+    cdef public double F44, F45, F55
     cdef public double e1, e2, g12, nu12, nu21
     cdef public double scf_k13, scf_k23, h, offset, intrho, intrhoz, intrhoz2
     cdef public list plies
@@ -53,8 +58,12 @@ cdef class Laminate:
     cdef double [:, ::1] get_B(Laminate)
     cdef double [:, ::1] get_D(Laminate)
     cdef double [:, ::1] get_E(Laminate)
+    cdef double [:, ::1] get_F(Laminate)
+    cdef double [:, ::1] get_H(Laminate)
+    cdef double [:, ::1] get_Atrans(Laminate)
+    cdef double [:, ::1] get_Dtrans(Laminate)
+    cdef double [:, ::1] get_Ftrans(Laminate)
     cdef double [:, ::1] get_ABD(Laminate)
-    cdef double [:, ::1] get_ABDE(Laminate)
     cpdef void calc_scf(Laminate)
     cpdef void calc_equivalent_properties(Laminate)
     cpdef void calc_constitutive_matrix(Laminate)
@@ -65,12 +74,12 @@ cdef class Laminate:
     cpdef LaminationParameters calc_lamination_parameters(Laminate)
 
 
-cdef class GradABDE:
+cdef class GradABD:
     cdef public double [:, ::1] gradAij
     cdef public double [:, ::1] gradBij
     cdef public double [:, ::1] gradDij
-    cdef public double [:, ::1] gradEij
-    cpdef void calc_LP_grad(GradABDE, double, MatLamina, LaminationParameters)
+    cdef public double [:, ::1] gradAtransij
+    cpdef void calc_LP_grad(GradABD, double, MatLamina, LaminationParameters)
 
 
 cpdef Laminate n_double_laminate(double thickness, int n, double[::1] angles_deg, MatLamina matlamina)

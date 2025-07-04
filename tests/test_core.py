@@ -8,7 +8,7 @@ from composites.utils import (read_laminaprop, laminated_plate,
 from composites.core import (laminate_from_LaminationParameters,
                              laminate_from_lamination_parameters,
                              make_balanced_LP, make_orthotropic_LP,
-                             make_symmetric_LP, Lamina, GradABDE,
+                             make_symmetric_LP, Lamina, GradABD,
                              LaminationParameters)
 
 
@@ -45,19 +45,16 @@ def test_lampar_tri_axial():
     D = np.array([[8.76640130e+09, 4.31777974e+09, 0.00000000e+00],
                   [4.31777974e+09, 8.76640130e+09, 0.00000000e+00],
                   [0.00000000e+00, 0.00000000e+00, 2.22431078e+09]])
-    E = np.array([[2.66917293e+10,  0.00000000e+00],
-                  [0.00000000e+00,  2.66917293e+10]])
+    Atrans = np.array([[2.66917293e+10,  0.00000000e+00],
+                       [0.00000000e+00,  2.66917293e+10]])
     assert np.allclose(lam.A, A)
     lam.make_symmetric()
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.E, E)
+    assert np.allclose(lam.Atrans, Atrans)
     ABD = lam.ABD
     assert np.allclose(ABD[:3, :3], A)
     assert np.allclose(ABD[3:, 3:], D)
-    ABDE = lam.ABDE
-    assert np.allclose(ABDE[:3, :3], A)
-    assert np.allclose(ABDE[3:6, 3:6], D)
 
 
 def test_lampar_plane_stress():
@@ -92,19 +89,19 @@ def test_lampar_plane_stress():
     D = np.array([[6.63973366e+09, 2.19111211e+09, 9.53674316e-08],
                   [2.19111211e+09, 6.63973366e+09, -9.53674316e-08],
                   [9.53674316e-08, -9.53674316e-08, 2.22431078e+09]])
-    E = np.array([[2.66917293e+10, 0.00000000e+00],
-                  [0.00000000e+00, 2.66917293e+10]])
+    Atrans = np.array([[2.66917293e+10, 0.00000000e+00],
+                       [0.00000000e+00, 2.66917293e+10]])
     assert np.allclose(lam.A, A)
+    assert np.allclose(lam.E, lam.E.T)
+    assert np.allclose(lam.F, lam.F.T)
+    assert np.allclose(lam.H, lam.H.T)
     lam.make_symmetric()
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.E, E)
+    assert np.allclose(lam.Atrans, Atrans)
     ABD = lam.ABD
     assert np.allclose(ABD[:3, :3], A)
     assert np.allclose(ABD[3:, 3:], D)
-    ABDE = lam.ABDE
-    assert np.allclose(ABDE[:3, :3], A)
-    assert np.allclose(ABDE[3:6, 3:6], D)
 
 
 def test_laminated_plate_tri_axial():
@@ -121,12 +118,12 @@ def test_laminated_plate_tri_axial():
     D = np.array([[ 0.1708233 , 0.01057886, 0.00262445],
                   [ 0.01057886, 0.1708233 , 0.00262445],
                   [ 0.00262445, 0.00262445, 0.0326602 ]])
-    E = np.array([[ 2625000.,       0.],
-                  [       0., 2625000.]])
+    Atrans = np.array([[ 2625000.,       0.],
+                       [       0., 2625000.]])
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.E, E)
+    assert np.allclose(lam.Atrans, Atrans)
 
 
 def test_laminated_plate_plane_stress():
@@ -143,12 +140,12 @@ def test_laminated_plate_plane_stress():
     D = np.array([[ 0.1708233 , 0.01057886, 0.00262445],
                   [ 0.01057886, 0.1708233 , 0.00262445],
                   [ 0.00262445, 0.00262445, 0.0326602 ]])
-    E = np.array([[ 2625000.,       0.],
-                  [       0., 2625000.]])
+    Atrans = np.array([[ 2625000.,       0.],
+                       [       0., 2625000.]])
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.E, E)
+    assert np.allclose(lam.Atrans, Atrans)
     lam.calc_scf()
     lam.calc_equivalent_properties()
     lp = lam.calc_lamination_parameters()
@@ -158,7 +155,7 @@ def test_laminated_plate_plane_stress():
     assert np.allclose(lam_2.A, lam.A)
     assert np.allclose(lam_2.B, lam.B)
     assert np.allclose(lam_2.D, lam.D)
-    assert np.allclose(lam_2.E, lam.E)
+    assert np.allclose(lam_2.Atrans, lam.Atrans)
 
     lam.make_balanced()
     make_balanced_LP(lp)
@@ -166,7 +163,7 @@ def test_laminated_plate_plane_stress():
     assert np.allclose(lam_2.A, lam.A)
     assert np.allclose(lam_2.B, lam.B)
     assert np.allclose(lam_2.D, lam.D)
-    assert np.allclose(lam_2.E, lam.E)
+    assert np.allclose(lam_2.Atrans, lam.Atrans)
 
     lam.make_orthotropic()
     make_orthotropic_LP(lp)
@@ -174,7 +171,7 @@ def test_laminated_plate_plane_stress():
     assert np.allclose(lam_2.A, lam.A)
     assert np.allclose(lam_2.B, lam.B)
     assert np.allclose(lam_2.D, lam.D)
-    assert np.allclose(lam_2.E, lam.E)
+    assert np.allclose(lam_2.Atrans, lam.Atrans)
 
     lam = laminated_plate(stack, plyt, lamprop)
     lp = lam.calc_lamination_parameters()
@@ -184,7 +181,7 @@ def test_laminated_plate_plane_stress():
     assert np.allclose(lam_2.A, lam.A)
     assert np.allclose(lam_2.B, lam.B)
     assert np.allclose(lam_2.D, lam.D)
-    assert np.allclose(lam_2.E, lam.E)
+    assert np.allclose(lam_2.Atrans, lam.Atrans)
 
     lam = laminated_plate(stack, plyt, lamprop)
     lp = lam.calc_lamination_parameters()
@@ -204,13 +201,13 @@ def test_isotropic_plate():
     D = np.array([[0.01253905, 0.00351093, 0.        ],
                   [0.00351093, 0.01253905, 0.        ],
                   [0.        , 0.        , 0.00451406]])
-    E = np.array([[3466796.875,       0.   ],
-                  [      0.   , 3466796.875]])
+    Atrans = np.array([[3466796.875,       0.   ],
+                       [      0.   , 3466796.875]])
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.B, 0)
 
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.E, E)
+    assert np.allclose(lam.Atrans, Atrans)
 
 
 
@@ -263,6 +260,6 @@ def test_laminate_LP_gradients():
     lp.xiD2 = 0.4
     lp.xiD3 = -0.3
     lp.xiD4 = -0.6
-    gradABDE = GradABDE()
-    gradABDE.calc_LP_grad(thickness, matlamina, lp)
-    print(gradABDE.gradAij)
+    gradABD = GradABD()
+    gradABD.calc_LP_grad(thickness, matlamina, lp)
+    print(gradABD.gradAij)

@@ -27,15 +27,15 @@ cdef class LaminationParameters:
         Lamination parameters `\xi_{Bi}` (in-plane coupling with bending)
     xiD1, xiD2, xiD3, xiD4 : float
         Lamination parameters `\xi_{Di}` (bending)
-    xiE1, xiE2 : float
-        Lamination parameters `\xi_{Ei}` (transverse shear)
+    xiAtrans1, xiAtrans2 : float
+        Lamination parameters `\xi_{{A_{trans}}i}` (transverse shear)
 
     """
     def __init__(LaminationParameters self):
         self.xiA1=0; self.xiA2=0; self.xiA3=0; self.xiA4=0
         self.xiB1=0; self.xiB2=0; self.xiB3=0; self.xiB4=0
         self.xiD1=0; self.xiD2=0; self.xiD3=0; self.xiD4=0
-        self.xiE1=0; self.xiE2=0
+        self.xiAtrans1=0; self.xiAtrans2=0
 
 
 cdef class MatLamina:
@@ -442,8 +442,26 @@ cdef class Laminate:
                          [self.D12, self.D22, self.D26],
                          [self.D16, self.D26, self.D66]], dtype=DOUBLE)
     cdef double [:, ::1] get_E(Laminate self):
-        return np.array([[self.E44, self.E45],
-                         [self.E45, self.E55]], dtype=DOUBLE)
+        return np.array([[self.E11, self.E12, self.E16],
+                         [self.E12, self.E22, self.E26],
+                         [self.E16, self.E26, self.E66]], dtype=DOUBLE)
+    cdef double [:, ::1] get_F(Laminate self):
+        return np.array([[self.F11, self.F12, self.F16],
+                         [self.F12, self.F22, self.F26],
+                         [self.F16, self.F26, self.F66]], dtype=DOUBLE)
+    cdef double [:, ::1] get_H(Laminate self):
+        return np.array([[self.H11, self.H12, self.H16],
+                         [self.H12, self.H22, self.H26],
+                         [self.H16, self.H26, self.H66]], dtype=DOUBLE)
+    cdef double [:, ::1] get_Atrans(Laminate self):
+        return np.array([[self.A44, self.A45],
+                         [self.A45, self.A55]], dtype=DOUBLE)
+    cdef double [:, ::1] get_Dtrans(Laminate self):
+        return np.array([[self.D44, self.D45],
+                         [self.D45, self.D55]], dtype=DOUBLE)
+    cdef double [:, ::1] get_Ftrans(Laminate self):
+        return np.array([[self.F44, self.F45],
+                         [self.F45, self.F55]], dtype=DOUBLE)
     cdef double [:, ::1] get_ABD(Laminate self):
         return np.array([[self.A11, self.A12, self.A16, self.B11, self.B12, self.B16],
                          [self.A12, self.A22, self.A26, self.B12, self.B22, self.B26],
@@ -451,15 +469,6 @@ cdef class Laminate:
                          [self.B11, self.B12, self.B16, self.D11, self.D12, self.D16],
                          [self.B12, self.B22, self.B26, self.D12, self.D22, self.D26],
                          [self.B16, self.B26, self.B66, self.D16, self.D26, self.D66]], dtype=DOUBLE)
-    cdef double [:, ::1] get_ABDE(Laminate self):
-        return np.array([[self.A11, self.A12, self.A16, self.B11, self.B12, self.B16, 0, 0],
-                         [self.A12, self.A22, self.A26, self.B12, self.B22, self.B26, 0, 0],
-                         [self.A16, self.A26, self.A66, self.B16, self.B26, self.B66, 0, 0],
-                         [self.B11, self.B12, self.B16, self.D11, self.D12, self.D16, 0, 0],
-                         [self.B12, self.B22, self.B26, self.D12, self.D22, self.D26, 0, 0],
-                         [self.B16, self.B26, self.B66, self.D16, self.D26, self.D66, 0, 0],
-                         [0, 0, 0, 0, 0, 0, self.E44, self.E45],
-                         [0, 0, 0, 0, 0, 0, self.E45, self.E55]], dtype=DOUBLE)
     @property
     def A(self):
         return np.asarray(self.get_A())
@@ -473,11 +482,23 @@ cdef class Laminate:
     def E(self):
         return np.asarray(self.get_E())
     @property
+    def F(self):
+        return np.asarray(self.get_F())
+    @property
+    def H(self):
+        return np.asarray(self.get_H())
+    @property
+    def Atrans(self):
+        return np.asarray(self.get_Atrans())
+    @property
+    def Dtrans(self):
+        return np.asarray(self.get_Dtrans())
+    @property
+    def Ftrans(self):
+        return np.asarray(self.get_Ftrans())
+    @property
     def ABD(self):
         return np.asarray(self.get_ABD())
-    @property
-    def ABDE(self):
-        return np.asarray(self.get_ABDE())
 
 
     cpdef void calc_scf(Laminate self):
@@ -567,12 +588,12 @@ cdef class Laminate:
         """Calculate the laminate constitutive terms
 
         This is the commonly called ``ABD`` matrix with ``shape=(6, 6)`` when
-        the classical laminated plate theory is used, or the ``ABDE`` matrix
+        the classical laminated plate theory is used, or the ``ABD`` matrix
         when the first-order shear deformation theory is used, containing the
         transverse shear terms.
 
         """
-        cdef double h0, hk_1, hk
+        cdef double h0, hk_1, hk, tmp_hk, tmp_hk_1
         self.h = 0.
         self.intrho = 0.
         self.intrhoz = 0.
@@ -583,7 +604,12 @@ cdef class Laminate:
         self.A11 = 0; self.A12 = 0; self.A16 = 0; self.A22 = 0; self.A26 = 0; self.A66 = 0
         self.B11 = 0; self.B12 = 0; self.B16 = 0; self.B22 = 0; self.B26 = 0; self.B66 = 0
         self.D11 = 0; self.D12 = 0; self.D16 = 0; self.D22 = 0; self.D26 = 0; self.D66 = 0
-        self.E44 = 0; self.E45 = 0; self.E55 = 0
+        self.E11 = 0; self.E12 = 0; self.E16 = 0; self.E22 = 0; self.E26 = 0; self.E66 = 0
+        self.F11 = 0; self.F12 = 0; self.F16 = 0; self.F22 = 0; self.F26 = 0; self.F66 = 0
+        self.H11 = 0; self.H12 = 0; self.H16 = 0; self.H22 = 0; self.H26 = 0; self.H66 = 0
+        self.A44 = 0; self.A45 = 0; self.A55 = 0
+        self.D44 = 0; self.D45 = 0; self.D55 = 0
+        self.F44 = 0; self.F45 = 0; self.F55 = 0
         for ply in self.plies:
             hk_1 = h0
             h0 += ply.h
@@ -600,23 +626,62 @@ cdef class Laminate:
             self.A26 += ply.q26L*(hk - hk_1)
             self.A66 += ply.q66L*(hk - hk_1)
 
-            self.B11 += 1/2.*ply.q11L*(hk*hk - hk_1*hk_1)
-            self.B12 += 1/2.*ply.q12L*(hk*hk - hk_1*hk_1)
-            self.B16 += 1/2.*ply.q16L*(hk*hk - hk_1*hk_1)
-            self.B22 += 1/2.*ply.q22L*(hk*hk - hk_1*hk_1)
-            self.B26 += 1/2.*ply.q26L*(hk*hk - hk_1*hk_1)
-            self.B66 += 1/2.*ply.q66L*(hk*hk - hk_1*hk_1)
+            self.A44 += ply.q44L*(hk - hk_1)
+            self.A45 += ply.q45L*(hk - hk_1)
+            self.A55 += ply.q55L*(hk - hk_1)
 
-            self.D11 += 1/3.*ply.q11L*(hk*hk*hk - hk_1*hk_1*hk_1)
-            self.D12 += 1/3.*ply.q12L*(hk*hk*hk - hk_1*hk_1*hk_1)
-            self.D16 += 1/3.*ply.q16L*(hk*hk*hk - hk_1*hk_1*hk_1)
-            self.D22 += 1/3.*ply.q22L*(hk*hk*hk - hk_1*hk_1*hk_1)
-            self.D26 += 1/3.*ply.q26L*(hk*hk*hk - hk_1*hk_1*hk_1)
-            self.D66 += 1/3.*ply.q66L*(hk*hk*hk - hk_1*hk_1*hk_1)
+            tmp_hk = hk*hk
+            tmp_hk_1 = hk_1*hk_1
+            self.B11 += 1/2.*ply.q11L*(tmp_hk - tmp_hk_1)
+            self.B12 += 1/2.*ply.q12L*(tmp_hk - tmp_hk_1)
+            self.B16 += 1/2.*ply.q16L*(tmp_hk - tmp_hk_1)
+            self.B22 += 1/2.*ply.q22L*(tmp_hk - tmp_hk_1)
+            self.B26 += 1/2.*ply.q26L*(tmp_hk - tmp_hk_1)
+            self.B66 += 1/2.*ply.q66L*(tmp_hk - tmp_hk_1)
 
-            self.E44 += ply.q44L*(hk - hk_1)
-            self.E45 += ply.q45L*(hk - hk_1)
-            self.E55 += ply.q55L*(hk - hk_1)
+            tmp_hk = hk*hk*hk
+            tmp_hk_1 = hk_1*hk_1*hk_1
+            self.D11 += 1/3.*ply.q11L*(tmp_hk - tmp_hk_1)
+            self.D12 += 1/3.*ply.q12L*(tmp_hk - tmp_hk_1)
+            self.D16 += 1/3.*ply.q16L*(tmp_hk - tmp_hk_1)
+            self.D22 += 1/3.*ply.q22L*(tmp_hk - tmp_hk_1)
+            self.D26 += 1/3.*ply.q26L*(tmp_hk - tmp_hk_1)
+            self.D66 += 1/3.*ply.q66L*(tmp_hk - tmp_hk_1)
+
+            self.D44 += 1/3.*ply.q44L*(tmp_hk - tmp_hk_1)
+            self.D45 += 1/3.*ply.q45L*(tmp_hk - tmp_hk_1)
+            self.D55 += 1/3.*ply.q55L*(tmp_hk - tmp_hk_1)
+
+            tmp_hk = hk*hk*hk*hk
+            tmp_hk_1 = hk_1*hk_1*hk_1*hk_1
+            self.E11 += 1/4.*ply.q11L*(tmp_hk - tmp_hk_1)
+            self.E12 += 1/4.*ply.q12L*(tmp_hk - tmp_hk_1)
+            self.E16 += 1/4.*ply.q16L*(tmp_hk - tmp_hk_1)
+            self.E22 += 1/4.*ply.q22L*(tmp_hk - tmp_hk_1)
+            self.E26 += 1/4.*ply.q26L*(tmp_hk - tmp_hk_1)
+            self.E66 += 1/4.*ply.q66L*(tmp_hk - tmp_hk_1)
+
+            tmp_hk = hk*hk*hk*hk*hk
+            tmp_hk_1 = hk_1*hk_1*hk_1*hk_1*hk_1
+            self.F11 += 1/5.*ply.q11L*(tmp_hk - tmp_hk_1)
+            self.F12 += 1/5.*ply.q12L*(tmp_hk - tmp_hk_1)
+            self.F16 += 1/5.*ply.q16L*(tmp_hk - tmp_hk_1)
+            self.F22 += 1/5.*ply.q22L*(tmp_hk - tmp_hk_1)
+            self.F26 += 1/5.*ply.q26L*(tmp_hk - tmp_hk_1)
+            self.F66 += 1/5.*ply.q66L*(tmp_hk - tmp_hk_1)
+
+            self.F44 += 1/5.*ply.q44L*(tmp_hk - tmp_hk_1)
+            self.F45 += 1/5.*ply.q45L*(tmp_hk - tmp_hk_1)
+            self.F55 += 1/5.*ply.q55L*(tmp_hk - tmp_hk_1)
+
+            tmp_hk = hk*hk*hk*hk*hk*hk*hk
+            tmp_hk_1 = hk_1*hk_1*hk_1*hk_1*hk_1*hk_1*hk_1
+            self.H11 += 1/7.*ply.q11L*(tmp_hk - tmp_hk_1)
+            self.H12 += 1/7.*ply.q12L*(tmp_hk - tmp_hk_1)
+            self.H16 += 1/7.*ply.q16L*(tmp_hk - tmp_hk_1)
+            self.H22 += 1/7.*ply.q22L*(tmp_hk - tmp_hk_1)
+            self.H26 += 1/7.*ply.q26L*(tmp_hk - tmp_hk_1)
+            self.H66 += 1/7.*ply.q66L*(tmp_hk - tmp_hk_1)
 
 
     cpdef void make_balanced(Laminate self):
@@ -666,6 +731,15 @@ cdef class Laminate:
         self.B22 = 0
         self.B26 = 0
         self.B66 = 0
+
+        # TSDT
+        self.F16 = 0
+        self.F26 = 0
+        self.H16 = 0
+        self.H26 = 0
+
+        self.D45 = 0
+        self.F45 = 0
 
 
     cpdef void make_smeared(Laminate self):
@@ -744,8 +818,8 @@ cdef class Laminate:
             lp.xiD3 += Dfac * ply.cos4t
             lp.xiD4 += Dfac * ply.sin4t
 
-            lp.xiE1 += Efac * ply.cos2t
-            lp.xiE2 += Efac * ply.sin2t
+            lp.xiAtrans1 += Efac * ply.cos2t
+            lp.xiAtrans2 += Efac * ply.sin2t
 
         return lp
 
@@ -812,7 +886,7 @@ cpdef Laminate laminate_from_LaminationParameters(double thickness, MatLamina
     Returns
     -------
     lam : :class:`.Laminate`
-        laminate with the ABD and ABDE matrices already calculated
+        laminate with the constitutive matrices already calculated
 
     """
     lam = Laminate()
@@ -839,9 +913,9 @@ cpdef Laminate laminate_from_LaminationParameters(double thickness, MatLamina
     lam.D26 = lam.h*lam.h*lam.h/12.*(0 + 0*lp.xiD1 + mat.u2/2.*lp.xiD2 + 0*lp.xiD3 + (-1)*mat.u3*lp.xiD4)
     lam.D66 = lam.h*lam.h*lam.h/12.*(mat.u5 + 0*lp.xiD1 + 0*lp.xiD2 + (-1)*mat.u3*lp.xiD3 + 0*lp.xiD4)
 
-    lam.E44 = lam.h*(mat.u6 + mat.u7*lp.xiE1 + 0*lp.xiE2)
-    lam.E45 = lam.h*(0 + 0*lp.xiE1 + (-1)*mat.u7*lp.xiE2)
-    lam.E55 = lam.h*(mat.u6 + (-1)*mat.u7*lp.xiE1 + 0*lp.xiE2)
+    lam.A44 = lam.h*(mat.u6 + mat.u7*lp.xiAtrans1 + 0*lp.xiAtrans2)
+    lam.A45 = lam.h*(0 + 0*lp.xiAtrans1 + (-1)*mat.u7*lp.xiAtrans2)
+    lam.A55 = lam.h*(mat.u6 + (-1)*mat.u7*lp.xiAtrans1 + 0*lp.xiAtrans2)
 
     return lam
 
@@ -850,7 +924,7 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
         matlamina, double xiA1, double xiA2, double xiA3, double xiA4,
         double xiB1, double xiB2, double xiB3, double xiB4,
         double xiD1, double xiD2, double xiD3, double xiD4,
-        double xiE1=0, double xiE2=0):
+        double xiAtrans1=0, double xiAtrans2=0):
     r"""Return a :class:`.Laminate` object based in the thickness, material and
     lamination parameters
 
@@ -873,7 +947,7 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
     Returns
     -------
     lam : :class:`.Laminate`
-        laminate with the ABD and ABDE matrices already calculated
+        laminate with the constitutive matrices already calculated
 
     """
     lp = LaminationParameters()
@@ -889,25 +963,25 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
     lp.xiD2 = xiD2
     lp.xiD3 = xiD3
     lp.xiD4 = xiD4
-    lp.xiE1 = xiE1
-    lp.xiE2 = xiE2
+    lp.xiAtrans1 = xiAtrans1
+    lp.xiAtrans2 = xiAtrans2
     return laminate_from_LaminationParameters(thickness, matlamina, lp)
 
 
-cdef class GradABDE:
-    r"""Container to store the gradients of the ABDE matrices with respect to
+cdef class GradABD:
+    r"""Container to store the gradients of the ABD matrices with respect to
     the lamination parameters
 
     Attributes
     ==========
 
-    gradAij, gradBij, gradDij, gradEij : tuple of 2D np.array objects
+    gradAij, gradBij, gradDij, gradAtransij : tuple of 2D np.array objects
         The shapes of these gradient matrices are:
 
             gradAij: (6, 5)
             gradBij: (6, 5)
             gradDij: (6, 5)
-            gradEij: (3, 3)
+            gradAtransij: (3, 3)
 
         They contain the gradients of each laminate stiffness with respect to
         the thickness and respective lamination parameters. The rows and
@@ -946,22 +1020,22 @@ cdef class GradABDE:
             D26
             D66
 
-            gradEij
+            gradAtransij
             -------
 
-                h xiE1 xiE2
-            E44
-            E45
-            E55
+                h xiAtrans1 xiAtrans2
+            A44
+            A45
+            A55
 
     """
-    def __init__(GradABDE self):
+    def __init__(GradABD self):
         self.gradAij = np.zeros((6, 5), dtype=DOUBLE)
         self.gradBij = np.zeros((6, 5), dtype=DOUBLE)
         self.gradDij = np.zeros((6, 5), dtype=DOUBLE)
-        self.gradEij = np.zeros((3, 3), dtype=DOUBLE)
+        self.gradAtransij = np.zeros((3, 3), dtype=DOUBLE)
 
-    cpdef void calc_LP_grad(GradABDE self, double thickness, MatLamina mat, LaminationParameters lp):
+    cpdef void calc_LP_grad(GradABD self, double thickness, MatLamina mat, LaminationParameters lp):
         r"""Gradients of the shell stiffnesses with respect to the thickness and
         lamination parameters
 
@@ -1032,15 +1106,15 @@ cdef class GradABDE:
             for j in range(4):
                 self.gradDij[i, j+1] = h*h*h/12.*gradinv[i, j]
 
-        # d(E11 E12 E16 E22 E26 E66) / dh
-        self.gradEij[0, 0] = (mat.u6 + mat.u7*lp.xiE1 + 0*lp.xiE2)
-        self.gradEij[1, 0] = (0 + 0*lp.xiE1 + (-1)*mat.u7*lp.xiE2)
-        self.gradEij[2, 0] = (mat.u6 + (-1)*mat.u7*lp.xiE1 + 0*lp.xiE2)
+        # d(A44, A45, A55) / dh
+        self.gradAtransij[0, 0] = (mat.u6 + mat.u7*lp.xiAtrans1 + 0*lp.xiAtrans2)
+        self.gradAtransij[1, 0] = (0 + 0*lp.xiAtrans1 + (-1)*mat.u7*lp.xiAtrans2)
+        self.gradAtransij[2, 0] = (mat.u6 + (-1)*mat.u7*lp.xiAtrans1 + 0*lp.xiAtrans2)
 
-        # d(E11 E12 E16 E22 E26 E66) / d(xiE1, xiE2)
-        self.gradEij[0, 1] = h*mat.u7
-        self.gradEij[1, 2] = h*(-mat.u7)
-        self.gradEij[2, 1] = h*(-mat.u7)
+        # d(A44, A45, A55) / d(xiAtrans1, xiAtrans2)
+        self.gradAtransij[0, 1] = h*mat.u7
+        self.gradAtransij[1, 2] = h*(-mat.u7)
+        self.gradAtransij[2, 1] = h*(-mat.u7)
 
 
 cpdef Laminate n_double_laminate(double thickness, int n, double[::1] angles_deg, MatLamina matlamina):
