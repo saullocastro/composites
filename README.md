@@ -31,7 +31,7 @@ Citing this repository
 ----------------------
 
 Castro, SGP. Methods for analysis and design of composites (Version
-0.8.0) [Computer software]. 2025. https://doi.org/10.5281/zenodo.2871782
+0.8.1) [Computer software]. 2025. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex :
     

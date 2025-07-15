@@ -733,6 +733,13 @@ cdef class Laminate:
         self.B66 = 0
 
         # TSDT
+        self.E11 = 0
+        self.E12 = 0
+        self.E16 = 0
+        self.E22 = 0
+        self.E26 = 0
+        self.E66 = 0
+
         self.F16 = 0
         self.F26 = 0
         self.H16 = 0
