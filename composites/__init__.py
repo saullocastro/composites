@@ -8,17 +8,25 @@ composites API (:mod:`composites`)
 The ``composites`` module includes functions used to calculate properties and
 perform analysis on laminated composites and isotropic plates.
 
-Classical and first-order shear deformation theories are supported. For
-classical plate theories or classical laminated plate theories (CLPT), the
-relevant matrices are A, B, D, whereas for the first-order shear deformation
-theories (FSDT) the matrices are A, B, D, E. All these matrices are part of the
+Classical, first- and third-order shear deformation theories are supported. For
+classical plate theories or classical laminated plate theories (CLPT), and for
+the first-order shear deformation theory (FSDT) the relevant matrices are the
+A, B, D and Atrans. For the third-order shear deformation theory (TSDT) the
+relevant matrices are the A, B, D, E, F, H; and the Atrans, Dtrans and Ftrans.
+The matrices indicated with "trans" are 2 by 2 matrices containing the
+transverse shear stiffnesses.  All these matrices are part of the
 :class:`.Laminate` object.
+
+The implementation of the CLTP, FSDT and TSDT closely follows the notation
+adopted by::
+
+    Reddy J.N., Mechanics of laminated composite plates and shells, theory and
+    analysis. Second Edition, Boca Raton: CRC Press, 2004.
 
 For isotropic plates, the :class:`.Laminate` object is also used for
 convenience, and since offsetting the mid-surface is supported, there can be an
 extension-bending coupling (B matrix) different than zero even for isotropic
 plates.
-
 
 The most convenient usage is probably with the
 :func:`composites.utils.isotropic_plate` or the
@@ -43,10 +51,9 @@ Where the laminate stiffness matrix, the often called ``ABD`` matrix, with
 
     >>> plate.ABD
 
-and when transverse shear stiffnesses are required, the ``ABDE`` matrix, with
-``shape=(8, 8)``::
+and when transverse shear stiffnesses are required, with ``shape=(2, 2)``::
 
-    >>> plate.ABDE
+    >>> plate.Atrans
 
 .. automodule:: composites.core
     :members:
