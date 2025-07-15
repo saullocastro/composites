@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>composites API (composites) &#8212; composites 0.8.0 documentation</title>
+    <title>composites API (composites) &#8212; composites 0.8.1 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=486e5634"></script>
+    <script src="_static/documentation_options.js?v=ec16d22d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -112,7 +112,7 @@
   
   
   
-    <p class="title logo__title">composites 0.8.0 documentation</p>
+    <p class="title logo__title">composites 0.8.1 documentation</p>
   
 </a></div>
     
@@ -312,11 +312,20 @@
 <span id="module-composites"></span><h1>composites API (<a class="reference internal" href="#module-composites" title="composites"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites</span></code></a>)<a class="headerlink" href="#composites-api-composites" title="Link to this heading">#</a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">composites</span></code> module includes functions used to calculate properties and
 perform analysis on laminated composites and isotropic plates.</p>
-<p>Classical and first-order shear deformation theories are supported. For
-classical plate theories or classical laminated plate theories (CLPT), the
-relevant matrices are A, B, D, whereas for the first-order shear deformation
-theories (FSDT) the matrices are A, B, D, E. All these matrices are part of the
+<p>Classical, first- and third-order shear deformation theories are supported. For
+classical plate theories or classical laminated plate theories (CLPT), and for
+the first-order shear deformation theory (FSDT) the relevant matrices are the
+A, B, D and Atrans. For the third-order shear deformation theory (TSDT) the
+relevant matrices are the A, B, D, E, F, H; and the Atrans, Dtrans and Ftrans.
+The matrices indicated with “trans” are 2 by 2 matrices containing the
+transverse shear stiffnesses.  All these matrices are part of the
 <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> object.</p>
+<p>The implementation of the CLTP, FSDT and TSDT closely follows the notation
+adopted by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Reddy</span> <span class="n">J</span><span class="o">.</span><span class="n">N</span><span class="o">.</span><span class="p">,</span> <span class="n">Mechanics</span> <span class="n">of</span> <span class="n">laminated</span> <span class="n">composite</span> <span class="n">plates</span> <span class="ow">and</span> <span class="n">shells</span><span class="p">,</span> <span class="n">theory</span> <span class="ow">and</span>
+<span class="n">analysis</span><span class="o">.</span> <span class="n">Second</span> <span class="n">Edition</span><span class="p">,</span> <span class="n">Boca</span> <span class="n">Raton</span><span class="p">:</span> <span class="n">CRC</span> <span class="n">Press</span><span class="p">,</span> <span class="mf">2004.</span>
+</pre></div>
+</div>
 <p>For isotropic plates, the <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> object is also used for
 convenience, and since offsetting the mid-surface is supported, there can be an
 extension-bending coupling (B matrix) different than zero even for isotropic
@@ -343,9 +352,8 @@ plates.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plate</span><span class="o">.</span><span class="n">ABD</span>
 </pre></div>
 </div>
-<p>and when transverse shear stiffnesses are required, the <code class="docutils literal notranslate"><span class="pre">ABDE</span></code> matrix, with
-<code class="docutils literal notranslate"><span class="pre">shape=(8,</span> <span class="pre">8)</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plate</span><span class="o">.</span><span class="n">ABDE</span>
+<p>and when transverse shear stiffnesses are required, with <code class="docutils literal notranslate"><span class="pre">shape=(2,</span> <span class="pre">2)</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plate</span><span class="o">.</span><span class="n">Atrans</span>
 </pre></div>
 </div>
 <section id="composites-core-module-composites-core">
