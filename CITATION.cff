@@ -1,10 +1,35 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+title: >-
+  Methods for analysis and design of composites
+type: software
+abstract: >-
+  High-performance module to calculate properties of laminated composite
+  materials. Usually, this module is used to calculate:
+
+  * A, B, D, E, F, H plane-stress stiffness matrices
+      - A, B, D, for classical plate theory (CLT, or CLPT)
+      - A44, A45, A55 for first-order shear deformation theory (FSDT)
+      - E, F, H for third-order shear deformation theory (TSDT)
+
+  * Material invariants, trace-normalized or not
+  
+  * Lamination parameters based on material invariants
+  
+  * Stiffness matrices (ABD) based on lamination parameters
+message: >-
+  Please, cite this software using:
+  Saullo G. P. Castro (2025). Methods for analysis and design of composites (Version 0.8.1). Zenodo. DOI: https://doi.org/10.5281/zenodo.2871782
 authors:
-  - family-names: "Castro"
-    given-names: "Saullo G. P."
-    orcid: "https://orcid.org/0000-0001-9711-0991"
-title: "Methods for analysis and design of composites"
+  - family-names: Castro
+    given-names: Saullo G. P.
+    affiliation: Delft University of Technology
+    orcid: 'https://orcid.org/0000-0001-9711-0991'
+identifiers:
+  - description: This DOI represents all versions, and will always resolve to the latest one
+    type: doi
+    value: 10.5281/zenodo.2871782
+repository-code: 'https://github.com/saullocastro/composites'
+url: 'https://saullocastro.github.io/composites/'
+license: BSD-3-Clause
 version: 0.8.1
-doi: 10.5281/zenodo.2871782
-date-released: 2025-07-15
+date-released: '2025-07-15'
