@@ -18,7 +18,7 @@ abstract: >-
   * Stiffness matrices (ABD) based on lamination parameters
 message: >-
   Please, cite this software using:
-  Saullo G. P. Castro (2025). Methods for analysis and design of composites (Version 0.8.1). Zenodo. DOI: https://doi.org/10.5281/zenodo.2871782
+  Saullo G. P. Castro (2025). Methods for analysis and design of composites (Version 0.8.2). Zenodo. DOI: https://doi.org/10.5281/zenodo.2871782
 authors:
   - family-names: Castro
     given-names: Saullo G. P.
@@ -31,5 +31,5 @@ identifiers:
 repository-code: 'https://github.com/saullocastro/composites'
 url: 'https://saullocastro.github.io/composites/'
 license: BSD-3-Clause
-version: 0.8.1
+version: 0.8.2
 date-released: '2025-07-15'
