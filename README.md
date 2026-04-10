@@ -30,14 +30,14 @@ materials. Usually, this module is used to calculate:
 Citing this repository
 ----------------------
 
-Castro, SGP. Methods for analysis and design of composites (Version 0.8.5) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
+Castro, SGP. Methods for analysis and design of composites (Version 0.8.6) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex :
     
     @misc{composites2026,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods for analysis and design of composites (Version 0.8.5)}},
+        title = {{Methods for analysis and design of composites (Version 0.8.6)}},
         year = 2026
         }
 
