@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         runs-on: [ubuntu-latest]
-        python-version: ['3.11']
+        python-version: ['3.13']
     runs-on: ${{ matrix.runs-on }}
 
     steps:
@@ -20,7 +20,7 @@ jobs:
     - name: Install dependencies
       run: |
         python3 -m pip install --upgrade pip
-        python3 -m pip install -r ci_requirements.txt
+        python3 -m pip install --upgrade setuptools wheel
         python3 -m pip install --upgrade -r ci_requirements.txt
     - name: Install module for coverage
       run: |
