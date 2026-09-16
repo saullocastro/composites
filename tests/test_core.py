@@ -2,6 +2,7 @@ import sys
 sys.path.append('..')
 
 import numpy as np
+import pytest
 
 from composites.utils import (read_laminaprop, laminated_plate,
         isotropic_plate)
@@ -173,7 +174,8 @@ def test_laminated_plate_plane_stress():
     assert np.allclose(lam.Ats, Ats)
     assert np.allclose(lam.Dtrans, Dtrans)
     assert np.allclose(lam.Ftrans, Ftrans)
-    lam.calc_scf()
+    with pytest.warns(DeprecationWarning):
+        lam.calc_scf()
     lam.calc_equivalent_properties()
     lp = lam.calc_lamination_parameters()
     matlamina = lam.plies[0].matlamina

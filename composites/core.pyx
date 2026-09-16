@@ -11,6 +11,8 @@ Composites Core Module (:mod:`composites.core`)
 .. currentmodule:: composites.core
 
 """
+import warnings
+
 import numpy as np
 
 DOUBLE = np.float64
@@ -538,7 +540,14 @@ cdef class Laminate:
         return np.asarray(self.get_Ats())
     @property
     def Atrans(self):
-        r"""Same as :attr:`.Ats`"""
+        r"""Deprecated, use :attr:`.Ats` instead
+
+        Returns the same corrected matrix as :attr:`.Ats`.
+
+        """
+        warnings.warn("'Laminate.Atrans' is deprecated, use 'Laminate.Ats' "
+                      "instead, which contains the shear correction",
+                      DeprecationWarning, stacklevel=2)
         return np.asarray(self.get_Ats())
     @property
     def Abar_ts(self):
@@ -567,6 +576,11 @@ cdef class Laminate:
     cpdef tuple calc_scf(Laminate self):
         r"""Recompute the transverse shear stiffness and return the ratios
 
+        .. deprecated:: 0.9.0
+            Use :meth:`.calc_transverse_shear_stiffness`, called automatically
+            by :meth:`.calc_constitutive_matrix`, and read ``scf_k13`` and
+            ``scf_k23``.
+
         The ratios are informative only, since the correction is already
         applied to ``A44``, ``A45``, ``A55`` by
         :meth:`.calc_transverse_shear_stiffness`. If ``shear_correction`` is
@@ -579,6 +593,11 @@ cdef class Laminate:
             attributes ``scf_k13`` and ``scf_k23``.
 
         """
+        warnings.warn("'Laminate.calc_scf' is deprecated, the transverse "
+                      "shear stiffness is computed by "
+                      "'calc_transverse_shear_stiffness', called by "
+                      "'calc_constitutive_matrix'", DeprecationWarning,
+                      stacklevel=2)
         if self.shear_correction is None:
             self.shear_correction = 'rohwer'
         self.calc_transverse_shear_stiffness()
