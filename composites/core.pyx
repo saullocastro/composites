@@ -978,6 +978,84 @@ cdef class Laminate:
         self.scf_k23 = self.A44/self.Abar44 if self.Abar44 != 0 else np.nan
 
 
+    cpdef tuple calc_transverse_shear_stress(Laminate self, double z,
+            double Qy, double Qx):
+        r"""Transverse shear stresses at a given height
+
+        Evaluates the equilibrium distribution of Rohwer (1988):
+
+        .. math::
+
+            \begin{Bmatrix} \tau_{yz} \\ \tau_{xz} \end{Bmatrix} =
+            f^{(k)}(z) \begin{Bmatrix} Q_y \\ Q_x \end{Bmatrix}
+
+        where `f^{(k)}(z)` is quadratic within each ply, vanishes at the bottom
+        and top faces and is continuous at the ply interfaces. This is the
+        consistent way to recover `\tau_{xz}` and `\tau_{yz}`, e.g. for
+        failure criteria, since `C_s \gamma` is constant within each ply and
+        non-zero at the free surfaces. For a homogeneous plate it gives the
+        parabola `\tau_{xz} = 3 Q_x/(2h) (1 - 4 \bar{z}^2/h^2)`, with `\bar{z}`
+        measured from the mid-surface.
+
+        The distribution only depends on the in-plane stiffnesses of the plies
+        and is the same for every ``shear_correction``. It is computed once by
+        :meth:`.calc_transverse_shear_stiffness` when ``shear_correction``
+        is ``'rohwer'``, or on the first call otherwise, and it is reset by
+        :meth:`.calc_constitutive_matrix`, which must be called again if the
+        plies are modified.
+
+        Parameters
+        ----------
+        z : float
+            Height measured from the reference surface, within `[-h/2 +
+            offset, +h/2 + offset]`. At a ply interface both plies give the
+            same result.
+        Qy, Qx : float
+            Transverse shear forces per unit length, `Q_y` and `Q_x`, e.g.
+            ``{Qy, Qx} = Ats @ {gamma_yz, gamma_xz}``.
+
+        Returns
+        -------
+        tau_yz, tau_xz : tuple of float
+            Transverse shear stresses.
+
+        Raises
+        ------
+        ValueError
+            If ``z`` is outside the laminate, or if the ABD matrix of the
+            laminate is singular.
+
+        """
+        cdef int k, lo, hi, mid, N
+        cdef double tol
+        cdef double [::1] zi
+        cdef double [:, :, :, ::1] fc
+
+        if not self._ts_ready:
+            self._calc_transverse_shear_distribution()
+        zi = self._ts_z
+        fc = self._ts_fcoef
+        N = <int>zi.shape[0] - 1
+        tol = 1e-12*(zi[N] - zi[0])
+        if not (zi[0] - tol <= z <= zi[N] + tol):
+            raise ValueError('z=%g is outside the laminate, [%g, %g]'
+                             % (z, zi[0], zi[N]))
+        # last ply k with zi[k] <= z
+        lo = 0
+        hi = N - 1
+        while lo < hi:
+            mid = (lo + hi + 1)//2
+            if zi[mid] <= z:
+                lo = mid
+            else:
+                hi = mid - 1
+        k = lo
+        return ((fc[k, 0, 0, 0] + z*fc[k, 1, 0, 0] + z*z*fc[k, 2, 0, 0])*Qy
+              + (fc[k, 0, 0, 1] + z*fc[k, 1, 0, 1] + z*z*fc[k, 2, 0, 1])*Qx,
+                (fc[k, 0, 1, 0] + z*fc[k, 1, 1, 0] + z*z*fc[k, 2, 1, 0])*Qy
+              + (fc[k, 0, 1, 1] + z*fc[k, 1, 1, 1] + z*z*fc[k, 2, 1, 1])*Qx)
+
+
     cpdef void calc_equivalent_properties(Laminate self):
         r"""Calculate the equivalent laminate properties
 

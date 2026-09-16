@@ -76,6 +76,7 @@ cdef class Laminate:
     cdef double [:, ::1] get_ABD(Laminate)
     cdef int _calc_transverse_shear_distribution(Laminate) except -1
     cpdef void calc_transverse_shear_stiffness(Laminate) except *
+    cpdef tuple calc_transverse_shear_stress(Laminate, double, double, double)
     cpdef tuple calc_scf(Laminate)
     cpdef void calc_equivalent_properties(Laminate)
     cpdef void calc_constitutive_matrix(Laminate)
