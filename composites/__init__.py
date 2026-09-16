@@ -11,11 +11,18 @@ perform analysis on laminated composites and isotropic plates.
 Classical, first- and third-order shear deformation theories are supported. For
 classical plate theories or classical laminated plate theories (CLPT), and for
 the first-order shear deformation theory (FSDT) the relevant matrices are the
-A, B, D and Atrans. For the third-order shear deformation theory (TSDT) the
-relevant matrices are the A, B, D, E, F, H; and the Atrans, Dtrans and Ftrans.
-The matrices indicated with "trans" are 2 by 2 matrices containing the
-transverse shear stiffnesses.  All these matrices are part of the
-:class:`.Laminate` object.
+A, B, D and Ats. For the third-order shear deformation theory (TSDT) the
+relevant matrices are the A, B, D, E, F, H; and the Abar_ts, Dtrans and Ftrans.
+The matrices Ats, Abar_ts, Dtrans and Ftrans are 2 by 2 matrices containing
+transverse shear stiffnesses, ordered as ``[[44, 45], [45, 55]]`` with index 4
+corresponding to ``yz`` and index 5 to ``xz``. All these matrices are part of
+the :class:`.Laminate` object.
+
+The FSDT transverse shear stiffness ``Ats`` already contains the shear
+correction, computed by default with the equilibrium approach of Rohwer
+(1988), see :meth:`.Laminate.calc_transverse_shear_stiffness`, such that no
+shear correction factor should be applied to it. The uncorrected
+constant-strain stiffness, used in the TSDT, is ``Abar_ts``.
 
 The implementation of the CLTP, FSDT and TSDT closely follows the notation
 adopted by::
@@ -53,7 +60,13 @@ Where the laminate stiffness matrix, the often called ``ABD`` matrix, with
 
 and when transverse shear stiffnesses are required, with ``shape=(2, 2)``::
 
-    >>> plate.Atrans
+    >>> plate.Ats
+
+with the shear correction already applied. The transverse shear stresses
+through the thickness, for given shear forces ``Qy`` and ``Qx``, are obtained
+with::
+
+    >>> tau_yz, tau_xz = plate.calc_transverse_shear_stress(z, Qy, Qx)
 
 .. automodule:: composites.core
     :members:

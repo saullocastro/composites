@@ -6,7 +6,8 @@ With the ``composites`` module, you are able to calculate:
 
 * A, B, D, E, F, H plane-stress stiffness matrices
     - A, B, D, for classical plate theory (CLT, or CLPT)
-    - A44, A45, A55 for first-order shear deformation theory (FSDT)
+    - A44, A45, A55 for first-order shear deformation theory (FSDT), with
+      the equilibrium-based shear correction of Rohwer (1988) already applied
     - E, F, H for third-order shear deformation theory (TSDT)
 
 * Material invariants, trace-normalized or not
