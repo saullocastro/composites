@@ -339,3 +339,105 @@ def test_empty_laminate():
     lam = Laminate()
     lam.calc_constitutive_matrix()
     assert lam.A44 == 0. and lam.A45 == 0. and lam.A55 == 0.
+
+
+# Transverse shear stress recovery
+# --------------------------------
+
+def _f(lam, z):
+    r"""Distribution matrix f(z), {tau_yz, tau_xz} = f(z) {Qy, Qx}"""
+    return np.column_stack([lam.calc_transverse_shear_stress(z, 1., 0.),
+                            lam.calc_transverse_shear_stress(z, 0., 1.)])
+
+
+def _interfaces(lam):
+    return lam.offset - lam.h/2 + np.concatenate(([0.],
+        np.cumsum([ply.h for ply in lam.plies])))
+
+
+@pytest.mark.parametrize('offset', [0., +0.37, -1.5])
+def test_isotropic_parabola(offset):
+    h = 3.
+    lam = isotropic_plate(thickness=h, E=70e3, nu=0.3, offset=offset)
+    Qx, Qy = 7.3, -2.1
+    tol = 1e-13*3/(2*h) # machine precision relative to the peak stress
+    for z in np.linspace(-h/2, h/2, 21) + offset:
+        zbar = z - offset
+        tau_yz, tau_xz = lam.calc_transverse_shear_stress(z, Qy, Qx)
+        assert abs(tau_xz - 3*Qx/(2*h)*(1 - 4*zbar**2/h**2)) <= tol*abs(Qx)
+        assert abs(tau_yz - 3*Qy/(2*h)*(1 - 4*zbar**2/h**2)) <= tol*abs(Qy)
+        # no Qy contribution in tau_xz, and no Qx contribution in tau_yz
+        assert abs(lam.calc_transverse_shear_stress(z, 1., 0.)[1]) <= tol
+        assert abs(lam.calc_transverse_shear_stress(z, 0., 1.)[0]) <= tol
+
+
+@pytest.mark.parametrize('seed', SEEDS)
+def test_free_surfaces_and_continuity(seed):
+    lam = random_laminate(seed)
+    zi = _interfaces(lam)
+    scale = 1/lam.h
+    assert np.allclose(_f(lam, zi[0]), 0, atol=1e-10*scale)
+    assert np.allclose(_f(lam, zi[-1]), 0, atol=1e-10*scale)
+    eps = 1e-13*lam.h
+    for zk in zi[1:-1]:
+        below = _f(lam, zk - eps)
+        above = _f(lam, zk + eps)
+        assert np.allclose(below, above, atol=1e-10*scale)
+
+
+def _gauss_integral(lam, func):
+    zi = _interfaces(lam)
+    xi, w = np.polynomial.legendre.leggauss(3)
+    out = 0
+    for k, ply in enumerate(lam.plies):
+        zm, dz = (zi[k] + zi[k+1])/2, (zi[k+1] - zi[k])/2
+        for x, wi in zip(xi, w):
+            out = out + wi*dz*func(k, ply, zm + dz*x)
+    return out
+
+
+@pytest.mark.parametrize('seed', SEEDS)
+def test_in_plane_resultants(seed):
+    lam = random_laminate(seed)
+    # partition of Hstar = inv(ABD) with P(z) = dPi/dz = [A* + z B*^T, B* + z D*]
+    Hstar = np.linalg.inv(lam.ABD)
+    def CP(k, ply, z):
+        C = np.array([[ply.q11L, ply.q12L, ply.q16L],
+                      [ply.q12L, ply.q22L, ply.q26L],
+                      [ply.q16L, ply.q26L, ply.q66L]])
+        P = np.hstack([Hstar[:3, :3] + z*Hstar[3:, :3],
+                       Hstar[:3, 3:] + z*Hstar[3:, 3:]])
+        return C @ P
+    assert np.allclose(_gauss_integral(lam, CP), np.hstack([np.eye(3),
+        np.zeros((3, 3))]), atol=1e-10)
+    # the distribution must integrate to the shear forces, which exercises
+    # the integration constants of the implementation
+    assert np.allclose(_gauss_integral(lam, lambda k, ply, z: _f(lam, z)),
+            np.eye(2), atol=1e-10)
+
+
+@pytest.mark.parametrize('name, param, lam', _grid())
+def test_stress_regression_reference(name, param, lam):
+    ref = rohwer_Ats(stack_from_laminate(lam))
+    zi = _interfaces(lam)
+    rng = np.random.default_rng(3)
+    Q = np.array([0.7, -1.3])
+    for z in np.concatenate((zi, rng.uniform(zi[0], zi[-1], 10))):
+        tau = lam.calc_transverse_shear_stress(z, Q[0], Q[1])
+        tau_ref = ref.tau(z, Q)
+        assert np.allclose(tau, tau_ref, rtol=1e-10,
+                atol=1e-10*np.abs(Q).max()/lam.h)
+
+
+def test_stress_modes_and_errors():
+    stack = [30, -45, 90]
+    ref = laminated_plate(stack, plyt=0.25, laminaprop=CFRP)
+    for mode in ['vlachoutsis', 'constant', None]:
+        lam = laminated_plate(stack, plyt=0.25, laminaprop=CFRP,
+                shear_correction=mode)
+        assert lam.calc_transverse_shear_stress(0.1, 1., 2.) == \
+            ref.calc_transverse_shear_stress(0.1, 1., 2.)
+    with pytest.raises(ValueError, match='outside'):
+        ref.calc_transverse_shear_stress(0.4, 1., 1.)
+    with pytest.raises(ValueError, match='outside'):
+        ref.calc_transverse_shear_stress(-0.38, 1., 1.)
