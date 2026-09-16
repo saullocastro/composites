@@ -48,23 +48,35 @@ cdef class Laminate:
     cdef public double F11, F12, F16, F22, F26, F66
     cdef public double H11, H12, H16, H22, H26, H66
     cdef public double A44, A45, A55
+    cdef public double Abar44, Abar45, Abar55
+    cdef public double Abarbar44, Abarbar45, Abarbar55
     cdef public double D44, D45, D55
     cdef public double F44, F45, F55
     cdef public double e1, e2, g12, nu12, nu21
     cdef public double scf_k13, scf_k23, h, offset, intrho, intrhoz, intrhoz2
     cdef public list plies
     cdef public list stack
+    cdef public object shear_correction
+    # through-thickness transverse shear distribution (Rohwer, 1988)
+    cdef bint _ts_ready
+    cdef double [::1] _ts_z
+    cdef double [:, :, :, ::1] _ts_fcoef
     cdef double [:, ::1] get_A(Laminate)
     cdef double [:, ::1] get_B(Laminate)
     cdef double [:, ::1] get_D(Laminate)
     cdef double [:, ::1] get_E(Laminate)
     cdef double [:, ::1] get_F(Laminate)
     cdef double [:, ::1] get_H(Laminate)
+    cdef double [:, ::1] get_Ats(Laminate)
     cdef double [:, ::1] get_Atrans(Laminate)
+    cdef double [:, ::1] get_Abar_ts(Laminate)
+    cdef double [:, ::1] get_Abarbar_ts(Laminate)
     cdef double [:, ::1] get_Dtrans(Laminate)
     cdef double [:, ::1] get_Ftrans(Laminate)
     cdef double [:, ::1] get_ABD(Laminate)
-    cpdef void calc_scf(Laminate)
+    cdef int _calc_transverse_shear_distribution(Laminate) except -1
+    cpdef void calc_transverse_shear_stiffness(Laminate) except *
+    cpdef tuple calc_scf(Laminate)
     cpdef void calc_equivalent_properties(Laminate)
     cpdef void calc_constitutive_matrix(Laminate)
     cpdef void make_balanced(Laminate)

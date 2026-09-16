@@ -51,7 +51,8 @@ def test_lampar_tri_axial():
     lam.make_symmetric()
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.Atrans, Atrans)
+    assert np.allclose(lam.Ats, Atrans)
+    assert np.allclose(lam.Abar_ts, Atrans)
     ABD = lam.ABD
     assert np.allclose(ABD[:3, :3], A)
     assert np.allclose(ABD[3:, 3:], D)
@@ -98,7 +99,8 @@ def test_lampar_plane_stress():
     lam.make_symmetric()
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.Atrans, Atrans)
+    assert np.allclose(lam.Ats, Atrans)
+    assert np.allclose(lam.Abar_ts, Atrans)
     ABD = lam.ABD
     assert np.allclose(ABD[:3, :3], A)
     assert np.allclose(ABD[3:, 3:], D)
@@ -118,12 +120,15 @@ def test_laminated_plate_tri_axial():
     D = np.array([[ 0.1708233 , 0.01057886, 0.00262445],
                   [ 0.01057886, 0.1708233 , 0.00262445],
                   [ 0.00262445, 0.00262445, 0.0326602 ]])
-    Atrans = np.array([[ 2625000.,       0.],
-                       [       0., 2625000.]])
+    Abar_ts = np.array([[ 2625000.,       0.],
+                        [       0., 2625000.]])
+    Ats = np.array([[2014905.27266639, -27210.29377157],
+                    [ -27210.29377157, 2014905.27266639]])
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.Atrans, Atrans)
+    assert np.allclose(lam.Abar_ts, Abar_ts)
+    assert np.allclose(lam.Ats, Ats)
 
 
 def test_laminated_plate_plane_stress():
@@ -149,8 +154,10 @@ def test_laminated_plate_plane_stress():
     H = np.array([[9.14779627e-17, 4.61039304e-18, 1.71625578e-20],
                   [4.61039304e-18, 9.14779627e-17, 1.71625578e-20],
                   [1.71625578e-20, 1.71625578e-20, 1.63068348e-17]])
-    Atrans = np.array([[ 2625000.,       0.],
-                       [       0., 2625000.]])
+    Abar_ts = np.array([[ 2625000.,       0.],
+                        [       0., 2625000.]])
+    Ats = np.array([[2014905.27266639, -27210.29377157],
+                    [ -27210.29377157, 2014905.27266639]])
     Dtrans = np.array([[0.03076172, 0.],
                        [0., 0.03076172]])
     Ftrans = np.array([[6.48880005e-10, 0.00000000e+00],
@@ -162,7 +169,8 @@ def test_laminated_plate_plane_stress():
     assert np.allclose(lam.E, E)
     assert np.allclose(lam.F, F)
     assert np.allclose(lam.H, H)
-    assert np.allclose(lam.Atrans, Atrans)
+    assert np.allclose(lam.Abar_ts, Abar_ts)
+    assert np.allclose(lam.Ats, Ats)
     assert np.allclose(lam.Dtrans, Dtrans)
     assert np.allclose(lam.Ftrans, Ftrans)
     lam.calc_scf()
@@ -174,7 +182,7 @@ def test_laminated_plate_plane_stress():
     assert np.allclose(lam_2.A, lam.A)
     assert np.allclose(lam_2.B, lam.B)
     assert np.allclose(lam_2.D, lam.D)
-    assert np.allclose(lam_2.Atrans, lam.Atrans)
+    assert np.allclose(lam_2.Ats, lam.Abar_ts)
 
     lam.make_balanced()
     make_balanced_LP(lp)
@@ -182,7 +190,7 @@ def test_laminated_plate_plane_stress():
     assert np.allclose(lam_2.A, lam.A)
     assert np.allclose(lam_2.B, lam.B)
     assert np.allclose(lam_2.D, lam.D)
-    assert np.allclose(lam_2.Atrans, lam.Atrans)
+    assert np.allclose(lam_2.Ats, lam.Abar_ts)
 
     lam.make_orthotropic()
     make_orthotropic_LP(lp)
@@ -190,7 +198,7 @@ def test_laminated_plate_plane_stress():
     assert np.allclose(lam_2.A, lam.A)
     assert np.allclose(lam_2.B, lam.B)
     assert np.allclose(lam_2.D, lam.D)
-    assert np.allclose(lam_2.Atrans, lam.Atrans)
+    assert np.allclose(lam_2.Ats, lam.Abar_ts)
 
     lam = laminated_plate(stack, plyt, lamprop)
     lp = lam.calc_lamination_parameters()
@@ -200,7 +208,7 @@ def test_laminated_plate_plane_stress():
     assert np.allclose(lam_2.A, lam.A)
     assert np.allclose(lam_2.B, lam.B)
     assert np.allclose(lam_2.D, lam.D)
-    assert np.allclose(lam_2.Atrans, lam.Atrans)
+    assert np.allclose(lam_2.Ats, lam.Abar_ts)
 
     lam = laminated_plate(stack, plyt, lamprop)
     lp = lam.calc_lamination_parameters()
@@ -220,13 +228,14 @@ def test_isotropic_plate():
     D = np.array([[0.01253905, 0.00351093, 0.        ],
                   [0.00351093, 0.01253905, 0.        ],
                   [0.        , 0.        , 0.00451406]])
-    Atrans = np.array([[3466796.875,       0.   ],
-                       [      0.   , 3466796.875]])
+    Abar_ts = np.array([[3466796.875,       0.   ],
+                        [      0.   , 3466796.875]])
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.B, 0)
 
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.Atrans, Atrans)
+    assert np.allclose(lam.Abar_ts, Abar_ts)
+    assert np.allclose(lam.Ats, 5/6*Abar_ts)
 
 
 
