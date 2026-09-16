@@ -17,7 +17,8 @@ materials. Usually, this module is used to calculate:
 
 * A, B, D, E, F, H plane-stress stiffness matrices
     - A, B, D, for classical plate theory (CLT, or CLPT)
-    - A44, A45, A55 for first-order shear deformation theory (FSDT)
+    - A44, A45, A55 for first-order shear deformation theory (FSDT), with
+      the equilibrium-based shear correction of Rohwer (1988) already applied
     - E, F, H for third-order shear deformation theory (TSDT)
 
 * Material invariants, trace-normalized or not
@@ -63,6 +64,8 @@ History
 - version 0.6.0 onwards: cibuildwheel to distribute for Linux
 - version 0.7.0 onwards: added Kassapoglou's module
 - version 0.8.0 onwards: support for Third-order Shear Deformation Theory (TSDT)
+- version 0.9.0 onwards: A44, A45, A55 with the shear correction already
+  applied (Rohwer, 1988), transverse shear stress recovery, see CHANGELOG.md
 
 
 License
