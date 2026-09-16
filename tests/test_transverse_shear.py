@@ -97,9 +97,8 @@ def test_vlachoutsis_published_120_plies(ratios, k13, k23):
     E1, G12, G13, G23, nu12 = ratios
     laminaprop = (E1, 1., nu12, G12, G13, G23)
     stack = [0, 90]*30 + [90, 0]*30
-    lam = laminated_plate(stack, plyt=1/120, laminaprop=laminaprop)
-    lam.shear_correction = 'vlachoutsis'
-    lam.calc_transverse_shear_stiffness()
+    lam = laminated_plate(stack, plyt=1/120, laminaprop=laminaprop,
+            shear_correction='vlachoutsis')
     assert abs(lam.scf_k13 - k13) < 5e-5
     assert abs(lam.scf_k23 - k23) < 5e-5
     assert np.isclose(lam.A55, k13*lam.Abar55, atol=5e-5*lam.Abar55)
@@ -246,12 +245,54 @@ def test_modes():
         lam.calc_transverse_shear_stiffness()
 
 
-def test_calc_scf_returns_ratios():
-    lam = laminated_plate([0, 90, 90, 0], plyt=0.25, laminaprop=CFRP)
-    k13, k23 = lam.calc_scf()
+def test_shear_correction_argument():
+    stack = [45, -45, 0, 90]
+    ref = laminated_plate(stack, plyt=0.25, laminaprop=CFRP)
+    assert ref.shear_correction == 'rohwer'
+    for mode in ['rohwer', 'vlachoutsis', 'constant', None]:
+        lam = laminated_plate(stack, plyt=0.25, laminaprop=CFRP,
+                shear_correction=mode)
+        assert lam.shear_correction == mode
+        ref.shear_correction = mode
+        ref.calc_transverse_shear_stiffness()
+        assert np.allclose(lam.Ats, ref.Ats, rtol=1e-14)
+    plate = isotropic_plate(thickness=2., E=70., nu=0.3,
+            shear_correction=None)
+    assert np.allclose(plate.Ats, plate.Abar_ts)
+    with pytest.raises(ValueError, match='shear_correction'):
+        laminated_plate(stack, plyt=0.25, laminaprop=CFRP,
+                shear_correction='rohwer1988')
+
+
+@pytest.mark.parametrize('calc_scf, mode', [(True, 'rohwer'), (False, None)])
+def test_deprecated_calc_scf_argument(calc_scf, mode):
+    with pytest.warns(DeprecationWarning, match='calc_scf'):
+        lam = laminated_plate([0, 90, 90, 0], plyt=0.25, laminaprop=CFRP,
+                calc_scf=calc_scf, shear_correction='constant')
+    assert lam.shear_correction == mode
+    with pytest.warns(DeprecationWarning, match='calc_scf'):
+        plate = isotropic_plate(thickness=2., E=70., nu=0.3,
+                calc_scf=calc_scf)
+    assert plate.shear_correction == mode
+
+
+def test_deprecated_calc_scf_method():
+    lam = laminated_plate([0, 90, 90, 0], plyt=0.25, laminaprop=CFRP,
+            shear_correction=None)
+    with pytest.warns(DeprecationWarning, match='calc_scf'):
+        k13, k23 = lam.calc_scf()
+    assert lam.shear_correction == 'rohwer'
     assert (k13, k23) == (lam.scf_k13, lam.scf_k23)
     assert abs(k13 - 0.6705) < 5e-5
     assert abs(k23 - 0.7320) < 5e-5
+    assert abs(lam.A55 - 2.3131) < 5e-5
+
+
+def test_deprecated_Atrans():
+    lam = laminated_plate([45, -45, -45, 45], plyt=0.25, laminaprop=CFRP)
+    with pytest.warns(DeprecationWarning, match='Ats'):
+        Atrans = lam.Atrans
+    assert np.array_equal(Atrans, lam.Ats)
 
 
 def _manual_laminate(stack, plyt, laminaprops, shear_correction):
