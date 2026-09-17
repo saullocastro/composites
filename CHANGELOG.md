@@ -14,7 +14,13 @@ applied**, computed by default with the equilibrium approach of
 
 which returns the full 2x2 matrix directly, including the `A45` coupling of
 angle-ply laminates. It is valid for unsymmetric laminates and does not depend
-on `offset`. For a homogeneous plate it gives exactly `5/6 G h`.
+on `offset`. For a homogeneous plate it gives exactly `5/6 G h`. For completeness,
+the approach of Vlachoutsis is also available:
+
+> Vlachoutsis, S. "Shear correction factors for plates and shells", Int.
+> Journal for Numerical Methods in Engineering, Vol. 33, 1537-1552, 1992.
+
+The following important changes are worth mentioning:
 
 - `A44`, `A45`, `A55`: corrected stiffness, ready for FSDT elements.
 - `Laminate.Ats` (new): `[[A44, A45], [A45, A55]]`, index 4 <-> yz,
