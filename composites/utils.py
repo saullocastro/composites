@@ -5,6 +5,8 @@ Composites Core Utils Module (:mod:`composites.utils`)
 .. currentmodule:: composites.utils
 
 """
+import warnings
+
 import numpy as np
 from numpy import cos, sin, deg2rad
 
@@ -98,8 +100,19 @@ def read_laminaprop(laminaprop, rho=0):
     return matlam
 
 
+def _shear_correction_from_calc_scf(calc_scf, shear_correction):
+    if calc_scf is None:
+        return shear_correction
+    warnings.warn("The argument 'calc_scf' is deprecated, use "
+                  "'shear_correction' instead, with calc_scf=True mapped to "
+                  "shear_correction='rohwer' and calc_scf=False mapped to "
+                  "shear_correction=None", DeprecationWarning, stacklevel=3)
+    return 'rohwer' if calc_scf else None
+
+
 def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None,
-        laminaprops=None, rhos=None, offset=0., calc_scf=True):
+        laminaprops=None, rhos=None, offset=0., calc_scf=None,
+        shear_correction='rohwer'):
     r"""Read a laminate stacking sequence data.
 
     :class:`.Laminate` object is returned based on the inputs given.
@@ -125,8 +138,15 @@ def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None,
         Offset along the normal axis about the mid-surface, which influences
         the laminate properties.
     calc_scf : bool, optional
-        If True, use :func:`.Laminate.calc_scf` to compute shear correction
-        factors, otherwise the default value of 5/6 is used
+        Deprecated, use ``shear_correction`` instead. When given, ``True`` is
+        mapped to ``shear_correction='rohwer'`` and ``False`` to
+        ``shear_correction=None``, overriding ``shear_correction``.
+    shear_correction : str or None, optional
+        Method used to compute the transverse shear stiffnesses ``A44``,
+        ``A45``, ``A55``, which are returned with the correction already
+        applied: ``'rohwer'`` (default, equilibrium approach), ``'vlachoutsis'``,
+        ``'constant'`` (5/6) or ``None`` (no correction). See
+        :meth:`.Laminate.calc_transverse_shear_stiffness`.
 
     Notes
     -----
@@ -145,6 +165,8 @@ def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None,
     lam = Laminate()
     lam.offset = offset
     lam.stack = list(stack)
+    lam.shear_correction = _shear_correction_from_calc_scf(calc_scf,
+            shear_correction)
 
     if plyts is None:
         if plyt is None:
@@ -176,13 +198,12 @@ def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None,
 
     lam.calc_constitutive_matrix()
     lam.calc_equivalent_properties()
-    if calc_scf:
-        lam.calc_scf()
 
     return lam
 
 
-def isotropic_plate(thickness, E, nu, offset=0., calc_scf=True, rho=0.):
+def isotropic_plate(thickness, E, nu, offset=0., calc_scf=None, rho=0.,
+        shear_correction='rohwer'):
     r"""Read data for an isotropic plate
 
     :class:`.Laminate` object is returned based on the inputs given.
@@ -201,12 +222,18 @@ def isotropic_plate(thickness, E, nu, offset=0., calc_scf=True, rho=0.):
         Offset along the normal axis about the mid-surface, which influences
         the extension-bending coupling (B matrix).
     calc_scf : bool, optional
-        If True, use :func:`.Laminate.calc_scf` to compute shear correction
-        factors, otherwise the default value of 5/6 is used.
+        Deprecated, use ``shear_correction`` instead. When given, ``True`` is
+        mapped to ``shear_correction='rohwer'`` and ``False`` to
+        ``shear_correction=None``, overriding ``shear_correction``.
+    shear_correction : str or None, optional
+        See :func:`.laminated_plate`. For an isotropic plate both ``'rohwer'``
+        and ``'vlachoutsis'`` give ``A44 = A55 = 5/6 G h``.
 
     """
+    shear_correction = _shear_correction_from_calc_scf(calc_scf,
+            shear_correction)
     return laminated_plate(plyt=thickness, stack=[0], laminaprop=(E, nu),
-            rho=rho, offset=offset, calc_scf=calc_scf)
+            rho=rho, offset=offset, shear_correction=shear_correction)
 
 
 def double_double_laminate(thickness, phideg, psideg, laminaprop=None, rho=0.):
