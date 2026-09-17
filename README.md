@@ -38,7 +38,7 @@ Bibtex :
     @misc{composites2026,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods for analysis and design of composites (Version 0.8.6)}},
+        title = {{Methods for analysis and design of composites (Version 0.9.0)}},
         year = 2026
         }
 
