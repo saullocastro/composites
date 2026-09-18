@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.0 (2026-09-17)
+## 0.9.1 (2026-09-18)
 
 ### Breaking: transverse shear stiffness now includes the shear correction
 
@@ -50,6 +50,10 @@ The following important changes are worth mentioning:
   `scf_k13 = scf_k23 = 1`.
 - `Laminate` has new C attributes, so packages that `cimport composites` must
   be recompiled against this version.
+- `Laminate` and `GradABD` can be pickled and deep-copied. `Laminate` stores
+  its public attributes only; the transverse shear distribution used by
+  `calc_transverse_shear_stress` is not stored and is recomputed on demand.
+  Python subclasses of `Laminate` are supported.
 
 ### Fixed
 
