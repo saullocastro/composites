@@ -31,14 +31,14 @@ materials. Usually, this module is used to calculate:
 Citing this repository
 ----------------------
 
-Castro, SGP. Methods for analysis and design of composites (Version 0.9.0) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
+Castro, SGP. Methods for analysis and design of composites (Version 0.9.1) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex :
     
     @misc{composites2026,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods for analysis and design of composites (Version 0.9.0)}},
+        title = {{Methods for analysis and design of composites (Version 0.9.1)}},
         year = 2026
         }
 
@@ -64,7 +64,7 @@ History
 - version 0.6.0 onwards: cibuildwheel to distribute for Linux
 - version 0.7.0 onwards: added Kassapoglou's module
 - version 0.8.0 onwards: support for Third-order Shear Deformation Theory (TSDT)
-- version 0.9.0 onwards: A44, A45, A55 with the shear correction already applied (Rohwer, 1988), transverse shear stress recovery, see CHANGELOG.md
+- version 0.9.1 onwards: A44, A45, A55 with the shear correction already applied (Rohwer, 1988), transverse shear stress recovery, picklable Laminate and GradABD, see CHANGELOG.md
 
 
 License
