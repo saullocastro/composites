@@ -11,6 +11,7 @@ Composites Core Module (:mod:`composites.core`)
 .. currentmodule:: composites.core
 
 """
+import copyreg
 import warnings
 
 import numpy as np
@@ -391,6 +392,15 @@ def _singular_Cs_error(int k, Lamina ply):
                 ply.q45L, ply.q55L))
 
 
+# NOTE names of the "cdef public" attributes of Laminate saved when pickling,
+#      they must follow core.pxd (checked in tests/test_pickle.py)
+_LAMINATE_STATE = tuple(
+    ['%s%s' % (m, ij) for m in 'ABDEFH' for ij in ('11', '12', '16', '22', '26', '66')]
+    + ['%s%s' % (m, ij) for m in ('A', 'Abar', 'Abarbar', 'D', 'F') for ij in ('44', '45', '55')]
+    + ['e1', 'e2', 'g12', 'nu12', 'nu21', 'scf_k13', 'scf_k23', 'h', 'offset',
+       'intrho', 'intrhoz', 'intrhoz2', 'plies', 'stack', 'shear_correction'])
+
+
 cdef class Laminate:
     r"""
     Attributes
@@ -459,6 +469,23 @@ cdef class Laminate:
         self.plies = []
         self.stack = []
         self.shear_correction = 'rohwer'
+        self._ts_ready = False
+
+    def __reduce__(Laminate self):
+        # NOTE the transverse shear distribution cache (_ts_z, _ts_fcoef) is
+        #      left out and recomputed on demand after unpickling
+        state = {name: getattr(self, name) for name in _LAMINATE_STATE}
+        if hasattr(self, '__dict__'):
+            state['__dict__'] = self.__dict__
+        return copyreg.__newobj__, (type(self), ), state
+
+    def __setstate__(Laminate self, dict state):
+        state = dict(state)
+        inst_dict = state.pop('__dict__', None)
+        for name, value in state.items():
+            setattr(self, name, value)
+        if inst_dict:
+            self.__dict__.update(inst_dict)
         self._ts_ready = False
 
     cdef double [:, ::1] get_A(Laminate self):
@@ -1488,6 +1515,9 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
     return laminate_from_LaminationParameters(thickness, matlamina, lp)
 
 
+_GRADABD_STATE = ('gradAij', 'gradBij', 'gradDij', 'gradAtransij')
+
+
 cdef class GradABD:
     r"""Container to store the gradients of the ABD matrices with respect to
     the lamination parameters
@@ -1557,6 +1587,19 @@ cdef class GradABD:
         self.gradBij = np.zeros((6, 5), dtype=DOUBLE)
         self.gradDij = np.zeros((6, 5), dtype=DOUBLE)
         self.gradAtransij = np.zeros((3, 3), dtype=DOUBLE)
+
+    def __reduce__(GradABD self):
+        state = {}
+        for name in _GRADABD_STATE:
+            try:
+                state[name] = np.asarray(getattr(self, name)).copy()
+            except AttributeError: # memoryview not initialized
+                pass
+        return copyreg.__newobj__, (type(self), ), state
+
+    def __setstate__(GradABD self, dict state):
+        for name, value in state.items():
+            setattr(self, name, np.ascontiguousarray(value, dtype=DOUBLE))
 
     cpdef void calc_LP_grad(GradABD self, double thickness, MatLamina mat, LaminationParameters lp):
         r"""Gradients of the shell stiffnesses with respect to the thickness and
