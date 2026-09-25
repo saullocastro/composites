@@ -2,6 +2,7 @@
 #cython: wraparound=False
 #cython: cdivision=True
 #cython: nonecheck=False
+#cython: initializedcheck=False
 #cython: infer_types=False
 #cython: overflowcheck=False
 """
