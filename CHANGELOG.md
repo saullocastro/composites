@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.1 (2026-09-18)
+## 0.9.2 (2026-09-25)
 
 ### Breaking: transverse shear stiffness now includes the shear correction
 
@@ -97,6 +97,65 @@ specially orthotropic plies, and its `A45 = (k13 + k23)/2 Abar45` is ad hoc.
 - Through-thickness transverse shear stresses: use
   `lam.calc_transverse_shear_stress(z, Qy, Qx)` rather than `Cs @ gamma`,
   which is constant within each ply and non-zero at the free surfaces.
+
+### Performance: Cython directives and compiler flags (0.9.2)
+
+- `composites/core.pyx` is compiled with `initializedcheck=False`. Cython no
+  longer checks, at each memoryview access, that the memoryview has been
+  assigned. Reading an unassigned memoryview attribute from Python still
+  raises `AttributeError`, because the property getters keep their own check.
+- `setup.py` passed `linetrace=True` to every build. Without `CYTHON_TRACE`
+  the line tracing itself stays compiled out, but the directive also
+  generates profiling hooks that are active by default and run at every call
+  of a Python-visible function. The directive is now set only for a coverage
+  build, see below.
+- Compiler flags: `-O3` and `-fno-math-errno` for GCC and Clang, and an
+  explicit `/O2` for MSVC, which setuptools already combines with `/GL`. The
+  OpenMP flags are removed, since the module does not use `prange`. Flags
+  that change floating-point results, such as `/fp:fast` or `-ffast-math`,
+  and flags that tie a wheel to the CPU that built it, such as
+  `-march=native`, are deliberately not used.
+
+The results are bit-identical to the previous build, checked on the `ABD`,
+`E` and `Ats` matrices of laminates with 1, 8 and 33 plies, and the whole
+test suite passes.
+
+Measured on an AMD x86-64 laptop CPU (family 25, model 117), Windows 11,
+Python 3.13, NumPy 2.4, Cython 3.2, MSVC, with the process pinned to one core
+at high priority, minimum of 3 interleaved runs of 5 repetitions each. The
+GCC and Clang flags were not measured. Cost per call from Python
+(`benchmarks/bench_build_flags.py`), in microseconds, for a CFRP laminate;
+each cell gives the cost before and after this change, with the relative
+difference:
+
+| Function | 8 plies | 32 plies | 128 plies |
+| - | - | - | - |
+| `laminated_plate` | 102.26 / 94.49 (-8%) | 232.65 / 215.25 (-7%) | 750.23 / 675.84 (-10%) |
+| `Laminate.calc_constitutive_matrix` | 70.71 / 67.76 (-4%) | 160.56 / 152.04 (-5%) | 507.97 / 484.29 (-5%) |
+| `Laminate.calc_transverse_shear_stiffness` | 35.87 / 35.44 (-1%) | 39.10 / 39.62 (+1%) | 48.59 / 47.52 (-2%) |
+| `Laminate.calc_lamination_parameters` | 8.83 / 7.44 (-16%) | 32.92 / 30.39 (-8%) | 136.57 / 118.95 (-13%) |
+| `laminate_from_LaminationParameters` | 2.63 / 2.04 (-22%) | 2.63 / 1.99 (-24%) | 2.65 / 2.05 (-23%) |
+| `GradABD.calc_LP_grad` | 1.95 / 1.91 (-2%) | 1.94 / 1.91 (-2%) | 1.94 / 1.91 (-1%) |
+| `n_double_laminate` | 10.31 / 9.78 (-5%) | 10.37 / 9.86 (-5%) | 10.23 / 9.91 (-3%) |
+
+Differences within about 3% are measurement noise. Creating a laminate is 7
+to 10% faster, and the functions dominated by memoryview access, such as
+`laminate_from_LaminationParameters` and `calc_lamination_parameters`, up to
+24% faster.
+
+### Coverage build (0.9.2)
+
+`setup.py` now recognises a coverage build, requested either with
+`CYTHON_TRACE_NOGIL` in the environment or with `--define CYTHON_TRACE_NOGIL`,
+as in `.github/workflows/coverage.yml`, and compiles it unoptimized with line
+tracing. Since Python 3.12 Cython traces through `sys.monitoring` by default,
+which the `Cython.Coverage` plugin does not follow, so the coverage build now
+requests the legacy tracing with `CYTHON_USE_SYS_MONITORING=0`. Measured with
+the command of the workflow on Python 3.13: the report used to list only the
+Python modules, 188 statements at 100%, without `core.pyx`; it now includes
+`core.pyx`, 833 statements at 99%. Switching between a coverage build and a
+normal one regenerates `core.cpp`, which cythonize would otherwise reuse from
+the other mode.
 
 
 ## 0.8.6 (2026-04-10)
