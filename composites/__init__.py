@@ -22,7 +22,28 @@ The FSDT transverse shear stiffness ``Ats`` already contains the shear
 correction, computed by default with the equilibrium approach of Rohwer
 (1988), see :meth:`.Laminate.calc_transverse_shear_stiffness`, such that no
 shear correction factor should be applied to it. The uncorrected
-constant-strain stiffness, used in the TSDT, is ``Abar_ts``.
+constant-strain stiffness, used in the TSDT, is ``Abar_ts``. Other methods are
+selected with the argument ``shear_correction`` of
+:func:`.laminated_plate` and :func:`.isotropic_plate`:
+
+- ``'rohwer'`` (default): Rohwer (1988), equilibrium of two cylindrical
+  bending states, full 2x2 matrix
+- ``'vlachoutsis'``: Vlachoutsis (1992), energy equivalence with
+  direction-wise neutral surfaces
+- ``'whitney'``: Whitney (1973), unsymmetric orthotropic laminates, identical
+  to ``'vlachoutsis'``
+- ``'chow'``: Chow (1971), symmetric laminates only
+- ``'birman_bert'``: Birman and Bert (2002), equivalence of the average
+  transverse shear strain
+- ``'thickness_shear'``: Yang, Norris and Stavsky (1966), first
+  thickness-shear frequency, requires positive ply densities
+- ``'constant'``: 5/6
+- ``None``: no correction
+
+Problem-dependent, a posteriori factors in the sense of Noor and Peters (1989)
+are supported by :meth:`.Laminate.calc_equilibrium_transverse_shear` and
+:meth:`.Laminate.calc_aposteriori_energy`, which recover the transverse shear
+stresses and their energies from the strain gradients of an FSDT solution.
 
 The implementation of the CLTP, FSDT and TSDT closely follows the notation
 adopted by::

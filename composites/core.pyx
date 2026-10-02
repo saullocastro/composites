@@ -1359,6 +1359,12 @@ cdef class Laminate:
         free only if the gradients satisfy the in-plane equilibrium of the
         stress resultants.
 
+        References:
+
+            Noor, A. K. and Peters, J. M. "A posteriori estimates for the
+            shear correction factors in multi-layered composite cylinders",
+            Journal of Engineering Mechanics, Vol. 115, 1225-1244, 1989.
+
         Parameters
         ----------
         grad_x, grad_y : array-like, shape ``(6,)`` or ``(npts, 6)``
@@ -1427,6 +1433,12 @@ cdef class Laminate:
         `\frac{1}{2} Q_y^2/\bar{A}_{44}`, i.e. Eqs. (8)-(9) of Noor and
         Peters (1989), with `Q = k^0 \bar{A} \gamma^0` the shear forces of
         the FSDT.
+
+        References:
+
+            Noor, A. K. and Peters, J. M. "A posteriori estimates for the
+            shear correction factors in multi-layered composite cylinders",
+            Journal of Engineering Mechanics, Vol. 115, 1225-1244, 1989.
 
         Parameters
         ----------
@@ -1916,8 +1928,7 @@ cdef class GradABD:
     the lamination parameters
 
     Attributes
-    ==========
-
+    ----------
     gradAij, gradBij, gradDij, gradAtransij : tuple of 2D np.array objects
         The shapes of these gradient matrices are:
 
@@ -1933,8 +1944,7 @@ cdef class GradABD:
         :func:`.laminate_from_LaminationParameters`. The rows and
         columns correspond to::
 
-            gradAij
-            -------
+            gradAij:
 
                 h xiA1 xiA2 xiA3 xiA4
             A11
@@ -1944,8 +1954,7 @@ cdef class GradABD:
             A26
             A66
 
-            gradBij
-            -------
+            gradBij:
 
                 h xiB1 xiB2 xiB3 xiB4
             B11
@@ -1955,8 +1964,7 @@ cdef class GradABD:
             B26
             B66
 
-            gradDij
-            -------
+            gradDij:
 
                 h xiD1 xiD2 xiD3 xiD4
             D11
@@ -1966,13 +1974,12 @@ cdef class GradABD:
             D26
             D66
 
-            gradAtransij
-            -------
+            gradAtransij:
 
-                h xiAtrans1 xiAtrans2
-            A44
-            A45
-            A55
+                   h xiAtrans1 xiAtrans2
+            Abar44
+            Abar45
+            Abar55
 
     """
     def __init__(GradABD self):

@@ -39,8 +39,8 @@ def calc_Nxx_crit(a, b, m, n, D11, D12, D22, D66):
     D11, D12, D22, D66 : float
         Terms of the D matrix.
 
-    Result
-    ------
+    Returns
+    -------
     Nxx_crit : float
         Critical uniaxial compression buckling load.
 
@@ -82,8 +82,8 @@ def calc_Nxy_crit(a, D11, D12, D16, D22, D66, rtol=1e-5, atol=1e-6, max_iter=50)
     max_iter : int
         Maximum number of iterations used in the Newton-Raphson scheme.
 
-    Result
-    ------
+    Returns
+    -------
     Nxy_crit : float
         Critical shear buckling load.
 
@@ -130,8 +130,8 @@ def calc_beff(b, Px, Pcr, A11, A12, A22):
     A11, A12, A22: float
         Terms of the A matrix.
 
-    Result
-    ------
+    Returns
+    -------
     beff : float
         Effective width of the plate.
 
@@ -161,8 +161,8 @@ def calc_Nxx_crit_combined_shear(k, a, b, D11, D12, D22, D66):
     D11, D12, D22, D66 : float
         Terms of the D matrix.
 
-    Result
-    ------
+    Returns
+    -------
     N0 : float
         Critical `N_{xx}` buckling load under the current level of shear load
         given by `N_{xy} = k N_{xx}`.
@@ -200,8 +200,8 @@ def calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22, D26, D66):
     D11, D12, D16, D22, D26, D66 : float
         All terms of the D matrix.
 
-    Result
-    ------
+    Returns
+    -------
     Nxx_crit : float
         Critical `N_{xx}` buckling load under the current level of shear load
         given by `N_{xy}`.

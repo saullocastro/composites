@@ -51,6 +51,9 @@ exclude_patterns = []
 
 default_role = 'math'
 
+# NOTE the class members are documented on the same page, without stub files
+numpydoc_class_members_toctree = False
+
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for

@@ -232,7 +232,7 @@ def isotropic_plate(thickness, E, nu, offset=0., calc_scf=None, rho=0.,
         See :func:`.laminated_plate`. For an isotropic plate ``'rohwer'``,
         ``'vlachoutsis'`` and ``'chow'`` give ``A44 = A55 = 5/6 G h``,
         ``'birman_bert'`` gives ``G h`` and ``'thickness_shear'`` gives
-        ``pi^2/12 G h``.
+        ``pi^2/12 G h``, the latter requiring ``rho > 0``.
 
     """
     shear_correction = _shear_correction_from_calc_scf(calc_scf,
