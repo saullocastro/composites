@@ -385,6 +385,128 @@ cdef class Lamina:
              [sincos, -sincos, 0, 0, 0, cos2-sin2]], dtype=DOUBLE)
 
 
+# NOTE methods accepted by Laminate.shear_correction, besides None
+_SHEAR_CORRECTIONS = ('rohwer', 'vlachoutsis', 'whitney', 'chow',
+                      'birman_bert', 'thickness_shear', 'constant')
+
+
+def _check_symmetric(Laminate lam, double[::1] z, double h):
+    r"""Raise if the laminate is not symmetric about its mid-surface
+
+    Checks the extension-bending coupling about the mid-surface, `B_{ij} -
+    offset A_{ij}`, computed from the plies, against `h \max|A_{ij}|`.
+
+    """
+    cdef int k, N
+    cdef double za, zb, off
+    cdef Lamina ply
+    N = <int>len(lam.plies)
+    off = lam.offset
+    Amax = 0.
+    Bmid = np.zeros(6, dtype=DOUBLE)
+    for k in range(N):
+        ply = lam.plies[k]
+        za = z[k] - off
+        zb = z[k+1] - off
+        q = np.array([ply.q11L, ply.q12L, ply.q16L, ply.q22L, ply.q26L,
+                      ply.q66L])
+        Bmid += q*(zb*zb - za*za)/2.
+        Amax = max(Amax, np.abs(q).max()*(zb - za))
+    if np.abs(Bmid).max() > 1e-10*h*N*Amax:
+        raise ValueError("'chow' shear correction factors require a laminate "
+                         "symmetric about its mid-surface, B_ij about the "
+                         "mid-surface = %s" % np.array2string(Bmid,
+                         precision=4))
+
+
+def _thickness_shear_frequency(Gs, rhos, hs, double omega_ref):
+    r"""Lowest non-zero thickness-shear frequency of a laminate
+
+    Solves the anti-plane motion `u(z) e^{i \omega t}` of an infinite
+    laminate, `(G u_{,z})_{,z} + \rho \omega^2 u = 0` in each ply, with
+    traction-free faces and continuity of `u` and `\tau = G u_{,z}` at the
+    interfaces. Starting from `\{u, \tau\} = \{1, 0\}` at the bottom face, the
+    exact transfer matrix of each ply gives `\tau(\omega)` at the top face,
+    whose lowest positive root is returned. Since `\tau \approx -\omega^2 I_0`
+    for small `\omega`, the root is bracketed by the first change of sign
+    found with geometric steps from ``1e-4*omega_ref``, and refined by
+    bisection.
+
+    Parameters
+    ----------
+    Gs, rhos, hs : array-like
+        Transverse shear modulus, density and thickness of each ply, from
+        bottom to top.
+    omega_ref : float
+        Reference frequency, `\sqrt{\bar{A}_{55}/\bar{I}_2}`, i.e. the FSDT
+        frequency with a unit shear correction factor.
+
+    Returns
+    -------
+    omega : float
+        The lowest non-zero thickness-shear frequency.
+
+    """
+    Gs = np.asarray(Gs, dtype=DOUBLE)
+    rhos = np.asarray(rhos, dtype=DOUBLE)
+    hs = np.asarray(hs, dtype=DOUBLE)
+    slowness = np.sqrt(rhos/Gs)
+
+    def tau_top(double omega):
+        cdef double u = 1., tau = 0., beta, c, s, un
+        cdef int k
+        for k in range(Gs.shape[0]):
+            beta = omega*slowness[k]
+            c = cos(beta*hs[k])
+            s = sin(beta*hs[k])
+            un = c*u + s/(Gs[k]*beta)*tau
+            tau = -Gs[k]*beta*s*u + c*tau
+            u = un
+        return tau
+
+    cdef double wa, wb, fa, fb, wm, fm
+    wa = 1e-4*omega_ref
+    fa = tau_top(wa)
+    wb = wa
+    fb = fa
+    while fb < 0:
+        if wb > 1e2*omega_ref:
+            raise RuntimeError('No thickness-shear frequency found below '
+                               '100 times the reference frequency')
+        wa, fa = wb, fb
+        wb = 1.01*wa
+        fb = tau_top(wb)
+    for _ in range(200):
+        wm = (wa + wb)/2.
+        if wb - wa <= 1e-15*wm:
+            break
+        fm = tau_top(wm)
+        if fm < 0:
+            wa, fa = wm, fm
+        else:
+            wb, fb = wm, fm
+    return (wa + wb)/2.
+
+
+def _equilibrium_integrals(Lamina ply, gx, gy, double za, double zb):
+    r"""`\int_{z_a}^{z_b}` of the in-plane stress gradients of one ply
+
+    Returns the integrands of `-\tau_{xz}` and `-\tau_{yz}` of
+    :meth:`.Laminate.calc_equilibrium_transverse_shear`, for the gradients
+    ``gx``, ``gy`` with shape ``(npts, 6)``.
+    """
+    c1 = np.array([ply.q11L, ply.q12L, ply.q16L])
+    c2 = np.array([ply.q12L, ply.q22L, ply.q26L])
+    c3 = np.array([ply.q16L, ply.q26L, ply.q66L])
+    d1 = zb - za
+    d2 = (zb*zb - za*za)/2.
+    ix = (d1*(gx[:, :3] @ c1) + d2*(gx[:, 3:] @ c1)
+          + d1*(gy[:, :3] @ c3) + d2*(gy[:, 3:] @ c3))
+    iy = (d1*(gy[:, :3] @ c2) + d2*(gy[:, 3:] @ c2)
+          + d1*(gx[:, :3] @ c3) + d2*(gx[:, 3:] @ c3))
+    return ix, iy
+
+
 def _singular_Cs_error(int k, Lamina ply):
     return ValueError('Ply %d (plyid=%d, thetadeg=%g) has a singular '
             'transverse shear constitutive matrix Cs = [[q44L, q45L], '
@@ -437,7 +559,10 @@ cdef class Laminate:
         [\sum_k (C_s^{(k)})^{-1} h_k]^{-1}`, for comparison only. Equal to
         ``nan`` when a ply has a singular `C_s^{(k)}`.
     shear_correction : str or None
-        Method used to obtain ``A44``, ``A45``, ``A55`` from the ply data, see
+        Method used to obtain ``A44``, ``A45``, ``A55`` from the ply data:
+        ``'rohwer'``, ``'vlachoutsis'``, ``'whitney'``, ``'chow'``,
+        ``'birman_bert'``,
+        ``'thickness_shear'``, ``'constant'`` or ``None``, see
         :meth:`.calc_transverse_shear_stiffness`. Default is ``'rohwer'``.
     scf_k13, scf_k23 : float
         Reported shear correction ratios ``A55/Abar55`` and ``A44/Abar44``.
@@ -807,6 +932,54 @@ cdef class Laminate:
           and `C_{22}` of each ply in laminate axes and the direction-wise
           neutral surfaces, being exact only for specially orthotropic plies.
 
+        - ``'whitney'``: the scalar factors of Whitney (1973), Eqs. (3)-(7),
+          extending Chow (1971) to unsymmetric orthotropic laminates in
+          cylindrical bending, with `\sigma_{xx} = -C_{11}(B_{11} - A_{11}z)
+          Q_x/(D_{11}A_{11} - B_{11}^2)`, i.e. the neutral surface `z_n =
+          B_{11}/A_{11}`, and the same energy equivalence. The result is
+          identical to ``'vlachoutsis'``.
+
+        - ``'chow'``: the scalar factors of Chow (1971), Eqs. (11)-(12), with
+          the transverse shear stress of a symmetric laminate obtained from
+          the one-dimensional equilibrium `\tau_{xz} = Q_x g(z)/D_{11}`,
+          `g(z) = -\int_{-h/2}^{z} C_{11} \bar{z} d\bar{z}`, and `k_{13} =
+          D_{11}^2 / (\bar{A}_{55} \int g^2/C_{55} dz)`, analogously for
+          `k_{23}` with `C_{22}`, `D_{22}` and `C_{44}`. The coordinate is
+          measured from the mid-surface and the laminate must be symmetric
+          about it. For symmetric laminates the result is identical to
+          ``'vlachoutsis'``, whose neutral surfaces then coincide with the
+          mid-surface. The factors are applied as in ``'vlachoutsis'``.
+
+        - ``'birman_bert'``: the average shear strain factors of Birman and
+          Bert (2002), Eq. (13) and Appendix B, obtained by equating the
+          thickness integral of the transverse shear strain of the
+          equilibrium distribution with that of the FSDT, `k_{13} = R_1 h /
+          (\bar{A}_{55} \int g_1/C_{55} dz)`, analogously for `k_{23}`. The
+          equilibrium distribution `g_\alpha(z)` and the bending stiffness
+          `R_\alpha` about the direction-wise neutral surface are the same as
+          in ``'vlachoutsis'``, which generalizes Eq. (13), derived for
+          symmetric cross sections, to unsymmetric laminates. It gives `k =
+          1` for a homogeneous plate. The factors are applied as in
+          ``'vlachoutsis'``. Note that the value recommended by Birman and
+          Bert (2002) for sandwich structures, `K = 1` applied to `\bar{A}_{55}
+          = \sum_k C_{55}^{(k)} h_k` (their Eqs. A5-A7), is ``None``.
+
+        - ``'thickness_shear'``: dynamic factors of Yang, Norris and Stavsky
+          (1966), as described by Sun and Whitney (1973), extending the
+          criterion of Mindlin (1951) to laminates, i.e. matching the
+          frequency of the first thickness-shear mode of the FSDT, `\omega^2 =
+          k_{13} \bar{A}_{55} / \bar{I}_2`, with the exact frequency of the
+          laminate, computed with a transfer matrix through the plies for the
+          anti-plane motion `u(z)`, with `\rho^{(k)} \ddot{u} = (C_{55}^{(k)}
+          u_{,z})_{,z}`, traction-free faces and continuity of `u` and
+          `\tau_{xz}` at every interface. The rotatory inertia about the
+          centre of mass, `\bar{I}_2 = I_2 - I_1^2/I_0`, makes the result
+          independent of ``offset``. Analogously for `k_{23}` with `C_{44}`.
+          The coupling `C_{45}` between the two directions is neglected in
+          the eigenproblem, and the factors are applied as in
+          ``'vlachoutsis'``. It gives `k = \pi^2/12` for a homogeneous plate.
+          The ply densities must be positive.
+
         - ``'constant'``: `k = 5/6`, i.e. ``A44 = 5/6*Abar44``, ``A45 =
           5/6*Abar45``, ``A55 = 5/6*Abar55``.
 
@@ -830,13 +1003,38 @@ cdef class Laminate:
             Int. Journal for Numerical Methods in Engineering, Vol. 33,
             1537-1552, 1992.
 
+            Whitney, J. M. "Shear correction factors for orthotropic
+            laminates under static load", Journal of Applied Mechanics, Vol.
+            40, 302-304, 1973.
+
+            Chow, T. S. "On the propagation of flexural waves in an
+            orthotropic laminated plate and its response to an impulsive
+            load", Journal of Composite Materials, Vol. 5, 306-319, 1971.
+
+            Birman, V. and Bert, C. W. "On the choice of shear correction
+            factor in sandwich structures", Journal of Sandwich Structures
+            and Materials, Vol. 4, 83-95, 2002.
+
+            Yang, P. C., Norris, C. H. and Stavsky, Y. "Elastic wave
+            propagation in heterogeneous plates", International Journal of
+            Solids and Structures, Vol. 2, 665-684, 1966.
+
+            Sun, C. T. and Whitney, J. M. "Theories for the dynamic response
+            of laminated plates", AIAA Journal, Vol. 11, 178-183, 1973.
+
+            Mindlin, R. D. "Influence of rotatory inertia and shear on
+            flexural motions of isotropic, elastic plates", Journal of
+            Applied Mechanics, Vol. 18, 31-38, 1951.
+
         Raises
         ------
         ValueError
             If ``shear_correction`` is not recognized; if a ply has a
             singular transverse shear constitutive matrix `C_s^{(k)}`, e.g.
-            ``g13 = 0`` or ``g23 = 0`` (``'rohwer'`` and ``'vlachoutsis'``);
-            or if the ABD matrix of the laminate is singular (``'rohwer'``).
+            ``g13 = 0`` or ``g23 = 0`` (all methods except ``'constant'``
+            and ``None``); if the ABD matrix of the laminate is singular
+            (``'rohwer'``); if the laminate is not symmetric (``'chow'``); or
+            if a ply has a non-positive density (``'thickness_shear'``).
 
         """
         cdef int k, ig, N, alpha, singular_ply
@@ -845,7 +1043,8 @@ cdef class Laminate:
         cdef double f00, f01, f10, f11, g00, g01, g10, g11
         cdef double S00, S01, S11, detS
         cdef double Sbb44, Sbb45, Sbb55
-        cdef double Dk, Gk, num, den, zn, R, d, I, gz, gza, kappa
+        cdef double Dk, Gk, num, den, zn, R, d, I, J, gz, gza, kappa
+        cdef double rhok, I0, I1, I2, I2c, omega
         cdef double k13, k23
         cdef double [:, :, :, ::1] fc
         cdef double [::1] z
@@ -857,10 +1056,10 @@ cdef class Laminate:
         gw[0] = 5./9.; gw[1] = 8./9.; gw[2] = 5./9.
 
         mode = self.shear_correction
-        if not (mode is None or mode in ('rohwer', 'vlachoutsis', 'constant')):
-            raise ValueError("shear_correction must be 'rohwer', "
-                             "'vlachoutsis', 'constant' or None, got %r"
-                             % (mode,))
+        if not (mode is None or mode in _SHEAR_CORRECTIONS):
+            raise ValueError("shear_correction must be one of %s or None, "
+                             "got %r" % (', '.join([repr(m) for m in
+                             _SHEAR_CORRECTIONS]), mode))
 
         self._ts_ready = False
         self.A44 = 0; self.A45 = 0; self.A55 = 0
@@ -956,7 +1155,9 @@ cdef class Laminate:
             self.A45 = -S01/detS
             self.A55 = S00/detS
 
-        elif mode == 'vlachoutsis':
+        elif mode in ('vlachoutsis', 'whitney', 'chow', 'birman_bert'):
+            if mode == 'chow':
+                _check_symmetric(self, z, h)
             k13 = 0; k23 = 0
             for alpha in range(2):
                 # alpha = 0: direction 1 (x), uses C11 and G13 = q55L
@@ -974,10 +1175,16 @@ cdef class Laminate:
                     den += Dk*(zb - za)
                     d += Gk*ply.h
                 if not den > 0:
-                    raise ValueError('Vlachoutsis shear correction factors '
-                                     'require positive in-plane stiffnesses')
-                zn = num/den
-                R = 0; I = 0; gza = 0
+                    raise ValueError('%r shear correction factors require '
+                                     'positive in-plane stiffnesses' % mode)
+                if mode == 'chow':
+                    # NOTE Chow measures z from the mid-surface, which is the
+                    #      neutral surface of a symmetric laminate
+                    zn = self.offset
+                else:
+                    zn = num/den
+                # I = int g^2/G dz (energy), J = int g/G dz (average strain)
+                R = 0; I = 0; J = 0; gza = 0
                 for k in range(N):
                     ply = self.plies[k]
                     Gk = ply.q55L if alpha == 0 else ply.q44L
@@ -991,9 +1198,51 @@ cdef class Laminate:
                         zg = zm + dz*gp[ig]
                         gz = gza - Dk*(0.5*(zg*zg - za*za) - zn*(zg - za))
                         I += gw[ig]*dz*gz*gz/Gk
+                        J += gw[ig]*dz*gz/Gk
                     # g at the top interface of this ply
                     gza = gza - Dk*(0.5*(zb*zb - za*za) - zn*(zb - za))
-                kappa = R*R/(d*I)
+                if mode == 'birman_bert':
+                    kappa = R*h/(d*J)
+                else:
+                    kappa = R*R/(d*I)
+                if alpha == 0:
+                    k13 = kappa
+                else:
+                    k23 = kappa
+            self.A44 = k23*self.Abar44
+            self.A45 = (k13 + k23)/2.*self.Abar45
+            self.A55 = k13*self.Abar55
+
+        elif mode == 'thickness_shear':
+            k13 = 0; k23 = 0
+            for alpha in range(2):
+                Gs = np.zeros(N, dtype=DOUBLE)
+                rhos = np.zeros(N, dtype=DOUBLE)
+                hs = np.zeros(N, dtype=DOUBLE)
+                I0 = 0; I1 = 0; I2 = 0; d = 0
+                for k in range(N):
+                    ply = self.plies[k]
+                    Gk = ply.q55L if alpha == 0 else ply.q44L
+                    if not Gk > 0:
+                        raise _singular_Cs_error(k, ply)
+                    rhok = ply.matlamina.rho
+                    if not rhok > 0:
+                        raise ValueError("Ply %d (plyid=%d) has density "
+                                "rho=%g, 'thickness_shear' requires positive "
+                                "densities" % (k, ply.plyid, rhok))
+                    za = z[k]
+                    zb = z[k+1]
+                    Gs[k] = Gk
+                    rhos[k] = rhok
+                    hs[k] = ply.h
+                    I0 += rhok*(zb - za)
+                    I1 += rhok*(zb*zb - za*za)/2.
+                    I2 += rhok*(zb*zb*zb - za*za*za)/3.
+                    d += Gk*ply.h
+                I2c = I2 - I1*I1/I0
+                omega = _thickness_shear_frequency(Gs, rhos, hs,
+                                                   (d/I2c)**0.5)
+                kappa = omega*omega*I2c/d
                 if alpha == 0:
                     k13 = kappa
                 else:
@@ -1082,6 +1331,162 @@ cdef class Laminate:
               + (fc[k, 0, 0, 1] + z*fc[k, 1, 0, 1] + z*z*fc[k, 2, 0, 1])*Qx,
                 (fc[k, 0, 1, 0] + z*fc[k, 1, 1, 0] + z*z*fc[k, 2, 1, 0])*Qy
               + (fc[k, 0, 1, 1] + z*fc[k, 1, 1, 1] + z*z*fc[k, 2, 1, 1])*Qx)
+
+
+    def calc_equilibrium_transverse_shear(Laminate self, grad_x, grad_y,
+            z=None):
+        r"""Transverse shear stresses recovered from the actual strain gradients
+
+        Integrates the three-dimensional equilibrium equations from the bottom
+        face, where the tractions vanish, with the in-plane stresses of each
+        ply `\sigma^{(k)} = C^{(k)} (\varepsilon^{(0)} + z\varepsilon^{(1)})`:
+
+        .. math::
+
+            \tau_{xz}(z) = -\int_{z_1}^{z} \left( c_1 \left[
+            \varepsilon^{(0)}_{,x} + \bar{z} \varepsilon^{(1)}_{,x} \right]
+            + c_3 \left[ \varepsilon^{(0)}_{,y} + \bar{z}
+            \varepsilon^{(1)}_{,y} \right] \right) d\bar{z} \\
+            \tau_{yz}(z) = -\int_{z_1}^{z} \left( c_2 \left[
+            \varepsilon^{(0)}_{,y} + \bar{z} \varepsilon^{(1)}_{,y} \right]
+            + c_3 \left[ \varepsilon^{(0)}_{,x} + \bar{z}
+            \varepsilon^{(1)}_{,x} \right] \right) d\bar{z}
+
+        with the gradients of the generalized strains of the actual solution,
+        as in the a posteriori approach of Noor and Peters (1989), instead of
+        the two cylindrical bending states of
+        :meth:`.calc_transverse_shear_stiffness`. The top face is traction
+        free only if the gradients satisfy the in-plane equilibrium of the
+        stress resultants.
+
+        References:
+
+            Noor, A. K. and Peters, J. M. "A posteriori estimates for the
+            shear correction factors in multi-layered composite cylinders",
+            Journal of Engineering Mechanics, Vol. 115, 1225-1244, 1989.
+
+        Parameters
+        ----------
+        grad_x, grad_y : array-like, shape ``(6,)`` or ``(npts, 6)``
+            Derivatives with respect to `x` and `y` of `\{\varepsilon_{xx}^{(0)},
+            \varepsilon_{yy}^{(0)}, \gamma_{xy}^{(0)}, \varepsilon_{xx}^{(1)},
+            \varepsilon_{yy}^{(1)}, \gamma_{xy}^{(1)}\}`, at ``npts`` points.
+        z : array-like or None
+            Heights from the reference surface. If ``None``, the three
+            Gauss-Legendre points of each ply are used.
+
+        Returns
+        -------
+        z, tau_yz, tau_xz : np.ndarray
+            The heights, with shape ``(nz,)``, and the stresses, with shape
+            ``(npts, nz)``.
+
+        """
+        gx = np.atleast_2d(np.asarray(grad_x, dtype=DOUBLE))
+        gy = np.atleast_2d(np.asarray(grad_y, dtype=DOUBLE))
+        zi = self._ply_interfaces()
+        N = len(self.plies)
+        if z is None:
+            xi = np.array([-0.7745966692414834, 0., 0.7745966692414834])
+            z = np.concatenate([(zi[k] + zi[k+1])/2 + (zi[k+1] - zi[k])/2*xi
+                                for k in range(N)])
+        z = np.atleast_1d(np.asarray(z, dtype=DOUBLE))
+        # NOTE no negative indices, the module is compiled with wraparound=False
+        tol = 1e-12*(zi[N] - zi[0])
+        if np.any(z < zi[0] - tol) or np.any(z > zi[N] + tol):
+            raise ValueError('z outside the laminate')
+        acc_x = np.zeros((N + 1, gx.shape[0]))
+        acc_y = np.zeros((N + 1, gx.shape[0]))
+        for k in range(N):
+            ix, iy = _equilibrium_integrals(self.plies[k], gx, gy, zi[k],
+                                            zi[k+1])
+            acc_x[k+1] = acc_x[k] + ix
+            acc_y[k+1] = acc_y[k] + iy
+        k_of_z = np.clip(np.searchsorted(zi, z, side='right') - 1, 0, N - 1)
+        txz = np.zeros((gx.shape[0], z.size))
+        tyz = np.zeros((gx.shape[0], z.size))
+        for j in range(z.size):
+            k = int(k_of_z[j])
+            ix, iy = _equilibrium_integrals(self.plies[k], gx, gy, zi[k],
+                                            z[j])
+            txz[:, j] = -(acc_x[k] + ix)
+            tyz[:, j] = -(acc_y[k] + iy)
+        return z, tyz, txz
+
+
+    def calc_aposteriori_energy(Laminate self, grad_x, grad_y):
+        r"""Transverse shear strain energy of the recovered stresses
+
+        With the stresses of :meth:`.calc_equilibrium_transverse_shear` and
+        the strains `\{\bar\gamma_{yz}, \bar\gamma_{xz}\} = (C_s^{(k)})^{-1}
+        \{\bar\tau_{yz}, \bar\tau_{xz}\}`, the energies per unit area of
+        reference surface of Noor and Peters (1989), Eq. (7):
+
+        .. math::
+
+            \bar{U}_{13} = \int \frac{1}{2} C_{55} \bar\gamma_{xz}^2 dz
+            \qquad
+            \bar{U}_{23} = \int \frac{1}{2} C_{44} \bar\gamma_{yz}^2 dz
+
+        integrated exactly with three Gauss-Legendre points per ply. The
+        a posteriori factors follow by equating their integral over the
+        domain with that of the FSDT, `\frac{1}{2} Q_x^2/\bar{A}_{55}` and
+        `\frac{1}{2} Q_y^2/\bar{A}_{44}`, i.e. Eqs. (8)-(9) of Noor and
+        Peters (1989), with `Q = k^0 \bar{A} \gamma^0` the shear forces of
+        the FSDT.
+
+        References:
+
+            Noor, A. K. and Peters, J. M. "A posteriori estimates for the
+            shear correction factors in multi-layered composite cylinders",
+            Journal of Engineering Mechanics, Vol. 115, 1225-1244, 1989.
+
+        Parameters
+        ----------
+        grad_x, grad_y : array-like
+            See :meth:`.calc_equilibrium_transverse_shear`.
+
+        Returns
+        -------
+        U13, U23, Qy, Qx : np.ndarray
+            The energies and the resultants `\int \bar\tau dz` of the
+            recovered stresses, with shape ``(npts,)``.
+
+        """
+        z, tyz, txz = self.calc_equilibrium_transverse_shear(grad_x, grad_y)
+        zi = self._ply_interfaces()
+        N = len(self.plies)
+        w = np.array([5./9., 8./9., 5./9.])
+        U13 = np.zeros(tyz.shape[0])
+        U23 = np.zeros(tyz.shape[0])
+        Qx = np.zeros(tyz.shape[0])
+        Qy = np.zeros(tyz.shape[0])
+        for k in range(N):
+            ply = self.plies[k]
+            det = ply.q44L*ply.q55L - ply.q45L*ply.q45L
+            if (ply.q44L <= 0 or ply.q55L <= 0
+                    or det <= 1e-12*ply.q44L*ply.q55L):
+                raise _singular_Cs_error(k, ply)
+            half = (zi[k+1] - zi[k])/2.
+            for i in range(3):
+                j = 3*k + i
+                gyz = (ply.q55L*tyz[:, j] - ply.q45L*txz[:, j])/det
+                gxz = (-ply.q45L*tyz[:, j] + ply.q44L*txz[:, j])/det
+                U13 += w[i]*half*0.5*ply.q55L*gxz**2
+                U23 += w[i]*half*0.5*ply.q44L*gyz**2
+                Qx += w[i]*half*txz[:, j]
+                Qy += w[i]*half*tyz[:, j]
+        return U13, U23, Qy, Qx
+
+
+    def _ply_interfaces(Laminate self):
+        r"""Heights `z_1, ..., z_{N+1}` of the ply interfaces"""
+        h = 0.
+        for ply in self.plies:
+            h += ply.h
+        return (-h/2. + self.offset
+                + np.concatenate(([0.], np.cumsum([ply.h for ply in
+                                                   self.plies]))))
 
 
     cpdef void calc_equivalent_properties(Laminate self):
@@ -1524,8 +1929,7 @@ cdef class GradABD:
     the lamination parameters
 
     Attributes
-    ==========
-
+    ----------
     gradAij, gradBij, gradDij, gradAtransij : tuple of 2D np.array objects
         The shapes of these gradient matrices are:
 
@@ -1541,8 +1945,7 @@ cdef class GradABD:
         :func:`.laminate_from_LaminationParameters`. The rows and
         columns correspond to::
 
-            gradAij
-            -------
+            gradAij:
 
                 h xiA1 xiA2 xiA3 xiA4
             A11
@@ -1552,8 +1955,7 @@ cdef class GradABD:
             A26
             A66
 
-            gradBij
-            -------
+            gradBij:
 
                 h xiB1 xiB2 xiB3 xiB4
             B11
@@ -1563,8 +1965,7 @@ cdef class GradABD:
             B26
             B66
 
-            gradDij
-            -------
+            gradDij:
 
                 h xiD1 xiD2 xiD3 xiD4
             D11
@@ -1574,13 +1975,12 @@ cdef class GradABD:
             D26
             D66
 
-            gradAtransij
-            -------
+            gradAtransij:
 
-                h xiAtrans1 xiAtrans2
-            A44
-            A45
-            A55
+                   h xiAtrans1 xiAtrans2
+            Abar44
+            Abar45
+            Abar55
 
     """
     def __init__(GradABD self):

@@ -145,6 +145,9 @@ def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None,
         Method used to compute the transverse shear stiffnesses ``A44``,
         ``A45``, ``A55``, which are returned with the correction already
         applied: ``'rohwer'`` (default, equilibrium approach), ``'vlachoutsis'``,
+        ``'whitney'`` (same as ``'vlachoutsis'``), ``'chow'`` (symmetric
+        laminates), ``'birman_bert'`` (average shear
+        strain), ``'thickness_shear'`` (dynamic, requires ``rho``),
         ``'constant'`` (5/6) or ``None`` (no correction). See
         :meth:`.Laminate.calc_transverse_shear_stiffness`.
 
@@ -226,8 +229,10 @@ def isotropic_plate(thickness, E, nu, offset=0., calc_scf=None, rho=0.,
         mapped to ``shear_correction='rohwer'`` and ``False`` to
         ``shear_correction=None``, overriding ``shear_correction``.
     shear_correction : str or None, optional
-        See :func:`.laminated_plate`. For an isotropic plate both ``'rohwer'``
-        and ``'vlachoutsis'`` give ``A44 = A55 = 5/6 G h``.
+        See :func:`.laminated_plate`. For an isotropic plate ``'rohwer'``,
+        ``'vlachoutsis'`` and ``'chow'`` give ``A44 = A55 = 5/6 G h``,
+        ``'birman_bert'`` gives ``G h`` and ``'thickness_shear'`` gives
+        ``pi^2/12 G h``, the latter requiring ``rho > 0``.
 
     """
     shear_correction = _shear_correction_from_calc_scf(calc_scf,

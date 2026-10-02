@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.9.12 (2026-10-02)
+
+### New shear correction methods
+
+Four values of `shear_correction` were added to
+`Laminate.calc_transverse_shear_stiffness()`, `laminated_plate` and
+`isotropic_plate`. All of them return scalar factors, applied as for
+`'vlachoutsis'`: `A55 = k13*Abar55`, `A44 = k23*Abar44` and
+`A45 = (k13 + k23)/2*Abar45`.
+
+- `'whitney'`: Whitney (1973), Eqs. (3)-(7), extension of Chow (1971) to
+  unsymmetric orthotropic laminates, identical to `'vlachoutsis'`; it
+  reproduces the factors printed by Whitney (1973).
+- `'chow'`: Chow (1971), Eqs. (11)-(12), energy equivalence with the
+  one-dimensional equilibrium distribution of a symmetric laminate. It raises
+  `ValueError` for unsymmetric laminates, and it is identical to
+  `'vlachoutsis'` for symmetric ones.
+- `'birman_bert'`: average shear strain factor of Birman and Bert (2002),
+  Eq. (13), generalized to unsymmetric laminates with the direction-wise
+  neutral surface of `'vlachoutsis'`. It gives 1 for a homogeneous plate.
+- `'thickness_shear'`: dynamic factor of Yang, Norris and Stavsky (1966),
+  extending the criterion of Mindlin (1951) to laminates: the frequency of the first thickness-shear mode of the
+  FSDT is matched with the exact one of the laminate, computed with a
+  transfer matrix through the plies. It gives `pi^2/12` for a homogeneous
+  plate and requires positive ply densities.
+
+### A posteriori transverse shear stresses and energies
+
+- `Laminate.calc_equilibrium_transverse_shear(grad_x, grad_y, z=None)`: the
+  transverse shear stresses recovered by integrating the 3D equilibrium
+  equations with given gradients of the generalized strains, e.g. those of an
+  FSDT solution, as in the a posteriori approach of Noor and Peters (1989).
+- `Laminate.calc_aposteriori_energy(grad_x, grad_y)`: the transverse shear
+  strain energies of the recovered stresses per direction, and their
+  resultants, for the energy equivalence of Noor and Peters (1989),
+  Eqs. (8)-(9).
+
 ## 0.9.2 (2026-09-25)
 
 ### Breaking: transverse shear stiffness now includes the shear correction
