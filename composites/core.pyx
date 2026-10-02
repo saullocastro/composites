@@ -1391,8 +1391,9 @@ cdef class Laminate:
             z = np.concatenate([(zi[k] + zi[k+1])/2 + (zi[k+1] - zi[k])/2*xi
                                 for k in range(N)])
         z = np.atleast_1d(np.asarray(z, dtype=DOUBLE))
-        tol = 1e-12*(zi[-1] - zi[0])
-        if np.any(z < zi[0] - tol) or np.any(z > zi[-1] + tol):
+        # NOTE no negative indices, the module is compiled with wraparound=False
+        tol = 1e-12*(zi[N] - zi[0])
+        if np.any(z < zi[0] - tol) or np.any(z > zi[N] + tol):
             raise ValueError('z outside the laminate')
         acc_x = np.zeros((N + 1, gx.shape[0]))
         acc_y = np.zeros((N + 1, gx.shape[0]))
