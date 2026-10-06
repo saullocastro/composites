@@ -12,7 +12,7 @@ cdef class LaminationParameters:
     cdef public double xiA1, xiA2, xiA3, xiA4
     cdef public double xiB1, xiB2, xiB3, xiB4
     cdef public double xiD1, xiD2, xiD3, xiD4
-    cdef public double xiAtrans1, xiAtrans2
+    cdef public double xiAts1, xiAts2
 
 
 cdef class MatLamina:
@@ -68,9 +68,13 @@ cdef class Laminate:
     cdef double [:, ::1] get_F(Laminate)
     cdef double [:, ::1] get_H(Laminate)
     cdef double [:, ::1] get_Ats(Laminate)
+    # NOTE deprecated, use get_Ats
     cdef double [:, ::1] get_Atrans(Laminate)
     cdef double [:, ::1] get_Abar_ts(Laminate)
     cdef double [:, ::1] get_Abarbar_ts(Laminate)
+    cdef double [:, ::1] get_Dts(Laminate)
+    cdef double [:, ::1] get_Fts(Laminate)
+    # NOTE deprecated, use get_Dts and get_Fts
     cdef double [:, ::1] get_Dtrans(Laminate)
     cdef double [:, ::1] get_Ftrans(Laminate)
     cdef double [:, ::1] get_ABD(Laminate)
@@ -91,7 +95,7 @@ cdef class GradABD:
     cdef public double [:, ::1] gradAij
     cdef public double [:, ::1] gradBij
     cdef public double [:, ::1] gradDij
-    cdef public double [:, ::1] gradAtransij
+    cdef public double [:, ::1] gradAtsij
     cpdef void calc_LP_grad(GradABD, double, MatLamina, LaminationParameters)
 
 

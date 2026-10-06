@@ -17,7 +17,7 @@ from composites.core import (MatLamina, Lamina, Laminate,
 
 laminaprop = (142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9)
 LAMINATE_MATRICES = ('A', 'B', 'D', 'E', 'F', 'H', 'ABD', 'Ats', 'Abar_ts',
-                     'Abarbar_ts', 'Dtrans', 'Ftrans')
+                     'Abarbar_ts', 'Dts', 'Fts')
 
 
 def roundtrip(obj):
@@ -27,16 +27,18 @@ def roundtrip(obj):
 def public_attrs(obj):
     """Names of the writable attributes, i.e. the "cdef public" members"""
     names = []
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore', DeprecationWarning)
-        for name, d in vars(type(obj)).items():
-            if not isinstance(d, types.GetSetDescriptorType):
-                continue
+    for name, d in vars(type(obj)).items():
+        if not isinstance(d, types.GetSetDescriptorType):
+            continue
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter('always', DeprecationWarning)
             try:
                 setattr(obj, name, getattr(obj, name))
             except AttributeError:
                 continue
-            names.append(name)
+        if any(issubclass(wi.category, DeprecationWarning) for wi in w):
+            continue # deprecated alias, e.g. xiAtrans1
+        names.append(name)
     return names
 
 
@@ -167,7 +169,7 @@ def test_laminate_subclass():
 
 
 def assert_same_gradabd(a, b):
-    for name in ('gradAij', 'gradBij', 'gradDij', 'gradAtransij'):
+    for name in ('gradAij', 'gradBij', 'gradDij', 'gradAtsij'):
         np.testing.assert_array_equal(getattr(a, name), getattr(b, name))
 
 
@@ -185,3 +187,17 @@ def test_gradabd():
     grad2.calc_LP_grad(lam.h, lam.plies[0].matlamina,
                        lam.calc_lamination_parameters())
     assert_same_gradabd(grad, grad2)
+
+
+def test_gradabd_new():
+    # created without __init__, as by copyreg.__newobj__ when unpickling
+    grad = GradABD.__new__(GradABD)
+    assert_same_gradabd(GradABD(), grad)
+    assert_same_gradabd(grad, roundtrip(grad))
+
+
+def test_gradabd_old_state():
+    # state pickled before 'gradAtransij' became 'gradAtsij'
+    grad = GradABD.__new__(GradABD)
+    grad.__setstate__({'gradAtransij': np.ones((3, 3))})
+    np.testing.assert_array_equal(grad.gradAtsij, np.ones((3, 3)))

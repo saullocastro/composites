@@ -1,5 +1,74 @@
 # Changelog
 
+## 0.9.12 (2026-10-02)
+
+### New shear correction methods
+
+Four values of `shear_correction` were added to
+`Laminate.calc_transverse_shear_stiffness()`, `laminated_plate` and
+`isotropic_plate`. All of them return scalar factors, applied as for
+`'vlachoutsis'`: `A55 = k13*Abar55`, `A44 = k23*Abar44` and
+`A45 = (k13 + k23)/2*Abar45`.
+
+- `'whitney'`: Whitney (1973), Eqs. (3)-(7), extension of Chow (1971) to
+  unsymmetric orthotropic laminates, identical to `'vlachoutsis'`; it
+  reproduces the factors printed by Whitney (1973).
+- `'chow'`: Chow (1971), Eqs. (11)-(12), energy equivalence with the
+  one-dimensional equilibrium distribution of a symmetric laminate. It raises
+  `ValueError` for unsymmetric laminates, and it is identical to
+  `'vlachoutsis'` for symmetric ones.
+- `'birman_bert'`: average shear strain factor of Birman and Bert (2002),
+  Eq. (13), generalized to unsymmetric laminates with the direction-wise
+  neutral surface of `'vlachoutsis'`. It gives 1 for a homogeneous plate.
+- `'thickness_shear'`: dynamic factor of Yang, Norris and Stavsky (1966),
+  extending the criterion of Mindlin (1951) to laminates: the frequency of
+  the first thickness-shear mode of the FSDT is matched with the exact one of
+  the laminate, computed with a transfer matrix through the plies. It gives
+  `pi^2/12` for a homogeneous plate and requires positive ply densities.
+
+### A posteriori transverse shear stresses and energies
+
+- `Laminate.calc_equilibrium_transverse_shear(grad_x, grad_y, z=None)`: the
+  transverse shear stresses recovered by integrating the 3D equilibrium
+  equations with given gradients of the generalized strains, e.g. those of an
+  FSDT solution, as in the a posteriori approach of Noor and Peters (1989).
+- `Laminate.calc_aposteriori_energy(grad_x, grad_y)`: the transverse shear
+  strain energies of the recovered stresses per direction, and their
+  resultants, for the energy equivalence of Noor and Peters (1989),
+  Eqs. (8)-(9).
+
+### Fixes
+
+- All `shear_correction` methods, `calc_transverse_shear_stress` and the a
+  posteriori helpers are evaluated with the heights measured from the
+  mid-surface. The results, which do not depend on `offset`, are now identical
+  for any `offset`; before, the round-off grew with `(offset/h)^2`, e.g. a
+  relative error of 2e-3 in `Ats` of `'rohwer'` for `offset/h = 1e4`, and
+  wrong values without any error for larger offsets.
+- `calc_equilibrium_transverse_shear` raised `IndexError` on Linux with
+  Python 3.12 (negative index with `wraparound=False`).
+- Pickling a `GradABD` created without `__init__`, e.g. by `__new__`, crashed
+  with a segmentation fault; its arrays are now allocated in `__cinit__`.
+
+### Deprecated
+
+The remaining `Atrans` names were renamed to `Ats`, and `Dtrans`, `Ftrans`
+to `Dts`, `Fts`. The old names still work, but they emit a
+`DeprecationWarning`:
+
+- `Laminate.Dtrans`, `Laminate.Ftrans`: use `Laminate.Dts`, `Laminate.Fts`.
+- `LaminationParameters.xiAtrans1`, `xiAtrans2`: use `xiAts1`, `xiAts2`.
+- The `xiAtrans1`, `xiAtrans2` arguments of
+  `laminate_from_lamination_parameters`: use `xiAts1`, `xiAts2`.
+- `GradABD.gradAtransij`: use `gradAtsij`. Pickles that contain
+  `gradAtransij` still load.
+- `Laminate.get_Atrans()`, `get_Dtrans()`, `get_Ftrans()` (`cdef`): use
+  `get_Ats()`, `get_Dts()`, `get_Fts()`.
+
+Packages that `cimport composites` and access `xiAtrans1`, `xiAtrans2` or
+`gradAtransij` from Cython must switch to the new names and be recompiled.
+Pickled `LaminationParameters` objects from older versions cannot be loaded.
+
 ## 0.9.2 (2026-09-25)
 
 ### Breaking: transverse shear stiffness now includes the shear correction
