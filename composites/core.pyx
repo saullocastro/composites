@@ -31,15 +31,45 @@ cdef class LaminationParameters:
         Lamination parameters `\xi_{Bi}` (in-plane coupling with bending)
     xiD1, xiD2, xiD3, xiD4 : float
         Lamination parameters `\xi_{Di}` (bending)
-    xiAtrans1, xiAtrans2 : float
-        Lamination parameters `\xi_{{A_{trans}}i}` (transverse shear)
+    xiAts1, xiAts2 : float
+        Lamination parameters `\xi_{{A_{ts}}i}` (transverse shear)
 
     """
     def __init__(LaminationParameters self):
         self.xiA1=0; self.xiA2=0; self.xiA3=0; self.xiA4=0
         self.xiB1=0; self.xiB2=0; self.xiB3=0; self.xiB4=0
         self.xiD1=0; self.xiD2=0; self.xiD3=0; self.xiD4=0
-        self.xiAtrans1=0; self.xiAtrans2=0
+        self.xiAts1=0; self.xiAts2=0
+
+    @property
+    def xiAtrans1(self):
+        r"""Deprecated, use :attr:`.xiAts1` instead"""
+        _warn_deprecated('LaminationParameters.xiAtrans1',
+                     'LaminationParameters.xiAts1')
+        return self.xiAts1
+    @xiAtrans1.setter
+    def xiAtrans1(self, double value):
+        _warn_deprecated('LaminationParameters.xiAtrans1',
+                     'LaminationParameters.xiAts1')
+        self.xiAts1 = value
+    @property
+    def xiAtrans2(self):
+        r"""Deprecated, use :attr:`.xiAts2` instead"""
+        _warn_deprecated('LaminationParameters.xiAtrans2',
+                     'LaminationParameters.xiAts2')
+        return self.xiAts2
+    @xiAtrans2.setter
+    def xiAtrans2(self, double value):
+        _warn_deprecated('LaminationParameters.xiAtrans2',
+                     'LaminationParameters.xiAts2')
+        self.xiAts2 = value
+
+
+def _warn_deprecated(old, new):
+    # NOTE stacklevel=1 since the compiled functions add no Python frames,
+    #      pointing to the line of the caller
+    warnings.warn("'%s' is deprecated, use '%s' instead" % (old, new),
+                  DeprecationWarning, stacklevel=1)
 
 
 cdef class MatLamina:
@@ -393,21 +423,21 @@ _SHEAR_CORRECTIONS = ('rohwer', 'vlachoutsis', 'whitney', 'chow',
 def _check_symmetric(Laminate lam, double[::1] z, double h):
     r"""Raise if the laminate is not symmetric about its mid-surface
 
-    Checks the extension-bending coupling about the mid-surface, `B_{ij} -
-    offset A_{ij}`, computed from the plies, against `h \max|A_{ij}|`.
+    Checks the extension-bending coupling about the mid-surface, computed
+    from the plies with the interfaces ``z`` measured from the mid-surface,
+    against `h \max|A_{ij}|`.
 
     """
     cdef int k, N
-    cdef double za, zb, off
+    cdef double za, zb
     cdef Lamina ply
     N = <int>len(lam.plies)
-    off = lam.offset
     Amax = 0.
     Bmid = np.zeros(6, dtype=DOUBLE)
     for k in range(N):
         ply = lam.plies[k]
-        za = z[k] - off
-        zb = z[k+1] - off
+        za = z[k]
+        zb = z[k+1]
         q = np.array([ply.q11L, ply.q12L, ply.q16L, ply.q22L, ply.q26L,
                       ply.q66L])
         Bmid += q*(zb*zb - za*za)/2.
@@ -552,7 +582,7 @@ cdef class Laminate:
     Abar44, Abar45, Abar55 : float
         Constant-strain (uncorrected) transverse shear stiffnesses
         `\bar{A}_{ts} = \sum_k C_s^{(k)} h_k`. These are the terms to be used
-        together with ``Dtrans`` and ``Ftrans`` in the third-order shear
+        together with ``Dts`` and ``Fts`` in the third-order shear
         deformation theory (TSDT), which needs no shear correction.
     Abarbar44, Abarbar45, Abarbar55 : float
         Constant-stress transverse shear stiffnesses `\bar{\bar{A}}_{ts} = h^2
@@ -642,7 +672,8 @@ cdef class Laminate:
         return np.array([[self.A44, self.A45],
                          [self.A45, self.A55]], dtype=DOUBLE)
     cdef double [:, ::1] get_Atrans(Laminate self):
-        # NOTE kept for cimporting packages, same as get_Ats
+        # NOTE deprecated, kept for cimporting packages, same as get_Ats
+        _warn_deprecated('Laminate.get_Atrans', 'Laminate.get_Ats')
         return self.get_Ats()
     cdef double [:, ::1] get_Abar_ts(Laminate self):
         return np.array([[self.Abar44, self.Abar45],
@@ -650,12 +681,20 @@ cdef class Laminate:
     cdef double [:, ::1] get_Abarbar_ts(Laminate self):
         return np.array([[self.Abarbar44, self.Abarbar45],
                          [self.Abarbar45, self.Abarbar55]], dtype=DOUBLE)
-    cdef double [:, ::1] get_Dtrans(Laminate self):
+    cdef double [:, ::1] get_Dts(Laminate self):
         return np.array([[self.D44, self.D45],
                          [self.D45, self.D55]], dtype=DOUBLE)
-    cdef double [:, ::1] get_Ftrans(Laminate self):
+    cdef double [:, ::1] get_Fts(Laminate self):
         return np.array([[self.F44, self.F45],
                          [self.F45, self.F55]], dtype=DOUBLE)
+    cdef double [:, ::1] get_Dtrans(Laminate self):
+        # NOTE deprecated, kept for cimporting packages, same as get_Dts
+        _warn_deprecated('Laminate.get_Dtrans', 'Laminate.get_Dts')
+        return self.get_Dts()
+    cdef double [:, ::1] get_Ftrans(Laminate self):
+        # NOTE deprecated, kept for cimporting packages, same as get_Fts
+        _warn_deprecated('Laminate.get_Ftrans', 'Laminate.get_Fts')
+        return self.get_Fts()
     cdef double [:, ::1] get_ABD(Laminate self):
         return np.array([[self.A11, self.A12, self.A16, self.B11, self.B12, self.B16],
                          [self.A12, self.A22, self.A26, self.B12, self.B22, self.B26],
@@ -700,14 +739,14 @@ cdef class Laminate:
         """
         warnings.warn("'Laminate.Atrans' is deprecated, use 'Laminate.Ats' "
                       "instead, which contains the shear correction",
-                      DeprecationWarning, stacklevel=2)
+                      DeprecationWarning, stacklevel=1)
         return np.asarray(self.get_Ats())
     @property
     def Abar_ts(self):
         r"""Constant-strain ``[[Abar44, Abar45], [Abar45, Abar55]]``
 
-        Uncorrected transverse shear stiffness, to be used with ``Dtrans`` and
-        ``Ftrans`` in the third-order shear deformation theory (TSDT).
+        Uncorrected transverse shear stiffness, to be used with ``Dts`` and
+        ``Fts`` in the third-order shear deformation theory (TSDT).
 
         """
         return np.asarray(self.get_Abar_ts())
@@ -716,11 +755,23 @@ cdef class Laminate:
         r"""Constant-stress ``[[Abarbar44, Abarbar45], [Abarbar45, Abarbar55]]``"""
         return np.asarray(self.get_Abarbar_ts())
     @property
+    def Dts(self):
+        r"""TSDT transverse shear stiffness ``[[D44, D45], [D45, D55]]``"""
+        return np.asarray(self.get_Dts())
+    @property
+    def Fts(self):
+        r"""TSDT transverse shear stiffness ``[[F44, F45], [F45, F55]]``"""
+        return np.asarray(self.get_Fts())
+    @property
     def Dtrans(self):
-        return np.asarray(self.get_Dtrans())
+        r"""Deprecated, use :attr:`.Dts` instead"""
+        _warn_deprecated('Laminate.Dtrans', 'Laminate.Dts')
+        return np.asarray(self.get_Dts())
     @property
     def Ftrans(self):
-        return np.asarray(self.get_Ftrans())
+        r"""Deprecated, use :attr:`.Fts` instead"""
+        _warn_deprecated('Laminate.Ftrans', 'Laminate.Fts')
+        return np.asarray(self.get_Fts())
     @property
     def ABD(self):
         return np.asarray(self.get_ABD())
@@ -750,7 +801,7 @@ cdef class Laminate:
                       "shear stiffness is computed by "
                       "'calc_transverse_shear_stiffness', called by "
                       "'calc_constitutive_matrix'", DeprecationWarning,
-                      stacklevel=2)
+                      stacklevel=1)
         if self.shear_correction is None:
             self.shear_correction = 'rohwer'
         self.calc_transverse_shear_stiffness()
@@ -761,9 +812,15 @@ cdef class Laminate:
         r"""Coefficients of the distribution matrix `f^{(k)}(z)` (Rohwer, 1988)
 
         For each ply `k`, stores the 2x2 matrices `F_0`, `F_1`, `F_2` in
-        ``_ts_fcoef[k, 0:3]``, such that `f^{(k)}(z) = F_0 + z F_1 + z^2 F_2`
-        and `\{\tau_{yz}, \tau_{xz}\}^T = f^{(k)}(z) \{Q_y, Q_x\}^T`. The ply
-        interfaces are stored in ``_ts_z``.
+        ``_ts_fcoef[k, 0:3]``, such that `f^{(k)}(\bar{z}) = F_0 + \bar{z} F_1
+        + \bar{z}^2 F_2` and `\{\tau_{yz}, \tau_{xz}\}^T = f^{(k)}(\bar{z})
+        \{Q_y, Q_x\}^T`, with `\bar{z} = z - offset` measured from the
+        mid-surface. The ply interfaces, also measured from the mid-surface,
+        are stored in ``_ts_z``.
+
+        The distribution does not depend on the reference surface, and
+        measuring from the mid-surface avoids the round-off of the ABD terms
+        and of the polynomials for large values of ``offset``.
 
         The ABD matrix is recomputed from the plies, such that the
         distribution is consistent with them even if the laminate stiffness
@@ -788,9 +845,9 @@ cdef class Laminate:
         for ply in self.plies:
             h += ply.h
         z = np.zeros(N + 1, dtype=DOUBLE)
-        z[0] = -h/2. + self.offset
+        z[0] = -h/2.
 
-        # ABD = [[A, B], [B, D]] from the plies
+        # ABD = [[A, B], [B, D]] about the mid-surface, from the plies
         ABD = np.zeros((6, 6), dtype=DOUBLE)
         for k in range(N):
             ply = self.plies[k]
@@ -900,6 +957,9 @@ cdef class Laminate:
         reference surface, with the plies running from `z_1 = -h/2 +
         offset` to `z_{N+1} = +h/2 + offset`, and `C_s^{(k)} = [[q_{44L},
         q_{45L}], [q_{45L}, q_{55L}]]`, which is in general a full matrix.
+        None of the methods depends on ``offset``, and all of them are
+        evaluated with `z` measured from the mid-surface, which avoids the
+        round-off of large values of ``offset``.
 
         The method is selected by the attribute ``shear_correction``:
 
@@ -1090,8 +1150,10 @@ cdef class Laminate:
                 Sbb44 += ply.q55L/det*ply.h
                 Sbb45 += -ply.q45L/det*ply.h
                 Sbb55 += ply.q44L/det*ply.h
+        # NOTE heights measured from the mid-surface, since none of the
+        #      methods depends on offset, avoiding the round-off of large ones
         for k in range(N + 1):
-            z[k] += -h/2. + self.offset
+            z[k] += -h/2.
         if singular_ply < 0:
             detS = Sbb44*Sbb55 - Sbb45*Sbb45
             self.Abarbar44 = h*h*Sbb55/detS
@@ -1180,7 +1242,7 @@ cdef class Laminate:
                 if mode == 'chow':
                     # NOTE Chow measures z from the mid-surface, which is the
                     #      neutral surface of a symmetric laminate
-                    zn = self.offset
+                    zn = 0.
                 else:
                     zn = num/den
                 # I = int g^2/G dz (energy), J = int g/G dz (average strain)
@@ -1304,33 +1366,35 @@ cdef class Laminate:
 
         """
         cdef int k, lo, hi, mid, N
-        cdef double tol
+        cdef double tol, zm
         cdef double [::1] zi
         cdef double [:, :, :, ::1] fc
 
         if not self._ts_ready:
             self._calc_transverse_shear_distribution()
+        # NOTE the distribution is stored about the mid-surface
         zi = self._ts_z
         fc = self._ts_fcoef
+        zm = z - self.offset
         N = <int>zi.shape[0] - 1
         tol = 1e-12*(zi[N] - zi[0])
-        if not (zi[0] - tol <= z <= zi[N] + tol):
+        if not (zi[0] - tol <= zm <= zi[N] + tol):
             raise ValueError('z=%g is outside the laminate, [%g, %g]'
-                             % (z, zi[0], zi[N]))
-        # last ply k with zi[k] <= z
+                             % (z, zi[0] + self.offset, zi[N] + self.offset))
+        # last ply k with zi[k] <= zm
         lo = 0
         hi = N - 1
         while lo < hi:
             mid = (lo + hi + 1)//2
-            if zi[mid] <= z:
+            if zi[mid] <= zm:
                 lo = mid
             else:
                 hi = mid - 1
         k = lo
-        return ((fc[k, 0, 0, 0] + z*fc[k, 1, 0, 0] + z*z*fc[k, 2, 0, 0])*Qy
-              + (fc[k, 0, 0, 1] + z*fc[k, 1, 0, 1] + z*z*fc[k, 2, 0, 1])*Qx,
-                (fc[k, 0, 1, 0] + z*fc[k, 1, 1, 0] + z*z*fc[k, 2, 1, 0])*Qy
-              + (fc[k, 0, 1, 1] + z*fc[k, 1, 1, 1] + z*z*fc[k, 2, 1, 1])*Qx)
+        return ((fc[k, 0, 0, 0] + zm*fc[k, 1, 0, 0] + zm*zm*fc[k, 2, 0, 0])*Qy
+              + (fc[k, 0, 0, 1] + zm*fc[k, 1, 0, 1] + zm*zm*fc[k, 2, 0, 1])*Qx,
+                (fc[k, 0, 1, 0] + zm*fc[k, 1, 1, 0] + zm*zm*fc[k, 2, 1, 0])*Qy
+              + (fc[k, 0, 1, 1] + zm*fc[k, 1, 1, 1] + zm*zm*fc[k, 2, 1, 1])*Qx)
 
 
     def calc_equilibrium_transverse_shear(Laminate self, grad_x, grad_y,
@@ -1384,16 +1448,24 @@ cdef class Laminate:
         """
         gx = np.atleast_2d(np.asarray(grad_x, dtype=DOUBLE))
         gy = np.atleast_2d(np.asarray(grad_y, dtype=DOUBLE))
+        # NOTE integrated about the mid-surface, avoiding the round-off of
+        #      large offsets: eps0 + z eps1 = (eps0 + offset eps1) + zm eps1
+        off = self.offset
+        gx = np.hstack((gx[:, :3] + off*gx[:, 3:], gx[:, 3:]))
+        gy = np.hstack((gy[:, :3] + off*gy[:, 3:], gy[:, 3:]))
         zi = self._ply_interfaces()
         N = len(self.plies)
         if z is None:
             xi = np.array([-0.7745966692414834, 0., 0.7745966692414834])
-            z = np.concatenate([(zi[k] + zi[k+1])/2 + (zi[k+1] - zi[k])/2*xi
-                                for k in range(N)])
-        z = np.atleast_1d(np.asarray(z, dtype=DOUBLE))
+            zm = np.concatenate([(zi[k] + zi[k+1])/2 + (zi[k+1] - zi[k])/2*xi
+                                 for k in range(N)])
+            z = zm + off
+        else:
+            z = np.atleast_1d(np.asarray(z, dtype=DOUBLE))
+            zm = z - off
         # NOTE no negative indices, the module is compiled with wraparound=False
         tol = 1e-12*(zi[N] - zi[0])
-        if np.any(z < zi[0] - tol) or np.any(z > zi[N] + tol):
+        if np.any(zm < zi[0] - tol) or np.any(zm > zi[N] + tol):
             raise ValueError('z outside the laminate')
         acc_x = np.zeros((N + 1, gx.shape[0]))
         acc_y = np.zeros((N + 1, gx.shape[0]))
@@ -1402,13 +1474,13 @@ cdef class Laminate:
                                             zi[k+1])
             acc_x[k+1] = acc_x[k] + ix
             acc_y[k+1] = acc_y[k] + iy
-        k_of_z = np.clip(np.searchsorted(zi, z, side='right') - 1, 0, N - 1)
+        k_of_z = np.clip(np.searchsorted(zi, zm, side='right') - 1, 0, N - 1)
         txz = np.zeros((gx.shape[0], z.size))
         tyz = np.zeros((gx.shape[0], z.size))
         for j in range(z.size):
             k = int(k_of_z[j])
             ix, iy = _equilibrium_integrals(self.plies[k], gx, gy, zi[k],
-                                            z[j])
+                                            zm[j])
             txz[:, j] = -(acc_x[k] + ix)
             tyz[:, j] = -(acc_y[k] + iy)
         return z, tyz, txz
@@ -1480,13 +1552,12 @@ cdef class Laminate:
 
 
     def _ply_interfaces(Laminate self):
-        r"""Heights `z_1, ..., z_{N+1}` of the ply interfaces"""
+        r"""Heights of the ply interfaces measured from the mid-surface"""
         h = 0.
         for ply in self.plies:
             h += ply.h
-        return (-h/2. + self.offset
-                + np.concatenate(([0.], np.cumsum([ply.h for ply in
-                                                   self.plies]))))
+        return (-h/2. + np.concatenate(([0.], np.cumsum([ply.h for ply in
+                                                         self.plies]))))
 
 
     cpdef void calc_equivalent_properties(Laminate self):
@@ -1749,8 +1820,8 @@ cdef class Laminate:
             lp.xiD3 += Dfac * ply.cos4t
             lp.xiD4 += Dfac * ply.sin4t
 
-            lp.xiAtrans1 += Efac * ply.cos2t
-            lp.xiAtrans2 += Efac * ply.sin2t
+            lp.xiAts1 += Efac * ply.cos2t
+            lp.xiAts2 += Efac * ply.sin2t
 
         return lp
 
@@ -1853,9 +1924,9 @@ cpdef Laminate laminate_from_LaminationParameters(double thickness, MatLamina
     lam.D26 = lam.h*lam.h*lam.h/12.*(0 + 0*lp.xiD1 + mat.u2/2.*lp.xiD2 + 0*lp.xiD3 + (-1)*mat.u3*lp.xiD4)
     lam.D66 = lam.h*lam.h*lam.h/12.*(mat.u5 + 0*lp.xiD1 + 0*lp.xiD2 + (-1)*mat.u3*lp.xiD3 + 0*lp.xiD4)
 
-    lam.Abar44 = lam.h*(mat.u6 + mat.u7*lp.xiAtrans1 + 0*lp.xiAtrans2)
-    lam.Abar45 = lam.h*(0 + 0*lp.xiAtrans1 + (-1)*mat.u7*lp.xiAtrans2)
-    lam.Abar55 = lam.h*(mat.u6 + (-1)*mat.u7*lp.xiAtrans1 + 0*lp.xiAtrans2)
+    lam.Abar44 = lam.h*(mat.u6 + mat.u7*lp.xiAts1 + 0*lp.xiAts2)
+    lam.Abar45 = lam.h*(0 + 0*lp.xiAts1 + (-1)*mat.u7*lp.xiAts2)
+    lam.Abar55 = lam.h*(mat.u6 + (-1)*mat.u7*lp.xiAts1 + 0*lp.xiAts2)
     # NOTE the through-thickness ply distribution is not known, such that no
     #      shear correction can be computed
     lam.shear_correction = None
@@ -1875,13 +1946,13 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
         matlamina, double xiA1, double xiA2, double xiA3, double xiA4,
         double xiB1, double xiB2, double xiB3, double xiB4,
         double xiD1, double xiD2, double xiD3, double xiD4,
-        double xiAtrans1=0, double xiAtrans2=0):
+        double xiAts1=0, double xiAts2=0, xiAtrans1=None, xiAtrans2=None):
     r"""Return a :class:`.Laminate` object based in the thickness, material and
     lamination parameters
 
-    Note that `\xi_{E1}` and `\xi_{E2}` are optional and usually equal to zero,
-    becoming important only when the transverse shear modulus is different in
-    the two directions, i.e.  when `G_{13} \ne G{23}`.
+    Note that `\xi_{A_{ts}1}` and `\xi_{A_{ts}2}` are optional and usually
+    equal to zero, becoming important only when the transverse shear modulus
+    is different in the two directions, i.e.  when `G_{13} \ne G{23}`.
 
     Parameters
     ----------
@@ -1889,10 +1960,13 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
         The total thickness of the laminate
     matlamina : :class:`.MatLamina` object
         Material object
-    xiAj, xiBj, xiDj, xiEj : float
+    xiAj, xiBj, xiDj, xiAtsj : float
         The 14 lamination parameters according to the first-order shear
         deformation theory: `\xi_{A1} \cdots \xi_{A4}`, `\xi_{B1} \cdots
-        \xi_{B4}`, `\xi_{D1} \cdots \xi_{D4}`, `\xi_{E1}` and `\xi_{E2}`
+        \xi_{B4}`, `\xi_{D1} \cdots \xi_{D4}`, `\xi_{A_{ts}1}` and
+        `\xi_{A_{ts}2}`
+    xiAtrans1, xiAtrans2 : float, optional
+        Deprecated, use ``xiAts1`` and ``xiAts2`` instead.
 
 
     Returns
@@ -1916,12 +1990,18 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
     lp.xiD2 = xiD2
     lp.xiD3 = xiD3
     lp.xiD4 = xiD4
-    lp.xiAtrans1 = xiAtrans1
-    lp.xiAtrans2 = xiAtrans2
+    lp.xiAts1 = xiAts1
+    lp.xiAts2 = xiAts2
+    if xiAtrans1 is not None:
+        _warn_deprecated('xiAtrans1', 'xiAts1')
+        lp.xiAts1 = xiAtrans1
+    if xiAtrans2 is not None:
+        _warn_deprecated('xiAtrans2', 'xiAts2')
+        lp.xiAts2 = xiAtrans2
     return laminate_from_LaminationParameters(thickness, matlamina, lp)
 
 
-_GRADABD_STATE = ('gradAij', 'gradBij', 'gradDij', 'gradAtransij')
+_GRADABD_STATE = ('gradAij', 'gradBij', 'gradDij', 'gradAtsij')
 
 
 cdef class GradABD:
@@ -1930,13 +2010,13 @@ cdef class GradABD:
 
     Attributes
     ----------
-    gradAij, gradBij, gradDij, gradAtransij : tuple of 2D np.array objects
+    gradAij, gradBij, gradDij, gradAtsij : tuple of 2D np.array objects
         The shapes of these gradient matrices are:
 
             gradAij: (6, 5)
             gradBij: (6, 5)
             gradDij: (6, 5)
-            gradAtransij: (3, 3)
+            gradAtsij: (3, 3)
 
         They contain the gradients of each laminate stiffness with respect to
         the thickness and respective lamination parameters. The transverse
@@ -1975,32 +2055,45 @@ cdef class GradABD:
             D26
             D66
 
-            gradAtransij:
+            gradAtsij:
 
-                   h xiAtrans1 xiAtrans2
+                   h xiAts1 xiAts2
             Abar44
             Abar45
             Abar55
 
     """
-    def __init__(GradABD self):
+    def __cinit__(GradABD self):
+        # NOTE in __cinit__, such that the memoryviews are also initialized
+        #      when the object is created by __new__, e.g. when unpickling,
+        #      since the module is compiled with initializedcheck=False
         self.gradAij = np.zeros((6, 5), dtype=DOUBLE)
         self.gradBij = np.zeros((6, 5), dtype=DOUBLE)
         self.gradDij = np.zeros((6, 5), dtype=DOUBLE)
-        self.gradAtransij = np.zeros((3, 3), dtype=DOUBLE)
+        self.gradAtsij = np.zeros((3, 3), dtype=DOUBLE)
 
     def __reduce__(GradABD self):
         state = {}
         for name in _GRADABD_STATE:
-            try:
-                state[name] = np.asarray(getattr(self, name)).copy()
-            except AttributeError: # memoryview not initialized
-                pass
+            state[name] = np.asarray(getattr(self, name)).copy()
         return copyreg.__newobj__, (type(self), ), state
 
     def __setstate__(GradABD self, dict state):
         for name, value in state.items():
+            # NOTE pickles created before 'gradAtransij' became 'gradAtsij'
+            if name == 'gradAtransij':
+                name = 'gradAtsij'
             setattr(self, name, np.ascontiguousarray(value, dtype=DOUBLE))
+
+    @property
+    def gradAtransij(self):
+        r"""Deprecated, use :attr:`.gradAtsij` instead"""
+        _warn_deprecated('GradABD.gradAtransij', 'GradABD.gradAtsij')
+        return self.gradAtsij
+    @gradAtransij.setter
+    def gradAtransij(self, value):
+        _warn_deprecated('GradABD.gradAtransij', 'GradABD.gradAtsij')
+        self.gradAtsij = value
 
     cpdef void calc_LP_grad(GradABD self, double thickness, MatLamina mat, LaminationParameters lp):
         r"""Gradients of the shell stiffnesses with respect to the thickness and
@@ -2074,14 +2167,14 @@ cdef class GradABD:
                 self.gradDij[i, j+1] = h*h*h/12.*gradinv[i, j]
 
         # d(A44, A45, A55) / dh
-        self.gradAtransij[0, 0] = (mat.u6 + mat.u7*lp.xiAtrans1 + 0*lp.xiAtrans2)
-        self.gradAtransij[1, 0] = (0 + 0*lp.xiAtrans1 + (-1)*mat.u7*lp.xiAtrans2)
-        self.gradAtransij[2, 0] = (mat.u6 + (-1)*mat.u7*lp.xiAtrans1 + 0*lp.xiAtrans2)
+        self.gradAtsij[0, 0] = (mat.u6 + mat.u7*lp.xiAts1 + 0*lp.xiAts2)
+        self.gradAtsij[1, 0] = (0 + 0*lp.xiAts1 + (-1)*mat.u7*lp.xiAts2)
+        self.gradAtsij[2, 0] = (mat.u6 + (-1)*mat.u7*lp.xiAts1 + 0*lp.xiAts2)
 
-        # d(A44, A45, A55) / d(xiAtrans1, xiAtrans2)
-        self.gradAtransij[0, 1] = h*mat.u7
-        self.gradAtransij[1, 2] = h*(-mat.u7)
-        self.gradAtransij[2, 1] = h*(-mat.u7)
+        # d(A44, A45, A55) / d(xiAts1, xiAts2)
+        self.gradAtsij[0, 1] = h*mat.u7
+        self.gradAtsij[1, 2] = h*(-mat.u7)
+        self.gradAtsij[2, 1] = h*(-mat.u7)
 
 
 cpdef Laminate n_double_laminate(double thickness, int n, double[::1] angles_deg, MatLamina matlamina):
