@@ -21,10 +21,10 @@ Four values of `shear_correction` were added to
   Eq. (13), generalized to unsymmetric laminates with the direction-wise
   neutral surface of `'vlachoutsis'`. It gives 1 for a homogeneous plate.
 - `'thickness_shear'`: dynamic factor of Yang, Norris and Stavsky (1966),
-  extending the criterion of Mindlin (1951) to laminates: the frequency of the first thickness-shear mode of the
-  FSDT is matched with the exact one of the laminate, computed with a
-  transfer matrix through the plies. It gives `pi^2/12` for a homogeneous
-  plate and requires positive ply densities.
+  extending the criterion of Mindlin (1951) to laminates: the frequency of
+  the first thickness-shear mode of the FSDT is matched with the exact one of
+  the laminate, computed with a transfer matrix through the plies. It gives
+  `pi^2/12` for a homogeneous plate and requires positive ply densities.
 
 ### A posteriori transverse shear stresses and energies
 

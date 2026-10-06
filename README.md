@@ -73,7 +73,7 @@ History
 - version 0.7.0 onwards: added Kassapoglou's module
 - version 0.8.0 onwards: support for Third-order Shear Deformation Theory (TSDT)
 - version 0.9.1 onwards: A44, A45, A55 with the shear correction already applied (Rohwer, 1988), transverse shear stress recovery, picklable Laminate and GradABD, improved Cython and compiler flags (0.9.2), see CHANGELOG.md
-- version 0.9.12 onwards: shear correction methods of Whitney (1973), Chow (1971), Birman and Bert (2002) and Yang, Norris and Stavsky (1966), a posteriori transverse shear stresses and energies (Noor and Peters, 1989), see CHANGELOG.md
+- version 0.9.12 onwards: shear correction methods of Whitney (1973), Chow (1971), Birman and Bert (2002) and Yang, Norris and Stavsky (1966), a posteriori transverse shear stresses and energies (Noor and Peters, 1989), Atrans, Dtrans and Ftrans deprecated in favour of Ats, Dts and Fts, see CHANGELOG.md
 
 
 License

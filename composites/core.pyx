@@ -45,23 +45,23 @@ cdef class LaminationParameters:
     def xiAtrans1(self):
         r"""Deprecated, use :attr:`.xiAts1` instead"""
         _warn_deprecated('LaminationParameters.xiAtrans1',
-                     'LaminationParameters.xiAts1')
+                         'LaminationParameters.xiAts1')
         return self.xiAts1
     @xiAtrans1.setter
     def xiAtrans1(self, double value):
         _warn_deprecated('LaminationParameters.xiAtrans1',
-                     'LaminationParameters.xiAts1')
+                         'LaminationParameters.xiAts1')
         self.xiAts1 = value
     @property
     def xiAtrans2(self):
         r"""Deprecated, use :attr:`.xiAts2` instead"""
         _warn_deprecated('LaminationParameters.xiAtrans2',
-                     'LaminationParameters.xiAts2')
+                         'LaminationParameters.xiAts2')
         return self.xiAts2
     @xiAtrans2.setter
     def xiAtrans2(self, double value):
         _warn_deprecated('LaminationParameters.xiAtrans2',
-                     'LaminationParameters.xiAts2')
+                         'LaminationParameters.xiAts2')
         self.xiAts2 = value
 
 
@@ -591,9 +591,9 @@ cdef class Laminate:
     shear_correction : str or None
         Method used to obtain ``A44``, ``A45``, ``A55`` from the ply data:
         ``'rohwer'``, ``'vlachoutsis'``, ``'whitney'``, ``'chow'``,
-        ``'birman_bert'``,
-        ``'thickness_shear'``, ``'constant'`` or ``None``, see
-        :meth:`.calc_transverse_shear_stiffness`. Default is ``'rohwer'``.
+        ``'birman_bert'``, ``'thickness_shear'``, ``'constant'`` or ``None``,
+        see :meth:`.calc_transverse_shear_stiffness`. Default is
+        ``'rohwer'``.
     scf_k13, scf_k23 : float
         Reported shear correction ratios ``A55/Abar55`` and ``A44/Abar44``.
         They are informative only, the correction is already inside ``A44``,
@@ -1416,9 +1416,11 @@ cdef class Laminate:
             + c_3 \left[ \varepsilon^{(0)}_{,x} + \bar{z}
             \varepsilon^{(1)}_{,x} \right] \right) d\bar{z}
 
-        with the gradients of the generalized strains of the actual solution,
-        as in the a posteriori approach of Noor and Peters (1989), instead of
-        the two cylindrical bending states of
+        where `c_1`, `c_2` and `c_3` are the rows of `C^{(k)}` that give
+        `\sigma_{xx}`, `\sigma_{yy}` and `\tau_{xy}`, respectively, and `z_1`
+        is the bottom face. It uses the gradients of the generalized strains
+        of the actual solution, as in the a posteriori approach of Noor and
+        Peters (1989), instead of the two cylindrical bending states of
         :meth:`.calc_transverse_shear_stiffness`. The top face is traction
         free only if the gradients satisfy the in-plane equilibrium of the
         stress resultants.
