@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>composites API (composites) &#8212; composites 0.9.2 documentation</title>
+    <title>composites API (composites) &#8212; composites 0.9.12 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="_static/documentation_options.js?v=aa3b121e"></script>
+    <script src="_static/documentation_options.js?v=bf4b3093"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -118,7 +118,7 @@
   
   
   
-    <p class="title logo__title">composites 0.9.2 documentation</p>
+    <p class="title logo__title">composites 0.9.12 documentation</p>
   
 </a></div>
     
@@ -344,8 +344,8 @@ perform analysis on laminated composites and isotropic plates.</p>
 classical plate theories or classical laminated plate theories (CLPT), and for
 the first-order shear deformation theory (FSDT) the relevant matrices are the
 A, B, D and Ats. For the third-order shear deformation theory (TSDT) the
-relevant matrices are the A, B, D, E, F, H; and the Abar_ts, Dtrans and Ftrans.
-The matrices Ats, Abar_ts, Dtrans and Ftrans are 2 by 2 matrices containing
+relevant matrices are the A, B, D, E, F, H; and the Abar_ts, Dts and Fts.
+The matrices Ats, Abar_ts, Dts and Fts are 2 by 2 matrices containing
 transverse shear stiffnesses, ordered as <code class="docutils literal notranslate"><span class="pre">[[44,</span> <span class="pre">45],</span> <span class="pre">[45,</span> <span class="pre">55]]</span></code> with index 4
 corresponding to <code class="docutils literal notranslate"><span class="pre">yz</span></code> and index 5 to <code class="docutils literal notranslate"><span class="pre">xz</span></code>. All these matrices are part of
 the <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> object.</p>
@@ -353,7 +353,28 @@ the <a class="reference internal" href="#composites.core.Laminate" title="compos
 correction, computed by default with the equilibrium approach of Rohwer
 (1988), see <a class="reference internal" href="#composites.core.Laminate.calc_transverse_shear_stiffness" title="composites.core.Laminate.calc_transverse_shear_stiffness"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.calc_transverse_shear_stiffness()</span></code></a>, such that no
 shear correction factor should be applied to it. The uncorrected
-constant-strain stiffness, used in the TSDT, is <code class="docutils literal notranslate"><span class="pre">Abar_ts</span></code>.</p>
+constant-strain stiffness, used in the TSDT, is <code class="docutils literal notranslate"><span class="pre">Abar_ts</span></code>. Other methods are
+selected with the argument <code class="docutils literal notranslate"><span class="pre">shear_correction</span></code> of
+<a class="reference internal" href="#composites.utils.laminated_plate" title="composites.utils.laminated_plate"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminated_plate()</span></code></a> and <a class="reference internal" href="#composites.utils.isotropic_plate" title="composites.utils.isotropic_plate"><code class="xref py py-func docutils literal notranslate"><span class="pre">isotropic_plate()</span></code></a>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'rohwer'</span></code> (default): Rohwer (1988), equilibrium of two cylindrical
+bending states, full 2x2 matrix</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>: Vlachoutsis (1992), energy equivalence with
+direction-wise neutral surfaces</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'whitney'</span></code>: Whitney (1973), unsymmetric orthotropic laminates, identical
+to <code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'chow'</span></code>: Chow (1971), symmetric laminates only</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'birman_bert'</span></code>: Birman and Bert (2002), equivalence of the average
+transverse shear strain</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'thickness_shear'</span></code>: Yang, Norris and Stavsky (1966), first
+thickness-shear frequency, requires positive ply densities</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'constant'</span></code>: 5/6</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: no correction</p></li>
+</ul>
+<p>Problem-dependent, a posteriori factors in the sense of Noor and Peters (1989)
+are supported by <a class="reference internal" href="#composites.core.Laminate.calc_equilibrium_transverse_shear" title="composites.core.Laminate.calc_equilibrium_transverse_shear"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.calc_equilibrium_transverse_shear()</span></code></a> and
+<a class="reference internal" href="#composites.core.Laminate.calc_aposteriori_energy" title="composites.core.Laminate.calc_aposteriori_energy"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.calc_aposteriori_energy()</span></code></a>, which recover the transverse shear
+stresses and their energies from the strain gradients of an FSDT solution.</p>
 <p>The implementation of the CLTP, FSDT and TSDT closely follows the notation
 adopted by:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Reddy</span> <span class="n">J</span><span class="o">.</span><span class="n">N</span><span class="o">.</span><span class="p">,</span> <span class="n">Mechanics</span> <span class="n">of</span> <span class="n">laminated</span> <span class="n">composite</span> <span class="n">plates</span> <span class="ow">and</span> <span class="n">shells</span><span class="p">,</span> <span class="n">theory</span> <span class="ow">and</span>
@@ -407,12 +428,12 @@ the lamination parameters</p>
 <dl class="field-list">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>gradAij, gradBij, gradDij, gradAtransij</strong><span class="classifier">tuple of 2D np.array objects</span></dt><dd><p>The shapes of these gradient matrices are:</p>
+<dt><strong>gradAij, gradBij, gradDij, gradAtsij</strong><span class="classifier">tuple of 2D np.array objects</span></dt><dd><p>The shapes of these gradient matrices are:</p>
 <blockquote>
 <div><p>gradAij: (6, 5)
 gradBij: (6, 5)
 gradDij: (6, 5)
-gradAtransij: (3, 3)</p>
+gradAtsij: (3, 3)</p>
 </div></blockquote>
 <p>They contain the gradients of each laminate stiffness with respect to
 the thickness and respective lamination parameters. The transverse
@@ -420,6 +441,44 @@ shear terms are the constant-strain (uncorrected) <code class="docutils literal 
 <code class="docutils literal notranslate"><span class="pre">Abar45</span></code>, <code class="docutils literal notranslate"><span class="pre">Abar55</span></code>, as given by
 <a class="reference internal" href="#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a>. The rows and
 columns correspond to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gradAij</span><span class="p">:</span>
+
+    <span class="n">h</span> <span class="n">xiA1</span> <span class="n">xiA2</span> <span class="n">xiA3</span> <span class="n">xiA4</span>
+<span class="n">A11</span>
+<span class="n">A12</span>
+<span class="n">A16</span>
+<span class="n">A22</span>
+<span class="n">A26</span>
+<span class="n">A66</span>
+
+<span class="n">gradBij</span><span class="p">:</span>
+
+    <span class="n">h</span> <span class="n">xiB1</span> <span class="n">xiB2</span> <span class="n">xiB3</span> <span class="n">xiB4</span>
+<span class="n">B11</span>
+<span class="n">B12</span>
+<span class="n">B16</span>
+<span class="n">B22</span>
+<span class="n">B26</span>
+<span class="n">B66</span>
+
+<span class="n">gradDij</span><span class="p">:</span>
+
+    <span class="n">h</span> <span class="n">xiD1</span> <span class="n">xiD2</span> <span class="n">xiD3</span> <span class="n">xiD4</span>
+<span class="n">D11</span>
+<span class="n">D12</span>
+<span class="n">D16</span>
+<span class="n">D22</span>
+<span class="n">D26</span>
+<span class="n">D66</span>
+
+<span class="n">gradAtsij</span><span class="p">:</span>
+
+       <span class="n">h</span> <span class="n">xiAts1</span> <span class="n">xiAts2</span>
+<span class="n">Abar44</span>
+<span class="n">Abar45</span>
+<span class="n">Abar55</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd>
@@ -456,6 +515,12 @@ lamination parameters</p>
 </dl>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="composites.core.GradABD.gradAtransij">
+<span class="sig-name descname"><span class="pre">gradAtransij</span></span><a class="headerlink" href="#composites.core.GradABD.gradAtransij" title="Link to this definition">#</a></dt>
+<dd><p>Deprecated, use <code class="xref py py-attr docutils literal notranslate"><span class="pre">gradAtsij</span></code> instead</p>
 </dd></dl>
 
 </dd></dl>
@@ -563,15 +628,18 @@ them downstream. See <a class="reference internal" href="#composites.core.Lamina
 </dd>
 <dt><strong>Abar44, Abar45, Abar55</strong><span class="classifier">float</span></dt><dd><p>Constant-strain (uncorrected) transverse shear stiffnesses
 <span class="math notranslate nohighlight">\(\bar{A}_{ts} = \sum_k C_s^{(k)} h_k\)</span>. These are the terms to be used
-together with <code class="docutils literal notranslate"><span class="pre">Dtrans</span></code> and <code class="docutils literal notranslate"><span class="pre">Ftrans</span></code> in the third-order shear
+together with <code class="docutils literal notranslate"><span class="pre">Dts</span></code> and <code class="docutils literal notranslate"><span class="pre">Fts</span></code> in the third-order shear
 deformation theory (TSDT), which needs no shear correction.</p>
 </dd>
 <dt><strong>Abarbar44, Abarbar45, Abarbar55</strong><span class="classifier">float</span></dt><dd><p>Constant-stress transverse shear stiffnesses <span class="math notranslate nohighlight">\(\bar{\bar{A}}_{ts} = h^2
 [\sum_k (C_s^{(k)})^{-1} h_k]^{-1}\)</span>, for comparison only. Equal to
 <code class="docutils literal notranslate"><span class="pre">nan</span></code> when a ply has a singular <span class="math notranslate nohighlight">\(C_s^{(k)}\)</span>.</p>
 </dd>
-<dt><strong>shear_correction</strong><span class="classifier">str or None</span></dt><dd><p>Method used to obtain <code class="docutils literal notranslate"><span class="pre">A44</span></code>, <code class="docutils literal notranslate"><span class="pre">A45</span></code>, <code class="docutils literal notranslate"><span class="pre">A55</span></code> from the ply data, see
-<a class="reference internal" href="#composites.core.Laminate.calc_transverse_shear_stiffness" title="composites.core.Laminate.calc_transverse_shear_stiffness"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_transverse_shear_stiffness()</span></code></a>. Default is <code class="docutils literal notranslate"><span class="pre">'rohwer'</span></code>.</p>
+<dt><strong>shear_correction</strong><span class="classifier">str or None</span></dt><dd><p>Method used to obtain <code class="docutils literal notranslate"><span class="pre">A44</span></code>, <code class="docutils literal notranslate"><span class="pre">A45</span></code>, <code class="docutils literal notranslate"><span class="pre">A55</span></code> from the ply data:
+<code class="docutils literal notranslate"><span class="pre">'rohwer'</span></code>, <code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>, <code class="docutils literal notranslate"><span class="pre">'whitney'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chow'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'birman_bert'</span></code>, <code class="docutils literal notranslate"><span class="pre">'thickness_shear'</span></code>, <code class="docutils literal notranslate"><span class="pre">'constant'</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+see <a class="reference internal" href="#composites.core.Laminate.calc_transverse_shear_stiffness" title="composites.core.Laminate.calc_transverse_shear_stiffness"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_transverse_shear_stiffness()</span></code></a>. Default is
+<code class="docutils literal notranslate"><span class="pre">'rohwer'</span></code>.</p>
 </dd>
 <dt><strong>scf_k13, scf_k23</strong><span class="classifier">float</span></dt><dd><p>Reported shear correction ratios <code class="docutils literal notranslate"><span class="pre">A55/Abar55</span></code> and <code class="docutils literal notranslate"><span class="pre">A44/Abar44</span></code>.
 They are informative only, the correction is already inside <code class="docutils literal notranslate"><span class="pre">A44</span></code>,
@@ -592,8 +660,14 @@ equivalent single layer finite element mass matrices</p>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_constitutive_matrix" title="composites.core.Laminate.calc_constitutive_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_constitutive_matrix</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_aposteriori_energy" title="composites.core.Laminate.calc_aposteriori_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_aposteriori_energy</span></code></a>(grad_x, grad_y)</p></td>
+<td><p>Transverse shear strain energy of the recovered stresses</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_constitutive_matrix" title="composites.core.Laminate.calc_constitutive_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_constitutive_matrix</span></code></a>()</p></td>
 <td><p>Calculate the laminate constitutive terms</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_equilibrium_transverse_shear" title="composites.core.Laminate.calc_equilibrium_transverse_shear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_equilibrium_transverse_shear</span></code></a>(grad_x, grad_y)</p></td>
+<td><p>Transverse shear stresses recovered from the actual strain gradients</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_equivalent_properties" title="composites.core.Laminate.calc_equivalent_properties"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_equivalent_properties</span></code></a>()</p></td>
 <td><p>Calculate the equivalent laminate properties</p></td>
@@ -629,8 +703,8 @@ equivalent single layer finite element mass matrices</p>
 <dt class="sig sig-object py" id="composites.core.Laminate.Abar_ts">
 <span class="sig-name descname"><span class="pre">Abar_ts</span></span><a class="headerlink" href="#composites.core.Laminate.Abar_ts" title="Link to this definition">#</a></dt>
 <dd><p>Constant-strain <code class="docutils literal notranslate"><span class="pre">[[Abar44,</span> <span class="pre">Abar45],</span> <span class="pre">[Abar45,</span> <span class="pre">Abar55]]</span></code></p>
-<p>Uncorrected transverse shear stiffness, to be used with <code class="docutils literal notranslate"><span class="pre">Dtrans</span></code> and
-<code class="docutils literal notranslate"><span class="pre">Ftrans</span></code> in the third-order shear deformation theory (TSDT).</p>
+<p>Uncorrected transverse shear stiffness, to be used with <code class="docutils literal notranslate"><span class="pre">Dts</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Fts</span></code> in the third-order shear deformation theory (TSDT).</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -655,6 +729,71 @@ Q_x\}^T = A_{ts} \{\gamma_{yz}, \gamma_{xz}\}^T\)</span>. The shear correction
 is already applied, see <a class="reference internal" href="#composites.core.Laminate.calc_transverse_shear_stiffness" title="composites.core.Laminate.calc_transverse_shear_stiffness"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_transverse_shear_stiffness()</span></code></a>.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="composites.core.Laminate.Dtrans">
+<span class="sig-name descname"><span class="pre">Dtrans</span></span><a class="headerlink" href="#composites.core.Laminate.Dtrans" title="Link to this definition">#</a></dt>
+<dd><p>Deprecated, use <a class="reference internal" href="#composites.core.Laminate.Dts" title="composites.core.Laminate.Dts"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Dts</span></code></a> instead</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="composites.core.Laminate.Dts">
+<span class="sig-name descname"><span class="pre">Dts</span></span><a class="headerlink" href="#composites.core.Laminate.Dts" title="Link to this definition">#</a></dt>
+<dd><p>TSDT transverse shear stiffness <code class="docutils literal notranslate"><span class="pre">[[D44,</span> <span class="pre">D45],</span> <span class="pre">[D45,</span> <span class="pre">D55]]</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="composites.core.Laminate.Ftrans">
+<span class="sig-name descname"><span class="pre">Ftrans</span></span><a class="headerlink" href="#composites.core.Laminate.Ftrans" title="Link to this definition">#</a></dt>
+<dd><p>Deprecated, use <a class="reference internal" href="#composites.core.Laminate.Fts" title="composites.core.Laminate.Fts"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Fts</span></code></a> instead</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="composites.core.Laminate.Fts">
+<span class="sig-name descname"><span class="pre">Fts</span></span><a class="headerlink" href="#composites.core.Laminate.Fts" title="Link to this definition">#</a></dt>
+<dd><p>TSDT transverse shear stiffness <code class="docutils literal notranslate"><span class="pre">[[F44,</span> <span class="pre">F45],</span> <span class="pre">[F45,</span> <span class="pre">F55]]</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="composites.core.Laminate.calc_aposteriori_energy">
+<span class="sig-name descname"><span class="pre">calc_aposteriori_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grad_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_aposteriori_energy" title="Link to this definition">#</a></dt>
+<dd><p>Transverse shear strain energy of the recovered stresses</p>
+<p>With the stresses of <a class="reference internal" href="#composites.core.Laminate.calc_equilibrium_transverse_shear" title="composites.core.Laminate.calc_equilibrium_transverse_shear"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_equilibrium_transverse_shear()</span></code></a> and
+the strains <span class="math notranslate nohighlight">\(\{\bar\gamma_{yz}, \bar\gamma_{xz}\} = (C_s^{(k)})^{-1}
+\{\bar\tau_{yz}, \bar\tau_{xz}\}\)</span>, the energies per unit area of
+reference surface of Noor and Peters (1989), Eq. (7):</p>
+<div class="math notranslate nohighlight">
+\[\bar{U}_{13} = \int \frac{1}{2} C_{55} \bar\gamma_{xz}^2 dz
+\qquad
+\bar{U}_{23} = \int \frac{1}{2} C_{44} \bar\gamma_{yz}^2 dz\]</div>
+<p>integrated exactly with three Gauss-Legendre points per ply. The
+a posteriori factors follow by equating their integral over the
+domain with that of the FSDT, <span class="math notranslate nohighlight">\(\frac{1}{2} Q_x^2/\bar{A}_{55}\)</span> and
+<span class="math notranslate nohighlight">\(\frac{1}{2} Q_y^2/\bar{A}_{44}\)</span>, i.e. Eqs. (8)-(9) of Noor and
+Peters (1989), with <span class="math notranslate nohighlight">\(Q = k^0 \bar{A} \gamma^0\)</span> the shear forces of
+the FSDT.</p>
+<p>References:</p>
+<blockquote>
+<div><p>Noor, A. K. and Peters, J. M. “A posteriori estimates for the
+shear correction factors in multi-layered composite cylinders”,
+Journal of Engineering Mechanics, Vol. 115, 1225-1244, 1989.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>grad_x, grad_y</strong><span class="classifier">array-like</span></dt><dd><p>See <a class="reference internal" href="#composites.core.Laminate.calc_equilibrium_transverse_shear" title="composites.core.Laminate.calc_equilibrium_transverse_shear"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_equilibrium_transverse_shear()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>U13, U23, Qy, Qx</strong><span class="classifier">np.ndarray</span></dt><dd><p>The energies and the resultants <span class="math notranslate nohighlight">\(\int \bar\tau dz\)</span> of the
+recovered stresses, with shape <code class="docutils literal notranslate"><span class="pre">(npts,)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Laminate.calc_constitutive_matrix">
 <span class="sig-name descname"><span class="pre">calc_constitutive_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_constitutive_matrix" title="Link to this definition">#</a></dt>
@@ -667,6 +806,58 @@ transverse shear terms.</p>
 calculated at the end by <a class="reference internal" href="#composites.core.Laminate.calc_transverse_shear_stiffness" title="composites.core.Laminate.calc_transverse_shear_stiffness"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_transverse_shear_stiffness()</span></code></a>,
 with the shear correction selected by <code class="docutils literal notranslate"><span class="pre">shear_correction</span></code> already
 applied.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="composites.core.Laminate.calc_equilibrium_transverse_shear">
+<span class="sig-name descname"><span class="pre">calc_equilibrium_transverse_shear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grad_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_equilibrium_transverse_shear" title="Link to this definition">#</a></dt>
+<dd><p>Transverse shear stresses recovered from the actual strain gradients</p>
+<p>Integrates the three-dimensional equilibrium equations from the bottom
+face, where the tractions vanish, with the in-plane stresses of each
+ply <span class="math notranslate nohighlight">\(\sigma^{(k)} = C^{(k)} (\varepsilon^{(0)} + z\varepsilon^{(1)})\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\tau_{xz}(z) = -\int_{z_1}^{z} \left( c_1 \left[
+\varepsilon^{(0)}_{,x} + \bar{z} \varepsilon^{(1)}_{,x} \right]
++ c_3 \left[ \varepsilon^{(0)}_{,y} + \bar{z}
+\varepsilon^{(1)}_{,y} \right] \right) d\bar{z} \\
+\tau_{yz}(z) = -\int_{z_1}^{z} \left( c_2 \left[
+\varepsilon^{(0)}_{,y} + \bar{z} \varepsilon^{(1)}_{,y} \right]
++ c_3 \left[ \varepsilon^{(0)}_{,x} + \bar{z}
+\varepsilon^{(1)}_{,x} \right] \right) d\bar{z}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(c_1\)</span>, <span class="math notranslate nohighlight">\(c_2\)</span> and <span class="math notranslate nohighlight">\(c_3\)</span> are the rows of <span class="math notranslate nohighlight">\(C^{(k)}\)</span> that give
+<span class="math notranslate nohighlight">\(\sigma_{xx}\)</span>, <span class="math notranslate nohighlight">\(\sigma_{yy}\)</span> and <span class="math notranslate nohighlight">\(\tau_{xy}\)</span>, respectively, and <span class="math notranslate nohighlight">\(z_1\)</span>
+is the bottom face. It uses the gradients of the generalized strains
+of the actual solution, as in the a posteriori approach of Noor and
+Peters (1989), instead of the two cylindrical bending states of
+<a class="reference internal" href="#composites.core.Laminate.calc_transverse_shear_stiffness" title="composites.core.Laminate.calc_transverse_shear_stiffness"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_transverse_shear_stiffness()</span></code></a>. The top face is traction
+free only if the gradients satisfy the in-plane equilibrium of the
+stress resultants.</p>
+<p>References:</p>
+<blockquote>
+<div><p>Noor, A. K. and Peters, J. M. “A posteriori estimates for the
+shear correction factors in multi-layered composite cylinders”,
+Journal of Engineering Mechanics, Vol. 115, 1225-1244, 1989.</p>
+</div></blockquote>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>grad_x, grad_y</strong><span class="classifier">array-like, shape <code class="docutils literal notranslate"><span class="pre">(6,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(npts,</span> <span class="pre">6)</span></code></span></dt><dd><p>Derivatives with respect to <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> of <span class="math notranslate nohighlight">\(\{\varepsilon_{xx}^{(0)},
+\varepsilon_{yy}^{(0)}, \gamma_{xy}^{(0)}, \varepsilon_{xx}^{(1)},
+\varepsilon_{yy}^{(1)}, \gamma_{xy}^{(1)}\}\)</span>, at <code class="docutils literal notranslate"><span class="pre">npts</span></code> points.</p>
+</dd>
+<dt><strong>z</strong><span class="classifier">array-like or None</span></dt><dd><p>Heights from the reference surface. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the three
+Gauss-Legendre points of each ply are used.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>z, tau_yz, tau_xz</strong><span class="classifier">np.ndarray</span></dt><dd><p>The heights, with shape <code class="docutils literal notranslate"><span class="pre">(nz,)</span></code>, and the stresses, with shape
+<code class="docutils literal notranslate"><span class="pre">(npts,</span> <span class="pre">nz)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -728,7 +919,10 @@ to them downstream.</p>
 to <span class="math notranslate nohighlight">\(yz\)</span> and index 5 to <span class="math notranslate nohighlight">\(xz\)</span>. The coordinate <span class="math notranslate nohighlight">\(z\)</span> is measured from the
 reference surface, with the plies running from <span class="math notranslate nohighlight">\(z_1 = -h/2 +
 offset\)</span> to <span class="math notranslate nohighlight">\(z_{N+1} = +h/2 + offset\)</span>, and <span class="math notranslate nohighlight">\(C_s^{(k)} = [[q_{44L},
-q_{45L}], [q_{45L}, q_{55L}]]\)</span>, which is in general a full matrix.</p>
+q_{45L}], [q_{45L}, q_{55L}]]\)</span>, which is in general a full matrix.
+None of the methods depends on <code class="docutils literal notranslate"><span class="pre">offset</span></code>, and all of them are
+evaluated with <span class="math notranslate nohighlight">\(z\)</span> measured from the mid-surface, which avoids the
+round-off of large values of <code class="docutils literal notranslate"><span class="pre">offset</span></code>.</p>
 <p>The method is selected by the attribute <code class="docutils literal notranslate"><span class="pre">shear_correction</span></code>:</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">'rohwer'</span></code> (default): equilibrium approach of Rohwer (1988). The
@@ -756,6 +950,50 @@ Vlachoutsis (1992) are applied to the constant-strain stiffness,
 angle-ply laminates with <code class="docutils literal notranslate"><span class="pre">Abar45</span> <span class="pre">=</span> <span class="pre">0</span></code>. The factors use <span class="math notranslate nohighlight">\(C_{11}\)</span>
 and <span class="math notranslate nohighlight">\(C_{22}\)</span> of each ply in laminate axes and the direction-wise
 neutral surfaces, being exact only for specially orthotropic plies.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'whitney'</span></code>: the scalar factors of Whitney (1973), Eqs. (3)-(7),
+extending Chow (1971) to unsymmetric orthotropic laminates in
+cylindrical bending, with <span class="math notranslate nohighlight">\(\sigma_{xx} = -C_{11}(B_{11} - A_{11}z)
+Q_x/(D_{11}A_{11} - B_{11}^2)\)</span>, i.e. the neutral surface <span class="math notranslate nohighlight">\(z_n =
+B_{11}/A_{11}\)</span>, and the same energy equivalence. The result is
+identical to <code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'chow'</span></code>: the scalar factors of Chow (1971), Eqs. (11)-(12), with
+the transverse shear stress of a symmetric laminate obtained from
+the one-dimensional equilibrium <span class="math notranslate nohighlight">\(\tau_{xz} = Q_x g(z)/D_{11}\)</span>,
+<span class="math notranslate nohighlight">\(g(z) = -\int_{-h/2}^{z} C_{11} \bar{z} d\bar{z}\)</span>, and <span class="math notranslate nohighlight">\(k_{13} =
+D_{11}^2 / (\bar{A}_{55} \int g^2/C_{55} dz)\)</span>, analogously for
+<span class="math notranslate nohighlight">\(k_{23}\)</span> with <span class="math notranslate nohighlight">\(C_{22}\)</span>, <span class="math notranslate nohighlight">\(D_{22}\)</span> and <span class="math notranslate nohighlight">\(C_{44}\)</span>. The coordinate is
+measured from the mid-surface and the laminate must be symmetric
+about it. For symmetric laminates the result is identical to
+<code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>, whose neutral surfaces then coincide with the
+mid-surface. The factors are applied as in <code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'birman_bert'</span></code>: the average shear strain factors of Birman and
+Bert (2002), Eq. (13) and Appendix B, obtained by equating the
+thickness integral of the transverse shear strain of the
+equilibrium distribution with that of the FSDT, <span class="math notranslate nohighlight">\(k_{13} = R_1 h /
+(\bar{A}_{55} \int g_1/C_{55} dz)\)</span>, analogously for <span class="math notranslate nohighlight">\(k_{23}\)</span>. The
+equilibrium distribution <span class="math notranslate nohighlight">\(g_\alpha(z)\)</span> and the bending stiffness
+<span class="math notranslate nohighlight">\(R_\alpha\)</span> about the direction-wise neutral surface are the same as
+in <code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>, which generalizes Eq. (13), derived for
+symmetric cross sections, to unsymmetric laminates. It gives <span class="math notranslate nohighlight">\(k =
+1\)</span> for a homogeneous plate. The factors are applied as in
+<code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>. Note that the value recommended by Birman and
+Bert (2002) for sandwich structures, <span class="math notranslate nohighlight">\(K = 1\)</span> applied to <span class="math notranslate nohighlight">\(\bar{A}_{55}
+= \sum_k C_{55}^{(k)} h_k\)</span> (their Eqs. A5-A7), is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'thickness_shear'</span></code>: dynamic factors of Yang, Norris and Stavsky
+(1966), as described by Sun and Whitney (1973), extending the
+criterion of Mindlin (1951) to laminates, i.e. matching the
+frequency of the first thickness-shear mode of the FSDT, <span class="math notranslate nohighlight">\(\omega^2 =
+k_{13} \bar{A}_{55} / \bar{I}_2\)</span>, with the exact frequency of the
+laminate, computed with a transfer matrix through the plies for the
+anti-plane motion <span class="math notranslate nohighlight">\(u(z)\)</span>, with <span class="math notranslate nohighlight">\(\rho^{(k)} \ddot{u} = (C_{55}^{(k)}
+u_{,z})_{,z}\)</span>, traction-free faces and continuity of <span class="math notranslate nohighlight">\(u\)</span> and
+<span class="math notranslate nohighlight">\(\tau_{xz}\)</span> at every interface. The rotatory inertia about the
+centre of mass, <span class="math notranslate nohighlight">\(\bar{I}_2 = I_2 - I_1^2/I_0\)</span>, makes the result
+independent of <code class="docutils literal notranslate"><span class="pre">offset</span></code>. Analogously for <span class="math notranslate nohighlight">\(k_{23}\)</span> with <span class="math notranslate nohighlight">\(C_{44}\)</span>.
+The coupling <span class="math notranslate nohighlight">\(C_{45}\)</span> between the two directions is neglected in
+the eigenproblem, and the factors are applied as in
+<code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>. It gives <span class="math notranslate nohighlight">\(k = \pi^2/12\)</span> for a homogeneous plate.
+The ply densities must be positive.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'constant'</span></code>: <span class="math notranslate nohighlight">\(k = 5/6\)</span>, i.e. <code class="docutils literal notranslate"><span class="pre">A44</span> <span class="pre">=</span> <span class="pre">5/6*Abar44</span></code>, <code class="docutils literal notranslate"><span class="pre">A45</span> <span class="pre">=</span>
 <span class="pre">5/6*Abar45</span></code>, <code class="docutils literal notranslate"><span class="pre">A55</span> <span class="pre">=</span> <span class="pre">5/6*Abar55</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: no correction, <code class="docutils literal notranslate"><span class="pre">A44</span> <span class="pre">=</span> <span class="pre">Abar44</span></code>, <code class="docutils literal notranslate"><span class="pre">A45</span> <span class="pre">=</span> <span class="pre">Abar45</span></code>, <code class="docutils literal notranslate"><span class="pre">A55</span> <span class="pre">=</span>
@@ -775,14 +1013,33 @@ finite elements”, DFVLR-FB 88-32, 1988.</p>
 <p>Vlachoutsis, S. “Shear correction factors for plates and shells”,
 Int. Journal for Numerical Methods in Engineering, Vol. 33,
 1537-1552, 1992.</p>
+<p>Whitney, J. M. “Shear correction factors for orthotropic
+laminates under static load”, Journal of Applied Mechanics, Vol.
+40, 302-304, 1973.</p>
+<p>Chow, T. S. “On the propagation of flexural waves in an
+orthotropic laminated plate and its response to an impulsive
+load”, Journal of Composite Materials, Vol. 5, 306-319, 1971.</p>
+<p>Birman, V. and Bert, C. W. “On the choice of shear correction
+factor in sandwich structures”, Journal of Sandwich Structures
+and Materials, Vol. 4, 83-95, 2002.</p>
+<p>Yang, P. C., Norris, C. H. and Stavsky, Y. “Elastic wave
+propagation in heterogeneous plates”, International Journal of
+Solids and Structures, Vol. 2, 665-684, 1966.</p>
+<p>Sun, C. T. and Whitney, J. M. “Theories for the dynamic response
+of laminated plates”, AIAA Journal, Vol. 11, 178-183, 1973.</p>
+<p>Mindlin, R. D. “Influence of rotatory inertia and shear on
+flexural motions of isotropic, elastic plates”, Journal of
+Applied Mechanics, Vol. 18, 31-38, 1951.</p>
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>ValueError</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">shear_correction</span></code> is not recognized; if a ply has a
 singular transverse shear constitutive matrix <span class="math notranslate nohighlight">\(C_s^{(k)}\)</span>, e.g.
-<code class="docutils literal notranslate"><span class="pre">g13</span> <span class="pre">=</span> <span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">g23</span> <span class="pre">=</span> <span class="pre">0</span></code> (<code class="docutils literal notranslate"><span class="pre">'rohwer'</span></code> and <code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>);
-or if the ABD matrix of the laminate is singular (<code class="docutils literal notranslate"><span class="pre">'rohwer'</span></code>).</p>
+<code class="docutils literal notranslate"><span class="pre">g13</span> <span class="pre">=</span> <span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">g23</span> <span class="pre">=</span> <span class="pre">0</span></code> (all methods except <code class="docutils literal notranslate"><span class="pre">'constant'</span></code>
+and <code class="docutils literal notranslate"><span class="pre">None</span></code>); if the ABD matrix of the laminate is singular
+(<code class="docutils literal notranslate"><span class="pre">'rohwer'</span></code>); if the laminate is not symmetric (<code class="docutils literal notranslate"><span class="pre">'chow'</span></code>); or
+if a ply has a non-positive density (<code class="docutils literal notranslate"><span class="pre">'thickness_shear'</span></code>).</p>
 </dd>
 </dl>
 </dd>
@@ -886,11 +1143,23 @@ laminate thickness.</p>
 </dd>
 <dt><strong>xiD1, xiD2, xiD3, xiD4</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math notranslate nohighlight">\(\xi_{Di}\)</span> (bending)</p>
 </dd>
-<dt><strong>xiAtrans1, xiAtrans2</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math notranslate nohighlight">\(\xi_{{A_{trans}}i}\)</span> (transverse shear)</p>
+<dt><strong>xiAts1, xiAts2</strong><span class="classifier">float</span></dt><dd><p>Lamination parameters <span class="math notranslate nohighlight">\(\xi_{{A_{ts}}i}\)</span> (transverse shear)</p>
 </dd>
 </dl>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="composites.core.LaminationParameters.xiAtrans1">
+<span class="sig-name descname"><span class="pre">xiAtrans1</span></span><a class="headerlink" href="#composites.core.LaminationParameters.xiAtrans1" title="Link to this definition">#</a></dt>
+<dd><p>Deprecated, use <code class="xref py py-attr docutils literal notranslate"><span class="pre">xiAts1</span></code> instead</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="composites.core.LaminationParameters.xiAtrans2">
+<span class="sig-name descname"><span class="pre">xiAtrans2</span></span><a class="headerlink" href="#composites.core.LaminationParameters.xiAtrans2" title="Link to this definition">#</a></dt>
+<dd><p>Deprecated, use <code class="xref py py-attr docutils literal notranslate"><span class="pre">xiAts2</span></code> instead</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1072,12 +1341,12 @@ constant-stress <code class="docutils literal notranslate"><span class="pre">Aba
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.core.laminate_from_lamination_parameters">
-<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">laminate_from_lamination_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matlamina</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAtrans1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAtrans2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.laminate_from_lamination_parameters" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">laminate_from_lamination_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matlamina</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAts1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAts2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAtrans1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAtrans2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.laminate_from_lamination_parameters" title="Link to this definition">#</a></dt>
 <dd><p>Return a <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> object based in the thickness, material and
 lamination parameters</p>
-<p>Note that <span class="math notranslate nohighlight">\(\xi_{E1}\)</span> and <span class="math notranslate nohighlight">\(\xi_{E2}\)</span> are optional and usually equal to zero,
-becoming important only when the transverse shear modulus is different in
-the two directions, i.e.  when <span class="math notranslate nohighlight">\(G_{13} \ne G{23}\)</span>.</p>
+<p>Note that <span class="math notranslate nohighlight">\(\xi_{A_{ts}1}\)</span> and <span class="math notranslate nohighlight">\(\xi_{A_{ts}2}\)</span> are optional and usually
+equal to zero, becoming important only when the transverse shear modulus
+is different in the two directions, i.e.  when <span class="math notranslate nohighlight">\(G_{13} \ne G{23}\)</span>.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
@@ -1085,9 +1354,12 @@ the two directions, i.e.  when <span class="math notranslate nohighlight">\(G_{1
 </dd>
 <dt><strong>matlamina</strong><span class="classifier"><a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a> object</span></dt><dd><p>Material object</p>
 </dd>
-<dt><strong>xiAj, xiBj, xiDj, xiEj</strong><span class="classifier">float</span></dt><dd><p>The 14 lamination parameters according to the first-order shear
+<dt><strong>xiAj, xiBj, xiDj, xiAtsj</strong><span class="classifier">float</span></dt><dd><p>The 14 lamination parameters according to the first-order shear
 deformation theory: <span class="math notranslate nohighlight">\(\xi_{A1} \cdots \xi_{A4}\)</span>, <span class="math notranslate nohighlight">\(\xi_{B1} \cdots
-\xi_{B4}\)</span>, <span class="math notranslate nohighlight">\(\xi_{D1} \cdots \xi_{D4}\)</span>, <span class="math notranslate nohighlight">\(\xi_{E1}\)</span> and <span class="math notranslate nohighlight">\(\xi_{E2}\)</span></p>
+\xi_{B4}\)</span>, <span class="math notranslate nohighlight">\(\xi_{D1} \cdots \xi_{D4}\)</span>, <span class="math notranslate nohighlight">\(\xi_{A_{ts}1}\)</span> and
+<span class="math notranslate nohighlight">\(\xi_{A_{ts}2}\)</span></p>
+</dd>
+<dt><strong>xiAtrans1, xiAtrans2</strong><span class="classifier">float, optional</span></dt><dd><p>Deprecated, use <code class="docutils literal notranslate"><span class="pre">xiAts1</span></code> and <code class="docutils literal notranslate"><span class="pre">xiAts2</span></code> instead.</p>
 </dd>
 </dl>
 </dd>
@@ -1250,8 +1522,11 @@ the extension-bending coupling (B matrix).</p>
 mapped to <code class="docutils literal notranslate"><span class="pre">shear_correction='rohwer'</span></code> and <code class="docutils literal notranslate"><span class="pre">False</span></code> to
 <code class="docutils literal notranslate"><span class="pre">shear_correction=None</span></code>, overriding <code class="docutils literal notranslate"><span class="pre">shear_correction</span></code>.</p>
 </dd>
-<dt><strong>shear_correction</strong><span class="classifier">str or None, optional</span></dt><dd><p>See <a class="reference internal" href="#composites.utils.laminated_plate" title="composites.utils.laminated_plate"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminated_plate()</span></code></a>. For an isotropic plate both <code class="docutils literal notranslate"><span class="pre">'rohwer'</span></code>
-and <code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code> give <code class="docutils literal notranslate"><span class="pre">A44</span> <span class="pre">=</span> <span class="pre">A55</span> <span class="pre">=</span> <span class="pre">5/6</span> <span class="pre">G</span> <span class="pre">h</span></code>.</p>
+<dt><strong>shear_correction</strong><span class="classifier">str or None, optional</span></dt><dd><p>See <a class="reference internal" href="#composites.utils.laminated_plate" title="composites.utils.laminated_plate"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminated_plate()</span></code></a>. For an isotropic plate <code class="docutils literal notranslate"><span class="pre">'rohwer'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>, <code class="docutils literal notranslate"><span class="pre">'whitney'</span></code>, <code class="docutils literal notranslate"><span class="pre">'chow'</span></code> and <code class="docutils literal notranslate"><span class="pre">'constant'</span></code> give
+<code class="docutils literal notranslate"><span class="pre">A44</span> <span class="pre">=</span> <span class="pre">A55</span> <span class="pre">=</span> <span class="pre">5/6</span> <span class="pre">G</span> <span class="pre">h</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'birman_bert'</span></code> gives <code class="docutils literal notranslate"><span class="pre">G</span> <span class="pre">h</span></code> and <code class="docutils literal notranslate"><span class="pre">'thickness_shear'</span></code> gives
+<code class="docutils literal notranslate"><span class="pre">pi^2/12</span> <span class="pre">G</span> <span class="pre">h</span></code>, the latter requiring <code class="docutils literal notranslate"><span class="pre">rho</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>.</p>
 </dd>
 </dl>
 </dd>
@@ -1290,7 +1565,10 @@ mapped to <code class="docutils literal notranslate"><span class="pre">shear_cor
 </dd>
 <dt><strong>shear_correction</strong><span class="classifier">str or None, optional</span></dt><dd><p>Method used to compute the transverse shear stiffnesses <code class="docutils literal notranslate"><span class="pre">A44</span></code>,
 <code class="docutils literal notranslate"><span class="pre">A45</span></code>, <code class="docutils literal notranslate"><span class="pre">A55</span></code>, which are returned with the correction already
-applied: <code class="docutils literal notranslate"><span class="pre">'rohwer'</span></code> (default, equilibrium approach), <code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>,
+applied: <code class="docutils literal notranslate"><span class="pre">'rohwer'</span></code> (default, equilibrium approach),
+<code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>, <code class="docutils literal notranslate"><span class="pre">'whitney'</span></code> (same as <code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>),
+<code class="docutils literal notranslate"><span class="pre">'chow'</span></code> (symmetric laminates), <code class="docutils literal notranslate"><span class="pre">'birman_bert'</span></code> (average shear
+strain), <code class="docutils literal notranslate"><span class="pre">'thickness_shear'</span></code> (dynamic, requires <code class="docutils literal notranslate"><span class="pre">rho</span></code>),
 <code class="docutils literal notranslate"><span class="pre">'constant'</span></code> (5/6) or <code class="docutils literal notranslate"><span class="pre">None</span></code> (no correction). See
 <a class="reference internal" href="#composites.core.Laminate.calc_transverse_shear_stiffness" title="composites.core.Laminate.calc_transverse_shear_stiffness"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.calc_transverse_shear_stiffness()</span></code></a>.</p>
 </dd>
@@ -1481,6 +1759,12 @@ half-waves in the corresponding direction, up to 10 half-waves.</p>
 </dd>
 </dl>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>Nxx_crit</strong><span class="classifier">float</span></dt><dd><p>Critical uniaxial compression buckling load.</p>
+</dd>
+</dl>
+</dd>
 </dl>
 </dd></dl>
 
@@ -1504,6 +1788,13 @@ shear load, and <span class="math notranslate nohighlight">\(N_{xx}\)</span> the
 <dt><strong>a, b</strong><span class="classifier">float</span></dt><dd><p>Plate length and width.</p>
 </dd>
 <dt><strong>D11, D12, D22, D66</strong><span class="classifier">float</span></dt><dd><p>Terms of the D matrix.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>N0</strong><span class="classifier">float</span></dt><dd><p>Critical <span class="math notranslate nohighlight">\(N_{xx}\)</span> buckling load under the current level of shear load
+given by <span class="math notranslate nohighlight">\(N_{xy} = k N_{xx}\)</span>.</p>
 </dd>
 </dl>
 </dd>
@@ -1534,6 +1825,13 @@ originally used by Kassapoglou.</p>
 </dd>
 </dl>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>Nxx_crit</strong><span class="classifier">float</span></dt><dd><p>Critical <span class="math notranslate nohighlight">\(N_{xx}\)</span> buckling load under the current level of shear load
+given by <span class="math notranslate nohighlight">\(N_{xy}\)</span>.</p>
+</dd>
+</dl>
+</dd>
 </dl>
 </dd></dl>
 
@@ -1561,6 +1859,12 @@ that finds the solution of Eqs. 6.29 and 6.30 simultaneously.</p>
 </dd>
 </dl>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>Nxy_crit</strong><span class="classifier">float</span></dt><dd><p>Critical shear buckling load.</p>
+</dd>
+</dl>
+</dd>
 </dl>
 </dd></dl>
 
@@ -1585,6 +1889,12 @@ that finds the solution of Eqs. 6.29 and 6.30 simultaneously.</p>
 <dt><strong>Pcr</strong><span class="classifier">float</span></dt><dd><p>Critical buckling force.</p>
 </dd>
 <dt><strong>A11, A12, A22: float</strong></dt><dd><p>Terms of the A matrix.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>beff</strong><span class="classifier">float</span></dt><dd><p>Effective width of the plate.</p>
 </dd>
 </dl>
 </dd>
@@ -1634,6 +1944,7 @@ that finds the solution of Eqs. 6.29 and 6.30 simultaneously.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites-core-module-composites-core">Composites Core Module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.core</span></code>)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.GradABD"><code class="docutils literal notranslate"><span class="pre">GradABD</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.GradABD.calc_LP_grad"><code class="docutils literal notranslate"><span class="pre">GradABD.calc_LP_grad()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.GradABD.gradAtransij"><code class="docutils literal notranslate"><span class="pre">GradABD.gradAtransij</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Lamina"><code class="docutils literal notranslate"><span class="pre">Lamina</span></code></a><ul class="nav section-nav flex-column">
@@ -1649,7 +1960,13 @@ that finds the solution of Eqs. 6.29 and 6.30 simultaneously.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.Abarbar_ts"><code class="docutils literal notranslate"><span class="pre">Laminate.Abarbar_ts</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.Atrans"><code class="docutils literal notranslate"><span class="pre">Laminate.Atrans</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.Ats"><code class="docutils literal notranslate"><span class="pre">Laminate.Ats</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.Dtrans"><code class="docutils literal notranslate"><span class="pre">Laminate.Dtrans</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.Dts"><code class="docutils literal notranslate"><span class="pre">Laminate.Dts</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.Ftrans"><code class="docutils literal notranslate"><span class="pre">Laminate.Ftrans</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.Fts"><code class="docutils literal notranslate"><span class="pre">Laminate.Fts</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.calc_aposteriori_energy"><code class="docutils literal notranslate"><span class="pre">Laminate.calc_aposteriori_energy()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.calc_constitutive_matrix"><code class="docutils literal notranslate"><span class="pre">Laminate.calc_constitutive_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.calc_equilibrium_transverse_shear"><code class="docutils literal notranslate"><span class="pre">Laminate.calc_equilibrium_transverse_shear()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.calc_equivalent_properties"><code class="docutils literal notranslate"><span class="pre">Laminate.calc_equivalent_properties()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.calc_lamination_parameters"><code class="docutils literal notranslate"><span class="pre">Laminate.calc_lamination_parameters()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.calc_scf"><code class="docutils literal notranslate"><span class="pre">Laminate.calc_scf()</span></code></a></li>
@@ -1661,7 +1978,11 @@ that finds the solution of Eqs. 6.29 and 6.30 simultaneously.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.Laminate.make_symmetric"><code class="docutils literal notranslate"><span class="pre">Laminate.make_symmetric()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.LaminationParameters"><code class="docutils literal notranslate"><span class="pre">LaminationParameters</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.LaminationParameters"><code class="docutils literal notranslate"><span class="pre">LaminationParameters</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.LaminationParameters.xiAtrans1"><code class="docutils literal notranslate"><span class="pre">LaminationParameters.xiAtrans1</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.LaminationParameters.xiAtrans2"><code class="docutils literal notranslate"><span class="pre">LaminationParameters.xiAtrans2</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.MatLamina"><code class="docutils literal notranslate"><span class="pre">MatLamina</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.MatLamina.get_constitutive_matrix"><code class="docutils literal notranslate"><span class="pre">MatLamina.get_constitutive_matrix()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.core.MatLamina.get_invariant_matrix"><code class="docutils literal notranslate"><span class="pre">MatLamina.get_invariant_matrix()</span></code></a></li>
