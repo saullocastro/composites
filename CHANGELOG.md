@@ -37,6 +37,38 @@ Four values of `shear_correction` were added to
   resultants, for the energy equivalence of Noor and Peters (1989),
   Eqs. (8)-(9).
 
+### Fixes
+
+- All `shear_correction` methods, `calc_transverse_shear_stress` and the a
+  posteriori helpers are evaluated with the heights measured from the
+  mid-surface. The results, which do not depend on `offset`, are now identical
+  for any `offset`; before, the round-off grew with `(offset/h)^2`, e.g. a
+  relative error of 2e-3 in `Ats` of `'rohwer'` for `offset/h = 1e4`, and
+  wrong values without any error for larger offsets.
+- `calc_equilibrium_transverse_shear` raised `IndexError` on Linux with
+  Python 3.12 (negative index with `wraparound=False`).
+- Pickling a `GradABD` created without `__init__`, e.g. by `__new__`, crashed
+  with a segmentation fault; its arrays are now allocated in `__cinit__`.
+
+### Deprecated
+
+The remaining `Atrans` names were renamed to `Ats`, and `Dtrans`, `Ftrans`
+to `Dts`, `Fts`. The old names still work, but they emit a
+`DeprecationWarning`:
+
+- `Laminate.Dtrans`, `Laminate.Ftrans`: use `Laminate.Dts`, `Laminate.Fts`.
+- `LaminationParameters.xiAtrans1`, `xiAtrans2`: use `xiAts1`, `xiAts2`.
+- The `xiAtrans1`, `xiAtrans2` arguments of
+  `laminate_from_lamination_parameters`: use `xiAts1`, `xiAts2`.
+- `GradABD.gradAtransij`: use `gradAtsij`. Pickles that contain
+  `gradAtransij` still load.
+- `Laminate.get_Atrans()`, `get_Dtrans()`, `get_Ftrans()` (`cdef`): use
+  `get_Ats()`, `get_Dts()`, `get_Fts()`.
+
+Packages that `cimport composites` and access `xiAtrans1`, `xiAtrans2` or
+`gradAtransij` from Cython must switch to the new names and be recompiled.
+Pickled `LaminationParameters` objects from older versions cannot be loaded.
+
 ## 0.9.2 (2026-09-25)
 
 ### Breaking: transverse shear stiffness now includes the shear correction
