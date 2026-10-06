@@ -1221,3 +1221,139 @@ def test_noor_1975_published_factors(NL, k13, k23):
             shear_correction='whitney')
     assert_printed(lam.scf_k13, k13)
     assert_printed(lam.scf_k23, k23)
+
+
+# Error branches
+# --------------
+
+def test_thickness_shear_frequency():
+    from composites.core import _thickness_shear_frequency
+    # homogeneous layer with traction-free faces: omega = pi/h sqrt(G/rho)
+    omega = _thickness_shear_frequency([4.], [1.], [2.], 1.)
+    assert np.isclose(omega, np.pi/2.*np.sqrt(4./1.), rtol=1e-14)
+    # the search stops at 100 times the reference frequency
+    with pytest.raises(RuntimeError, match='No thickness-shear frequency'):
+        _thickness_shear_frequency([1.], [1.], [1.], 1e-3)
+
+
+def test_empty_laminate_stress():
+    with pytest.raises(ValueError, match='0 plies'):
+        Laminate().calc_transverse_shear_stress(0., 1., 0.)
+
+
+def test_ill_conditioned_ABD():
+    # A = h E/(1 - nu^2) [[1, nu], [nu, 1]], singular for nu -> 1
+    nu = 1 - 1e-12
+    with pytest.raises(ValueError, match='ill-conditioned'):
+        isotropic_plate(thickness=1., E=70e3, nu=nu)
+    lam = isotropic_plate(thickness=1., E=70e3, nu=nu,
+                          shear_correction='constant')
+    assert np.isclose(lam.A55, 5/6*70e3/(2*(1 + nu)), rtol=1e-12)
+
+
+def test_non_finite_Cs():
+    lam = laminated_plate([0, 90, 0], plyt=0.25, laminaprop=CFRP,
+                          shear_correction=None)
+    lam.plies[1].q44L = np.nan
+    lam.shear_correction = 'rohwer'
+    with pytest.raises(ValueError, match='Singular transverse shear'):
+        lam.calc_transverse_shear_stiffness()
+
+
+@pytest.mark.parametrize('mode', ['vlachoutsis', 'whitney', 'chow',
+                                  'birman_bert'])
+def test_non_positive_in_plane_stiffness(mode):
+    lam = laminated_plate([0, 90, 0], plyt=0.25, laminaprop=CFRP,
+                          shear_correction=None)
+    for ply in lam.plies:
+        ply.q11L = 0.
+        ply.q22L = 0.
+    lam.shear_correction = mode
+    with pytest.raises(ValueError, match='positive in-plane stiffnesses'):
+        lam.calc_transverse_shear_stiffness()
+
+
+@pytest.mark.parametrize('mode', ['whitney', 'chow', 'birman_bert',
+                                  'thickness_shear'])
+def test_singular_Cs_scalar_modes(mode):
+    laminaprops = [CFRP, (138., 9.3, 0.3, 4.6, 0., 2.3), CFRP]
+    # positive densities, such that 'thickness_shear' reaches the Cs check
+    lam = laminated_plate([0, 0, 0], plyt=0.25, laminaprops=laminaprops,
+                          rho=1.6e-6, shear_correction=None)
+    lam.shear_correction = mode
+    with pytest.raises(ValueError, match='Ply 1'):
+        lam.calc_transverse_shear_stiffness()
+
+
+def test_equilibrium_z_outside():
+    lam = laminated_plate([0, 90], plyt=0.25, laminaprop=CFRP, offset=0.1)
+    zero = np.zeros(6)
+    # the faces themselves are accepted
+    z, _, _ = lam.calc_equilibrium_transverse_shear(zero, zero,
+                                                    z=[-0.15, 0.35])
+    assert np.allclose(z, [-0.15, 0.35])
+    for z in ([0.36], [-0.16]):
+        with pytest.raises(ValueError, match='outside'):
+            lam.calc_equilibrium_transverse_shear(zero, zero, z=z)
+
+
+def test_aposteriori_energy_singular_Cs():
+    laminaprops = [CFRP, (138., 9.3, 0.3, 4.6, 0., 2.3), CFRP]
+    lam = _manual_laminate([0, 0, 0], 0.25, laminaprops, None)
+    grad_x = np.zeros(6)
+    grad_x[3] = 1.
+    with pytest.raises(ValueError, match='Ply 1'):
+        lam.calc_aposteriori_energy(grad_x, np.zeros(6))
+
+
+# Large offsets
+# -------------
+
+@pytest.mark.parametrize('mode', ['rohwer', 'vlachoutsis', 'whitney', 'chow',
+                                  'birman_bert', 'thickness_shear',
+                                  'constant', None])
+def test_large_offset(mode):
+    # computed about the mid-surface, hence identical for any offset, while
+    # the round-off of the heights from the reference surface used to grow
+    # with (offset/h)^2, e.g. 2e-3 for 'rohwer' at offset/h = 1e4
+    stack = [0, 90, 45, 90, 0] if mode == 'chow' else [0, 90, 45, -45, 30]
+    Ats = [laminated_plate(stack, plyt=0.2, laminaprop=CFRP, rho=1.6e-6,
+                           offset=offset, shear_correction=mode).Ats
+           for offset in [0., 1e2, -1e4, 1e6]]
+    for other in Ats[1:]:
+        assert np.array_equal(other, Ats[0])
+
+
+def test_large_offset_stresses():
+    stack = [0, 90, 45, -45, 30]
+    lam0 = laminated_plate(stack, plyt=0.2, laminaprop=CFRP)
+    zs = np.linspace(-0.5, 0.5, 11)
+    tau0 = np.array([lam0.calc_transverse_shear_stress(z, 0.7, -1.3)
+                     for z in zs])
+    rng = np.random.default_rng(0)
+    grad_x = rng.normal(size=6)
+    grad_y = rng.normal(size=6)
+    _, tyz0, txz0 = lam0.calc_equilibrium_transverse_shear(grad_x, grad_y,
+                                                           z=zs)
+    U0 = np.array(lam0.calc_aposteriori_energy(grad_x, grad_y))
+    for offset in [1e2, -1e4, 1e6]:
+        lam = laminated_plate(stack, plyt=0.2, laminaprop=CFRP,
+                              offset=offset)
+        # only the representation of z + offset is affected by round-off
+        tol = 1e-14*abs(offset)/lam.h
+        tau = np.array([lam.calc_transverse_shear_stress(z + offset, 0.7,
+                                                         -1.3)
+                        for z in zs])
+        assert np.allclose(tau, tau0, rtol=0, atol=tol*np.abs(tau0).max())
+        # same strain field, eps0 + z eps1, about the new reference surface
+        gx = grad_x.copy()
+        gy = grad_y.copy()
+        gx[:3] -= offset*gx[3:]
+        gy[:3] -= offset*gy[3:]
+        z, tyz, txz = lam.calc_equilibrium_transverse_shear(gx, gy,
+                                                            z=zs + offset)
+        assert np.array_equal(z, zs + offset)
+        assert np.allclose(txz, txz0, rtol=0, atol=tol*np.abs(txz0).max())
+        assert np.allclose(tyz, tyz0, rtol=0, atol=tol*np.abs(tyz0).max())
+        U = np.array(lam.calc_aposteriori_energy(gx, gy))
+        assert np.allclose(U, U0, rtol=0, atol=tol*np.abs(U0).max())
