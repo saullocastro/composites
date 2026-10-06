@@ -12,8 +12,8 @@ Classical, first- and third-order shear deformation theories are supported. For
 classical plate theories or classical laminated plate theories (CLPT), and for
 the first-order shear deformation theory (FSDT) the relevant matrices are the
 A, B, D and Ats. For the third-order shear deformation theory (TSDT) the
-relevant matrices are the A, B, D, E, F, H; and the Abar_ts, Dtrans and Ftrans.
-The matrices Ats, Abar_ts, Dtrans and Ftrans are 2 by 2 matrices containing
+relevant matrices are the A, B, D, E, F, H; and the Abar_ts, Dts and Fts.
+The matrices Ats, Abar_ts, Dts and Fts are 2 by 2 matrices containing
 transverse shear stiffnesses, ordered as ``[[44, 45], [45, 55]]`` with index 4
 corresponding to ``yz`` and index 5 to ``xz``. All these matrices are part of
 the :class:`.Laminate` object.

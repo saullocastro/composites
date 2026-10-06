@@ -46,14 +46,14 @@ def test_lampar_tri_axial():
     D = np.array([[8.76640130e+09, 4.31777974e+09, 0.00000000e+00],
                   [4.31777974e+09, 8.76640130e+09, 0.00000000e+00],
                   [0.00000000e+00, 0.00000000e+00, 2.22431078e+09]])
-    Atrans = np.array([[2.66917293e+10,  0.00000000e+00],
-                       [0.00000000e+00,  2.66917293e+10]])
+    Ats = np.array([[2.66917293e+10, 0.00000000e+00],
+                    [0.00000000e+00, 2.66917293e+10]])
     assert np.allclose(lam.A, A)
     lam.make_symmetric()
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.Ats, Atrans)
-    assert np.allclose(lam.Abar_ts, Atrans)
+    assert np.allclose(lam.Ats, Ats)
+    assert np.allclose(lam.Abar_ts, Ats)
     ABD = lam.ABD
     assert np.allclose(ABD[:3, :3], A)
     assert np.allclose(ABD[3:, 3:], D)
@@ -91,8 +91,8 @@ def test_lampar_plane_stress():
     D = np.array([[6.63973366e+09, 2.19111211e+09, 9.53674316e-08],
                   [2.19111211e+09, 6.63973366e+09, -9.53674316e-08],
                   [9.53674316e-08, -9.53674316e-08, 2.22431078e+09]])
-    Atrans = np.array([[2.66917293e+10, 0.00000000e+00],
-                       [0.00000000e+00, 2.66917293e+10]])
+    Ats = np.array([[2.66917293e+10, 0.00000000e+00],
+                    [0.00000000e+00, 2.66917293e+10]])
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.E, lam.E.T)
     assert np.allclose(lam.F, lam.F.T)
@@ -100,8 +100,8 @@ def test_lampar_plane_stress():
     lam.make_symmetric()
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.Ats, Atrans)
-    assert np.allclose(lam.Abar_ts, Atrans)
+    assert np.allclose(lam.Ats, Ats)
+    assert np.allclose(lam.Abar_ts, Ats)
     ABD = lam.ABD
     assert np.allclose(ABD[:3, :3], A)
     assert np.allclose(ABD[3:, 3:], D)
@@ -159,10 +159,10 @@ def test_laminated_plate_plane_stress():
                         [       0., 2625000.]])
     Ats = np.array([[2014905.27266639, -27210.29377157],
                     [ -27210.29377157, 2014905.27266639]])
-    Dtrans = np.array([[0.03076172, 0.],
-                       [0., 0.03076172]])
-    Ftrans = np.array([[6.48880005e-10, 0.00000000e+00],
-                       [0.00000000e+00, 6.48880005e-10]])
+    Dts = np.array([[0.03076172, 0.],
+                    [0., 0.03076172]])
+    Fts = np.array([[6.48880005e-10, 0.00000000e+00],
+                    [0.00000000e+00, 6.48880005e-10]])
 
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.B, B)
@@ -172,8 +172,8 @@ def test_laminated_plate_plane_stress():
     assert np.allclose(lam.H, H)
     assert np.allclose(lam.Abar_ts, Abar_ts)
     assert np.allclose(lam.Ats, Ats)
-    assert np.allclose(lam.Dtrans, Dtrans)
-    assert np.allclose(lam.Ftrans, Ftrans)
+    assert np.allclose(lam.Dts, Dts)
+    assert np.allclose(lam.Fts, Fts)
     with pytest.warns(DeprecationWarning):
         lam.calc_scf()
     lam.calc_equivalent_properties()
@@ -293,3 +293,57 @@ def test_laminate_LP_gradients():
     gradABD = GradABD()
     gradABD.calc_LP_grad(thickness, matlamina, lp)
     print(gradABD.gradAij)
+
+
+def test_laminated_plate_missing_arguments():
+    laminaprop = (71e3, 71e3, 0.33)
+    with pytest.raises(ValueError, match='plyt or plyts'):
+        laminated_plate([0, 90], laminaprop=laminaprop)
+    with pytest.raises(ValueError, match='laminaprop or laminaprops'):
+        laminated_plate([0, 90], plyt=0.125)
+
+
+def test_deprecated_xiAtrans():
+    lp = LaminationParameters()
+    with pytest.warns(DeprecationWarning, match='xiAts1'):
+        lp.xiAtrans1 = 0.3
+    with pytest.warns(DeprecationWarning, match='xiAts2'):
+        lp.xiAtrans2 = -0.2
+    assert (lp.xiAts1, lp.xiAts2) == (0.3, -0.2)
+    with pytest.warns(DeprecationWarning, match='xiAts1'):
+        assert lp.xiAtrans1 == 0.3
+    with pytest.warns(DeprecationWarning, match='xiAts2'):
+        assert lp.xiAtrans2 == -0.2
+
+    matlamina = read_laminaprop((142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
+    args = (1e-3, matlamina) + (0.,)*12
+    ref = laminate_from_lamination_parameters(*args, xiAts1=0.3, xiAts2=-0.2)
+    with pytest.warns(DeprecationWarning, match='xiAts'):
+        lam = laminate_from_lamination_parameters(*args, xiAtrans1=0.3,
+                                                  xiAtrans2=-0.2)
+    assert np.array_equal(lam.Abar_ts, ref.Abar_ts)
+
+
+def test_deprecated_gradAtransij():
+    lam = laminated_plate([0, 45, 90], plyt=0.125e-3,
+            laminaprop=(142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
+    grad = GradABD()
+    grad.calc_LP_grad(lam.h, lam.plies[0].matlamina,
+                      lam.calc_lamination_parameters())
+    with pytest.warns(DeprecationWarning, match='gradAtsij'):
+        gradAtransij = grad.gradAtransij
+    assert np.array_equal(gradAtransij, grad.gradAtsij)
+    with pytest.warns(DeprecationWarning, match='gradAtsij'):
+        grad.gradAtransij = np.ones((3, 3))
+    assert np.array_equal(grad.gradAtsij, np.ones((3, 3)))
+
+
+def test_deprecated_Dtrans_Ftrans():
+    lam = laminated_plate([0, 45, 90], plyt=0.125e-3,
+            laminaprop=(142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
+    with pytest.warns(DeprecationWarning, match='Dts'):
+        Dtrans = lam.Dtrans
+    with pytest.warns(DeprecationWarning, match='Fts'):
+        Ftrans = lam.Ftrans
+    assert np.array_equal(Dtrans, lam.Dts)
+    assert np.array_equal(Ftrans, lam.Fts)
