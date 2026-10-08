@@ -1,0 +1,37 @@
+name: pyodide
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Set up Python
+      uses: actions/setup-python@v7
+      with:
+        python-version: '3.14'
+
+    - name: Install cibuildwheel
+      run: |
+        pipx install cibuildwheel==4.3.0
+
+    # NOTE cp314-pyodide_wasm32 targets Pyodide 314 (CPython 3.14), whose
+    #      wheels are tagged pyemscripten_2026_0_wasm32 (PEP 783) and are
+    #      accepted by PyPI. The tests run in Node.js with Pyodide
+    - name: Build and test the WebAssembly wheel
+      env:
+        CIBW_PLATFORM: pyodide
+        CIBW_BUILD: cp314-pyodide_wasm32
+        CIBW_TEST_REQUIRES: pytest
+        CIBW_TEST_COMMAND: python -m pytest {project}/tests
+      run: |
+        cibuildwheel --output-dir dist
+
+    - name: Upload the WebAssembly wheel
+      uses: actions/upload-artifact@v7
+      with:
+        name: pyodide-wheel
+        path: dist/*.whl

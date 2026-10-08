@@ -1,10 +1,10 @@
 import platform
 import os
 import sys
+import sysconfig
 import inspect
 import subprocess
-from setuptools import setup, find_packages
-from distutils.extension import Extension
+from setuptools import setup, find_packages, Extension
 
 from Cython.Build import cythonize
 
@@ -76,6 +76,7 @@ Topic :: Software Development :: Libraries :: Python Modules
 Operating System :: Microsoft :: Windows
 Operating System :: Unix
 Operating System :: POSIX :: BSD
+Environment :: WebAssembly :: Emscripten
 Programming Language :: Python :: 3.8
 Programming Language :: Python :: 3.9
 Programming Language :: Python :: 3.10
@@ -116,8 +117,19 @@ trace = ('CYTHON_TRACE_NOGIL' in os.environ.keys()
 #      /GL that setuptools passes. Flags that change floating-point results,
 #      such as /fp:fast or -ffast-math, and flags that tie a wheel to the CPU
 #      that built it, such as -march=native, are deliberately left out
+# NOTE a WebAssembly build for Pyodide, see .github/workflows/pyodide.yml,
+#      cross-compiled with Emscripten by pyodide-build, which sets PYODIDE=1;
+#      platform.system() would return the system of the build machine
+emscripten = (os.environ.get('PYODIDE') == '1'
+              or sys.platform == 'emscripten'
+              or sysconfig.get_platform().startswith('emscripten'))
+
 define_macros = []
-if platform.system() == 'Windows':
+if emscripten:
+    # NOTE emcc is Clang based; the GCC runtime link flags do not apply
+    compile_args = ['-O3', '-fno-math-errno']
+    link_args = []
+elif platform.system() == 'Windows':
     compile_args = ['/O2']
     link_args = []
 elif platform.system() == 'Linux':

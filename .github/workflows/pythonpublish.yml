@@ -103,3 +103,33 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
         python3 -m twine upload dist/*linux*.whl
+
+  deploy-pyodide:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v7
+    - name: Set up Python
+      uses: actions/setup-python@v7
+      with:
+        python-version: '3.14'
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install --upgrade twine
+        pipx install cibuildwheel==4.3.0
+    # NOTE see .github/workflows/pyodide.yml
+    - name: Build and test the WebAssembly wheel for Pyodide
+      env:
+        CIBW_PLATFORM: pyodide
+        CIBW_BUILD: cp314-pyodide_wasm32
+        CIBW_TEST_REQUIRES: pytest
+        CIBW_TEST_COMMAND: python -m pytest {project}/tests
+      run: |
+        cibuildwheel --output-dir dist
+    - name: Publish the WebAssembly wheel
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        python3 -m twine upload dist/*pyemscripten*.whl
