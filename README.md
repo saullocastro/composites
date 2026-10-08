@@ -65,14 +65,14 @@ JupyterLite or in a web page with Pyodide::
 Citing this repository
 ----------------------
 
-Castro, SGP. Methods for analysis and design of composites (Version 0.9.12) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
+Castro, SGP. Methods for analysis and design of composites (Version 0.9.20) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex :
     
     @misc{composites2026,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods for analysis and design of composites (Version 0.9.12)}},
+        title = {{Methods for analysis and design of composites (Version 0.9.20)}},
         year = 2026
         }
 
