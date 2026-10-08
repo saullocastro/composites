@@ -215,3 +215,32 @@ def test_errors():
     g = to_dict(GradABD())
     with pytest.raises(ValueError, match='shape'):
         from_dict(dict(g, data=dict(g['data'], gradAij=[[1., 2.]])))
+    with pytest.raises(ValueError, match='Expected a matrix for gradAij'):
+        from_dict(dict(g, data=dict(g['data'], gradAij=5.)))
+    with pytest.raises(ValueError, match='JSON object for MatLamina'):
+        from_dict(dict(to_dict(MatLamina()), data=[]))
+    ply = to_dict(make_laminate().plies[0])
+    with pytest.raises(ValueError, match='JSON object for Lamina'):
+        from_dict(dict(ply, data=[]))
+    for plyid in (1.5, True, '1'):
+        with pytest.raises(ValueError, match='integer for plyid'):
+            from_dict(dict(ply, data=dict(ply['data'], plyid=plyid)))
+    with pytest.raises(ValueError, match='JSON object for Lamina'):
+        from_dict(dict(d, data=dict(d['data'], plies=[1])))
+
+
+@pytest.mark.parametrize('cls', [MatLamina, Lamina, Laminate,
+                                 LaminationParameters, GradABD])
+def test_missing_keys_keep_defaults(cls):
+    d = to_dict(cls())
+    d['data'] = {}
+    obj = from_dict(d)
+    assert type(obj) is cls
+    if cls is GradABD:
+        for name in ('gradAij', 'gradBij', 'gradDij', 'gradAtsij'):
+            np.testing.assert_array_equal(getattr(obj, name),
+                                          getattr(cls(), name))
+    else:
+        assert_same(cls(), obj)
+    del d['data']
+    assert type(from_dict(d)) is cls
