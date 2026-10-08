@@ -65,29 +65,37 @@ The most convenient usage is probably with the
     laminaprop = (E11, E22, nu12, G12, G13, G23)
     plyt = ply_thickness
     stack = [0, 90, +45, -45]
-    plate = laminated_plate(stack, plyt=plyt, laminaprop=laminaprop)
+    lam = laminated_plate(stack, plyt=plyt, laminaprop=laminaprop)
 
 
 and with the :func:`composites.utils.isotropic_plate` function::
 
     from composites import isotropic_plate
 
-    plate = isotropic_plate(thickness=5., E=E, nu=nu)
+    lam = isotropic_plate(thickness=5., E=E, nu=nu)
 
 Where the laminate stiffness matrix, the often called ``ABD`` matrix, with
 ``shape=(6, 6)``, can be accessed using::
 
-    >>> plate.ABD
+    >>> lam.ABD
 
 and when transverse shear stiffnesses are required, with ``shape=(2, 2)``::
 
-    >>> plate.Ats
+    >>> lam.Ats
 
 with the shear correction already applied. The transverse shear stresses
 through the thickness, for given shear forces ``Qy`` and ``Qx``, are obtained
 with::
 
-    >>> tau_yz, tau_xz = plate.calc_transverse_shear_stress(z, Qy, Qx)
+    >>> tau_yz, tau_xz = lam.calc_transverse_shear_stress(z, Qy, Qx)
+
+Objects are saved to and loaded from JSON files with::
+
+    >>> from composites import save_json, load_json
+    >>> save_json(lam, 'lam.json')
+    >>> lam = load_json('lam.json')
+
+see :mod:`composites.json_io`.
 
 .. automodule:: composites.core
     :members:
@@ -98,11 +106,16 @@ with::
 .. automodule:: composites.kassapoglou
     :members:
 
+.. automodule:: composites.json_io
+    :members: to_dict, from_dict, to_json, from_json, save_json, load_json
+
 """
 import os
 
 from .version import __version__
 from .utils import isotropic_plate, laminated_plate
+from .json_io import (to_dict, from_dict, to_json, from_json,
+                      save_json, load_json)
 
 def get_include():
     return os.path.join(os.path.dirname(__file__))

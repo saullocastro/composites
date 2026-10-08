@@ -27,6 +27,26 @@ With the ``composites`` module, you are able to calculate:
 * Based on Kassapoglou's book, local buckling under compression, shear, and
   post-buckling 
 
+* Saving and loading of laminates, plies, materials and lamination parameters
+  in JSON
+
+
+Running in the browser with Pyodide
+-----------------------------------
+
+From version 0.9.20, a WebAssembly wheel is published on PyPI for Pyodide 314
+(CPython 3.14), such that ``composites`` runs in the browser, e.g. in
+JupyterLite or in a web page with Pyodide::
+
+    import micropip
+    await micropip.install('composites')
+
+    from composites import laminated_plate, to_json
+    lam = laminated_plate([0, 45, -45, 90], plyt=0.125e-3,
+                          laminaprop=(142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
+    print(lam.ABD)
+    s = to_json(lam)  # strict JSON, readable with JSON.parse in JavaScript
+
 
 Code repository
 ---------------
@@ -37,14 +57,14 @@ https://github.com/saullocastro/composites
 Citing this library
 -------------------
 
-Castro, S. G. P. Methods for analysis and design of composites (Version 0.9.12) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
+Castro, S. G. P. Methods for analysis and design of composites (Version 0.9.20) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex::
     
     @misc{composites2026,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods for analysis and design of composites (Version 0.9.12)}},
+        title = {{Methods for analysis and design of composites (Version 0.9.20)}},
         year = 2026
         }
 

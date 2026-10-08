@@ -1,5 +1,51 @@
 # Changelog
 
+## 0.9.20 (2026-10-08)
+
+### Saving and loading in JSON
+
+JSON replaces pickle as the way to save objects to files. The new module
+`composites.json_io`, also available from `composites`, provides:
+
+- `save_json(obj, fname)` and `load_json(fname)`: save to and load from a
+  JSON file, given by its name or as a file object.
+- `to_json(obj)` and `from_json(s)`: the same with a JSON string.
+- `to_dict(obj)` and `from_dict(d)`: the same with a dictionary of
+  JSON-compatible types, e.g. to embed the objects in other JSON documents.
+
+They support `Laminate`, `Lamina`, `MatLamina`, `LaminationParameters` and
+`GradABD`. Unlike pickle, the JSON files are readable, do not depend on the
+Python or composites versions, and are safe to load from untrusted sources.
+All public attributes are stored, such that the loaded object is identical to
+the saved one, and a `MatLamina` shared by several plies is stored once and
+still shared after loading. `nan` and `inf` are stored as the strings
+`"NaN"`, `"Infinity"` and `"-Infinity"`, such that the output is strict JSON.
+The files carry a `format_version`, and loading a file from a newer format
+raises `ValueError`.
+
+Pickling `Laminate` and `GradABD` is still supported for `copy.deepcopy` and
+for passing objects between processes, e.g. with `multiprocessing`, but it is
+no longer recommended to save objects to files.
+
+### Pyodide (WebAssembly)
+
+- A WebAssembly wheel for Pyodide 314 (CPython 3.14), tagged
+  `pyemscripten_2026_0_wasm32` (PEP 783), is built with cibuildwheel, tested
+  in Pyodide on every push and published on PyPI, such that
+  `micropip.install('composites')` works in the browser.
+- `setup.py` detects the Emscripten cross-compilation of `pyodide-build` and
+  leaves out the GCC runtime link flags.
+- NumPy is no longer a build requirement, since no module uses its C API; it
+  is still a runtime requirement.
+
+### Maintenance
+
+- GitHub Actions updated: `actions/checkout@v7`, `actions/setup-python@v7`,
+  `codecov/codecov-action@v7`, `softprops/action-gh-release@v3` and
+  cibuildwheel 4.3.0.
+- `setup.py` imports `Extension` from `setuptools` instead of the removed
+  `distutils`.
+
 ## 0.9.12 (2026-10-02)
 
 ### New shear correction methods
