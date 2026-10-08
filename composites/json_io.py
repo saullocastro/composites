@@ -88,9 +88,18 @@ def _encode_float(value):
     return 'Infinity' if value > 0 else '-Infinity'
 
 
+_NON_FINITE = {'NaN': math.nan, 'Infinity': math.inf, '-Infinity': -math.inf}
+
+
 def _decode_float(value):
-    # NOTE float() accepts the strings 'NaN', 'Infinity' and '-Infinity'
-    if not isinstance(value, (numbers.Real, str)) or isinstance(value, bool):
+    # NOTE only the strings written by _encode_float are accepted, such that
+    #      e.g. "1.0" or "nan" are rejected as malformed
+    if isinstance(value, str):
+        if value in _NON_FINITE:
+            return _NON_FINITE[value]
+        raise ValueError('Expected a number, or "NaN", "Infinity" or '
+                         '"-Infinity", got %r' % (value, ))
+    if not isinstance(value, numbers.Real) or isinstance(value, bool):
         raise ValueError('Expected a number, got %r' % (value, ))
     return float(value)
 

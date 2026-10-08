@@ -203,8 +203,14 @@ def test_errors():
         from_dict(dict(d, data=dict(d['data'], A99=1.)))
     with pytest.raises(ValueError, match='Expected a number'):
         from_dict(dict(d, data=dict(d['data'], A11=None)))
-    with pytest.raises(ValueError):
-        from_dict(dict(d, data=dict(d['data'], A11='abc')))
+    # only the strings of the non-finite values are accepted
+    for value in ('abc', '1.0', 'nan', 'inf', '-inf', 'infinity', ''):
+        with pytest.raises(ValueError, match='"NaN", "Infinity" or'):
+            from_dict(dict(d, data=dict(d['data'], A11=value)))
+    with pytest.raises(ValueError, match='"NaN", "Infinity" or'):
+        from_dict(dict(d, data=dict(d['data'], stack=[0, '90'])))
+    with pytest.raises(ValueError, match='Expected a number'):
+        from_dict(dict(d, data=dict(d['data'], A11=[1.])))
     with pytest.raises(ValueError, match='material index'):
         plies = [dict(d['data']['plies'][0], matlamina=99)]
         from_dict(dict(d, data=dict(d['data'], plies=plies)))
