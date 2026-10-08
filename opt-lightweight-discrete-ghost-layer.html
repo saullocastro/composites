@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Tutorial: discrete-based lightweight optimisation using the ghost layer method &#8212; composites 0.9.12 documentation</title>
+    <title>Tutorial: discrete-based lightweight optimisation using the ghost layer method &#8212; composites 0.9.20 documentation</title>
   
   
   
@@ -26,19 +26,19 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=bf4b3093"></script>
+    <script src="_static/documentation_options.js?v=819b4e2c"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -51,6 +51,7 @@
     <link rel="next" title="Tutorial: Lightweight optimisation using a gradient-based lamination parameter approach" href="opt-lightweight-LP-gradient-Le-Riche.html" />
     <link rel="prev" title="Tutorials" href="tutorials.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
   
@@ -120,7 +121,7 @@
   
   
   
-    <p class="title logo__title">composites 0.9.12 documentation</p>
+    <p class="title logo__title">composites 0.9.20 documentation</p>
   
 </a></div>
     
@@ -465,7 +466,7 @@ h = ply_thickness*len(stack_ref)
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from composites import laminated_plate
 
-prop_ref = laminated_plate(stack=stack_ref, plyt=ply_thickness, laminaprop=laminaprop)
+lam_ref = laminated_plate(stack=stack_ref, plyt=ply_thickness, laminaprop=laminaprop)
 </pre></div>
 </div>
 </div>
@@ -478,15 +479,15 @@ prop_ref = laminated_plate(stack=stack_ref, plyt=ply_thickness, laminaprop=lamin
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from numpy import pi
 
-def calc_buckling_analytical(prop):
+def calc_buckling_analytical(lam):
     a = a_value*25.4/1000 # [m] along x
     b = b_value*25.4/1000 # [m] along y
     Nxx = load_Nxx_unit*4.448222/(25.4/1000) #[N/m]
     Nyy = load_Nyy_unit*4.448222/(25.4/1000) #[N/m]
-    D11 = prop.ABD[3, 3]
-    D12 = prop.ABD[3, 4]
-    D22 = prop.ABD[4, 4]
-    D66 = prop.ABD[5, 5]
+    D11 = lam.ABD[3, 3]
+    D12 = lam.ABD[3, 4]
+    D22 = lam.ABD[4, 4]
+    D66 = lam.ABD[5, 5]
     lambda_b_min = 1e30
     for m in range(1, 21):
         for n in range(1, 21):
@@ -509,19 +510,19 @@ def calc_buckling_analytical(prop):
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
 import scipy.optimize as opt
 
-def calc_failure_load_Haftka(prop):
+def calc_failure_load_Haftka(lam):
     def strain_MS(lbd):
         Nxx = -load_Nxx_unit*4.448222/(25.4/1000) #[N/m]
         Nyy = -load_Nyy_unit*4.448222/(25.4/1000) #[N/m]
         Nxx = lbd*Nxx*1.5
         Nyy = lbd*Nyy*1.5
         vecN = np.asarray([Nxx, Nyy])
-        A11 = prop.ABD[0, 0]
-        A12 = prop.ABD[0, 1]
-        A22 = prop.ABD[1, 1]
+        A11 = lam.ABD[0, 0]
+        A12 = lam.ABD[0, 1]
+        A22 = lam.ABD[1, 1]
         exx, eyy = np.linalg.inv(np.array([[A11, A12], [A12, A22]])) @ vecN
         margin_of_safety = 1e15
-        for thetadeg in prop.stack:
+        for thetadeg in lam.stack:
             cost = np.cos(np.deg2rad(thetadeg))
             sint = np.sin(np.deg2rad(thetadeg))
             epsilon_i_1 = cost**2*exx + sint**2*eyy
@@ -552,10 +553,10 @@ def calc_failure_load_Haftka(prop):
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>lambda_cb_ref_analytical = calc_buckling_analytical(prop_ref)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>lambda_cb_ref_analytical = calc_buckling_analytical(lam_ref)
 print('lambda_cb_ref_analytical', lambda_cb_ref_analytical)
 
-lambda_cs_ref = calc_failure_load_Haftka(prop_ref)
+lambda_cs_ref = calc_failure_load_Haftka(lam_ref)
 print('lambda_cs_ref', lambda_cs_ref)
 assert np.isclose(lambda_cs_ref, 13518.66, rtol=1e-3)
 </pre></div>
@@ -635,9 +636,9 @@ def layup_thick_from_x(x):
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#def objective_Workshop1(x): # NOTE to be minimized
 #    stack = discrete_stack_from_continuous_x(x)
-#    prop = laminated_plate(stack=stack, plyt=ply_thickness, laminaprop=laminaprop)
-#    lambda_cb = calc_buckling_FE(prop)
-#    lambda_cs = calc_failure_load_Haftka(prop)
+#    lam = laminated_plate(stack=stack, plyt=ply_thickness, laminaprop=laminaprop)
+#    lambda_cb = calc_buckling_FE(lam)
+#    lambda_cs = calc_failure_load_Haftka(lam)
 #    p = 0.08 # NOTE from the reference paper
 #    obj = (1 - p)*min(lambda_cs, lambda_cb)
 #    return 1/obj
@@ -659,14 +660,14 @@ def mass(x): # NOTE to be minimized
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def calc_constr_buckling(x): # NOTE feasible when &lt;= 0
     stack, thicknesses = layup_thick_from_x(x)
-    prop = laminated_plate(stack=stack, plyts=thicknesses, laminaprop=laminaprop)
-    lambda_cb = calc_buckling_analytical(prop)
+    lam = laminated_plate(stack=stack, plyts=thicknesses, laminaprop=laminaprop)
+    lambda_cb = calc_buckling_analytical(lam)
     return 1 - lambda_cb/target_lambda
 
 def calc_constr_failure(x): # NOTE feasible when &lt;= 0
     stack, thicknesses = layup_thick_from_x(x)
-    prop = laminated_plate(stack=stack, plyts=thicknesses, laminaprop=laminaprop)
-    lambda_cs = calc_failure_load_Haftka(prop)
+    lam = laminated_plate(stack=stack, plyts=thicknesses, laminaprop=laminaprop)
+    lambda_cs = calc_failure_load_Haftka(lam)
     return 1 - lambda_cs/target_lambda
 
 test = [2, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
@@ -674,8 +675,8 @@ stack, thicknesses = layup_thick_from_x(test)
 print(stack.tolist())
 print(stack_ref_half)
 print(len(stack))
-prop = laminated_plate(stack=stack, plyts=thicknesses, laminaprop=laminaprop)
-lambda_cb = calc_buckling_analytical(prop)
+lam = laminated_plate(stack=stack, plyts=thicknesses, laminaprop=laminaprop)
+lambda_cb = calc_buckling_analytical(lam)
 print(lambda_cb)
 </pre></div>
 </div>
@@ -793,19 +794,19 @@ Constraint violation: [0.]
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>stack_opt, thicknesses_opt = layup_thick_from_x(res.X)
-prop_opt = laminated_plate(stack=stack_opt, plyts=thicknesses_opt, laminaprop=laminaprop)
-ms_buckling_opt = calc_buckling_analytical(prop_opt)/target_lambda - 1
-ms_failure_opt = calc_failure_load_Haftka(prop_opt)/target_lambda - 1
+lam_opt = laminated_plate(stack=stack_opt, plyts=thicknesses_opt, laminaprop=laminaprop)
+ms_buckling_opt = calc_buckling_analytical(lam_opt)/target_lambda - 1
+ms_failure_opt = calc_failure_load_Haftka(lam_opt)/target_lambda - 1
 print('num of layers', len(stack_opt))
 print('mass', mass(res.X))
 print('ms_buckling_opt', ms_buckling_opt)
 print('ms_failure_opt', ms_failure_opt)
 print('optimal layup', stack_opt)
 
-lambda_cb_opt_analytical = calc_buckling_analytical(prop_opt)
+lambda_cb_opt_analytical = calc_buckling_analytical(lam_opt)
 print('lambda_cb_opt_analytical', lambda_cb_opt_analytical)
 
-lambda_cs_opt = calc_failure_load_Haftka(prop_opt)
+lambda_cs_opt = calc_failure_load_Haftka(lam_opt)
 print('lambda_cs_opt', lambda_cs_opt)
 </pre></div>
 </div>
@@ -934,8 +935,8 @@ lambda_cs_opt 11308.335793832613
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -968,7 +969,7 @@ lambda_cs_opt 11308.335793832613
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
 </p></div>
       
     </div>

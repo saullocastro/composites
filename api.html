@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>composites API (composites) &#8212; composites 0.9.12 documentation</title>
+    <title>composites API (composites) &#8212; composites 0.9.20 documentation</title>
   
   
   
@@ -26,18 +26,18 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=bf4b3093"></script>
+    <script src="_static/documentation_options.js?v=819b4e2c"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -49,6 +49,7 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Tutorial: polar plots for laminate stiffness" href="post-polar-plots-laminate-stiffness.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
   
@@ -118,7 +119,7 @@
   
   
   
-    <p class="title logo__title">composites 0.9.12 documentation</p>
+    <p class="title logo__title">composites 0.9.20 documentation</p>
   
 </a></div>
     
@@ -393,30 +394,37 @@ plates.</p>
 <span class="n">laminaprop</span> <span class="o">=</span> <span class="p">(</span><span class="n">E11</span><span class="p">,</span> <span class="n">E22</span><span class="p">,</span> <span class="n">nu12</span><span class="p">,</span> <span class="n">G12</span><span class="p">,</span> <span class="n">G13</span><span class="p">,</span> <span class="n">G23</span><span class="p">)</span>
 <span class="n">plyt</span> <span class="o">=</span> <span class="n">ply_thickness</span>
 <span class="n">stack</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="o">+</span><span class="mi">45</span><span class="p">,</span> <span class="o">-</span><span class="mi">45</span><span class="p">]</span>
-<span class="n">plate</span> <span class="o">=</span> <span class="n">laminated_plate</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">plyt</span><span class="o">=</span><span class="n">plyt</span><span class="p">,</span> <span class="n">laminaprop</span><span class="o">=</span><span class="n">laminaprop</span><span class="p">)</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="n">laminated_plate</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">plyt</span><span class="o">=</span><span class="n">plyt</span><span class="p">,</span> <span class="n">laminaprop</span><span class="o">=</span><span class="n">laminaprop</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>and with the <a class="reference internal" href="#composites.utils.isotropic_plate" title="composites.utils.isotropic_plate"><code class="xref py py-func docutils literal notranslate"><span class="pre">composites.utils.isotropic_plate()</span></code></a> function:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">composites</span><span class="w"> </span><span class="kn">import</span> <span class="n">isotropic_plate</span>
 
-<span class="n">plate</span> <span class="o">=</span> <span class="n">isotropic_plate</span><span class="p">(</span><span class="n">thickness</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="n">nu</span><span class="p">)</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="n">isotropic_plate</span><span class="p">(</span><span class="n">thickness</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="n">nu</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Where the laminate stiffness matrix, the often called <code class="docutils literal notranslate"><span class="pre">ABD</span></code> matrix, with
 <code class="docutils literal notranslate"><span class="pre">shape=(6,</span> <span class="pre">6)</span></code>, can be accessed using:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plate</span><span class="o">.</span><span class="n">ABD</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lam</span><span class="o">.</span><span class="n">ABD</span>
 </pre></div>
 </div>
 <p>and when transverse shear stiffnesses are required, with <code class="docutils literal notranslate"><span class="pre">shape=(2,</span> <span class="pre">2)</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plate</span><span class="o">.</span><span class="n">Ats</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lam</span><span class="o">.</span><span class="n">Ats</span>
 </pre></div>
 </div>
 <p>with the shear correction already applied. The transverse shear stresses
 through the thickness, for given shear forces <code class="docutils literal notranslate"><span class="pre">Qy</span></code> and <code class="docutils literal notranslate"><span class="pre">Qx</span></code>, are obtained
 with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tau_yz</span><span class="p">,</span> <span class="n">tau_xz</span> <span class="o">=</span> <span class="n">plate</span><span class="o">.</span><span class="n">calc_transverse_shear_stress</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">Qy</span><span class="p">,</span> <span class="n">Qx</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tau_yz</span><span class="p">,</span> <span class="n">tau_xz</span> <span class="o">=</span> <span class="n">lam</span><span class="o">.</span><span class="n">calc_transverse_shear_stress</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">Qy</span><span class="p">,</span> <span class="n">Qx</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Objects are saved to and loaded from JSON files with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">composites</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_json</span><span class="p">,</span> <span class="n">load_json</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">save_json</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="s1">'lam.json'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lam</span> <span class="o">=</span> <span class="n">load_json</span><span class="p">(</span><span class="s1">'lam.json'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>see <a class="reference internal" href="#module-composites.json_io" title="composites.json_io"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.json_io</span></code></a>.</p>
 <section id="composites-core-module-composites-core">
 <span id="module-composites.core"></span><h2>Composites Core Module (<a class="reference internal" href="#module-composites.core" title="composites.core"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.core</span></code></a>)<a class="headerlink" href="#composites-core-module-composites-core" title="Link to this heading">#</a></h2>
 </section>
@@ -1901,6 +1909,173 @@ that finds the solution of Eqs. 6.29 and 6.30 simultaneously.</p>
 </dl>
 </dd></dl>
 
+<section id="saving-and-loading-in-json-composites-json-io">
+<span id="module-composites.json_io"></span><h2>Saving and loading in JSON (<a class="reference internal" href="#module-composites.json_io" title="composites.json_io"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.json_io</span></code></a>)<a class="headerlink" href="#saving-and-loading-in-json-composites-json-io" title="Link to this heading">#</a></h2>
+<p>The objects <a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a>, <a class="reference internal" href="#composites.core.Lamina" title="composites.core.Lamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lamina</span></code></a>, <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a>,
+<a class="reference internal" href="#composites.core.LaminationParameters" title="composites.core.LaminationParameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">LaminationParameters</span></code></a> and <a class="reference internal" href="#composites.core.GradABD" title="composites.core.GradABD"><code class="xref py py-class docutils literal notranslate"><span class="pre">GradABD</span></code></a> are saved to and loaded
+from JSON with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">composites</span><span class="w"> </span><span class="kn">import</span> <span class="n">laminated_plate</span><span class="p">,</span> <span class="n">save_json</span><span class="p">,</span> <span class="n">load_json</span>
+
+<span class="n">lam</span> <span class="o">=</span> <span class="n">laminated_plate</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="o">-</span><span class="mi">45</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">plyt</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">laminaprop</span><span class="o">=</span><span class="n">laminaprop</span><span class="p">)</span>
+<span class="n">save_json</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="s1">'laminate.json'</span><span class="p">)</span>
+<span class="n">lam2</span> <span class="o">=</span> <span class="n">load_json</span><span class="p">(</span><span class="s1">'laminate.json'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The JSON is plain text, independent of the Python and composites versions,
+and it is safe to load from untrusted sources, unlike pickle. It can also be
+exchanged with JavaScript when running in the browser through Pyodide.</p>
+<p>All public attributes are stored, including the derived ones, such as the
+<code class="docutils literal notranslate"><span class="pre">ABD</span></code> matrix and the constitutive terms of each ply, such that the loaded
+object is identical to the saved one. A <a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a> shared by several
+plies of a <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> is stored once and is still shared after
+loading. The transverse shear distribution used by
+<a class="reference internal" href="#composites.core.Laminate.calc_transverse_shear_stress" title="composites.core.Laminate.calc_transverse_shear_stress"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.calc_transverse_shear_stress()</span></code></a> is not stored and is
+recomputed on demand. Attributes of Python subclasses that are not public
+attributes of the base class are not stored, and the loaded object has the
+type of the base class.</p>
+<p>The values <code class="docutils literal notranslate"><span class="pre">nan</span></code>, <code class="docutils literal notranslate"><span class="pre">inf</span></code> and <code class="docutils literal notranslate"><span class="pre">-inf</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">Abarbar44</span></code> of a ply with a
+singular transverse shear matrix, are stored as the strings <code class="docutils literal notranslate"><span class="pre">&quot;NaN&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;Infinity&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;-Infinity&quot;</span></code>, such that the output is strict JSON,
+readable by <code class="docutils literal notranslate"><span class="pre">JSON.parse</span></code> in JavaScript.</p>
+<p>The format of the saved data is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"Laminate"</span><span class="p">,</span>
+  <span class="s2">"format_version"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s2">"composites_version"</span><span class="p">:</span> <span class="s2">"0.9.20"</span><span class="p">,</span>
+  <span class="s2">"data"</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="composites.json_io.from_dict">
+<span class="sig-prename descclassname"><span class="pre">composites.json_io.</span></span><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.json_io.from_dict" title="Link to this definition">#</a></dt>
+<dd><p>Create an object from a dictionary created by <a class="reference internal" href="#composites.json_io.to_dict" title="composites.json_io.to_dict"><code class="xref py py-func docutils literal notranslate"><span class="pre">to_dict()</span></code></a></p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>d</strong><span class="classifier">dict</span></dt><dd><p>Dictionary as returned by <a class="reference internal" href="#composites.json_io.to_dict" title="composites.json_io.to_dict"><code class="xref py py-func docutils literal notranslate"><span class="pre">to_dict()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>obj</strong><span class="classifier"><a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a>, <a class="reference internal" href="#composites.core.Lamina" title="composites.core.Lamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lamina</span></code></a>, <a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a>, <a class="reference internal" href="#composites.core.LaminationParameters" title="composites.core.LaminationParameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">LaminationParameters</span></code></a> or <a class="reference internal" href="#composites.core.GradABD" title="composites.core.GradABD"><code class="xref py py-class docutils literal notranslate"><span class="pre">GradABD</span></code></a></span></dt><dd><p>The object. Attributes missing in <code class="docutils literal notranslate"><span class="pre">d</span></code> keep their default values.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">d</span></code> is not valid, has unknown keys, or was created by a newer
+format version.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="composites.json_io.from_json">
+<span class="sig-prename descclassname"><span class="pre">composites.json_io.</span></span><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.json_io.from_json" title="Link to this definition">#</a></dt>
+<dd><p>Create an object from a JSON string created by <a class="reference internal" href="#composites.json_io.to_json" title="composites.json_io.to_json"><code class="xref py py-func docutils literal notranslate"><span class="pre">to_json()</span></code></a></p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>s</strong><span class="classifier">str or bytes</span></dt><dd><p>The JSON string.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>obj</strong><span class="classifier"><a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a>, <a class="reference internal" href="#composites.core.Lamina" title="composites.core.Lamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lamina</span></code></a>, <a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a>, <a class="reference internal" href="#composites.core.LaminationParameters" title="composites.core.LaminationParameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">LaminationParameters</span></code></a> or <a class="reference internal" href="#composites.core.GradABD" title="composites.core.GradABD"><code class="xref py py-class docutils literal notranslate"><span class="pre">GradABD</span></code></a></span></dt><dd><p>The object.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="composites.json_io.load_json">
+<span class="sig-prename descclassname"><span class="pre">composites.json_io.</span></span><span class="sig-name descname"><span class="pre">load_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.json_io.load_json" title="Link to this definition">#</a></dt>
+<dd><p>Load an object from a JSON file created by <a class="reference internal" href="#composites.json_io.save_json" title="composites.json_io.save_json"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_json()</span></code></a></p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fname</strong><span class="classifier">str, path-like or file object</span></dt><dd><p>Name of the file, or a file object opened for reading.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>obj</strong><span class="classifier"><a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a>, <a class="reference internal" href="#composites.core.Lamina" title="composites.core.Lamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lamina</span></code></a>, <a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a>, <a class="reference internal" href="#composites.core.LaminationParameters" title="composites.core.LaminationParameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">LaminationParameters</span></code></a> or <a class="reference internal" href="#composites.core.GradABD" title="composites.core.GradABD"><code class="xref py py-class docutils literal notranslate"><span class="pre">GradABD</span></code></a></span></dt><dd><p>The object.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="composites.json_io.save_json">
+<span class="sig-prename descclassname"><span class="pre">composites.json_io.</span></span><span class="sig-name descname"><span class="pre">save_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.json_io.save_json" title="Link to this definition">#</a></dt>
+<dd><p>Save an object to a JSON file</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>obj</strong><span class="classifier"><a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a>, <a class="reference internal" href="#composites.core.Lamina" title="composites.core.Lamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lamina</span></code></a>, <a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a>, <a class="reference internal" href="#composites.core.LaminationParameters" title="composites.core.LaminationParameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">LaminationParameters</span></code></a> or <a class="reference internal" href="#composites.core.GradABD" title="composites.core.GradABD"><code class="xref py py-class docutils literal notranslate"><span class="pre">GradABD</span></code></a></span></dt><dd><p>The object to be saved.</p>
+</dd>
+<dt><strong>fname</strong><span class="classifier">str, path-like or file object</span></dt><dd><p>Name of the file, or a file object opened in text mode for writing.</p>
+</dd>
+<dt><strong>indent</strong><span class="classifier">int or None, optional</span></dt><dd><p>Indentation of the JSON output, <code class="docutils literal notranslate"><span class="pre">None</span></code> for the most compact form.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="composites.json_io.to_dict">
+<span class="sig-prename descclassname"><span class="pre">composites.json_io.</span></span><span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.json_io.to_dict" title="Link to this definition">#</a></dt>
+<dd><p>Convert an object into a dictionary of JSON-compatible types</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>obj</strong><span class="classifier"><a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a>, <a class="reference internal" href="#composites.core.Lamina" title="composites.core.Lamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lamina</span></code></a>, <a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a>, <a class="reference internal" href="#composites.core.LaminationParameters" title="composites.core.LaminationParameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">LaminationParameters</span></code></a> or <a class="reference internal" href="#composites.core.GradABD" title="composites.core.GradABD"><code class="xref py py-class docutils literal notranslate"><span class="pre">GradABD</span></code></a></span></dt><dd><p>The object to be converted.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>d</strong><span class="classifier">dict</span></dt><dd><p>Dictionary with the keys <code class="docutils literal notranslate"><span class="pre">'type'</span></code>, <code class="docutils literal notranslate"><span class="pre">'format_version'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'composites_version'</span></code> and <code class="docutils literal notranslate"><span class="pre">'data'</span></code>, containing only <code class="docutils literal notranslate"><span class="pre">dict</span></code>,
+<code class="docutils literal notranslate"><span class="pre">list</span></code>, <code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">float</span></code> and <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="composites.json_io.to_json">
+<span class="sig-prename descclassname"><span class="pre">composites.json_io.</span></span><span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.json_io.to_json" title="Link to this definition">#</a></dt>
+<dd><p>Convert an object into a JSON string</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>obj</strong><span class="classifier"><a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a>, <a class="reference internal" href="#composites.core.Lamina" title="composites.core.Lamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lamina</span></code></a>, <a class="reference internal" href="#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a>, <a class="reference internal" href="#composites.core.LaminationParameters" title="composites.core.LaminationParameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">LaminationParameters</span></code></a> or <a class="reference internal" href="#composites.core.GradABD" title="composites.core.GradABD"><code class="xref py py-class docutils literal notranslate"><span class="pre">GradABD</span></code></a></span></dt><dd><p>The object to be converted.</p>
+</dd>
+<dt><strong>kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">json.dumps()</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">indent=2</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>s</strong><span class="classifier">str</span></dt><dd><p>The JSON string.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
@@ -2010,6 +2185,13 @@ that finds the solution of Eqs. 6.29 and 6.30 simultaneously.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.kassapoglou.calc_Nxx_crit_combined_shear_full"><code class="docutils literal notranslate"><span class="pre">calc_Nxx_crit_combined_shear_full()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.kassapoglou.calc_Nxy_crit"><code class="docutils literal notranslate"><span class="pre">calc_Nxy_crit()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.kassapoglou.calc_beff"><code class="docutils literal notranslate"><span class="pre">calc_beff()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#saving-and-loading-in-json-composites-json-io">Saving and loading in JSON (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.json_io</span></code>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.json_io.from_dict"><code class="docutils literal notranslate"><span class="pre">from_dict()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.json_io.from_json"><code class="docutils literal notranslate"><span class="pre">from_json()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.json_io.load_json"><code class="docutils literal notranslate"><span class="pre">load_json()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.json_io.save_json"><code class="docutils literal notranslate"><span class="pre">save_json()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.json_io.to_dict"><code class="docutils literal notranslate"><span class="pre">to_dict()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.json_io.to_json"><code class="docutils literal notranslate"><span class="pre">to_json()</span></code></a></li>
 </ul>
   </nav></div>
 
@@ -2035,8 +2217,8 @@ that finds the solution of Eqs. 6.29 and 6.30 simultaneously.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -2069,7 +2251,7 @@ that finds the solution of Eqs. 6.29 and 6.30 simultaneously.</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
 </p></div>
       
     </div>
