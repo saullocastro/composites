@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.20 (2026-10-08)
+## 0.9.21 (2026-10-08)
 
 ### Saving and loading in JSON
 
@@ -40,6 +40,7 @@ no longer recommended to save objects to files.
 
 ### Maintenance
 
+- Python 3.8 support dropped, `python_requires='>=3.9'`.
 - GitHub Actions updated: `actions/checkout@v7`, `actions/setup-python@v7`,
   `codecov/codecov-action@v7`, `softprops/action-gh-release@v3` and
   cibuildwheel 4.3.0.

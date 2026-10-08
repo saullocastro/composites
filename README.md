@@ -48,7 +48,7 @@ The documentation is available on: https://saullocastro.github.io/composites.
 Running in the browser with Pyodide
 -----------------------------------
 
-From version 0.9.20, a WebAssembly wheel is published on PyPI for Pyodide 314
+From version 0.9.21, a WebAssembly wheel is published on PyPI for Pyodide 314
 (CPython 3.14), such that ``composites`` runs in the browser, e.g. in
 JupyterLite or in a web page with Pyodide::
 
@@ -65,14 +65,14 @@ JupyterLite or in a web page with Pyodide::
 Citing this repository
 ----------------------
 
-Castro, SGP. Methods for analysis and design of composites (Version 0.9.20) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
+Castro, SGP. Methods for analysis and design of composites (Version 0.9.21) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex :
     
     @misc{composites2026,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods for analysis and design of composites (Version 0.9.20)}},
+        title = {{Methods for analysis and design of composites (Version 0.9.21)}},
         year = 2026
         }
 
@@ -95,7 +95,7 @@ History
 - version 0.8.0 onwards: support for Third-order Shear Deformation Theory (TSDT)
 - version 0.9.1 onwards: A44, A45, A55 with the shear correction already applied (Rohwer, 1988), transverse shear stress recovery, picklable Laminate and GradABD, improved Cython and compiler flags (0.9.2), see CHANGELOG.md
 - version 0.9.12 onwards: shear correction methods of Whitney (1973), Chow (1971), Birman and Bert (2002) and Yang, Norris and Stavsky (1966), a posteriori transverse shear stresses and energies (Noor and Peters, 1989), Atrans, Dtrans and Ftrans deprecated in favour of Ats, Dts and Fts, see CHANGELOG.md
-- version 0.9.20 onwards: saving and loading in JSON, support for Pyodide (WebAssembly) with wheels on PyPI, see CHANGELOG.md
+- version 0.9.21 onwards: saving and loading in JSON, support for Pyodide (WebAssembly) with wheels on PyPI, see CHANGELOG.md
 
 
 License

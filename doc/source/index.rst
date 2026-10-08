@@ -34,7 +34,7 @@ With the ``composites`` module, you are able to calculate:
 Running in the browser with Pyodide
 -----------------------------------
 
-From version 0.9.20, a WebAssembly wheel is published on PyPI for Pyodide 314
+From version 0.9.21, a WebAssembly wheel is published on PyPI for Pyodide 314
 (CPython 3.14), such that ``composites`` runs in the browser, e.g. in
 JupyterLite or in a web page with Pyodide::
 
@@ -57,14 +57,14 @@ https://github.com/saullocastro/composites
 Citing this library
 -------------------
 
-Castro, S. G. P. Methods for analysis and design of composites (Version 0.9.20) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
+Castro, S. G. P. Methods for analysis and design of composites (Version 0.9.21) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex::
     
     @misc{composites2026,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods for analysis and design of composites (Version 0.9.20)}},
+        title = {{Methods for analysis and design of composites (Version 0.9.21)}},
         year = 2026
         }
 

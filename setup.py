@@ -77,7 +77,6 @@ Operating System :: Microsoft :: Windows
 Operating System :: Unix
 Operating System :: POSIX :: BSD
 Environment :: WebAssembly :: Emscripten
-Programming Language :: Python :: 3.8
 Programming Language :: Python :: 3.9
 Programming Language :: Python :: 3.10
 Programming Language :: Python :: 3.11
@@ -89,7 +88,7 @@ License :: OSI Approved :: BSD License
 """
 
 is_released = True
-version = '0.9.20'
+version = '0.9.21'
 
 fullversion = write_version_py(version, is_released)
 
@@ -210,6 +209,7 @@ s = setup(
     data_files = data_files,
     classifiers = [_f for _f in CLASSIFIERS.split('\n') if _f],
     install_requires = install_requires,
+    python_requires = '>=3.9',
     ext_modules = ext_modules,
     packages = find_packages(),
 )
