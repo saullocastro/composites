@@ -35,6 +35,9 @@ materials. Usually, this module is used to calculate:
 
 * Stiffness matrices (ABD) based on lamination parameters
 
+* Saving and loading of laminates, plies, materials and lamination parameters
+  in JSON
+
 
 Citing this repository
 ----------------------

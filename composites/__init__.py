@@ -89,6 +89,14 @@ with::
 
     >>> tau_yz, tau_xz = lam.calc_transverse_shear_stress(z, Qy, Qx)
 
+Objects are saved to and loaded from JSON files with::
+
+    >>> from composites import save_json, load_json
+    >>> save_json(lam, 'lam.json')
+    >>> lam = load_json('lam.json')
+
+see :mod:`composites.json_io`.
+
 .. automodule:: composites.core
     :members:
 
@@ -98,11 +106,16 @@ with::
 .. automodule:: composites.kassapoglou
     :members:
 
+.. automodule:: composites.json_io
+    :members: to_dict, from_dict, to_json, from_json, save_json, load_json
+
 """
 import os
 
 from .version import __version__
 from .utils import isotropic_plate, laminated_plate
+from .json_io import (to_dict, from_dict, to_json, from_json,
+                      save_json, load_json)
 
 def get_include():
     return os.path.join(os.path.dirname(__file__))

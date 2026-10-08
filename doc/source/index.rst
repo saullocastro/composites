@@ -27,6 +27,9 @@ With the ``composites`` module, you are able to calculate:
 * Based on Kassapoglou's book, local buckling under compression, shear, and
   post-buckling 
 
+* Saving and loading of laminates, plies, materials and lamination parameters
+  in JSON
+
 
 Code repository
 ---------------
