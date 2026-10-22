@@ -6,8 +6,9 @@
 #cython: infer_types=False
 #cython: overflowcheck=False
 """
+===============================================
 Composites Core Module (:mod:`composites.core`)
-==============================================================
+===============================================
 
 .. currentmodule:: composites.core
 
