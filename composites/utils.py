@@ -84,6 +84,27 @@ def read_laminaprop(laminaprop, rho=0):
     matlam : MatLamina
         A :class:`.MatLamina` object.
 
+    Notes
+    -----
+    The Poisson's ratios not given follow from the reciprocity relations of
+    an orthotropic material, `\nu_{ij}/E_i = \nu_{ji}/E_j`, which make its
+    compliance matrix symmetric [1]_:
+
+    .. math::
+
+        \nu_{21} = \nu_{12} \frac{E_2}{E_1}, \quad
+        \nu_{31} = \nu_{13} \frac{E_3}{E_1}, \quad
+        \nu_{32} = \nu_{23} \frac{E_3}{E_2}
+
+    and for an isotropic material `G = E/(2(1 + \nu))`. With 2 or 6 entries,
+    ``e3 = 0`` makes the constitutive constants of :meth:`.MatLamina.rebuild`
+    the plane-stress reduced stiffnesses.
+
+    References
+    ----------
+    .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells:
+       Theory and Analysis, Second Edition, CRC Press, 2004.
+
     """
     matlam = MatLamina()
 
@@ -299,14 +320,7 @@ def double_double_laminate(thickness, phideg, psideg, laminaprop=None, rho=0.):
     r"""Create a double-double laminate
 
     A double-double (DD) laminate consists of `[\pm\phi,\pm\psi]`, with
-    ``phideg=`` `\phi`, and ``psideg=`` `\psi`. With the principle of
-    homogenization, at the limit where many plies are used we have that `B=0`.
-    Reference:
-
-        Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., 2020,
-        “D and DD-Drop Layup Optimization of Aircraft Wing Panels under
-        Multi-Load Case Design Environment,” Compos. Struct., 248(January), p.
-        112518.
+    ``phideg=`` `\phi`, and ``psideg=`` `\psi`.
 
     In a new :class:`.Laminate` object, the stiffnesses ``A11`` to ``A66`` and
     ``D11`` to ``D66`` are computed from ``thickness``, from the trace and the
@@ -337,6 +351,43 @@ def double_double_laminate(thickness, phideg, psideg, laminaprop=None, rho=0.):
     See Also
     --------
     n_double_laminate
+
+    Notes
+    -----
+    With the principle of homogenization, at the limit where many plies are
+    used we have that `B=0`, see Shrivastava et al. [1]_. The four plies
+    `\pm\phi`, `\pm\psi` have the same thickness, such that the stiffnesses
+    are the averages of the ply stiffnesses of
+    :meth:`.MatLamina.get_invariant_matrix` over the four angles, written with
+    the trace `tr` and the trace-normalized invariants `u_i^*` of
+    :meth:`.MatLamina.trace_normalize_plane_stress` [2]_. With `\alpha =
+    (\phi + \psi)/2` and `\beta = (\phi - \psi)/2`, the averages of `\cos
+    2\theta` and `\cos 4\theta` are `\cos 2\alpha \cos 2\beta` and `\cos
+    4\alpha \cos 4\beta`, and those of `\sin 2\theta` and `\sin 4\theta`
+    vanish:
+
+    .. math::
+
+        A_{11}^* = u_1^* + u_2^* \cos 2\alpha \cos 2\beta + u_3^* \cos
+        4\alpha \cos 4\beta, \quad
+        A_{22}^* = u_1^* - u_2^* \cos 2\alpha \cos 2\beta + u_3^* \cos
+        4\alpha \cos 4\beta \\
+        A_{12}^* = u_4^* - u_3^* \cos 4\alpha \cos 4\beta, \quad
+        A_{66}^* = u_5^* - u_3^* \cos 4\alpha \cos 4\beta, \quad
+        A_{16}^* = A_{26}^* = 0 \\
+        A_{ij} = tr \, A_{ij}^* h, \qquad D_{ij} = tr \, A_{ij}^* h^3/12
+
+    where the bending stiffnesses are those of the homogenized laminate, see
+    :meth:`.Laminate.make_smeared`.
+
+    References
+    ----------
+    .. [1] Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., D and
+       DD-Drop Layup Optimization of Aircraft Wing Panels under Multi-Load
+       Case Design Environment, Composite Structures, 248, 112518, 2020.
+    .. [2] Melo, J. D. D., Bi, J., and Tsai, S. W., A Novel Invariant-Based
+       Design Approach to Carbon Fiber Reinforced Laminates, Composite
+       Structures, 159, 44-52, 2017.
 
     """
     m = read_laminaprop(laminaprop, rho)
@@ -392,14 +443,7 @@ def n_double_laminate(thickness, angles_deg, laminaprop=None, rho=0.):
     This code is considerably slower than :func:`composites.core.n_double_laminate`.
 
     An N-double laminate consists of `[\pm\phi_1,\pm\phi_2, \cdots,
-    \pm\phi_n]`. With the principle of homogenization, at the limit where many
-    plies are used we have that `B=0`.  Based on the double-double laminate as
-    described by:
-
-        Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., 2020,
-        “D and DD-Drop Layup Optimization of Aircraft Wing Panels under
-        Multi-Load Case Design Environment,” Compos. Struct., 248(January), p.
-        112518.
+    \pm\phi_n]`.
 
     In a new :class:`.Laminate` object, the stiffnesses ``A11`` to ``A66`` and
     ``D11`` to ``D66`` are computed from ``thickness``, from the trace and the
@@ -428,6 +472,20 @@ def n_double_laminate(thickness, angles_deg, laminaprop=None, rho=0.):
     See Also
     --------
     composites.core.n_double_laminate, double_double_laminate
+
+    Notes
+    -----
+    With the principle of homogenization, at the limit where many plies are
+    used we have that `B=0`. Based on the double-double laminate as described
+    by Shrivastava et al. [1]_. The stiffnesses are the same as those of
+    :func:`composites.core.n_double_laminate`, with `n` the number of angles
+    of ``angles_deg``.
+
+    References
+    ----------
+    .. [1] Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., D and
+       DD-Drop Layup Optimization of Aircraft Wing Panels under Multi-Load
+       Case Design Environment, Composite Structures, 248, 112518, 2020.
 
     """
     m = read_laminaprop(laminaprop, rho)
