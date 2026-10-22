@@ -65,14 +65,14 @@ JupyterLite or in a web page with Pyodide::
 Citing this repository
 ----------------------
 
-Castro, SGP. Methods for analysis and design of composites (Version 0.9.21) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
+Castro, SGP. Methods for analysis and design of composites (Version 0.9.31) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex :
     
     @misc{composites2026,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods for analysis and design of composites (Version 0.9.21)}},
+        title = {{Methods for analysis and design of composites (Version 0.9.31)}},
         year = 2026
         }
 
@@ -96,6 +96,7 @@ History
 - version 0.9.1 onwards: A44, A45, A55 with the shear correction already applied (Rohwer, 1988), transverse shear stress recovery, picklable Laminate and GradABD, improved Cython and compiler flags (0.9.2), see CHANGELOG.md
 - version 0.9.12 onwards: shear correction methods of Whitney (1973), Chow (1971), Birman and Bert (2002) and Yang, Norris and Stavsky (1966), a posteriori transverse shear stresses and energies (Noor and Peters, 1989), Atrans, Dtrans and Ftrans deprecated in favour of Ats, Dts and Fts, see CHANGELOG.md
 - version 0.9.21 onwards: saving and loading in JSON, support for Pyodide (WebAssembly) with wheels on PyPI, see CHANGELOG.md
+- version 0.9.31 onwards: density moments intrhoz3, intrhoz4 and intrhoz6 for the mass matrices of the TSDT, JSON format version 2 (files of format 1 must be created again), fixed MatLamina c11 and q31 and the A66, B66, D66 rows of GradABD.calc_LP_grad, see CHANGELOG.md
 
 
 License
