@@ -1,0 +1,2 @@
+.. automodule:: composites.core
+    :members:

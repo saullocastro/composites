@@ -3,7 +3,7 @@ r"""
 composites API (:mod:`composites`)
 ==================================
 
-.. currentmodule::composites
+.. currentmodule:: composites
 
 The ``composites`` module includes functions used to calculate properties and
 perform analysis on laminated composites and isotropic plates.
@@ -87,18 +87,6 @@ Objects are saved to and loaded from JSON files with::
 
 see :mod:`composites.json_io`.
 
-.. automodule:: composites.core
-    :members:
-
-.. automodule:: composites.utils
-    :members:
-
-.. automodule:: composites.kassapoglou
-    :members:
-
-.. automodule:: composites.json_io
-    :members: to_dict, from_dict, to_json, from_json, save_json, load_json
-
 Notes
 -----
 The shear correction methods are, see
@@ -159,10 +147,9 @@ from .json_io import (to_dict, from_dict, to_json, from_json,
 def get_include():
     """Directory of the installed ``composites`` package
 
-    Returns the directory that contains the ``__init__.py`` of this package.
-
-    TODO(author): intended use, e.g. as an include directory for Cython code
-    that cimports ``composites``.
+    Returns the directory that contains the ``__init__.py`` of this package,
+    together with the Cython declarations ``core.pxd`` of
+    :mod:`composites.core`, which are installed with the package.
 
     Returns
     -------

@@ -3,7 +3,7 @@ r"""
 Kassapoglou's methods (:mod:`composites.kassapoglou`)
 =====================================================
 
-.. currentmodule::composites.kassapoglou
+.. currentmodule:: composites.kassapoglou
 
 
 Methods based on Kassapoglou's book: buckling loads of rectangular plates
