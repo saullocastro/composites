@@ -4,15 +4,20 @@ Documentation for the ``composites`` module
 High-performance methods for analysis and design of composites.
 With the ``composites`` module, you are able to calculate:
 
-* A, B, D, E, F, H plane-stress stiffness matrices
-    - A, B, D, for classical plate theory (CLT, or CLPT)
-    - A44, A45, A55 for first-order shear deformation theory (FSDT), with
-      the shear correction already applied, by default with the
-      equilibrium approach of Rohwer (1988); also available: Vlachoutsis
-      (1992), Whitney (1973), Chow (1971), Birman and Bert (2002), the
-      thickness-shear frequency of Yang, Norris and Stavsky (1966), and a
-      constant 5/6
-    - E, F, H for third-order shear deformation theory (TSDT)
+* A, B, D, E, F, H plane-stress stiffness matrices, see
+  :doc:`constitutive_matrices`
+
+  - A, B, D, for classical plate theory (CLT, or CLPT)
+  - A44, A45, A55 for first-order shear deformation theory (FSDT), with
+    the shear correction already applied, by default with the
+    equilibrium approach of Rohwer (1988); also available: Vlachoutsis
+    (1992), Whitney (1973), Chow (1971), Birman and Bert (2002), the
+    thickness-shear frequency of Yang, Norris and Stavsky (1966), and a
+    constant 5/6, see :doc:`shear_correction`
+  - E, F, H for third-order shear deformation theory (TSDT)
+
+* The moments of the density through the thickness used in the mass
+  matrices of the CLPT, FSDT and TSDT, see :doc:`mass_integrals`
 
 * Transverse shear stresses through the thickness, from the shear forces or
   recovered a posteriori from the strain gradients of an FSDT solution (Noor
@@ -25,27 +30,12 @@ With the ``composites`` module, you are able to calculate:
 * Stiffness matrices (ABD) based on lamination parameters
 
 * Based on Kassapoglou's book, local buckling under compression, shear, and
-  post-buckling 
+  post-buckling
 
 * Saving and loading of laminates, plies, materials and lamination parameters
-  in JSON
+  in JSON, see :doc:`saving_loading`
 
-
-Running in the browser with Pyodide
------------------------------------
-
-From version 0.9.21, a WebAssembly wheel is published on PyPI for Pyodide 314
-(CPython 3.14), such that ``composites`` runs in the browser, e.g. in
-JupyterLite or in a web page with Pyodide::
-
-    import micropip
-    await micropip.install('composites')
-
-    from composites import laminated_plate, to_json
-    lam = laminated_plate([0, 45, -45, 90], plyt=0.125e-3,
-                          laminaprop=(142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
-    print(lam.ABD)
-    s = to_json(lam)  # strict JSON, readable with JSON.parse in JavaScript
+``composites`` also runs in the browser with Pyodide, see :doc:`install`.
 
 
 Code repository
@@ -60,13 +50,40 @@ Citing this library
 Castro, S. G. P. Methods for analysis and design of composites (Version 0.9.21) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex::
-    
+
     @misc{composites2026,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
         title = {{Methods for analysis and design of composites (Version 0.9.21)}},
         year = 2026
         }
+
+
+Theory and conventions
+----------------------
+
+.. toctree::
+    :maxdepth: 1
+
+    conventions.rst
+    constitutive_matrices.rst
+    mass_integrals.rst
+    shear_correction.rst
+    saving_loading.rst
+
+
+Usage examples
+--------------
+
+.. toctree::
+    :maxdepth: 1
+
+    ex_laminated_plate.rst
+    ex_isotropic_offset.rst
+    ex_tsdt.rst
+    ex_transverse_shear.rst
+    ex_json.rst
+
 
 Tutorials
 ---------
@@ -81,9 +98,27 @@ composites API
 --------------
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     api.rst
+
+
+Installing composites
+---------------------
+
+.. toctree::
+    :maxdepth: 1
+
+    install.rst
+
+
+Changelog
+---------
+
+.. toctree::
+    :maxdepth: 1
+
+    changelog.rst
 
 
 License
@@ -99,4 +134,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
