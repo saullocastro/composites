@@ -292,3 +292,19 @@ def test_laminate_without_new_density_moments():
     lam2.calc_constitutive_matrix()
     for name in DENSITY_MOMENTS:
         assert getattr(lam2, name) == getattr(lam, name)
+
+
+def test_example_embed_in_json_document(tmp_path):
+    lam = laminated_plate([0, 45, -45, 90], plyt=0.125e-3,
+                          laminaprop=laminaprop, rho=1600.)
+    # to_dict returns JSON types, to be embedded in another JSON document
+    doc = {'name': 'skin', 'mesh_size': 0.01, 'laminate': to_dict(lam)}
+    fname = tmp_path / 'model.json'
+    with open(fname, 'w') as f:
+        json.dump(doc, f)
+    with open(fname) as f:
+        doc2 = json.load(f)
+    lam2 = from_dict(doc2['laminate'])
+    np.testing.assert_array_equal(lam2.ABD, lam.ABD)
+    np.testing.assert_array_equal(lam2.Ats, lam.Ats)
+    assert lam2.intrhoz6 == lam.intrhoz6

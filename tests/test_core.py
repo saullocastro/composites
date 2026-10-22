@@ -463,3 +463,103 @@ def test_density_moments():
             lam.plies[0].matlamina, lam.calc_lamination_parameters())
     for name in names.values():
         assert getattr(lam_lp, name) == 0.
+
+
+def test_example_laminated_plate():
+    # quasi-isotropic CFRP laminate [0/45/-45/90]s, SI units
+    laminaprop = (142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9) # E11, E22, nu12, G12, G13, G23
+    stack = [0, 45, -45, 90, 90, -45, 45, 0] # from the bottom to the top
+    lam = laminated_plate(stack, plyt=0.125e-3, laminaprop=laminaprop,
+                          rho=1600.)
+    # ABD relates {Nxx, Nyy, Nxy, Mxx, Myy, Mxy} to the generalized strains
+    # {exx0, eyy0, gxy0, kxx, kyy, kxy}
+    ABD = lam.ABD
+    assert ABD.shape == (6, 6)
+    assert np.allclose(ABD[:3, :3], lam.A) and np.allclose(ABD[:3, 3:], lam.B)
+    assert np.allclose(ABD[3:, 3:], lam.D)
+    # symmetric laminate: no membrane-bending coupling
+    assert np.allclose(lam.B, 0, atol=1e-12*lam.A11*lam.h)
+    # quasi-isotropic membrane stiffness
+    assert np.isclose(lam.A11, lam.A22, rtol=1e-12)
+    assert np.isclose(lam.A66, (lam.A11 - lam.A12)/2, rtol=1e-12)
+    assert np.allclose([lam.A16, lam.A26], 0, atol=1e-12*lam.A11)
+    # but not quasi-isotropic in bending: the +-45 plies give D16, D26
+    assert abs(lam.D16) > 1e-3*lam.D11
+    # equivalent membrane properties
+    assert np.isclose(lam.e1, lam.e2, rtol=1e-12)
+    assert np.isclose(lam.g12, lam.e1/(2*(1 + lam.nu12)), rtol=1e-12)
+    # FSDT: transverse shear stiffness with the shear correction applied
+    assert lam.shear_correction == 'rohwer'
+    assert np.allclose(lam.Ats, lam.Ats.T)
+    assert np.isclose(lam.scf_k13, lam.A55/lam.Abar55, rtol=1e-15)
+    assert np.isclose(lam.scf_k23, lam.A44/lam.Abar44, rtol=1e-15)
+    # mass per unit area
+    assert np.isclose(lam.intrho, 1600.*lam.h, rtol=1e-12)
+
+
+def test_example_isotropic_plate_offset():
+    # closed form of an isotropic plate whose mid-surface is at z = d
+    E, nu, h, d, rho = 70e9, 0.3, 2e-3, 0.6e-3, 2700.
+    lam = isotropic_plate(thickness=h, E=E, nu=nu, offset=d, rho=rho)
+    C = E/(1 - nu**2)*np.array([[1, nu, 0], [nu, 1, 0], [0, 0, (1 - nu)/2]])
+    G = E/(2*(1 + nu))
+    atol = 1e-12*E
+    assert np.allclose(lam.A, h*C, rtol=1e-12, atol=atol*h)
+    assert np.allclose(lam.B, d*h*C, rtol=1e-12, atol=atol*h*d)
+    assert np.allclose(lam.D, h*(d**2 + h**2/12)*C, rtol=1e-12, atol=atol*h**3)
+    # the shear correction of an isotropic plate is 5/6
+    assert np.allclose(lam.Ats, 5/6*G*h*np.eye(2), rtol=1e-12, atol=atol*h)
+    # with s uniform in [-h/2, h/2]: <s^2> = h^2/12, <s^4> = h^4/80,
+    # <s^6> = h^6/448, and int (d + s)^n ds = h <(d + s)^n>
+    m = [1., d, d**2 + h**2/12, d**3 + d*h**2/4,
+         d**4 + d**2*h**2/2 + h**4/80, None,
+         d**6 + 15/12*d**4*h**2 + 15/80*d**2*h**4 + h**6/448]
+    assert np.allclose(lam.E, h*m[3]*C, rtol=1e-12, atol=atol*h**4)
+    assert np.allclose(lam.F, h*m[4]*C, rtol=1e-12, atol=atol*h**5)
+    assert np.allclose(lam.H, h*m[6]*C, rtol=1e-12, atol=atol*h**7)
+    for name, n in (('intrho', 0), ('intrhoz', 1), ('intrhoz2', 2),
+                    ('intrhoz3', 3), ('intrhoz4', 4), ('intrhoz6', 6)):
+        assert np.isclose(getattr(lam, name), rho*h*m[n], rtol=1e-12, atol=0)
+    # without offset the odd moments vanish
+    lam0 = isotropic_plate(thickness=h, E=E, nu=nu, rho=rho)
+    assert abs(lam0.intrhoz) < 1e-15*rho*h**2
+    assert abs(lam0.intrhoz3) < 1e-15*rho*h**4
+    assert np.allclose(lam0.B, 0, atol=atol*h**2)
+
+
+def test_example_tsdt_matrices():
+    # unsymmetric laminate with an offset
+    laminaprop = (142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9)
+    lam = laminated_plate([0, 45, 90, -30], plyts=[0.2e-3, 0.5e-3, 0.3e-3,
+        0.4e-3], laminaprop=laminaprop, offset=0.37e-3)
+    # 13 x 13 constitutive matrix of the TSDT, the generalized strains being
+    # {eps0, eps1, eps3, gamma0, gamma2}, with eps = eps0 + z eps1 + z^3 eps3
+    # and gamma = {gamma_yz, gamma_xz} = gamma0 + z^2 gamma2
+    Z3 = np.zeros((3, 3))
+    Z32 = np.zeros((3, 2))
+    K = np.block([[lam.A, lam.B, lam.E, Z32, Z32],
+                  [lam.B, lam.D, lam.F, Z32, Z32],
+                  [lam.E, lam.F, lam.H, Z32, Z32],
+                  [Z32.T, Z32.T, Z32.T, lam.Abar_ts, lam.Dts],
+                  [Z32.T, Z32.T, Z32.T, lam.Dts, lam.Fts]])
+    assert np.allclose(K, K.T, rtol=0, atol=0)
+    # strain energy per unit area integrated ply by ply, against e^T K e / 2
+    rng = np.random.default_rng(1)
+    h = lam.h
+    scale = np.array(3*[1.] + 3*[1/h] + 3*[1/h**3] + 2*[1.] + 2*[1/h**2])
+    xi, w = np.polynomial.legendre.leggauss(6)
+    zbot = -h/2 + lam.offset
+    for _ in range(5):
+        e = 1e-3*rng.uniform(-1, 1, 13)*scale
+        U = 0.
+        zk = zbot
+        for ply in lam.plies:
+            C = np.asarray(ply.get_constitutive_matrix())
+            for x, wi in zip(xi, w):
+                z = zk + ply.h*(x + 1)/2
+                eps = e[0:3] + z*e[3:6] + z**3*e[6:9]
+                gamma = e[9:11] + z**2*e[11:13]
+                U += wi*ply.h/2*0.5*(eps @ C[:3, :3] @ eps
+                                     + gamma @ C[3:, 3:] @ gamma)
+            zk += ply.h
+        assert np.isclose(0.5*e @ K @ e, U, rtol=1e-12)
