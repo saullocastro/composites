@@ -45,12 +45,10 @@ Format version
 --------------
 
 Each saved object carries ``'type'``, ``'format_version'`` and
-``'composites_version'``, next to the attributes in ``'data'``.
-:func:`.from_dict` loads any ``format_version`` from 1 up to the one of the
-installed ``composites``, and raises a ``ValueError`` for a newer one.
-
-Attributes missing in ``'data'`` keep their default values. This is how a
-file saved before an attribute was added still loads: e.g. the mass integrals
-``intrhoz3``, ``intrhoz4`` and ``intrhoz6`` are zero for a :class:`.Laminate`
-saved by version 0.9.21, until :meth:`.Laminate.calc_constitutive_matrix`
-recomputes them from the plies. Unknown keys raise a ``ValueError``.
+``'composites_version'``, next to the attributes in ``'data'``. The current
+``format_version`` is 2, which stores the mass integrals ``intrhoz3``,
+``intrhoz4`` and ``intrhoz6`` of a :class:`.Laminate`. :func:`.from_dict`
+reads only the ``format_version`` of the installed ``composites`` and raises
+a ``ValueError`` for an older or a newer one, e.g. for the files of format 1
+saved by version 0.9.21, which must be created again. Unknown keys also
+raise a ``ValueError``.

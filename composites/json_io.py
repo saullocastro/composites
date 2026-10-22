@@ -37,7 +37,7 @@ The format of the saved data is::
 
     {
       "type": "Laminate",
-      "format_version": 1,
+      "format_version": 2,
       "composites_version": "0.9.21",
       "data": {...}
     }
@@ -55,7 +55,7 @@ from .core import (MatLamina, Lamina, Laminate, LaminationParameters,
                    GradABD, _LAMINATE_STATE, _GRADABD_STATE)
 
 
-FORMAT_VERSION = 1
+FORMAT_VERSION = 2
 
 # NOTE names of the "cdef public" attributes of each class, they must follow
 #      core.pxd (checked in tests/test_json.py)
@@ -292,7 +292,7 @@ def to_dict(obj):
     :class:`.Laminate` first, then :class:`.Lamina`, :class:`.MatLamina`,
     :class:`.LaminationParameters` and :class:`.GradABD`. ``'type'`` is the
     name of the class found, ``'format_version'`` the format version of this
-    module (``1``), ``'composites_version'`` the version of the installed
+    module (``2``), ``'composites_version'`` the version of the installed
     composites and ``'data'`` the stored attributes, see the module
     documentation. The values ``nan``, ``inf`` and ``-inf`` are stored as
     the strings ``"NaN"``, ``"Infinity"`` and ``"-Infinity"``.
@@ -334,12 +334,13 @@ def from_dict(d):
 
     ``d`` must be a dictionary with no keys other than ``'type'``,
     ``'format_version'``, ``'composites_version'`` and ``'data'``, with an
-    integer ``'format_version'`` from ``1`` up to the format version of this
-    module, and with a ``'type'`` equal to ``'Laminate'``, ``'Lamina'``,
-    ``'MatLamina'``, ``'LaminationParameters'`` or ``'GradABD'``. The
-    object is created from ``d['data']``, or from an empty dictionary when
-    ``'data'`` is missing. ``'composites_version'`` is only used in the error
-    message of a newer format version.
+    integer ``'format_version'`` equal to the format version of this module
+    (``2``), and with a ``'type'`` equal to ``'Laminate'``, ``'Lamina'``,
+    ``'MatLamina'``, ``'LaminationParameters'`` or ``'GradABD'``. Files of
+    other format versions are not read. The object is created from
+    ``d['data']``, or from an empty dictionary when ``'data'`` is missing.
+    ``'composites_version'`` is only used in the error message of another
+    format version.
 
     Parameters
     ----------
@@ -354,8 +355,8 @@ def from_dict(d):
     Raises
     ------
     ValueError
-        If ``d`` is not valid, has unknown keys, or was created by a newer
-        format version.
+        If ``d`` is not valid, has unknown keys, or was created with
+        another format version, older or newer.
 
     See Also
     --------
@@ -370,11 +371,12 @@ def from_dict(d):
     if (not isinstance(format_version, numbers.Integral)
             or isinstance(format_version, bool) or format_version < 1):
         raise ValueError('Invalid format_version: %r' % (format_version, ))
-    if format_version > FORMAT_VERSION:
-        raise ValueError('format_version %d was saved by a newer version of '
-                         'composites (%s), this version reads up to %d'
-                         % (format_version, d.get('composites_version'),
-                            FORMAT_VERSION))
+    if format_version != FORMAT_VERSION:
+        raise ValueError('format_version %d was saved by %s version of '
+                         'composites (%s), this version reads only %d'
+                         % (format_version, 'a newer' if format_version >
+                            FORMAT_VERSION else 'an older',
+                            d.get('composites_version'), FORMAT_VERSION))
     typename = d.get('type')
     for name, _, _, decode in _TYPES:
         if typename == name:

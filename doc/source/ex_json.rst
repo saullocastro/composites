@@ -14,10 +14,3 @@ document:
 
 .. literalinclude:: ../../tests/test_json.py
     :pyobject: test_example_embed_in_json_document
-
-A file saved before the mass integrals ``intrhoz3``, ``intrhoz4`` and
-``intrhoz6`` existed still loads, the missing attributes being zero until
-:meth:`.Laminate.calc_constitutive_matrix` is called:
-
-.. literalinclude:: ../../tests/test_json.py
-    :pyobject: test_laminate_without_new_density_moments
