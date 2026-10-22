@@ -404,3 +404,23 @@ def test_laminate_LP_gradients_finite_differences():
             scale = np.abs(grads[key]).max()
             assert np.allclose(grads[key][:, j + 1], fd, rtol=1e-6,
                                atol=1e-9*scale), (key, j)
+
+
+def test_matlamina_constitutive_matrix_inverse_compliance():
+    # NOTE e2 != e3 and nu23 != 0, otherwise nu23*nu23 = nu23*nu32
+    e1, e2, e3 = 142e9, 8.7e9, 10.1e9
+    nu12, nu13, nu23 = 0.28, 0.31, 0.45
+    g12, g13, g23 = 5.1e9, 5.3e9, 3.2e9
+    matlamina = read_laminaprop((e1, e2, nu12, g12, g13, g23, e3, nu13,
+                                 nu23))
+    # compliance matrix, rows and columns ordered as 11, 22, 33, 23, 13, 12,
+    # with nu21/e2 = nu12/e1, nu31/e3 = nu13/e1 and nu32/e3 = nu23/e2
+    S = np.array([[1/e1, -nu12/e1, -nu13/e1, 0, 0, 0],
+                  [-nu12/e1, 1/e2, -nu23/e2, 0, 0, 0],
+                  [-nu13/e1, -nu23/e2, 1/e3, 0, 0, 0],
+                  [0, 0, 0, 1/g23, 0, 0],
+                  [0, 0, 0, 0, 1/g13, 0],
+                  [0, 0, 0, 0, 0, 1/g12]])
+    C_ref = np.linalg.inv(S)
+    C = np.asarray(matlamina.get_constitutive_matrix())
+    assert np.allclose(C, C_ref, rtol=1e-12, atol=1e-12*C_ref.max())
