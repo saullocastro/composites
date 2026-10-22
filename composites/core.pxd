@@ -54,6 +54,7 @@ cdef class Laminate:
     cdef public double F44, F45, F55
     cdef public double e1, e2, g12, nu12, nu21
     cdef public double scf_k13, scf_k23, h, offset, intrho, intrhoz, intrhoz2
+    cdef public double intrhoz3, intrhoz4, intrhoz6
     cdef public list plies
     cdef public list stack
     cdef public object shear_correction

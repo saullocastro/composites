@@ -968,7 +968,8 @@ _LAMINATE_STATE = tuple(
     ['%s%s' % (m, ij) for m in 'ABDEFH' for ij in ('11', '12', '16', '22', '26', '66')]
     + ['%s%s' % (m, ij) for m in ('A', 'Abar', 'Abarbar', 'D', 'F') for ij in ('44', '45', '55')]
     + ['e1', 'e2', 'g12', 'nu12', 'nu21', 'scf_k13', 'scf_k23', 'h', 'offset',
-       'intrho', 'intrhoz', 'intrhoz2', 'plies', 'stack', 'shear_correction'])
+       'intrho', 'intrhoz', 'intrhoz2', 'intrhoz3', 'intrhoz4', 'intrhoz6',
+       'plies', 'stack', 'shear_correction'])
 
 
 cdef class Laminate:
@@ -1066,6 +1067,18 @@ cdef class Laminate:
         Integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^2 dz`, used in
         equivalent single layer finite element mass matrices, mass per unit
         area times length squared
+    intrhoz3 : float
+        Integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^3 dz`, used in
+        the mass matrices of the third-order shear deformation theory (TSDT),
+        mass per unit area times length cubed
+    intrhoz4 : float
+        Integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^4 dz`, used in
+        the mass matrices of the TSDT, mass per unit area times length to the
+        fourth power
+    intrhoz6 : float
+        Integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^6 dz`, used in
+        the mass matrices of the TSDT, mass per unit area times length to the
+        sixth power
 
     Notes
     -----
@@ -1115,6 +1128,9 @@ cdef class Laminate:
         self.intrho = 0.
         self.intrhoz = 0.
         self.intrhoz2 = 0.
+        self.intrhoz3 = 0.
+        self.intrhoz4 = 0.
+        self.intrhoz6 = 0.
         self.plies = []
         self.stack = []
         self.shear_correction = 'rohwer'
@@ -2414,11 +2430,12 @@ cdef class Laminate:
         with the shear correction selected by ``shear_correction`` already
         applied.
 
-        The attributes ``h``, ``intrho``, ``intrhoz``, ``intrhoz2``, ``A11``
-        to ``H66``, ``D44``, ``D45``, ``D55``, ``F44``, ``F45`` and ``F55`` are
-        computed from ``plies`` and ``offset``, with the ply stiffnesses of
-        the last call to :meth:`.Lamina.rebuild` and the density ``rho`` of
-        the material of each ply.
+        The attributes ``h``, ``intrho``, ``intrhoz``, ``intrhoz2``,
+        ``intrhoz3``, ``intrhoz4``, ``intrhoz6``, ``A11`` to ``H66``,
+        ``D44``, ``D45``, ``D55``, ``F44``, ``F45`` and ``F55`` are computed
+        from ``plies`` and ``offset``, with the ply stiffnesses of the last
+        call to :meth:`.Lamina.rebuild` and the density ``rho`` of the
+        material of each ply.
 
         Notes
         -----
@@ -2434,11 +2451,22 @@ cdef class Laminate:
             \quad ij = 11, 12, 16, 22, 26, 66 \\
             (D_{ij}, F_{ij}) = \sum_k \int_{z_k}^{z_{k+1}} q_{ijL}^{(k)}
             (z^2, z^4) dz, \quad ij = 44, 45, 55 \\
-            (intrho, intrhoz, intrhoz2) = \sum_k \int_{z_k}^{z_{k+1}}
-            \rho^{(k)} (1, z, z^2) dz
+            (intrho, intrhoz, intrhoz2, intrhoz3, intrhoz4, intrhoz6) =
+            \sum_k \int_{z_k}^{z_{k+1}} \rho^{(k)} (1, z, z^2, z^3, z^4, z^6)
+            dz
 
         and ``A44``, ``A45``, ``A55`` follow from
         :meth:`.calc_transverse_shear_stiffness`.
+
+        The mass integrals are the moments of the density through the
+        thickness, `I_n = \sum_k \int_{z_k}^{z_{k+1}} \rho^{(k)} z^n dz`,
+        required by the kinetic energy `T = \frac{1}{2} \int_V \rho
+        (\dot{u}^2 + \dot{v}^2 + \dot{w}^2) dV` of the displacement field of
+        each theory. The in-plane displacements of the CLPT and of the FSDT
+        contain the powers `z^0` and `z`, requiring `I_0`, `I_1`, `I_2`,
+        while those of the TSDT [1]_ contain `z^0`, `z` and `z^3`, whose
+        products give the powers `z^0` to `z^4` and `z^6`, requiring `I_0`,
+        `I_1`, `I_2`, `I_3`, `I_4`, `I_6`.
 
         References
         ----------
@@ -2451,6 +2479,9 @@ cdef class Laminate:
         self.intrho = 0.
         self.intrhoz = 0.
         self.intrhoz2 = 0.
+        self.intrhoz3 = 0.
+        self.intrhoz4 = 0.
+        self.intrhoz6 = 0.
         for ply in self.plies:
             self.h += ply.h
         h0 = -self.h/2. + self.offset
@@ -2470,6 +2501,9 @@ cdef class Laminate:
             self.intrho += ply.matlamina.rho*(hk - hk_1)
             self.intrhoz += ply.matlamina.rho*(hk*hk/2. - hk_1*hk_1/2.)
             self.intrhoz2 += ply.matlamina.rho*(hk*hk*hk/3. - hk_1*hk_1*hk_1/3.)
+            self.intrhoz3 += ply.matlamina.rho*(hk*hk*hk*hk/4. - hk_1*hk_1*hk_1*hk_1/4.)
+            self.intrhoz4 += ply.matlamina.rho*(hk*hk*hk*hk*hk/5. - hk_1*hk_1*hk_1*hk_1*hk_1/5.)
+            self.intrhoz6 += ply.matlamina.rho*(hk*hk*hk*hk*hk*hk*hk/7. - hk_1*hk_1*hk_1*hk_1*hk_1*hk_1*hk_1/7.)
 
             self.A11 += ply.q11L*(hk - hk_1)
             self.A12 += ply.q12L*(hk - hk_1)
@@ -2899,7 +2933,8 @@ cpdef Laminate laminate_from_LaminationParameters(double thickness, MatLamina
     the invariants ``u1`` to ``u7`` of ``mat`` and from the lamination
     parameters of ``lp``, with the combinations of
     :meth:`.MatLamina.get_invariant_matrix`. No plies are created, ``offset``
-    is zero, and the mass integrals ``intrho``, ``intrhoz``, ``intrhoz2`` and
+    is zero, and the mass integrals ``intrho``, ``intrhoz``, ``intrhoz2``,
+    ``intrhoz3``, ``intrhoz4``, ``intrhoz6`` and
     the equivalent properties ``e1``, ``e2``, ``g12``, ``nu12``, ``nu21`` are
     not computed, remaining zero.
     The stiffnesses ``E11`` to ``H66``, ``D44``, ``D45``, ``D55``, ``F44``,

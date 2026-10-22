@@ -250,3 +250,45 @@ def test_missing_keys_keep_defaults(cls):
         assert_same(cls(), obj)
     del d['data']
     assert type(from_dict(d)) is cls
+
+
+DENSITY_MOMENTS = ('intrho', 'intrhoz', 'intrhoz2', 'intrhoz3', 'intrhoz4',
+                   'intrhoz6')
+
+
+def make_laminate_densities():
+    return laminated_plate([0, 45, 90, -30],
+                           plyts=[0.2e-3, 0.5e-3, 0.3e-3, 0.4e-3],
+                           laminaprop=laminaprop,
+                           rhos=[1600., 1200., 2700., 900.], offset=0.37e-3)
+
+
+def test_laminate_density_moments():
+    lam = make_laminate_densities()
+    d = to_dict(lam)
+    for name in DENSITY_MOMENTS:
+        assert d['data'][name] == getattr(lam, name) != 0.
+    lam2 = roundtrip(lam)
+    assert_same(lam, lam2)
+    for name in DENSITY_MOMENTS:
+        assert getattr(lam2, name) == getattr(lam, name)
+
+
+def test_laminate_without_new_density_moments():
+    # a file saved by composites 0.9.21, before intrhoz3, intrhoz4 and
+    # intrhoz6, still loads with the same format_version, and the missing
+    # moments keep their default zero until calc_constitutive_matrix
+    lam = make_laminate_densities()
+    d = to_dict(lam)
+    for name in ('intrhoz3', 'intrhoz4', 'intrhoz6'):
+        del d['data'][name]
+    assert d['format_version'] == FORMAT_VERSION == 1
+    lam2 = from_json(json.dumps(d))
+    for name in ('intrhoz3', 'intrhoz4', 'intrhoz6'):
+        assert getattr(lam2, name) == 0.
+    for name in public_attrs(lam):
+        if name not in ('intrhoz3', 'intrhoz4', 'intrhoz6'):
+            assert_same(getattr(lam, name), getattr(lam2, name))
+    lam2.calc_constitutive_matrix()
+    for name in DENSITY_MOMENTS:
+        assert getattr(lam2, name) == getattr(lam, name)

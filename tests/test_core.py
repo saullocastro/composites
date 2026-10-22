@@ -431,3 +431,35 @@ def test_matlamina_constitutive_matrix_inverse_compliance():
     assert np.allclose(Q, C_ref[:3, :3], rtol=1e-12, atol=0)
     assert np.allclose([matlamina.q44, matlamina.q55, matlamina.q66],
                        np.diag(C_ref)[3:], rtol=1e-12, atol=0)
+
+
+def test_density_moments():
+    # unsymmetric laminate, ply densities and an offset, against an
+    # independent Gauss-Legendre integration of rho*z**n ply by ply
+    plyts = [0.2e-3, 0.5e-3, 0.3e-3, 0.4e-3]
+    rhos = [1600., 1200., 2700., 900.]
+    offset = 0.37e-3
+    lam = laminated_plate([0, 45, 90, -30], plyts=plyts,
+            laminaprop=(142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9), rhos=rhos,
+            offset=offset)
+    xi, w = np.polynomial.legendre.leggauss(8)
+    zbot = -sum(plyts)/2 + offset
+    ref = dict.fromkeys((0, 1, 2, 3, 4, 6), 0.)
+    for plyt, rho in zip(plyts, rhos):
+        z = zbot + plyt*(xi + 1)/2
+        for n in ref:
+            ref[n] += rho*np.sum(w*z**n)*plyt/2
+        zbot += plyt
+    names = {0: 'intrho', 1: 'intrhoz', 2: 'intrhoz2', 3: 'intrhoz3',
+             4: 'intrhoz4', 6: 'intrhoz6'}
+    for n, name in names.items():
+        assert np.isclose(getattr(lam, name), ref[n], rtol=1e-12, atol=0), name
+    # recomputed from zero by every call
+    lam.calc_constitutive_matrix()
+    for n, name in names.items():
+        assert np.isclose(getattr(lam, name), ref[n], rtol=1e-12, atol=0), name
+    # not computed from lamination parameters, see the docstring
+    lam_lp = laminate_from_LaminationParameters(sum(plyts),
+            lam.plies[0].matlamina, lam.calc_lamination_parameters())
+    for name in names.values():
+        assert getattr(lam_lp, name) == 0.
