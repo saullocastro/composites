@@ -424,3 +424,10 @@ def test_matlamina_constitutive_matrix_inverse_compliance():
     C_ref = np.linalg.inv(S)
     C = np.asarray(matlamina.get_constitutive_matrix())
     assert np.allclose(C, C_ref, rtol=1e-12, atol=1e-12*C_ref.max())
+    # the 3D constitutive constants q_ij are the same inverse
+    Q = np.array([[matlamina.q11, matlamina.q12, matlamina.q13],
+                  [matlamina.q21, matlamina.q22, matlamina.q23],
+                  [matlamina.q31, matlamina.q32, matlamina.q33]])
+    assert np.allclose(Q, C_ref[:3, :3], rtol=1e-12, atol=0)
+    assert np.allclose([matlamina.q44, matlamina.q55, matlamina.q66],
+                       np.diag(C_ref)[3:], rtol=1e-12, atol=0)

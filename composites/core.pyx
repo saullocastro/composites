@@ -259,14 +259,16 @@ cdef class MatLamina:
             q_{21} = e_2 (\nu_{12} + \nu_{13}\nu_{32})/\Delta, \quad
             q_{22} = e_2 (1 - \nu_{13}\nu_{31})/\Delta, \quad
             q_{23} = e_2 (\nu_{32} + \nu_{12}\nu_{31})/\Delta \\
-            q_{31} = e_3 (\nu_{13} + \nu_{12}\nu_{32})/\Delta, \quad
+            q_{31} = e_3 (\nu_{13} + \nu_{12}\nu_{23})/\Delta, \quad
             q_{32} = e_3 (\nu_{23} + \nu_{13}\nu_{21})/\Delta, \quad
             q_{33} = e_3 (1 - \nu_{12}\nu_{21})/\Delta \\
             q_{44} = g_{23}, \quad q_{55} = g_{13}, \quad q_{66} = g_{12}
 
         which are symmetric, `q_{ij} = q_{ji}`, when the Poisson's ratios
         satisfy the reciprocity `\nu_{ij}/e_i = \nu_{ji}/e_j`, see
-        :func:`.read_laminaprop`. With `e_3 = 0`, as given by
+        :func:`.read_laminaprop`; the matrix of `q_{ij}`, `i, j = 1, 2, 3`, is
+        then the inverse of the upper-left block of the compliance matrix
+        given below. With `e_3 = 0`, as given by
         :func:`.read_laminaprop` for 2 or 6 entries, `\nu_{31} = \nu_{32} =
         0` and `q_{11}`, `q_{12}`, `q_{22}` are the plane-stress reduced
         stiffnesses `e_1/(1 - \nu_{12}\nu_{21})`, `e_1 \nu_{21}/(1 -
@@ -294,11 +296,6 @@ cdef class MatLamina:
         1/e_2`, `S_{33} = 1/e_3`, `S_{12} = -\nu_{12}/e_1`, `S_{13} =
         -\nu_{13}/e_1`, `S_{23} = -\nu_{23}/e_2`, `S_{44} = 1/g_{23}`,
         `S_{55} = 1/g_{13}` and `S_{66} = 1/g_{12}` [1]_.
-
-        TODO(author): `q_{31}` uses `\nu_{12}\nu_{32}`, whereas the inverse of
-        the compliance matrix gives `q_{31} = q_{13} = e_3 (\nu_{13} +
-        \nu_{12}\nu_{23})/\Delta`; they differ unless `\nu_{12} = 0` or `e_2
-        = e_3`, such that `q_{31} \ne q_{13}` in general.
 
         The invariants `u_1` to `u_5` are those of Jones [3]_, and `u_6`,
         `u_7` the transverse shear invariants of the ABAQUS manual [4]_:
@@ -372,7 +369,7 @@ cdef class MatLamina:
         self.q21 = self.e2*(self.nu12 + self.nu13 * self.nu32) / den
         self.q22 = self.e2*(1         - self.nu13 * self.nu31) / den
         self.q23 = self.e2*(self.nu32 + self.nu12 * self.nu31) / den
-        self.q31 = self.e3*(self.nu13 + self.nu12 * self.nu32) / den
+        self.q31 = self.e3*(self.nu13 + self.nu12 * self.nu23) / den
         self.q32 = self.e3*(self.nu23 + self.nu13 * self.nu21) / den
         self.q33 = self.e3*(1         - self.nu12 * self.nu21) / den
         self.q66 = self.g12
