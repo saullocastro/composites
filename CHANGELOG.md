@@ -1,5 +1,46 @@
 # Changelog
 
+## Unreleased
+
+### Mass integrals of the TSDT
+
+- `Laminate.intrhoz3`, `intrhoz4` and `intrhoz6`: the moments of the density
+  `int rho z^n dz` for `n = 3, 4, 6`, computed by `calc_constitutive_matrix`
+  next to `intrho`, `intrhoz`, `intrhoz2`, with `z` measured from the
+  reference surface. Together they are the moments `I_0` to `I_4` and `I_6`
+  required by the mass matrices of the third-order shear deformation theory.
+  They are zero for laminates without plies, e.g. created from lamination
+  parameters.
+
+### Breaking: JSON format version 2
+
+The JSON files now have `format_version` 2, which stores `intrhoz3`,
+`intrhoz4` and `intrhoz6`. `from_dict`, `from_json` and `load_json` read only
+the current format version and raise `ValueError` for an older or a newer
+one, such that the files of format 1, saved by version 0.9.21, must be
+created again.
+
+### Fixes
+
+- `GradABD.calc_LP_grad` left the derivatives `dA66/dxiA3`, `dB66/dxiB3` and
+  `dD66/dxiD3` at zero, instead of `-h*u3`, `-h^2/4*u3` and `-h^3/12*u3`.
+- `MatLamina.rebuild`: the stiffness constant `c11` used `nu23*nu23` instead
+  of `nu23*nu32`, differing by 4.3% from the inverse of the compliance matrix
+  for `e2 != e3`, and `q31` used `nu12*nu32` instead of `nu12*nu23`,
+  differing by 4.65%. `get_constitutive_matrix()` is now the inverse of the
+  orthotropic compliance matrix, and `q31 = q13`.
+
+### Documentation
+
+- Pages on the laminate constitutive matrices of the CLPT, FSDT and TSDT, the
+  thickness integrals for mass matrices, the conventions for defining a
+  laminate, the choice of the transverse shear correction, saving and
+  loading in JSON, installing and building, and the changelog.
+- Usage examples extracted from the tests, one API page per module, and two
+  tutorials: plate properties for the CLPT, FSDT and TSDT, and transverse
+  shear stresses through the thickness.
+- Reddy's book is cited as Reddy (2003), https://doi.org/10.1201/b12409.
+
 ## 0.9.21 (2026-10-08)
 
 ### Saving and loading in JSON
