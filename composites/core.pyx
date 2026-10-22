@@ -2399,7 +2399,7 @@ cdef class Laminate:
 
 
     cpdef void calc_constitutive_matrix(Laminate self):
-        """Calculate the laminate constitutive terms
+        r"""Calculate the laminate constitutive terms
 
         This is the commonly called ``ABD`` matrix with ``shape=(6, 6)`` when
         the classical laminated plate theory is used, or the ``ABD`` matrix
