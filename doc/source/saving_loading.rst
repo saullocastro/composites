@@ -50,5 +50,7 @@ Each saved object carries ``'type'``, ``'format_version'`` and
 ``intrhoz4`` and ``intrhoz6`` of a :class:`.Laminate`. :func:`.from_dict`
 reads only the ``format_version`` of the installed ``composites`` and raises
 a ``ValueError`` for an older or a newer one, e.g. for the files of format 1
-saved by version 0.9.21, which must be created again. Unknown keys also
-raise a ``ValueError``.
+saved by version 0.9.21, which must be created again. Every key of the format
+is required: a missing key, at any level, raises a ``ValueError`` naming the
+missing keys and the class, as does an unknown key, such that no attribute
+is ever given a default value silently.

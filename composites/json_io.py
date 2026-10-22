@@ -128,12 +128,16 @@ def _check_keys(data, allowed, typename):
     if unknown:
         raise ValueError('Unknown keys for %s: %s'
                          % (typename, ', '.join(sorted(unknown))))
+    # NOTE every key of the format is required, there are no defaults
+    missing = set(allowed) - set(data)
+    if missing:
+        raise ValueError('Missing keys for %s: %s'
+                         % (typename, ', '.join(sorted(missing))))
 
 
 def _decode_fields(obj, data, names):
     for name in names:
-        if name in data:
-            setattr(obj, name, _decode_float(data[name]))
+        setattr(obj, name, _decode_float(data[name]))
 
 
 def _matlamina_to_data(mat):
@@ -157,12 +161,11 @@ def _lamina_to_data(ply, matlamina):
 def _lamina_from_data(data, matlamina):
     _check_keys(data, ('plyid', 'matlamina') + _LAMINA_FIELDS, 'Lamina')
     ply = Lamina()
-    if 'plyid' in data:
-        plyid = data['plyid']
-        if not isinstance(plyid, numbers.Integral) or isinstance(plyid, bool):
-            raise ValueError('Expected an integer for plyid, got %r'
-                             % (plyid, ))
-        ply.plyid = plyid
+    plyid = data['plyid']
+    if not isinstance(plyid, numbers.Integral) or isinstance(plyid, bool):
+        raise ValueError('Expected an integer for plyid, got %r'
+                         % (plyid, ))
+    ply.plyid = plyid
     _decode_fields(ply, data, _LAMINA_FIELDS)
     ply.matlamina = matlamina
     return ply
@@ -196,18 +199,15 @@ def _laminate_from_data(data):
                 'Laminate')
     lam = Laminate()
     _decode_fields(lam, data, _LAMINATE_FIELDS)
-    if 'shear_correction' in data:
-        shear_correction = data['shear_correction']
-        if shear_correction is not None and not isinstance(shear_correction,
-                                                           str):
-            raise ValueError('Expected a string or null for '
-                             'shear_correction, got %r' % (shear_correction, ))
-        lam.shear_correction = shear_correction
-    lam.stack = [_decode_number(angle) for angle in data.get('stack', [])]
-    materials = [_matlamina_from_data(mat)
-                 for mat in data.get('materials', [])]
+    shear_correction = data['shear_correction']
+    if shear_correction is not None and not isinstance(shear_correction, str):
+        raise ValueError('Expected a string or null for '
+                         'shear_correction, got %r' % (shear_correction, ))
+    lam.shear_correction = shear_correction
+    lam.stack = [_decode_number(angle) for angle in data['stack']]
+    materials = [_matlamina_from_data(mat) for mat in data['materials']]
     plies = []
-    for ply in data.get('plies', []):
+    for ply in data['plies']:
         if not isinstance(ply, dict):
             raise ValueError('Expected a JSON object for Lamina, got %r'
                              % type(ply).__name__)
@@ -245,8 +245,6 @@ def _gradabd_from_data(data):
     _check_keys(data, _GRADABD_STATE, 'GradABD')
     grad = GradABD()
     for name in _GRADABD_STATE:
-        if name not in data:
-            continue
         try:
             value = np.array([[_decode_float(v) for v in row]
                               for row in data[name]], dtype=np.float64)
@@ -332,13 +330,14 @@ def to_dict(obj):
 def from_dict(d):
     r"""Create an object from a dictionary created by :func:`.to_dict`
 
-    ``d`` must be a dictionary with no keys other than ``'type'``,
+    ``d`` must be a dictionary with exactly the keys ``'type'``,
     ``'format_version'``, ``'composites_version'`` and ``'data'``, with an
     integer ``'format_version'`` equal to the format version of this module
     (``2``), and with a ``'type'`` equal to ``'Laminate'``, ``'Lamina'``,
     ``'MatLamina'``, ``'LaminationParameters'`` or ``'GradABD'``. Files of
     other format versions are not read. The object is created from
-    ``d['data']``, or from an empty dictionary when ``'data'`` is missing.
+    ``d['data']``, which must contain every key that :func:`.to_dict` writes
+    for that type, without defaults for missing keys.
     ``'composites_version'`` is only used in the error message of another
     format version.
 
@@ -350,13 +349,13 @@ def from_dict(d):
     Returns
     -------
     obj : :class:`.Laminate`, :class:`.Lamina`, :class:`.MatLamina`, :class:`.LaminationParameters` or :class:`.GradABD`
-        The object. Attributes missing in ``d`` keep their default values.
+        The object.
 
     Raises
     ------
     ValueError
-        If ``d`` is not valid, has unknown keys, or was created with
-        another format version, older or newer.
+        If ``d`` is not valid, has unknown or missing keys, at any level,
+        or was created with another format version, older or newer.
 
     See Also
     --------
@@ -380,7 +379,7 @@ def from_dict(d):
     typename = d.get('type')
     for name, _, _, decode in _TYPES:
         if typename == name:
-            return decode(d.get('data', {}))
+            return decode(d['data'])
     raise ValueError('Unknown type: %r' % (typename, ))
 
 

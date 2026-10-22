@@ -18,7 +18,9 @@ The JSON files now have `format_version` 2, which stores `intrhoz3`,
 `intrhoz4` and `intrhoz6`. `from_dict`, `from_json` and `load_json` read only
 the current format version and raise `ValueError` for an older or a newer
 one, such that the files of format 1, saved by version 0.9.21, must be
-created again.
+created again. Every key of the format is required: a key missing from
+`'data'`, at any level, raises `ValueError` naming the missing keys and the
+class, instead of leaving the attribute at its default value.
 
 ### Fixes
 
