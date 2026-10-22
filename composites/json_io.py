@@ -288,6 +288,15 @@ _TYPES = (
 def to_dict(obj):
     r"""Convert an object into a dictionary of JSON-compatible types
 
+    The type of ``obj`` is identified with :func:`isinstance`, checking
+    :class:`.Laminate` first, then :class:`.Lamina`, :class:`.MatLamina`,
+    :class:`.LaminationParameters` and :class:`.GradABD`. ``'type'`` is the
+    name of the class found, ``'format_version'`` the format version of this
+    module (``1``), ``'composites_version'`` the version of the installed
+    composites and ``'data'`` the stored attributes, see the module
+    documentation. The values ``nan``, ``inf`` and ``-inf`` are stored as
+    the strings ``"NaN"``, ``"Infinity"`` and ``"-Infinity"``.
+
     Parameters
     ----------
     obj : :class:`.Laminate`, :class:`.Lamina`, :class:`.MatLamina`, :class:`.LaminationParameters` or :class:`.GradABD`
@@ -299,6 +308,15 @@ def to_dict(obj):
         Dictionary with the keys ``'type'``, ``'format_version'``,
         ``'composites_version'`` and ``'data'``, containing only ``dict``,
         ``list``, ``str``, ``int``, ``float`` and ``None``.
+
+    Raises
+    ------
+    TypeError
+        If ``obj`` is not an instance of one of the classes above.
+
+    See Also
+    --------
+    from_dict, to_json
 
     """
     for typename, cls, encode, _ in _TYPES:
@@ -313,6 +331,15 @@ def to_dict(obj):
 
 def from_dict(d):
     r"""Create an object from a dictionary created by :func:`.to_dict`
+
+    ``d`` must be a dictionary with no keys other than ``'type'``,
+    ``'format_version'``, ``'composites_version'`` and ``'data'``, with an
+    integer ``'format_version'`` from ``1`` up to the format version of this
+    module, and with a ``'type'`` equal to ``'Laminate'``, ``'Lamina'``,
+    ``'MatLamina'``, ``'LaminationParameters'`` or ``'GradABD'``. The
+    object is created from ``d['data']``, or from an empty dictionary when
+    ``'data'`` is missing. ``'composites_version'`` is only used in the error
+    message of a newer format version.
 
     Parameters
     ----------
@@ -329,6 +356,10 @@ def from_dict(d):
     ValueError
         If ``d`` is not valid, has unknown keys, or was created by a newer
         format version.
+
+    See Also
+    --------
+    to_dict, from_json
 
     """
     if not isinstance(d, dict):
@@ -354,6 +385,10 @@ def from_dict(d):
 def to_json(obj, **kwargs):
     r"""Convert an object into a JSON string
 
+    Returns ``json.dumps(to_dict(obj), allow_nan=False, **kwargs)``, see
+    :func:`.to_dict`, which raises a :class:`TypeError` for an object of
+    another type.
+
     Parameters
     ----------
     obj : :class:`.Laminate`, :class:`.Lamina`, :class:`.MatLamina`, :class:`.LaminationParameters` or :class:`.GradABD`
@@ -373,6 +408,9 @@ def to_json(obj, **kwargs):
 def from_json(s):
     r"""Create an object from a JSON string created by :func:`.to_json`
 
+    Returns ``from_dict(json.loads(s))``, see :func:`.from_dict`, which
+    raises a :class:`ValueError` for invalid content.
+
     Parameters
     ----------
     s : str or bytes
@@ -390,6 +428,11 @@ def from_json(s):
 def save_json(obj, fname, indent=2):
     r"""Save an object to a JSON file
 
+    The string of :func:`.to_json` is written to ``fname``. When ``fname``
+    has a ``write`` method, the string is written with it and the file
+    object is not closed; otherwise the file is opened with the encoding
+    UTF-8, overwriting an existing file, and closed after writing.
+
     Parameters
     ----------
     obj : :class:`.Laminate`, :class:`.Lamina`, :class:`.MatLamina`, :class:`.LaminationParameters` or :class:`.GradABD`
@@ -398,6 +441,11 @@ def save_json(obj, fname, indent=2):
         Name of the file, or a file object opened in text mode for writing.
     indent : int or None, optional
         Indentation of the JSON output, ``None`` for the most compact form.
+        Default ``2``.
+
+    See Also
+    --------
+    load_json
 
     """
     s = to_json(obj, indent=indent)
@@ -410,6 +458,10 @@ def save_json(obj, fname, indent=2):
 
 def load_json(fname):
     r"""Load an object from a JSON file created by :func:`.save_json`
+
+    When ``fname`` has a ``read`` method, the content is read with it and the
+    file object is not closed; otherwise the file is opened with the encoding
+    UTF-8. The content is converted with :func:`.from_json`.
 
     Parameters
     ----------

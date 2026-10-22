@@ -118,4 +118,18 @@ from .json_io import (to_dict, from_dict, to_json, from_json,
                       save_json, load_json)
 
 def get_include():
+    """Directory of the installed ``composites`` package
+
+    Returns the directory that contains the ``__init__.py`` of this package.
+
+    TODO(author): intended use, e.g. as an include directory for Cython code
+    that cimports ``composites``.
+
+    Returns
+    -------
+    path : str
+        Absolute or relative path of the directory, as given by the
+        ``__file__`` of this module.
+
+    """
     return os.path.join(os.path.dirname(__file__))
