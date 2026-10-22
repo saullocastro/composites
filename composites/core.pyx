@@ -11,6 +11,13 @@ Composites Core Module (:mod:`composites.core`)
 
 .. currentmodule:: composites.core
 
+Classes of the material (:class:`.MatLamina`), of the ply (:class:`.Lamina`)
+and of the laminate (:class:`.Laminate`), of the lamination parameters
+(:class:`.LaminationParameters`) and of their gradients (:class:`.GradABD`),
+and functions that create a :class:`.Laminate` from lamination parameters or
+from the angles of an N-double laminate. The functions of
+:mod:`composites.utils` create these objects from the ply data.
+
 """
 import copyreg
 import warnings
@@ -23,16 +30,25 @@ DOUBLE = np.float64
 cdef class LaminationParameters:
     r"""Lamination parameters
 
+    Container of the 14 lamination parameters, all dimensionless and
+    initialized to zero. It is returned by
+    :meth:`.Laminate.calc_lamination_parameters` and used by
+    :func:`.laminate_from_LaminationParameters` and
+    :meth:`.GradABD.calc_LP_grad`. The deprecated properties ``xiAtrans1``
+    and ``xiAtrans2`` are aliases of ``xiAts1`` and ``xiAts2``.
+
     Attributes
     ----------
     xiA1, xiA2, xiA3, xiA4 : float
-        Lamination parameters `\xi_{Ai}` (in-plane)
+        Lamination parameters `\xi_{Ai}` (in-plane), dimensionless
     xiB1, xiB2, xiB3, xiB4 : float
-        Lamination parameters `\xi_{Bi}` (in-plane coupling with bending)
+        Lamination parameters `\xi_{Bi}` (in-plane coupling with bending),
+        dimensionless
     xiD1, xiD2, xiD3, xiD4 : float
-        Lamination parameters `\xi_{Di}` (bending)
+        Lamination parameters `\xi_{Di}` (bending), dimensionless
     xiAts1, xiAts2 : float
-        Lamination parameters `\xi_{{A_{ts}}i}` (transverse shear)
+        Lamination parameters `\xi_{{A_{ts}}i}` (transverse shear),
+        dimensionless
 
     """
     def __init__(LaminationParameters self):
@@ -43,23 +59,61 @@ cdef class LaminationParameters:
 
     @property
     def xiAtrans1(self):
-        r"""Deprecated, use :attr:`.xiAts1` instead"""
+        r"""Deprecated, use :attr:`.xiAts1` instead
+
+        Issues a :class:`DeprecationWarning` and returns ``xiAts1``.
+
+        Returns
+        -------
+        xiAts1 : float
+            Lamination parameter `\xi_{A_{ts}1}`, dimensionless.
+
+        """
         _warn_deprecated('LaminationParameters.xiAtrans1',
                          'LaminationParameters.xiAts1')
         return self.xiAts1
     @xiAtrans1.setter
     def xiAtrans1(self, double value):
+        r"""Deprecated, use :attr:`.xiAts1` instead
+
+        Issues a :class:`DeprecationWarning` and sets ``xiAts1``.
+
+        Parameters
+        ----------
+        value : float
+            Lamination parameter `\xi_{A_{ts}1}`, dimensionless.
+
+        """
         _warn_deprecated('LaminationParameters.xiAtrans1',
                          'LaminationParameters.xiAts1')
         self.xiAts1 = value
     @property
     def xiAtrans2(self):
-        r"""Deprecated, use :attr:`.xiAts2` instead"""
+        r"""Deprecated, use :attr:`.xiAts2` instead
+
+        Issues a :class:`DeprecationWarning` and returns ``xiAts2``.
+
+        Returns
+        -------
+        xiAts2 : float
+            Lamination parameter `\xi_{A_{ts}2}`, dimensionless.
+
+        """
         _warn_deprecated('LaminationParameters.xiAtrans2',
                          'LaminationParameters.xiAts2')
         return self.xiAts2
     @xiAtrans2.setter
     def xiAtrans2(self, double value):
+        r"""Deprecated, use :attr:`.xiAts2` instead
+
+        Issues a :class:`DeprecationWarning` and sets ``xiAts2``.
+
+        Parameters
+        ----------
+        value : float
+            Lamination parameter `\xi_{A_{ts}2}`, dimensionless.
+
+        """
         _warn_deprecated('LaminationParameters.xiAtrans2',
                          'LaminationParameters.xiAts2')
         self.xiAts2 = value
@@ -76,74 +130,87 @@ cdef class MatLamina:
     r"""
     Orthotropic material lamina
 
+    Container of the elastic, thermal, density and strength properties of a
+    material, created with all attributes equal to zero. After the elastic
+    properties are set, :meth:`rebuild` computes the constitutive constants
+    ``q11`` to ``q66``, the stiffness constants ``c11`` to ``c66`` and the
+    invariants ``u1`` to ``u7``, all with the dimension of force per unit
+    area; :meth:`trace_normalize_plane_stress` divides some of them by the
+    trace, such that they become dimensionless. Usually created by
+    :func:`.read_laminaprop`.
+
     Attributes
     ----------
 
     e1 : float
-        Young Modulus in direction 1
+        Young Modulus in direction 1, force per unit area
     e2 : float
-        Young Modulus in direction 2
+        Young Modulus in direction 2, force per unit area
+    e3 : float
+        Young Modulus in direction 3, force per unit area
     g12 : float
-        in-plane shear modulus
+        in-plane shear modulus, force per unit area
     g13 : float
-        transverse shear modulus for plane 1-Z
+        transverse shear modulus for plane 1-Z, force per unit area
     g23 : float
-        transverse shear modulus for plane 2-Z
-    nu12 :
-        Poisson's ratio 12
-    nu13 :
-        Poisson's ratio 13
-    nu23 :
-        Poisson's ratio 23
-    nu21 :
-        Poisson's ratio 21: use formula nu12/e1 = nu21/e2
-    nu31 :
-        Poisson's ratio 31: use formula nu31/e3 = nu13/e1
-    nu32 :
-        Poisson's ratio 32: use formula nu23/e2 = nu32/e3
-    rho :
+        transverse shear modulus for plane 2-Z, force per unit area
+    nu12 : float
+        Poisson's ratio 12, dimensionless
+    nu13 : float
+        Poisson's ratio 13, dimensionless
+    nu23 : float
+        Poisson's ratio 23, dimensionless
+    nu21 : float
+        Poisson's ratio 21: use formula nu12/e1 = nu21/e2, dimensionless
+    nu31 : float
+        Poisson's ratio 31: use formula nu31/e3 = nu13/e1, dimensionless
+    nu32 : float
+        Poisson's ratio 32: use formula nu23/e2 = nu32/e3, dimensionless
+    rho : float
         especific mass (mass / volume)
-    a1 :
-        thermal expansion coeffiecient in direction 1
-    a2 :
-        thermal expansion coeffiecient in direction 2
-    a3 :
-        thermal expansion coeffiecient in direction 3
-    tref :
+    a1 : float
+        thermal expansion coeffiecient in direction 1, per unit temperature
+    a2 : float
+        thermal expansion coeffiecient in direction 2, per unit temperature
+    a3 : float
+        thermal expansion coeffiecient in direction 3, per unit temperature
+    tref : float
         reference temperature
-    st1,st2 :
-        allowable tensile stresses for directions 1 and 2
-    sc1,sc2 :
-        allowable compressive stresses for directions 1 and 2
-    ss12 :
-        allowable in-plane stress for shear
-    q11 :
+    st1,st2 : float
+        allowable tensile stresses for directions 1 and 2, force per unit
+        area
+    sc1,sc2 : float
+        allowable compressive stresses for directions 1 and 2, force per unit
+        area
+    ss12 : float
+        allowable in-plane stress for shear, force per unit area
+    q11 : float
         lamina constitutive constant 11
-    q12 :
+    q12 : float
         lamina constitutive constant 12
-    q13 :
+    q13 : float
         lamina constitutive constant 13
-    q21 :
+    q21 : float
         lamina constitutive constant 21
-    q22 :
+    q22 : float
         lamina constitutive constant 22
-    q23 :
+    q23 : float
         lamina constitutive constant 23
-    q31 :
+    q31 : float
         lamina constitutive constant 31
-    q32 :
+    q32 : float
         lamina constitutive constant 32
-    q33 :
+    q33 : float
         lamina constitutive constant 33
-    q44 :
+    q44 : float
         lamina constitutive constant 44
-    q55 :
+    q55 : float
         lamina constitutive constant 55
-    q66 :
+    q66 : float
         lamina constitutive constant 66
-    ci :
+    c11, c12, c13, c22, c23, c33, c44, c55, c66 : float
         lamina stiffness constants
-    ui :
+    u1, u2, u3, u4, u5, u6, u7 : float
         lamina material invariants
 
     Notes
@@ -265,6 +332,17 @@ cdef class MatLamina:
 
     cpdef double [:, ::1] get_constitutive_matrix(MatLamina self):
         r"""Return the constitutive matrix
+
+        Builds the symmetric matrix of the stiffness constants ``c11`` to
+        ``c66`` computed by :meth:`rebuild`, with the rows and columns ordered
+        as 11, 22, 33, 23, 13, 12 (``c44 = g23``, ``c55 = g13``, ``c66 =
+        g12``).
+
+        Returns
+        -------
+        C : double[:, ::1]
+            Memoryview of shape ``(6, 6)``, force per unit area.
+
         """
         return np.array(
             [[self.c11, self.c12, self.c13,   0,   0,   0],
@@ -276,6 +354,18 @@ cdef class MatLamina:
 
     cpdef double [:, ::1] get_invariant_matrix(MatLamina self):
         r"""Return the invariant matrix
+
+        Builds the matrix of the invariants ``u1`` to ``u7`` computed by
+        :meth:`rebuild`. The rows correspond to ``q11``, ``q22``, ``q12``,
+        ``q66``, ``q16``, ``q26``, ``q44``, ``q45``, ``q55`` and the columns to
+        the factors of ``1`` and of the lamination parameters, in the same
+        combinations used by :func:`.laminate_from_LaminationParameters`.
+
+        Returns
+        -------
+        U : double[:, ::1]
+            Memoryview of shape ``(9, 5)``, force per unit area.
+
         """
         return np.array(
             [[self.u1,  self.u2,    0,  self.u3,   0],            # q11
@@ -290,7 +380,14 @@ cdef class MatLamina:
 
 
 cdef class Lamina:
-    r"""
+    r"""Ply of a laminate
+
+    Created with all attributes equal to zero and ``matlamina`` equal to
+    ``None``. After ``matlamina``, ``h`` and ``thetadeg`` are set,
+    :meth:`rebuild` computes the trigonometric terms of the ply angle and the
+    ply stiffnesses ``q11L`` to ``q55L`` in the laminate axes. Usually created
+    by :func:`.laminated_plate`.
+
     Attributes
     ----------
 
@@ -299,9 +396,21 @@ cdef class Lamina:
     matlamina : :class:`.MatLamina` object
         A :class:`.MatLamina` object
     h : float
-        Ply thickness
+        Ply thickness, length
     thetadeg : float
         Ply angle in degrees
+    cost, sint : float
+        Cosine and sine of the ply angle, dimensionless, computed by
+        :meth:`rebuild`
+    cos2t, sin2t, cos4t, sin4t : float
+        Cosine and sine of two and four times the ply angle, dimensionless,
+        computed by :meth:`rebuild`
+    q11L, q12L, q16L, q22L, q26L, q66L : float
+        Plane-stress stiffnesses of the ply in the laminate axes, force per
+        unit area, computed by :meth:`rebuild`
+    q44L, q45L, q55L : float
+        Transverse shear stiffnesses of the ply in the laminate axes, force
+        per unit area, computed by :meth:`rebuild`
 
     """
     def __init__(Lamina self):
@@ -373,13 +482,35 @@ cdef class Lamina:
         #     contractions
 
     cpdef double [:, ::1] get_transf_matrix_displ_to_laminate(Lamina self):
-        r"""Return displacement transformation matrix from lamina to laminate"""
+        r"""Return displacement transformation matrix from lamina to laminate
+
+        Builds ``[[cost, sint, 0], [-sint, cost, 0], [0, 0, 1]]`` from the
+        terms computed by :meth:`rebuild`.
+
+        Returns
+        -------
+        T : double[:, ::1]
+            Memoryview of shape ``(3, 3)``, dimensionless.
+
+        """
         return np.array([[ self.cost, self.sint, 0],
                          [-self.sint, self.cost, 0],
                          [   0,     0, 1]], dtype=DOUBLE)
 
     cpdef double [:, ::1] get_constitutive_matrix(Lamina self):
-        r"""Return the constitutive matrix"""
+        r"""Return the constitutive matrix
+
+        Builds the symmetric matrix of the ply stiffnesses in the laminate axes
+        computed by :meth:`rebuild`, ``[[q11L, q12L, q16L, 0, 0], [q12L, q22L,
+        q26L, 0, 0], [q16L, q26L, q66L, 0, 0], [0, 0, 0, q44L, q45L], [0, 0,
+        0, q45L, q55L]]``.
+
+        Returns
+        -------
+        C : double[:, ::1]
+            Memoryview of shape ``(5, 5)``, force per unit area.
+
+        """
         return np.array([[self.q11L, self.q12L, self.q16L,    0,    0],
                          [self.q12L, self.q22L, self.q26L,    0,    0],
                          [self.q16L, self.q26L, self.q66L,    0,    0],
@@ -387,7 +518,22 @@ cdef class Lamina:
                          [   0,    0,    0, self.q45L, self.q55L]], dtype=DOUBLE)
 
     cpdef double [:, ::1] get_transf_matrix_stress_to_lamina(Lamina self):
-        r"""Return stress transformation matrix from laminate to lamina"""
+        r"""Return stress transformation matrix from laminate to lamina
+
+        Builds the matrix from the terms ``cost``, ``sint`` and ``sin2t``
+        computed by :meth:`rebuild`. TODO(author): order of the six stress
+        components.
+
+        Returns
+        -------
+        T : double[:, ::1]
+            Memoryview of shape ``(6, 6)``, dimensionless.
+
+        See Also
+        --------
+        get_transf_matrix_stress_to_laminate
+
+        """
         cdef double cos2, sin2, sincos
         cos2 = self.cost**2
         sin2 = self.sint**2
@@ -401,7 +547,24 @@ cdef class Lamina:
              [-sincos, sincos, 0, 0, 0, cos2-sin2]], dtype=DOUBLE)
 
     cpdef double [:, ::1] get_transf_matrix_stress_to_laminate(Lamina self):
-        r"""Return stress transformation matrix from lamina to laminate"""
+        r"""Return stress transformation matrix from lamina to laminate
+
+        Builds the matrix from the terms ``cost``, ``sint`` and ``sin2t``
+        computed by :meth:`rebuild`, with the opposite sign of all the terms
+        in ``sint`` and ``sin2t`` with respect to
+        :meth:`get_transf_matrix_stress_to_lamina`. TODO(author): order of the
+        six stress components.
+
+        Returns
+        -------
+        T : double[:, ::1]
+            Memoryview of shape ``(6, 6)``, dimensionless.
+
+        See Also
+        --------
+        get_transf_matrix_stress_to_lamina
+
+        """
         cdef double cos2, sin2, sincos
         cos2 = self.cost**2
         sin2 = self.sint**2
@@ -555,7 +718,24 @@ _LAMINATE_STATE = tuple(
 
 
 cdef class Laminate:
-    r"""
+    r"""Laminate, with its stiffnesses and mass integrals
+
+    Created with ``offset = 0``, ``plies = []``, ``stack = []``,
+    ``shear_correction = 'rohwer'``, ``scf_k13 = scf_k23 = 5/6`` and all other
+    attributes equal to zero. After ``plies``, a list of :class:`.Lamina`
+    objects from the bottom to the top face, and ``offset`` are set,
+    :meth:`calc_constitutive_matrix` computes ``h``, the stiffnesses and the
+    mass integrals, and :meth:`calc_equivalent_properties` the equivalent
+    moduli. The stiffnesses are thickness integrals of the ply stiffnesses
+    ``qijL`` of :class:`.Lamina`, with `z` measured from the reference
+    surface. Usually created by :func:`.laminated_plate`,
+    :func:`.isotropic_plate` or :func:`.laminate_from_LaminationParameters`.
+
+    The object can be pickled: the public attributes and the instance
+    dictionary are saved, and the through-thickness transverse shear
+    distribution used by :meth:`calc_transverse_shear_stress` is recomputed
+    when needed.
+
     Attributes
     ----------
 
@@ -564,30 +744,53 @@ cdef class Laminate:
     stack : list
         List of angles for each ply
     h : float
-        Total thickness of the laminate
+        Total thickness of the laminate, length
     offset : float
-        Offset at the normal direction
+        Offset at the normal direction, length
     e1, e2 : float
-        Equivalent laminate moduli in directions 1 and 2
+        Equivalent laminate moduli in directions 1 and 2, force per unit area
     g12 : float
-        Equivalent laminate shear modulus in the 12 direction
+        Equivalent laminate shear modulus in the 12 direction, force per unit
+        area
     nu12, nu21 : float
-        Equivalent laminate Poisson ratios in the 12 and 21 directions
+        Equivalent laminate Poisson ratios in the 12 and 21 directions,
+        dimensionless
+    A11, A12, A16, A22, A26, A66 : float
+        Membrane stiffnesses `\int q_{ijL} dz`, force per unit length
+    B11, B12, B16, B22, B26, B66 : float
+        Membrane-bending coupling stiffnesses `\int q_{ijL} z dz`, force
+    D11, D12, D16, D22, D26, D66 : float
+        Bending stiffnesses `\int q_{ijL} z^2 dz`, force times length
+    E11, E12, E16, E22, E26, E66 : float
+        Stiffnesses `\int q_{ijL} z^3 dz`, force times length squared
+    F11, F12, F16, F22, F26, F66 : float
+        Stiffnesses `\int q_{ijL} z^4 dz`, force times length cubed
+    H11, H12, H16, H22, H26, H66 : float
+        Stiffnesses `\int q_{ijL} z^6 dz`, force times length to the fifth
+        power
+    D44, D45, D55 : float
+        Transverse shear stiffnesses `\int q_{ijL} z^2 dz`, force times
+        length, see ``Dts``
+    F44, F45, F55 : float
+        Transverse shear stiffnesses `\int q_{ijL} z^4 dz`, force times
+        length cubed, see ``Fts``
     A44, A45, A55 : float
         Transverse shear stiffnesses of the first-order shear deformation
         theory (FSDT), **with the shear correction already applied**
         according to ``shear_correction``. They are ready to be used in
         the element and no shear correction factor should be applied to
         them downstream. See :meth:`.calc_transverse_shear_stiffness`.
+        Force per unit length.
     Abar44, Abar45, Abar55 : float
         Constant-strain (uncorrected) transverse shear stiffnesses
         `\bar{A}_{ts} = \sum_k C_s^{(k)} h_k`. These are the terms to be used
         together with ``Dts`` and ``Fts`` in the third-order shear
-        deformation theory (TSDT), which needs no shear correction.
+        deformation theory (TSDT), which needs no shear correction. Force per
+        unit length.
     Abarbar44, Abarbar45, Abarbar55 : float
         Constant-stress transverse shear stiffnesses `\bar{\bar{A}}_{ts} = h^2
         [\sum_k (C_s^{(k)})^{-1} h_k]^{-1}`, for comparison only. Equal to
-        ``nan`` when a ply has a singular `C_s^{(k)}`.
+        ``nan`` when a ply has a singular `C_s^{(k)}`. Force per unit length.
     shear_correction : str or None
         Method used to obtain ``A44``, ``A45``, ``A55`` from the ply data:
         ``'rohwer'``, ``'vlachoutsis'``, ``'whitney'``, ``'chow'``,
@@ -597,16 +800,19 @@ cdef class Laminate:
     scf_k13, scf_k23 : float
         Reported shear correction ratios ``A55/Abar55`` and ``A44/Abar44``.
         They are informative only, the correction is already inside ``A44``,
-        ``A45``, ``A55``.
+        ``A45``, ``A55``. Dimensionless.
     intrho : float
         Integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z) dz`, used in
-        equivalent single layer finite element mass matrices
+        equivalent single layer finite element mass matrices, mass per unit
+        area
     intrhoz : float
         Integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z)z dz`, used in
-        equivalent single layer finite element mass matrices
+        equivalent single layer finite element mass matrices, mass per unit
+        area times length
     intrhoz2 : float
         Integral `\int_{-h/2+offset}^{+h/2+offset} \rho(z)z^2 dz`, used in
-        equivalent single layer finite element mass matrices
+        equivalent single layer finite element mass matrices, mass per unit
+        area times length squared
 
     """
     def __init__(Laminate self):
@@ -704,21 +910,87 @@ cdef class Laminate:
                          [self.B16, self.B26, self.B66, self.D16, self.D26, self.D66]], dtype=DOUBLE)
     @property
     def A(self):
+        r"""Membrane stiffness matrix
+
+        Built from the attributes ``A11`` to ``A66``; a new array is returned
+        at each access, such that changing it does not change the attributes.
+
+        Returns
+        -------
+        A : ndarray
+            Array of shape ``(3, 3)``, force per unit length.
+
+        """
         return np.asarray(self.get_A())
     @property
     def B(self):
+        r"""Membrane-bending coupling stiffness matrix
+
+        Built from the attributes ``B11`` to ``B66``; a new array is returned
+        at each access, such that changing it does not change the attributes.
+
+        Returns
+        -------
+        B : ndarray
+            Array of shape ``(3, 3)``, force.
+
+        """
         return np.asarray(self.get_B())
     @property
     def D(self):
+        r"""Bending stiffness matrix
+
+        Built from the attributes ``D11`` to ``D66``; a new array is returned
+        at each access, such that changing it does not change the attributes.
+
+        Returns
+        -------
+        D : ndarray
+            Array of shape ``(3, 3)``, force times length.
+
+        """
         return np.asarray(self.get_D())
     @property
     def E(self):
+        r"""Stiffness matrix of the third-order shear deformation theory
+
+        Built from the attributes ``E11`` to ``E66``; a new array is returned
+        at each access, such that changing it does not change the attributes.
+
+        Returns
+        -------
+        E : ndarray
+            Array of shape ``(3, 3)``, force times length squared.
+
+        """
         return np.asarray(self.get_E())
     @property
     def F(self):
+        r"""Stiffness matrix of the third-order shear deformation theory
+
+        Built from the attributes ``F11`` to ``F66``; a new array is returned
+        at each access, such that changing it does not change the attributes.
+
+        Returns
+        -------
+        F : ndarray
+            Array of shape ``(3, 3)``, force times length cubed.
+
+        """
         return np.asarray(self.get_F())
     @property
     def H(self):
+        r"""Stiffness matrix of the third-order shear deformation theory
+
+        Built from the attributes ``H11`` to ``H66``; a new array is returned
+        at each access, such that changing it does not change the attributes.
+
+        Returns
+        -------
+        H : ndarray
+            Array of shape ``(3, 3)``, force times length to the fifth power.
+
+        """
         return np.asarray(self.get_H())
     @property
     def Ats(self):
@@ -727,6 +999,13 @@ cdef class Laminate:
         Index 4 corresponds to `yz` and index 5 to `xz`, such that `\{Q_y,
         Q_x\}^T = A_{ts} \{\gamma_{yz}, \gamma_{xz}\}^T`. The shear correction
         is already applied, see :meth:`.calc_transverse_shear_stiffness`.
+        A new array is returned at each access, such that changing it does not
+        change the attributes.
+
+        Returns
+        -------
+        Ats : ndarray
+            Array of shape ``(2, 2)``, force per unit length.
 
         """
         return np.asarray(self.get_Ats())
@@ -734,7 +1013,13 @@ cdef class Laminate:
     def Atrans(self):
         r"""Deprecated, use :attr:`.Ats` instead
 
-        Returns the same corrected matrix as :attr:`.Ats`.
+        Returns the same corrected matrix as :attr:`.Ats`, issuing a
+        :class:`DeprecationWarning`.
+
+        Returns
+        -------
+        Atrans : ndarray
+            Array of shape ``(2, 2)``, force per unit length.
 
         """
         warnings.warn("'Laminate.Atrans' is deprecated, use 'Laminate.Ats' "
@@ -747,33 +1032,105 @@ cdef class Laminate:
 
         Uncorrected transverse shear stiffness, to be used with ``Dts`` and
         ``Fts`` in the third-order shear deformation theory (TSDT).
+        A new array is returned at each access, such that changing it does not
+        change the attributes.
+
+        Returns
+        -------
+        Abar_ts : ndarray
+            Array of shape ``(2, 2)``, force per unit length.
 
         """
         return np.asarray(self.get_Abar_ts())
     @property
     def Abarbar_ts(self):
-        r"""Constant-stress ``[[Abarbar44, Abarbar45], [Abarbar45, Abarbar55]]``"""
+        r"""Constant-stress ``[[Abarbar44, Abarbar45], [Abarbar45, Abarbar55]]``
+
+        Built from the attributes ``Abarbar44``, ``Abarbar45``, ``Abarbar55``.
+        A new array is returned at each access, such that changing it does not
+        change the attributes.
+
+        Returns
+        -------
+        Abarbar_ts : ndarray
+            Array of shape ``(2, 2)``, force per unit length.
+
+        """
         return np.asarray(self.get_Abarbar_ts())
     @property
     def Dts(self):
-        r"""TSDT transverse shear stiffness ``[[D44, D45], [D45, D55]]``"""
+        r"""TSDT transverse shear stiffness ``[[D44, D45], [D45, D55]]``
+
+        Built from the attributes ``D44``, ``D45``, ``D55``.
+        A new array is returned at each access, such that changing it does not
+        change the attributes.
+
+        Returns
+        -------
+        Dts : ndarray
+            Array of shape ``(2, 2)``, force times length.
+
+        """
         return np.asarray(self.get_Dts())
     @property
     def Fts(self):
-        r"""TSDT transverse shear stiffness ``[[F44, F45], [F45, F55]]``"""
+        r"""TSDT transverse shear stiffness ``[[F44, F45], [F45, F55]]``
+
+        Built from the attributes ``F44``, ``F45``, ``F55``.
+        A new array is returned at each access, such that changing it does not
+        change the attributes.
+
+        Returns
+        -------
+        Fts : ndarray
+            Array of shape ``(2, 2)``, force times length cubed.
+
+        """
         return np.asarray(self.get_Fts())
     @property
     def Dtrans(self):
-        r"""Deprecated, use :attr:`.Dts` instead"""
+        r"""Deprecated, use :attr:`.Dts` instead
+
+        Returns the same matrix as :attr:`.Dts`, issuing a
+        :class:`DeprecationWarning`.
+
+        Returns
+        -------
+        Dtrans : ndarray
+            Array of shape ``(2, 2)``, force times length.
+
+        """
         _warn_deprecated('Laminate.Dtrans', 'Laminate.Dts')
         return np.asarray(self.get_Dts())
     @property
     def Ftrans(self):
-        r"""Deprecated, use :attr:`.Fts` instead"""
+        r"""Deprecated, use :attr:`.Fts` instead
+
+        Returns the same matrix as :attr:`.Fts`, issuing a
+        :class:`DeprecationWarning`.
+
+        Returns
+        -------
+        Ftrans : ndarray
+            Array of shape ``(2, 2)``, force times length cubed.
+
+        """
         _warn_deprecated('Laminate.Ftrans', 'Laminate.Fts')
         return np.asarray(self.get_Fts())
     @property
     def ABD(self):
+        r"""Stiffness matrix ``[[A, B], [B, D]]``
+
+        Built from the attributes ``A11`` to ``D66``; a new array is returned
+        at each access, such that changing it does not change the attributes.
+
+        Returns
+        -------
+        ABD : ndarray
+            Array of shape ``(6, 6)``, with the dimensions of ``A``, ``B`` and
+            ``D``.
+
+        """
         return np.asarray(self.get_ABD())
 
 
@@ -1054,6 +1411,10 @@ cdef class Laminate:
         through-thickness distribution used by
         :meth:`.calc_transverse_shear_stress` is also stored.
 
+        Without plies, ``A44``, ``A45``, ``A55``, ``Abar44``, ``Abar45``,
+        ``Abar55``, ``Abarbar44``, ``Abarbar45`` and ``Abarbar55`` are set to
+        zero and nothing else is updated.
+
         References:
 
             Rohwer, K. "Improved transverse shear stiffness for layered
@@ -1094,7 +1455,11 @@ cdef class Laminate:
             ``g13 = 0`` or ``g23 = 0`` (all methods except ``'constant'``
             and ``None``); if the ABD matrix of the laminate is singular
             (``'rohwer'``); if the laminate is not symmetric (``'chow'``); or
-            if a ply has a non-positive density (``'thickness_shear'``).
+            if a ply has a non-positive density (``'thickness_shear'``). Also
+            if the transverse shear compliance obtained with ``'rohwer'`` is
+            singular, or if the sum of ``q11L`` (direction 1) or ``q22L``
+            (direction 2) times the ply thicknesses is not positive
+            (``'vlachoutsis'``, ``'whitney'``, ``'chow'``, ``'birman_bert'``).
 
         """
         cdef int k, ig, N, alpha, singular_ply
@@ -1437,15 +1802,29 @@ cdef class Laminate:
             Derivatives with respect to `x` and `y` of `\{\varepsilon_{xx}^{(0)},
             \varepsilon_{yy}^{(0)}, \gamma_{xy}^{(0)}, \varepsilon_{xx}^{(1)},
             \varepsilon_{yy}^{(1)}, \gamma_{xy}^{(1)}\}`, at ``npts`` points.
-        z : array-like or None
+            The first three entries are per unit length and the last three
+            per unit length squared.
+        z : array-like or None, optional
             Heights from the reference surface. If ``None``, the three
-            Gauss-Legendre points of each ply are used.
+            Gauss-Legendre points of each ply are used. Default ``None``.
+            Length.
 
         Returns
         -------
         z, tau_yz, tau_xz : np.ndarray
             The heights, with shape ``(nz,)``, and the stresses, with shape
-            ``(npts, nz)``.
+            ``(npts, nz)``. With ``z=None``, ``nz`` is three times the number
+            of plies. Length for ``z`` and force per unit area for the
+            stresses.
+
+        Raises
+        ------
+        ValueError
+            If a value of ``z`` is outside the laminate.
+
+        See Also
+        --------
+        calc_aposteriori_energy
 
         """
         gx = np.atleast_2d(np.asarray(grad_x, dtype=DOUBLE))
@@ -1524,7 +1903,15 @@ cdef class Laminate:
         -------
         U13, U23, Qy, Qx : np.ndarray
             The energies and the resultants `\int \bar\tau dz` of the
-            recovered stresses, with shape ``(npts,)``.
+            recovered stresses, with shape ``(npts,)``. Energy per unit area
+            for ``U13`` and ``U23``, force per unit length for ``Qy`` and
+            ``Qx``.
+
+        Raises
+        ------
+        ValueError
+            If a ply has a singular transverse shear constitutive matrix
+            `C_s^{(k)}`, e.g. ``g13 = 0`` or ``g23 = 0``.
 
         """
         z, tyz, txz = self.calc_equilibrium_transverse_shear(grad_x, grad_y)
@@ -1567,7 +1954,10 @@ cdef class Laminate:
 
         The following attributes are updated:
 
-            ``e1``, ``e2``, ``g12``, ```u12``, ``nu21``
+            ``e1``, ``e2``, ``g12``, ``nu12``, ``nu21``
+
+        They are computed from the inverse of the 6x6 ``ABD`` matrix and from
+        ``h``.
 
         """
         AI = np.linalg.inv(self.get_ABD())
@@ -1591,6 +1981,12 @@ cdef class Laminate:
         calculated at the end by :meth:`.calc_transverse_shear_stiffness`,
         with the shear correction selected by ``shear_correction`` already
         applied.
+
+        The attributes ``h``, ``intrho``, ``intrhoz``, ``intrhoz2``, ``A11``
+        to ``H66``, ``D44``, ``D45``, ``D55``, ``F44``, ``F45`` and ``F55`` are
+        computed from ``plies`` and ``offset``, with the ply stiffnesses of
+        the last call to :meth:`.Lamina.rebuild` and the density ``rho`` of
+        the material of each ply.
 
         """
         cdef double h0, hk_1, hk, tmp_hk, tmp_hk_1
@@ -1687,6 +2083,11 @@ cdef class Laminate:
         The attributes `A_{16}`, `A_{26}`, `B_{16}`, `B_{26}` are set to zero
         to make a balanced laminate.
 
+        Raises
+        ------
+        RuntimeError
+            If ``offset`` is not zero.
+
         """
         if self.offset != 0.:
             raise RuntimeError('Laminates with offset cannot be made balanced!')
@@ -1701,6 +2102,11 @@ cdef class Laminate:
 
         The attributes `A_{16}`, `A_{26}`, `B_{16}`, `B_{26}`, `D_{16}`,
         `D_{26}` are set to zero to make an orthotropic laminate.
+
+        Raises
+        ------
+        RuntimeError
+            If ``offset`` is not zero.
 
         """
         if self.offset != 0.:
@@ -1717,6 +2123,14 @@ cdef class Laminate:
         """Make a symmetric laminate
 
         The `B_{ij}` terms of the constitutive matrix are set to zero.
+
+        The attributes ``E11`` to ``E66``, ``F16``, ``F26``, ``H16``,
+        ``H26``, ``D45`` and ``F45`` are also set to zero.
+
+        Raises
+        ------
+        RuntimeError
+            If ``offset`` is not zero.
 
         """
         if self.offset != 0.:
@@ -1755,6 +2169,11 @@ cdef class Laminate:
         according to `D_{ij} = (h^2 A_{ij})/12`, where `h` is the
         laminate thickness.
 
+        Raises
+        ------
+        NotImplementedError
+            If ``offset`` is not zero.
+
         """
         if self.offset != 0.:
             raise NotImplementedError(
@@ -1780,7 +2199,23 @@ cdef class Laminate:
 
         The following attributes are calculated:
 
-            ``xiA``, ``xiB``, ``xiD``, ``xiE``
+            ``xiA``, ``xiB``, ``xiD``, ``xiAts``
+
+        They are the attributes of the returned object, computed from the ply
+        angles and from the ply heights measured from the reference surface,
+        i.e. including ``offset``, divided by the total thickness. The
+        object is not modified, except that :meth:`.Lamina.rebuild` is called
+        for each ply.
+
+        Returns
+        -------
+        lp : :class:`.LaminationParameters`
+            New object with the lamination parameters, dimensionless.
+
+        Raises
+        ------
+        ValueError
+            If there are no plies.
 
         """
         cdef double h0, hk, hk_1, h, zbar1, zbar2, Afac, Bfac, Dfac, Efac
@@ -1834,6 +2269,22 @@ cpdef LaminationParameters make_balanced_LP(LaminationParameters lp):
     The lamination parameters `\xi_{A2}` and `\xi_{A4}` are set to null to
     make a balanced laminate.
 
+    The object ``lp`` is modified in place and returned.
+
+    Parameters
+    ----------
+    lp : :class:`.LaminationParameters`
+        Lamination parameters, modified in place.
+
+    Returns
+    -------
+    lp : :class:`.LaminationParameters`
+        The same object given as input.
+
+    See Also
+    --------
+    make_symmetric_LP, make_orthotropic_LP
+
     """
     lp.xiA2 = 0
     lp.xiA4 = 0
@@ -1845,6 +2296,22 @@ cpdef LaminationParameters make_symmetric_LP(LaminationParameters lp):
 
     The lamination parameters `\xi_{Bi}` are set to null to make a symmetric
     laminate.
+
+    The object ``lp`` is modified in place and returned.
+
+    Parameters
+    ----------
+    lp : :class:`.LaminationParameters`
+        Lamination parameters, modified in place.
+
+    Returns
+    -------
+    lp : :class:`.LaminationParameters`
+        The same object given as input.
+
+    See Also
+    --------
+    make_balanced_LP, make_orthotropic_LP
 
     """
     lp.xiB1 = 0
@@ -1863,6 +2330,22 @@ cpdef LaminationParameters make_orthotropic_LP(LaminationParameters lp):
     become often very small for balanced laminates with a large amount of
     plies.
 
+    The object ``lp`` is modified in place and returned.
+
+    Parameters
+    ----------
+    lp : :class:`.LaminationParameters`
+        Lamination parameters, modified in place.
+
+    Returns
+    -------
+    lp : :class:`.LaminationParameters`
+        The same object given as input.
+
+    See Also
+    --------
+    make_balanced_LP, make_symmetric_LP
+
     """
     lp.xiA2 = 0
     lp.xiA4 = 0
@@ -1878,10 +2361,21 @@ cpdef Laminate laminate_from_LaminationParameters(double thickness, MatLamina
     r"""Return a :class:`.Laminate` object based in the thickness, material and
     lamination parameters
 
+    In a new :class:`.Laminate` object, the stiffnesses ``A11`` to ``D66`` and
+    ``Abar44``, ``Abar45``, ``Abar55`` are computed from ``thickness``, from
+    the invariants ``u1`` to ``u7`` of ``mat`` and from the lamination
+    parameters of ``lp``, with the combinations of
+    :meth:`.MatLamina.get_invariant_matrix`. No plies are created, ``offset``
+    is zero, and the mass integrals ``intrho``, ``intrhoz``, ``intrhoz2`` and
+    the equivalent properties ``e1``, ``e2``, ``g12``, ``nu12``, ``nu21`` are
+    not computed, remaining zero.
+    The stiffnesses ``E11`` to ``H66``, ``D44``, ``D45``, ``D55``, ``F44``,
+    ``F45`` and ``F55`` are also zero.
+
     Parameters
     ----------
     thickness : float
-        The total thickness of the laminate
+        The total thickness of the laminate, length
     mat : :class:`.MatLamina` object
         Material object
     lp : :class:`.LaminationParameters` object
@@ -1956,19 +2450,32 @@ cpdef Laminate laminate_from_lamination_parameters(double thickness, MatLamina
     equal to zero, becoming important only when the transverse shear modulus
     is different in the two directions, i.e.  when `G_{13} \ne G{23}`.
 
+    The 14 lamination parameters according to the first-order shear
+    deformation theory are `\xi_{A1} \cdots \xi_{A4}`, `\xi_{B1} \cdots
+    \xi_{B4}`, `\xi_{D1} \cdots \xi_{D4}`, `\xi_{A_{ts}1}` and
+    `\xi_{A_{ts}2}`. They are stored in a new
+    :class:`.LaminationParameters` object, passed to
+    :func:`.laminate_from_LaminationParameters`.
+
     Parameters
     ----------
     thickness : float
-        The total thickness of the laminate
+        The total thickness of the laminate, length
     matlamina : :class:`.MatLamina` object
         Material object
-    xiAj, xiBj, xiDj, xiAtsj : float
-        The 14 lamination parameters according to the first-order shear
-        deformation theory: `\xi_{A1} \cdots \xi_{A4}`, `\xi_{B1} \cdots
-        \xi_{B4}`, `\xi_{D1} \cdots \xi_{D4}`, `\xi_{A_{ts}1}` and
-        `\xi_{A_{ts}2}`
+    xiA1, xiA2, xiA3, xiA4 : float
+        Lamination parameters `\xi_{A1} \cdots \xi_{A4}`, dimensionless.
+    xiB1, xiB2, xiB3, xiB4 : float
+        Lamination parameters `\xi_{B1} \cdots \xi_{B4}`, dimensionless.
+    xiD1, xiD2, xiD3, xiD4 : float
+        Lamination parameters `\xi_{D1} \cdots \xi_{D4}`, dimensionless.
+    xiAts1, xiAts2 : float, optional
+        Lamination parameters `\xi_{A_{ts}1}` and `\xi_{A_{ts}2}`,
+        dimensionless. Default ``0``.
     xiAtrans1, xiAtrans2 : float, optional
-        Deprecated, use ``xiAts1`` and ``xiAts2`` instead.
+        Deprecated, use ``xiAts1`` and ``xiAts2`` instead. Default ``None``;
+        when not ``None``, the value replaces ``xiAts1`` or ``xiAts2`` and a
+        :class:`DeprecationWarning` is issued.
 
 
     Returns
@@ -2010,9 +2517,14 @@ cdef class GradABD:
     r"""Container to store the gradients of the ABD matrices with respect to
     the lamination parameters
 
+    Created with all gradients equal to zero, which are updated by
+    :meth:`calc_LP_grad`. The object can
+    be pickled. The deprecated property ``gradAtransij`` is an alias of
+    ``gradAtsij``.
+
     Attributes
     ----------
-    gradAij, gradBij, gradDij, gradAtsij : tuple of 2D np.array objects
+    gradAij, gradBij, gradDij, gradAtsij : double[:, ::1]
         The shapes of these gradient matrices are:
 
             gradAij: (6, 5)
@@ -2021,7 +2533,9 @@ cdef class GradABD:
             gradAtsij: (3, 3)
 
         They contain the gradients of each laminate stiffness with respect to
-        the thickness and respective lamination parameters. The transverse
+        the thickness and respective lamination parameters. Column 0 has the
+        dimension of the respective stiffness divided by a length and the
+        other columns the dimension of the stiffness. The transverse
         shear terms are the constant-strain (uncorrected) ``Abar44``,
         ``Abar45``, ``Abar55``, as given by
         :func:`.laminate_from_LaminationParameters`. The rows and
@@ -2089,11 +2603,31 @@ cdef class GradABD:
 
     @property
     def gradAtransij(self):
-        r"""Deprecated, use :attr:`.gradAtsij` instead"""
+        r"""Deprecated, use :attr:`.gradAtsij` instead
+
+        Issues a :class:`DeprecationWarning` and returns ``gradAtsij``.
+
+        Returns
+        -------
+        gradAtsij : double[:, ::1]
+            Gradients of shape ``(3, 3)``, see :class:`.GradABD`.
+
+        """
         _warn_deprecated('GradABD.gradAtransij', 'GradABD.gradAtsij')
         return self.gradAtsij
     @gradAtransij.setter
     def gradAtransij(self, value):
+        r"""Deprecated, use :attr:`.gradAtsij` instead
+
+        Issues a :class:`DeprecationWarning` and sets ``gradAtsij``.
+
+        Parameters
+        ----------
+        value : double[:, ::1]
+            2-D C-contiguous array of float64, of shape ``(3, 3)``, see
+            :class:`.GradABD`.
+
+        """
         _warn_deprecated('GradABD.gradAtransij', 'GradABD.gradAtsij')
         self.gradAtsij = value
 
@@ -2101,10 +2635,22 @@ cdef class GradABD:
         r"""Gradients of the shell stiffnesses with respect to the thickness and
         lamination parameters
 
+        Updates ``gradAij``, ``gradBij``, ``gradDij`` and ``gradAtsij`` with
+        the derivatives of the stiffnesses computed by
+        :func:`.laminate_from_LaminationParameters` from ``thickness``,
+        from the invariants ``u1`` to ``u7`` of ``mat`` and from the
+        lamination parameters of ``lp``; column 0 contains the derivatives
+        with respect to the thickness. The entries ``[0, 2]``, ``[1, 1]`` and
+        ``[2, 2]`` of ``gradAtsij``, which do not depend on the lamination
+        parameters, are not updated. TODO(author): the loops over the rows of
+        the columns 1 to 4 of ``gradAij``, ``gradBij`` and ``gradDij`` run
+        over ``range(5)``, such that row 5 (``A66``, ``B66``, ``D66``) of these
+        columns is not updated.
+
         Parameters
         ----------
         thickness : float
-            The total thickness of the laminate
+            The total thickness of the laminate, length
         mat : :class:`.MatLamina` object
             Material object
         lp : :class:`.LaminationParameters` object
@@ -2184,6 +2730,14 @@ cpdef Laminate n_double_laminate(double thickness, int n, double[::1] angles_deg
 
     This code is considerably faster than :func:`composites.utils.n_double_laminate`.
 
+    In a new :class:`.Laminate` object, the stiffnesses ``A11`` to ``A66`` and
+    ``D11`` to ``D66`` are computed from ``thickness``, from the trace and
+    the trace-normalized invariants of ``matlamina`` and from the first ``n``
+    angles of ``angles_deg``. The object ``matlamina`` is modified in place
+    by :meth:`.MatLamina.trace_normalize_plane_stress`. No plies are created,
+    ``stack`` is empty, all the other stiffnesses are zero and
+    :meth:`.Laminate.calc_equivalent_properties` is called.
+
     An N-double laminate consists of `[\pm\phi_1,\pm\phi_2, \cdots,
     \pm\phi_n]`. With the principle of homogenization, at the limit where many
     plies are used we have that `B=0`.  Based on the double-double laminate as
@@ -2197,13 +2751,23 @@ cpdef Laminate n_double_laminate(double thickness, int n, double[::1] angles_deg
     Parameters
     ----------
     thickness : float
-        Total plate thickness.
+        Total plate thickness, length.
     n : int
         Number of angle pairs,m defines the "N" in "N-double".
-    angles_deg : array-like
-        List of `\phi_n` of the N-double laminate.
+    angles_deg : 1-D array of float64
+        List of `\phi_n` of the N-double laminate. C-contiguous array of size
+        at least ``n``, of which the first ``n`` angles are used, in degrees.
     matlamina : MatLamina
-        See :class:`.MatLamina` for details.
+        See :class:`.MatLamina` for details. Modified in place.
+
+    Returns
+    -------
+    lam : :class:`.Laminate`
+        The N-double laminate.
+
+    See Also
+    --------
+    composites.utils.n_double_laminate, composites.utils.double_double_laminate
 
     """
     cdef int i
