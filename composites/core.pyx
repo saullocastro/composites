@@ -320,8 +320,8 @@ cdef class MatLamina:
 
         References
         ----------
-        .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and
-           Shells: Theory and Analysis, Second Edition, CRC Press, 2004.
+        .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells,
+           CRC Press, 2003. https://doi.org/10.1201/b12409
         .. [2] Gürdal, Z., Haftka, R. T. and Hajela, P., Design and
            Optimization of Laminated Composite Materials, Wiley-Interscience,
            1999.
@@ -590,8 +590,8 @@ cdef class Lamina:
 
         References
         ----------
-        .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and
-           Shells: Theory and Analysis, Second Edition, CRC Press, 2004.
+        .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells,
+           CRC Press, 2003. https://doi.org/10.1201/b12409
 
         """
         cdef double thetarad, e1, e2, nu12, nu21, g12, g13, g23
@@ -729,8 +729,8 @@ cdef class Lamina:
 
         References
         ----------
-        .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and
-           Shells: Theory and Analysis, Second Edition, CRC Press, 2004.
+        .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells,
+           CRC Press, 2003. https://doi.org/10.1201/b12409
 
         """
         cdef double cos2, sin2, sincos
@@ -1111,8 +1111,8 @@ cdef class Laminate:
 
     References
     ----------
-    .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells:
-       Theory and Analysis, Second Edition, CRC Press, 2004.
+    .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells,
+       CRC Press, 2003. https://doi.org/10.1201/b12409
 
     """
     def __init__(Laminate self):
@@ -2470,8 +2470,8 @@ cdef class Laminate:
 
         References
         ----------
-        .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and
-           Shells: Theory and Analysis, Second Edition, CRC Press, 2004.
+        .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells,
+           CRC Press, 2003. https://doi.org/10.1201/b12409
 
         """
         cdef double h0, hk_1, hk, tmp_hk, tmp_hk_1
