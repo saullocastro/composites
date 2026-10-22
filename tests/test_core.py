@@ -347,3 +347,60 @@ def test_deprecated_Dtrans_Ftrans():
         Ftrans = lam.Ftrans
     assert np.array_equal(Dtrans, lam.Dts)
     assert np.array_equal(Ftrans, lam.Fts)
+
+
+def _abd_lp(thickness, matlamina, xiA, xiB, xiD, xiAts):
+    lam = laminate_from_lamination_parameters(thickness, matlamina, *xiA,
+            *xiB, *xiD, xiAts1=xiAts[0], xiAts2=xiAts[1])
+    A = [lam.A11, lam.A12, lam.A16, lam.A22, lam.A26, lam.A66]
+    B = [lam.B11, lam.B12, lam.B16, lam.B22, lam.B26, lam.B66]
+    D = [lam.D11, lam.D12, lam.D16, lam.D22, lam.D26, lam.D66]
+    Ats = [lam.Abar44, lam.Abar45, lam.Abar55]
+    return np.array(A), np.array(B), np.array(D), np.array(Ats)
+
+
+def test_laminate_LP_gradients_finite_differences():
+    # NOTE orthotropic material, since u2 = u3 = u7 = 0 for an isotropic one
+    matlamina = read_laminaprop((142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
+    thickness = 1.3e-3
+    xi = {'A': [0.5, 0.4, -0.3, -0.6],
+          'B': [0.2, -0.1, 0.35, 0.15],
+          'D': [-0.4, 0.3, 0.25, -0.2],
+          'Ats': [0.3, -0.2]}
+    lp = LaminationParameters()
+    for key, values in xi.items():
+        for i, value in enumerate(values):
+            setattr(lp, 'xi%s%d' % (key, i + 1), value)
+    grad = GradABD()
+    grad.calc_LP_grad(thickness, matlamina, lp)
+    grads = {'A': np.asarray(grad.gradAij), 'B': np.asarray(grad.gradBij),
+             'D': np.asarray(grad.gradDij), 'Ats': np.asarray(grad.gradAtsij)}
+    keys = ['A', 'B', 'D', 'Ats']
+
+    def stiffnesses(h, xi):
+        return dict(zip(keys, _abd_lp(h, matlamina, xi['A'], xi['B'],
+                                      xi['D'], xi['Ats'])))
+
+    # column 0: central differences with respect to the thickness
+    dh = 1e-6*thickness
+    plus = stiffnesses(thickness + dh, xi)
+    minus = stiffnesses(thickness - dh, xi)
+    for key in keys:
+        fd = (plus[key] - minus[key])/(2*dh)
+        scale = np.abs(fd).max()
+        assert np.allclose(grads[key][:, 0], fd, rtol=1e-6, atol=1e-6*scale)
+
+    # other columns: central differences with respect to each lamination
+    # parameter (the stiffnesses are linear in them)
+    dxi = 1e-4
+    for key in keys:
+        for j in range(len(xi[key])):
+            xi_plus = {k: list(v) for k, v in xi.items()}
+            xi_minus = {k: list(v) for k, v in xi.items()}
+            xi_plus[key][j] += dxi
+            xi_minus[key][j] -= dxi
+            fd = (stiffnesses(thickness, xi_plus)[key]
+                - stiffnesses(thickness, xi_minus)[key])/(2*dxi)
+            scale = np.abs(grads[key]).max()
+            assert np.allclose(grads[key][:, j + 1], fd, rtol=1e-6,
+                               atol=1e-9*scale), (key, j)
