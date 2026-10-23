@@ -100,7 +100,8 @@ def calc_Nxy_crit(a, D11, D12, D16, D22, D66, rtol=1e-5, atol=1e-6, max_iter=50)
     Parameters
     ----------
     a : float
-        Plate length, dimension length.
+        Width of the long plate, i.e. its short dimension, along `x`,
+        dimension length.
     D11, D12, D16, D22, D66 : float
         Terms of the D matrix, dimension force times length.
     rtol, atol : float, optional
@@ -126,8 +127,23 @@ def calc_Nxy_crit(a, D11, D12, D16, D22, D66, rtol=1e-5, atol=1e-6, max_iter=50)
     Notes
     -----
     The output of this function is the result of Eq. 6.28, section 6.4 page
-    137 of [1]_. Variables `AR` and `\alpha` are solved using a Newton-Raphson
-    scheme that finds the solution of Eqs. 6.29 and 6.30 simultaneously:
+    137 of [1]_, for a long rectangular plate of width `a`, simply supported
+    on its long edges `x = 0` and `x = a`, made of a symmetric laminate with
+    `D_{16} = D_{26} = 0`, under the shear load `N_{xy}` (pp. 136-137). The
+    buckling mode, Eq. 6.20,
+
+    .. math::
+
+        w = w_o \sin\frac{\pi x}{a} \sin\frac{\pi (y - x \tan\alpha)}{L}
+
+    is zero along the long edges and along lines inclined by the angle
+    `\alpha` to the `x` axis, separated by the distance `L` along the long
+    direction `y` (Fig. 6.10), such that the length of the plate does not
+    enter, and `AR = a/L` (p. 137). Eq. 6.28 follows from the minimum of the
+    total potential energy with respect to `w_o`, Eqs. 6.21-6.27, and the
+    critical `AR` and `\alpha` minimize it, Eqs. 6.29 and 6.30 (p. 138).
+    Variables `AR` and `\alpha` are solved using a Newton-Raphson scheme
+    that finds the solution of Eqs. 6.29 and 6.30 simultaneously:
 
     .. math::
 
@@ -144,9 +160,6 @@ def calc_Nxy_crit(a, D11, D12, D16, D22, D66, rtol=1e-5, atol=1e-6, max_iter=50)
     of Eq. 6.30. At each iteration `AR` is updated with Eq. 6.29 and
     `\alpha` is corrected by `-r/(\partial r/\partial \alpha)`, the
     derivative being taken at constant `AR`.
-
-    TODO(author): meaning of `AR` and `\alpha` and the boundary conditions
-    assumed by Eq. 6.28, e.g. a long plate of width `a`?
 
     References
     ----------
@@ -299,7 +312,10 @@ def calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22, D26, D66):
     Parameters
     ----------
     Nxy : float
-        Shear load `N_{xy}`, force per unit length.
+        Shear load, force per unit length, the `k N_o` of Eqs. 6.32a and 6.33
+        of Kassapoglou, i.e. the negative of the `N_{xy}` of the energy, Eq.
+        6.32, see Notes. Its sign matters only when `D_{16}` or `D_{26}` is
+        not zero.
     a, b : float
         Plate length and width, dimension length.
     D11, D12, D16, D22, D26, D66 : float
@@ -308,8 +324,9 @@ def calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22, D26, D66):
     Returns
     -------
     Nxx_crit : float
-        Critical `N_{xx}` buckling load under the current level of shear load
-        given by `N_{xy}`, force per unit length, non-negative.
+        Critical compression load `N_o = -N_x` under the shear load given by
+        ``Nxy``, positive in compression, force per unit length,
+        non-negative.
 
     See Also
     --------
@@ -317,20 +334,26 @@ def calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22, D26, D66):
 
     Notes
     -----
-    Based on section 6.5 of [1]_. The Rayleigh-Ritz method used therein is
-    applied with the two terms `w = w_1 \sin(\pi x/a) \sin(\pi y/b) + w_2
-    \sin(2 \pi x/a) \sin(2 \pi y/b)` to the energy of the plate, including
-    `D_{16}` and `D_{26}`:
+    Based on section 6.5 of [1]_, pp. 138-142, for a plate simply supported
+    on its four edges (Fig. 6.12). The Rayleigh-Ritz method used therein is
+    applied with the two terms of Eq. 6.31, `w = w_1 \sin(\pi x/a) \sin(\pi
+    y/b) + w_2 \sin(2 \pi x/a) \sin(2 \pi y/b)`, to the energy of Eq. 6.32
+    (p. 140), here including `D_{16}` and `D_{26}`, with the resultants
+    `N_x` and `N_{xy}` positive in tension:
 
     .. math::
 
         \Pi = \int_0^a \int_0^b \left[ \frac{1}{2} \left( D_{11} w_{,xx}^2
         + 2 D_{12} w_{,xx} w_{,yy} + D_{22} w_{,yy}^2 + 4 D_{66} w_{,xy}^2 + 4
         D_{16} w_{,xx} w_{,xy} + 4 D_{26} w_{,yy} w_{,xy} \right) +
-        \frac{1}{2} N_{xx} w_{,x}^2 + N_{xy} w_{,x} w_{,y} \right] dx dy
+        \frac{1}{2} N_x w_{,x}^2 + N_{xy} w_{,x} w_{,y} \right] dx dy
 
-    Its stationarity with respect to `w_1` and `w_2` gives `([a] - [b])
-    \{w_1, w_2\} = 0`, with
+    As in Eq. 6.32a (p. 141), the compression load is `N_o = -N_x`, positive
+    in compression, and the shear load enters as `k N_o`, with `k =
+    N_{xy}/N_x`, such that `k N_o = -N_{xy}`. The argument ``Nxy`` of this
+    function is `k N_o`, and the returned load is `N_o`. The stationarity
+    of `\Pi` with respect to `w_1` and `w_2` gives `([a] - [b]) \{w_1,
+    w_2\} = 0`, with
 
     .. math::
 
@@ -340,24 +363,24 @@ def calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22, D26, D66):
         \pi^2 D_{26}}{9 b^2} \\
         a_{22} = \frac{4 \pi^4 D_{11} b}{a^3} + \frac{8 \pi^4 D_{12}}{a b}
         + \frac{4 \pi^4 D_{22} a}{b^3} + \frac{16 \pi^4 D_{66}}{a b} \\
-        b_{11} = \frac{\pi^2 N_{xx} b}{4 a}, \quad
-        b_{22} = \frac{\pi^2 N_{xx} b}{a}, \quad
-        b_{12} = b_{21} = -\frac{32 N_{xy}}{9}
+        b_{11} = \frac{\pi^2 N_o b}{4 a}, \quad
+        b_{22} = \frac{\pi^2 N_o b}{a}, \quad
+        b_{12} = b_{21} = -\frac{32 k N_o}{9}
 
-    and `\det([a] - [b]) = 0` is a quadratic equation in `N_{xx}`, whose
-    roots are
+    which, with `D_{16} = D_{26} = 0`, is the generalized eigenvalue problem
+    of Eqs. 6.33 (p. 141). `\det([a] - [b]) = 0` is a quadratic equation in
+    `N_o`, whose roots are
 
     .. math::
 
-        N_{xx} = \frac{a \left( 36 a_{11} + 9 a_{22} \mp \sqrt{t}
+        N_o = \frac{a \left( 36 a_{11} + 9 a_{22} \mp \sqrt{t}
         \right)}{18 \pi^2 b}, \quad
-        t = 16384 N_{xy}^2 + 4608 N_{xy} (a_{12} + a_{21}) + 1296 a_{11}^2
+        t = 16384 (k N_o)^2 + 4608 k N_o (a_{12} + a_{21}) + 1296 a_{11}^2
         - 648 a_{11} a_{22} + 1296 a_{12} a_{21} + 81 a_{22}^2
 
-    TODO(author): the energy above has `+\frac{1}{2} N_{xx} w_{,x}^2`,
-    whereas `[a] - [b]` corresponds to `-\frac{1}{2} N_{xx} w_{,x}^2 -
-    N_{xy} w_{,x} w_{,y}`, i.e. to `N_{xx}` positive in compression; which
-    sign convention of `N_{xy}` is intended?
+    With `D_{16} = D_{26} = 0`, `a_{12} = a_{21} = 0` and only `(k N_o)^2`
+    enters, as in Eq. 6.34 (p. 142); otherwise the sign of the shear load
+    changes the result.
 
     References
     ----------
