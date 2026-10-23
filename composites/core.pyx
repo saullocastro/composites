@@ -1805,13 +1805,15 @@ cdef class Laminate:
 
         - ``'whitney'``: the scalar factors of Whitney (1973) [3]_, Eqs.
           (3)-(7), extending Chow (1971) [4]_ to unsymmetric orthotropic
-          laminates in cylindrical bending, with `\sigma_{xx} = -C_{11}(B_{11}
-          - A_{11}z) Q_x/(D_{11}A_{11} - B_{11}^2)`, i.e. the neutral surface
-          `z_n = B_{11}/A_{11}`, and the same energy equivalence. The result
-          is identical to ``'vlachoutsis'``.
-
-          TODO(author): by its dimension, the expression of `\sigma_{xx}`
-          above is `\sigma_{xx,x}`.
+          laminates in cylindrical bending. The derivative of the bending
+          stress, Eq. (3), `\sigma_{xx,x} = -C_{11}(B_{11} - A_{11}z)
+          Q_x/(D_{11}A_{11} - B_{11}^2)`, vanishes at the neutral surface
+          `z_n = B_{11}/A_{11}` and, since `R = (D_{11}A_{11} -
+          B_{11}^2)/A_{11}`, equals `C_{11}(z - z_n) Q_x/R`. Integrated with
+          the equilibrium `\sigma_{xx,x} + \tau_{xz,z} = 0`, Eq. (4), it gives
+          the `\tau_{xz}` of ``'vlachoutsis'``, Eq. (5), and the energy
+          equivalence, Eqs. (6)-(7), gives the same `k_{13}`. The result is
+          identical to ``'vlachoutsis'``.
 
         - ``'chow'``: the scalar factors of Chow (1971) [4]_, Eqs. (11)-(12),
           with the transverse shear stress of a symmetric laminate obtained
