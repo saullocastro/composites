@@ -313,10 +313,19 @@ cdef class MatLamina:
         They give the stiffnesses of a ply at any angle, see
         :meth:`get_invariant_matrix`.
 
-        TODO(author): with `e_3 \ne 0` the invariants are computed from the
-        three-dimensional `q_{11}`, `q_{12}`, `q_{22}`, not from the
-        plane-stress reduced stiffnesses used by :meth:`.Lamina.rebuild`; is
-        this intended?
+        The intended use is plane stress, with the default `e_3 = 0` of
+        :func:`.read_laminaprop` for 2 or 6 entries: `q_{11}`, `q_{12}`,
+        `q_{22}` are then the plane-stress reduced stiffnesses also used by
+        :meth:`.Lamina.rebuild`, and the invariants give the plane-stress
+        stiffnesses `q_{ijL}` of the ply in the laminate axes. With `e_3 \ne
+        0`, `q_{11}`, `q_{12}`, `q_{22}` are the three-dimensional stiffnesses
+        `c_{11}`, `c_{12}`, `c_{22}`, and the invariants give the components
+        11, 22, 12, 66, 16, 26, 44, 45 and 55 of the three-dimensional
+        stiffness matrix of :meth:`get_constitutive_matrix` rotated by the
+        ply angle about the 3 axis, which differ from the plane-stress
+        `q_{ijL}` of :meth:`.Lamina.rebuild`. This is meant to compute
+        three-dimensional properties, e.g. for continuum shell elements
+        integrated with a user material (UMAT).
 
         References
         ----------
