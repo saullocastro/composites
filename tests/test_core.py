@@ -747,3 +747,22 @@ def test_make_balanced_LP():
     assert np.allclose(lam_2.B, lam.B)
     assert np.allclose(lam_2.D, lam.D)
     assert np.allclose(lam_2.Abar_ts, lam.Abar_ts)
+
+
+def test_make_orthotropic_make_balanced_keep_nan_Abarbar45():
+    # a ply with G13 = 0 has a singular C_s: the constant-stress Abarbar44,
+    # Abarbar45, Abarbar55 are nan, and both methods keep Abarbar45 nan
+    laminaprops = [(142.5e9, 8.7e9, 0.28, 5.1e9, 0., 3.0e9)]*4
+    for stack, method in (([0, 90, 0, 90], 'make_orthotropic'),
+                          ([30, -30, -30, 30], 'make_balanced')):
+        lam = laminated_plate(stack, plyt=0.125e-3, laminaprops=laminaprops,
+                              shear_correction=None)
+        assert np.isnan(lam.Abarbar44)
+        assert np.isnan(lam.Abarbar45)
+        assert np.isnan(lam.Abarbar55)
+        getattr(lam, method)()
+        assert np.isnan(lam.Abarbar44)
+        assert np.isnan(lam.Abarbar45)
+        assert np.isnan(lam.Abarbar55)
+        assert lam.Abar45 == 0
+        assert lam.A45 == 0

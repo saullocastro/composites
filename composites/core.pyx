@@ -2671,8 +2671,10 @@ cdef class Laminate:
         The attributes ``A16``, ``A26``, ``B16``, ``B26``, ``D16``, ``D26``,
         ``E16``, ``E26``, ``F16``, ``F26``, ``H16``, ``H26`` and the
         transverse shear couplings ``A45``, ``Abar45``, ``Abarbar45``,
-        ``D45``, ``F45`` are set to zero to make an orthotropic laminate. The
-        other attributes are not modified.
+        ``D45``, ``F45`` are set to zero to make an orthotropic laminate.
+        ``Abarbar45`` is kept when it is ``nan``, i.e. when a ply has a
+        singular `C_s^{(k)}`, as in :meth:`.make_balanced`. The other
+        attributes are not modified.
 
         Raises
         ------
@@ -2715,7 +2717,8 @@ cdef class Laminate:
         # transverse shear
         self.A45 = 0.
         self.Abar45 = 0.
-        self.Abarbar45 = 0.
+        if not np.isnan(self.Abarbar45):
+            self.Abarbar45 = 0.
         self.D45 = 0.
         self.F45 = 0.
 

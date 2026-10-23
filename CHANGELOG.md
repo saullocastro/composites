@@ -56,7 +56,9 @@ unchanged, the compression load `N_o = -N_x`, positive in compression.
   laminate with all plies at 0 or 90 degrees, the integrals of `q16L`,
   `q26L` and `q45L`: `E16`, `E26`, `F16`, `F26`, `H16`, `H26`, `D45`, `F45`,
   `Abar45`, `Abarbar45` and `A45`. This changes the TSDT stiffnesses and the
-  transverse shear coupling terms after `make_orthotropic()`.
+  transverse shear coupling terms after `make_orthotropic()`. `Abarbar45`
+  is kept when it is `nan`, i.e. when a ply has a singular transverse shear
+  stiffness matrix, as by `make_balanced()`.
 - `make_orthotropic_LP()` left `xiAts2` unchanged, which gives `Abar45` in
   `laminate_from_LaminationParameters()` and vanishes when all plies are at
   0 or 90 degrees; it is now set to zero, as `Abar45` by
