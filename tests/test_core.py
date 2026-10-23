@@ -653,3 +653,21 @@ def test_make_orthotropic_zeroes_all_couplings():
         assert getattr(lam, name) == 0
     for name in others:
         assert getattr(lam, name) == before[name]
+
+
+def test_make_orthotropic_LP_transverse_shear():
+    # G13 != G23, such that xiAts2 gives Abar45
+    laminaprop = (142.5e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.0e9)
+    lam = laminated_plate([30, -45, 60, 60, -45, 30], plyt=0.125e-3,
+                          laminaprop=laminaprop)
+    matlamina = lam.plies[0].matlamina
+    lp = lam.calc_lamination_parameters()
+    assert abs(lp.xiAts2) > 0
+    lam.make_orthotropic()
+    make_orthotropic_LP(lp)
+    assert lp.xiAts2 == 0
+    lam_2 = laminate_from_LaminationParameters(lam.h, matlamina, lp)
+    assert np.allclose(lam_2.A, lam.A)
+    assert np.allclose(lam_2.B, lam.B)
+    assert np.allclose(lam_2.D, lam.D)
+    assert np.allclose(lam_2.Abar_ts, lam.Abar_ts)

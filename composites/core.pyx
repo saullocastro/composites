@@ -2950,7 +2950,8 @@ cpdef LaminationParameters make_orthotropic_LP(LaminationParameters lp):
     r"""Make orthotropic lamination parameters
 
     The lamination parameters `\xi_{A2}`, `\xi_{A4}`, `\xi_{B2}`, `\xi_{B4}`,
-    `\xi_{D2}` and `\xi_{D4}` are set to null to make an orthotropic laminate.
+    `\xi_{D2}`, `\xi_{D4}` and `\xi_{A_{ts}2}` are set to null to make an
+    orthotropic laminate.
 
     The object ``lp`` is modified in place and returned.
 
@@ -2971,10 +2972,12 @@ cpdef LaminationParameters make_orthotropic_LP(LaminationParameters lp):
     Notes
     -----
     The lamination parameters of the sine terms give the stiffnesses
-    `A_{16}`, `A_{26}`, `B_{16}`, `B_{26}`, `D_{16}` and `D_{26}`, see
-    :func:`.laminate_from_LaminationParameters`. The `\xi_{D2}` and
-    `\xi_{D4}` are related to the bend-twist coupling and become often very
-    small for balanced laminates with a large amount of plies.
+    `A_{16}`, `A_{26}`, `B_{16}`, `B_{26}`, `D_{16}`, `D_{26}` and
+    `\bar{A}_{45}`, see :func:`.laminate_from_LaminationParameters`, and
+    they vanish when all plies are at 0 or 90 degrees, see
+    :meth:`.Laminate.make_orthotropic`. The `\xi_{D2}` and `\xi_{D4}` are
+    related to the bend-twist coupling and become often very small for
+    balanced laminates with a large amount of plies.
 
     """
     lp.xiA2 = 0
@@ -2983,6 +2986,7 @@ cpdef LaminationParameters make_orthotropic_LP(LaminationParameters lp):
     lp.xiB4 = 0
     lp.xiD2 = 0
     lp.xiD4 = 0
+    lp.xiAts2 = 0
     return lp
 
 
