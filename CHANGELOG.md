@@ -2,6 +2,10 @@
 
 ## 0.10.0 (unreleased)
 
+### Python versions
+
+- Python 3.9 is no longer supported, it reached its end of life in October 2025: Python 3.10 or newer is required, and the tests and wheels cover Python 3.10 to 3.14.
+
 ### Mass integrals of the TSDT
 
 - `Laminate.intrhoz3`, `intrhoz4` and `intrhoz6`: the moments of the density

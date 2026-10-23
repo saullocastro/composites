@@ -4,7 +4,7 @@ Installing composites
 From the distributed packages
 -----------------------------
 
-Wheels are published on PyPI for Windows, Linux and macOS, for Python 3.9 and
+Wheels are published on PyPI for Windows, Linux and macOS, for Python 3.10 and
 newer, and installed with::
 
     python -m pip install composites
