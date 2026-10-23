@@ -222,14 +222,13 @@ cdef class MatLamina:
 
     Notes
     -----
-    For isotropic materials when the user defines `\nu` and `E`, `G` will be
-    recaculated based on equation: `G = E/(2 \times (1+\nu))`; in a lower
-    priority if the user defines `\nu` and `G`, `E` will be recaculated based
-    on equation: `E = 2 \times (1+\nu) \times G`.
-
-    TODO(author): :class:`.MatLamina` recomputes neither `G` nor `E`; only
-    :func:`.read_laminaprop` computes ``g12 = g13 = g23 = e/(2*(1+nu))``, for
-    ``laminaprop = (e, nu)``.
+    :class:`.MatLamina` recomputes neither `G` nor `E`: :meth:`rebuild`
+    uses the moduli and the Poisson's ratios as they are set. For an
+    isotropic material given as ``laminaprop = (e, nu)``,
+    :func:`.read_laminaprop` sets ``g12 = g13 = g23 = e/(2*(1 + nu))``,
+    i.e. `G = E/(2(1 + \nu))`; with 6 or 9 entries of ``laminaprop`` the
+    shear moduli are taken as given. Otherwise, the user must set the shear
+    moduli consistently with `E` and `\nu`.
 
     """
     def __init__(MatLamina self):
