@@ -16,9 +16,12 @@ abstract: >-
   * Lamination parameters based on material invariants
   
   * Stiffness matrices (ABD) based on lamination parameters
+
+  * Thickness integrals of the density, for the mass matrices of the
+    CLPT, FSDT and TSDT
 message: >-
   Please, cite this software using:
-  Saullo G. P. Castro (2026). Methods for analysis and design of composites (Version 0.9.21). Zenodo. DOI: https://doi.org/10.5281/zenodo.2871782
+  Saullo G. P. Castro (2026). Methods for analysis and design of composites (Version 0.10.0). Zenodo. DOI: https://doi.org/10.5281/zenodo.2871782
 authors:
   - family-names: Castro
     given-names: Saullo G. P.
@@ -31,5 +34,5 @@ identifiers:
 repository-code: 'https://github.com/saullocastro/composites'
 url: 'https://saullocastro.github.io/composites/'
 license: BSD-3-Clause
-version: 0.9.21
-date-released: '2026-10-08'
+version: 0.10.0
+date-released: '2026-10-23'

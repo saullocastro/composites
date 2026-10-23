@@ -87,7 +87,7 @@ License :: OSI Approved :: BSD License
 """
 
 is_released = True
-version = '0.9.21'
+version = '0.10.0'
 
 fullversion = write_version_py(version, is_released)
 
