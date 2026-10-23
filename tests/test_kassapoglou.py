@@ -199,8 +199,72 @@ def test_calc_beff():
     assert np.isclose(calc_beff(b, Pcr, Pcr, A11, 0.3*A11, A11), b/2)
 
 
+def _hessian_eq_6_32(a, b, D11, D12, D16, D22, D26, D66, Nx, Nxy):
+    """Hessian of the energy of Kassapoglou's Eq. 6.32 for the w of Eq. 6.31
+
+    Including D16 and D26, with Nx and Nxy positive in tension, integrated
+    numerically.
+
+    """
+    xi, wi = np.polynomial.legendre.leggauss(30)
+    x = a/2*(xi + 1)
+    y = b/2*(xi + 1)
+    X, Y = np.meshgrid(x, y, indexing='ij')
+    W = np.outer(wi, wi)*a*b/4
+    phis = []
+    for i in (1, 2):
+        sx, cx = np.sin(i*pi*X/a), np.cos(i*pi*X/a)
+        sy, cy = np.sin(i*pi*Y/b), np.cos(i*pi*Y/b)
+        kx, ky = i*pi/a, i*pi/b
+        phis.append({'x': kx*cx*sy, 'y': ky*sx*cy, 'xx': -kx**2*sx*sy,
+                     'yy': -ky**2*sx*sy, 'xy': kx*ky*cx*cy})
+    H = np.zeros((2, 2))
+    for i, p in enumerate(phis):
+        for j, q in enumerate(phis):
+            f = (D11*p['xx']*q['xx'] + D12*(p['xx']*q['yy'] + p['yy']*q['xx'])
+                 + D22*p['yy']*q['yy'] + 4*D66*p['xy']*q['xy']
+                 + 2*D16*(p['xx']*q['xy'] + p['xy']*q['xx'])
+                 + 2*D26*(p['yy']*q['xy'] + p['xy']*q['yy'])
+                 + Nx*p['x']*q['x'] + Nxy*(p['x']*q['y'] + p['y']*q['x']))
+            H[i, j] = (W*f).sum()
+    return H
+
+
+def test_calc_Nxx_crit_combined_shear_full_sign_Nxy():
+    """Nxy positive in tension, as in Kassapoglou's Eq. 6.32, p. 140
+
+    With D16 and D26 different than zero the sign of Nxy changes the
+    buckling load. The returned compression load, Nx = -No, makes the
+    Hessian of the energy of Eq. 6.32 singular for the given Nxy, but not
+    for -Nxy.
+
+    """
+    b = 0.254
+    a = 2*b
+    D16, D26 = 0.1, 0.08
+    Nxy = 300.
+    No_pos = calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22,
+                                               D26, D66)
+    No_neg = calc_Nxx_crit_combined_shear_full(-Nxy, a, b, D11, D12, D16,
+                                               D22, D26, D66)
+    assert not np.isclose(No_pos, No_neg, rtol=0.05)
+    for No, sign in ((No_pos, 1), (No_neg, -1)):
+        H = _hessian_eq_6_32(a, b, D11, D12, D16, D22, D26, D66, -No,
+                             sign*Nxy)
+        assert abs(np.linalg.det(H)) < 1e-10*abs(H[0, 0]*H[1, 1])
+        H = _hessian_eq_6_32(a, b, D11, D12, D16, D22, D26, D66, -No,
+                             -sign*Nxy)
+        assert abs(np.linalg.det(H)) > 0.1*abs(H[0, 0]*H[1, 1])
+    # without D16 and D26 the sign does not matter
+    assert np.isclose(
+        calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, 0, D22, 0, D66),
+        calc_Nxx_crit_combined_shear_full(-Nxy, a, b, D11, D12, 0, D22, 0,
+                                          D66))
+
+
 if __name__ == '__main__':
     test_calc_Nxx_crit()
     test_calc_Nxy_crit()
     test_calc_Nxx_crit_combined_shear_full()
     test_calc_beff()
+    test_calc_Nxx_crit_combined_shear_full_sign_Nxy()

@@ -22,6 +22,15 @@ created again. Every key of the format is required: a key missing from
 `'data'`, at any level, raises `ValueError` naming the missing keys and the
 class, instead of leaving the attribute at its default value.
 
+### Breaking: sign of the shear load of the Kassapoglou combined buckling
+
+`composites.kassapoglou.calc_Nxx_crit_combined_shear_full(Nxy, ...)` now
+takes `Nxy` positive in tension, the `N_xy` of the energy of Kassapoglou's
+Eq. 6.32, instead of its negative, the `k*N_o` of Eqs. 6.32a and 6.33. The
+result changes only when `D16` or `D26` is not zero: a caller that passed
+`k*N_o` must now pass `-k*N_o` to keep its results. The returned load is
+unchanged, the compression load `N_o = -N_x`, positive in compression.
+
 ### Fixes
 
 - `GradABD.calc_LP_grad` left the derivatives `dA66/dxiA3`, `dB66/dxiB3` and

@@ -250,7 +250,10 @@ def calc_Nxx_crit_combined_shear(k, a, b, D11, D12, D22, D66):
     ----------
     k : float
         Load ratio defined as `k=N_{xy}/N_{xx}`, where `N_{xy}` is the current
-        shear load, and `N_{xx}` the current compression load. Dimensionless.
+        shear load, and `N_{xx}` the current compression load, both with the
+        sign of Eq. 6.32 of Kassapoglou, positive in tension. Only `k^2`
+        enters, such that the sign of `k` does not change the result.
+        Dimensionless.
     a, b : float
         Plate length and width, dimension length.
     D11, D12, D22, D66 : float
@@ -279,8 +282,9 @@ def calc_Nxx_crit_combined_shear(k, a, b, D11, D12, D22, D66):
         k^2}{b^2 \pi^4}} \right)
 
     It is the solution of :func:`calc_Nxx_crit_combined_shear_full` with
-    `D_{16} = D_{26} = 0` and `N_{xy} = k N_{xx}`, and with `k = 0` it is
-    the load of :func:`calc_Nxx_crit` with `m = n = 1`.
+    `D_{16} = D_{26} = 0` and `N_{xy} = k N_{xx} = -k N_o`, `N_o` being the
+    returned load, and with `k = 0` it is the load of :func:`calc_Nxx_crit`
+    with `m = n = 1`.
 
     References
     ----------
@@ -312,10 +316,10 @@ def calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22, D26, D66):
     Parameters
     ----------
     Nxy : float
-        Shear load, force per unit length, the `k N_o` of Eqs. 6.32a and 6.33
-        of Kassapoglou, i.e. the negative of the `N_{xy}` of the energy, Eq.
-        6.32, see Notes. Its sign matters only when `D_{16}` or `D_{26}` is
-        not zero.
+        Shear load `N_{xy}`, force per unit length, positive in tension, i.e.
+        with the sign of the `N_{xy}` of the energy of Eq. 6.32 of
+        Kassapoglou, see Notes. Its sign matters only when `D_{16}` or
+        `D_{26}` is not zero.
     a, b : float
         Plate length and width, dimension length.
     D11, D12, D16, D22, D26, D66 : float
@@ -351,9 +355,9 @@ def calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22, D26, D66):
     As in Eq. 6.32a (p. 141), the compression load is `N_o = -N_x`, positive
     in compression, and the shear load enters as `k N_o`, with `k =
     N_{xy}/N_x`, such that `k N_o = -N_{xy}`. The argument ``Nxy`` of this
-    function is `k N_o`, and the returned load is `N_o`. The stationarity
-    of `\Pi` with respect to `w_1` and `w_2` gives `([a] - [b]) \{w_1,
-    w_2\} = 0`, with
+    function is the `N_{xy}` of Eq. 6.32, and the returned load is `N_o`.
+    The stationarity of `\Pi` with respect to `w_1` and `w_2` gives `([a] -
+    [b]) \{w_1, w_2\} = 0`, with
 
     .. math::
 
@@ -365,7 +369,7 @@ def calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22, D26, D66):
         + \frac{4 \pi^4 D_{22} a}{b^3} + \frac{16 \pi^4 D_{66}}{a b} \\
         b_{11} = \frac{\pi^2 N_o b}{4 a}, \quad
         b_{22} = \frac{\pi^2 N_o b}{a}, \quad
-        b_{12} = b_{21} = -\frac{32 k N_o}{9}
+        b_{12} = b_{21} = -\frac{32 k N_o}{9} = \frac{32 N_{xy}}{9}
 
     which, with `D_{16} = D_{26} = 0`, is the generalized eigenvalue problem
     of Eqs. 6.33 (p. 141). `\det([a] - [b]) = 0` is a quadratic equation in
@@ -375,12 +379,12 @@ def calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22, D26, D66):
 
         N_o = \frac{a \left( 36 a_{11} + 9 a_{22} \mp \sqrt{t}
         \right)}{18 \pi^2 b}, \quad
-        t = 16384 (k N_o)^2 + 4608 k N_o (a_{12} + a_{21}) + 1296 a_{11}^2
+        t = 16384 N_{xy}^2 - 4608 N_{xy} (a_{12} + a_{21}) + 1296 a_{11}^2
         - 648 a_{11} a_{22} + 1296 a_{12} a_{21} + 81 a_{22}^2
 
-    With `D_{16} = D_{26} = 0`, `a_{12} = a_{21} = 0` and only `(k N_o)^2`
-    enters, as in Eq. 6.34 (p. 142); otherwise the sign of the shear load
-    changes the result.
+    With `D_{16} = D_{26} = 0`, `a_{12} = a_{21} = 0` and only `N_{xy}^2 =
+    (k N_o)^2` enters, as in Eq. 6.34 (p. 142); otherwise the sign of the
+    shear load changes the result.
 
     References
     ----------
@@ -392,7 +396,8 @@ def calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22, D26, D66):
     a12 = -160*pi**2*D16/(9*a**2) - 160*pi**2*D26/(9*b**2)
     a21 = -160*pi**2*D16/(9*a**2) - 160*pi**2*D26/(9*b**2)
     a22 = 4*pi**4*D11*b/a**3 + 8*pi**4*D12/(a*b) + 4*pi**4*D22*a/b**3 + 16*pi**4*D66/(a*b)
-    term = 16384*Nxy**2 + 4608*Nxy*a12 + 4608*Nxy*a21 + 1296*a11**2 - 648*a11*a22 + 1296*a12*a21 + 81*a22**2
+    # NOTE the k*N_o of Eqs. 6.32a and 6.33 is -Nxy
+    term = 16384*Nxy**2 - 4608*Nxy*a12 - 4608*Nxy*a21 + 1296*a11**2 - 648*a11*a22 + 1296*a12*a21 + 81*a22**2
     Nxx_crit1 = a*(36*a11 + 9*a22 - sqrt(term))/(18*pi**2*b)
     Nxx_crit2 = a*(36*a11 + 9*a22 + sqrt(term))/(18*pi**2*b)
     return min(abs(Nxx_crit1), abs(Nxx_crit2))
