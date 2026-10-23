@@ -2787,8 +2787,18 @@ cdef class Laminate:
         laminate are linear in the lamination parameters, see
         :func:`.laminate_from_LaminationParameters`.
 
-        TODO(author): source of these definitions, e.g. Gürdal, Haftka and
-        Hajela (1999), cited in the comments of :meth:`.MatLamina.rebuild`?
+        The `\xi_{Ai}` and `\xi_{Di}` are those of Krupa et al. [1]_, who
+        integrate from `z = -h/2` to `z = h/2`, i.e. with ``offset = 0``. The
+        `\xi_{Bi}` and `\xi_{A_{ts}i}`, not defined there, follow the same
+        pattern, with the factor 4 of `\xi_{Bi}` corresponding to the factor
+        `h^2/4` of `B_{ij}` in :func:`.laminate_from_LaminationParameters`.
+
+        References
+        ----------
+        .. [1] Krupa, E. P., Cooper, J. E., Pirrera, A. and Nangia, R.,
+           Improved aerostructural performance via aeroservoelastic
+           tailoring of a composite wing, The Aeronautical Journal, 122
+           (1255), 1442-1474, 2018. https://doi.org/10.1017/aer.2018.66
 
         """
         cdef double h0, hk, hk_1, h, zbar1, zbar2, Afac, Bfac, Dfac, Efac
