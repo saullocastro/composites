@@ -38,6 +38,12 @@ class, instead of leaving the attribute at its default value.
   `E66`, are now set to zero; the other attributes keep the values of
   `calc_constitutive_matrix()`. This changes the TSDT stiffnesses and the
   transverse shear terms `D45`, `F45` after `make_symmetric()`.
+- `Laminate.make_orthotropic()` set to zero only `A16`, `A26`, `B16`, `B26`,
+  `D16` and `D26`. It now also sets to zero the other terms that vanish in a
+  laminate with all plies at 0 or 90 degrees, the integrals of `q16L`,
+  `q26L` and `q45L`: `E16`, `E26`, `F16`, `F26`, `H16`, `H26`, `D45`, `F45`,
+  `Abar45`, `Abarbar45` and `A45`. This changes the TSDT stiffnesses and the
+  transverse shear coupling terms after `make_orthotropic()`.
 
 ### Deprecated
 

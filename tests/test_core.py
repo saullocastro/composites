@@ -622,3 +622,34 @@ def test_make_symmetric_keeps_even_powers():
         assert np.isclose(getattr(lam, attr), ref, rtol=1e-12, atol=0)
     assert np.allclose(lam.B, 0, rtol=0, atol=0)
     assert np.allclose(lam.E, 0, rtol=0, atol=0)
+
+
+def test_make_orthotropic_zeroes_all_couplings():
+    # terms that are integrals of q16L, q26L or q45L, all zero for 0/90 plies
+    names16 = ['%s%s' % (m, ij) for m in 'ABDEFH' for ij in ('16', '26')]
+    names45 = ['A45', 'Abar45', 'Abarbar45', 'D45', 'F45']
+    others = (['%s%s' % (m, ij) for m in 'ABDEFH'
+               for ij in ('11', '12', '22', '66')]
+              + ['A44', 'A55', 'Abar44', 'Abar55', 'Abarbar44', 'Abarbar55',
+                 'D44', 'D55', 'F44', 'F55', 'h', 'intrho', 'intrhoz2'])
+    laminaprop = (142.5e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.0e9)
+    plyt = 0.125e-3
+    # [0/90/0/90]: the integrated values are round-off
+    lam = laminated_plate([0, 90, 0, 90], plyt=plyt, laminaprop=laminaprop,
+                          rho=1600.)
+    for name in names16:
+        assert abs(getattr(lam, name)) < 1e-14*abs(getattr(lam, name[0] + '11'))
+    for name in names45:
+        assert abs(getattr(lam, name)) < 1e-14*abs(getattr(lam, name[:-2] + '44'))
+    # [30/-45/60]s: none of them is zero before make_orthotropic
+    lam = laminated_plate([30, -45, 60, 60, -45, 30], plyt=plyt,
+                          laminaprop=laminaprop, rho=1600.)
+    before = {name: getattr(lam, name) for name in others}
+    for name in names16 + names45:
+        if name[0] not in 'BE':
+            assert abs(getattr(lam, name)) > 0
+    lam.make_orthotropic()
+    for name in names16 + names45:
+        assert getattr(lam, name) == 0
+    for name in others:
+        assert getattr(lam, name) == before[name]

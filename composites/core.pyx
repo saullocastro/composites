@@ -2631,8 +2631,11 @@ cdef class Laminate:
     cpdef void make_orthotropic(Laminate self):
         r"""Make an orthotropic laminate
 
-        The attributes `A_{16}`, `A_{26}`, `B_{16}`, `B_{26}`, `D_{16}`,
-        `D_{26}` are set to zero to make an orthotropic laminate.
+        The attributes ``A16``, ``A26``, ``B16``, ``B26``, ``D16``, ``D26``,
+        ``E16``, ``E26``, ``F16``, ``F26``, ``H16``, ``H26`` and the
+        transverse shear couplings ``A45``, ``Abar45``, ``Abarbar45``,
+        ``D45``, ``F45`` are set to zero to make an orthotropic laminate. The
+        other attributes are not modified.
 
         Raises
         ------
@@ -2642,8 +2645,17 @@ cdef class Laminate:
         Notes
         -----
         These terms vanish in a laminate whose plies are all at 0 or 90
-        degrees, for which `q_{16L} = q_{26L} = 0`, see
-        :meth:`.Lamina.rebuild`.
+        degrees, for which `q_{16L} = q_{26L} = q_{45L} = 0`, see
+        :meth:`.Lamina.rebuild`. The terms `ij = 16, 26` of `A_{ij}` to
+        `H_{ij}` and `D_{45}`, `F_{45}`, `\bar{A}_{45}` are thickness integrals
+        of `q_{16L}`, `q_{26L}` and `q_{45L}`, see
+        :meth:`.calc_constitutive_matrix` and
+        :meth:`.calc_transverse_shear_stiffness`, and `\bar{\bar{A}}_{45}`
+        vanishes with the diagonal `C_s^{(k)}` of every ply. With every ply
+        diagonal and the ABD matrix decoupled between `\{N_{xx}, N_{yy},
+        M_{xx}, M_{yy}\}` and `\{N_{xy}, M_{xy}\}`, the transverse shear
+        distribution of ``'rohwer'`` is diagonal, and ``A45`` vanishes for
+        every ``shear_correction``.
 
         """
         if self.offset != 0.:
@@ -2654,6 +2666,21 @@ cdef class Laminate:
         self.B26 = 0.
         self.D16 = 0.
         self.D26 = 0.
+
+        # TSDT
+        self.E16 = 0.
+        self.E26 = 0.
+        self.F16 = 0.
+        self.F26 = 0.
+        self.H16 = 0.
+        self.H26 = 0.
+
+        # transverse shear
+        self.A45 = 0.
+        self.Abar45 = 0.
+        self.Abarbar45 = 0.
+        self.D45 = 0.
+        self.F45 = 0.
 
 
     cpdef void make_symmetric(Laminate self):
