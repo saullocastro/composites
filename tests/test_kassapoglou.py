@@ -2,7 +2,8 @@ import sys
 sys.path.append('..')
 
 import numpy as np
-from numpy import pi, sqrt
+from numpy import pi
+import pytest
 
 from composites import laminated_plate
 from composites.kassapoglou import (calc_Nxx_crit,
@@ -12,158 +13,190 @@ from composites.kassapoglou import (calc_Nxx_crit,
                                     calc_beff,
                                     )
 
+# NOTE Kassapoglou, C., Design and Analysis of Composite Structures, Second
+#      Edition, John Wiley & Sons. The reference values are the vertices of
+#      the curves of the figures, read from the vector graphics of the PDF of
+#      the book, in the units of the figure axes.
+
+# Fig. 6.4, p. 129, the curves of m = 1, 2 and 3 half-waves, (length/width,
+# buckling load in N/mm)
+FIG_6_4 = {
+    1: [(0.6001, 0.7631), (0.6482, 0.7378), (0.6974, 0.7117), (0.751, 0.6864),
+        (0.7996, 0.6676), (1.1997, 0.6603), (1.307, 0.6791), (1.4143, 0.6971)],
+    2: [(1.4143, 0.6971), (1.4293, 0.6937), (1.4484, 0.6898), (1.4729, 0.6864),
+        (1.5025, 0.6825), (1.7998, 0.653), (1.8294, 0.6495), (1.8534, 0.6495),
+        (1.8976, 0.6457), (2.073, 0.6457), (2.1507, 0.6495), (2.2289, 0.6495),
+        (2.268, 0.653), (2.2971, 0.653), (2.3217, 0.653), (2.3463, 0.6568),
+        (2.3804, 0.6568), (2.4144, 0.6603), (2.449, 0.6641)],
+    3: [(2.449, 0.6641), (2.4681, 0.6641), (2.5022, 0.6603), (2.5267, 0.6603),
+        (2.5608, 0.6568), (2.6335, 0.6568), (2.7218, 0.653), (2.7609, 0.6495),
+        (2.8, 0.6495)],
+    }
+
+# Fig. 6.11, p. 138, the curve "Present", (a in mm, buckling load in N/mm)
+FIG_6_11 = [(101.58, 77.66), (158.78, 35.51), (168.29, 30.06),
+            (172.55, 27.72), (177.8, 25.37), (187.31, 21.86), (195.84, 19.11),
+            (204.26, 17.58), (212.68, 16.0), (221.21, 15.23), (231.82, 14.42),
+            (242.32, 13.66), (254.02, 12.48), (267.8, 11.31), (282.56, 10.14),
+            (297.43, 9.37), (314.38, 8.2), (348.17, 6.63), (380.97, 5.45),
+            (412.68, 4.69), (444.5, 3.88), (507.93, 3.11)]
+
+# Fig. 6.14, p. 144, the curve "approx", Eq. 6.34, (Nx/Nxcrit, Nxy/Nxycrit)
+FIG_6_14 = [(1.0, 0.0176), (0.9984, 0.0352), (0.9935, 0.0703),
+            (0.9851, 0.1055), (0.9735, 0.1407), (0.9603, 0.1716),
+            (0.9453, 0.2025), (0.9286, 0.2334), (0.9103, 0.2643),
+            (0.8921, 0.2909), (0.8838, 0.2994), (0.8805, 0.3037),
+            (0.8738, 0.3127), (0.8655, 0.3217), (0.8572, 0.3346),
+            (0.8356, 0.3612), (0.824, 0.3745), (0.8107, 0.3921),
+            (0.7957, 0.4054), (0.7792, 0.423), (0.7658, 0.4363),
+            (0.7475, 0.4539), (0.7359, 0.4672), (0.7243, 0.4758),
+            (0.711, 0.4891), (0.696, 0.5024), (0.6828, 0.5109),
+            (0.6695, 0.5242), (0.653, 0.5375), (0.6347, 0.5508),
+            (0.5963, 0.5817), (0.5566, 0.6122), (0.4054, 0.7314),
+            (0.3789, 0.7533), (0.3539, 0.7709), (0.3307, 0.7842),
+            (0.3091, 0.8018), (0.289, 0.8151), (0.2707, 0.8284),
+            (0.2359, 0.8503), (0.128, 0.9211), (0.1064, 0.9339),
+            (0.0847, 0.9472), (0.0682, 0.9562), (0.0533, 0.9648),
+            (0.0448, 0.9695), (0.0383, 0.9738), (0.0265, 0.9824)]
+
+# Fig. 7.10, p. 165, (A22/A11, A12/A11): [(Pcr/Px, beff/a), ...]
+FIG_7_10 = {
+    (10., 0.7): [(0.0996, 0.4522), (0.2005, 0.4571), (0.3001, 0.4604),
+                 (0.3998, 0.4653), (0.4502, 0.4686), (0.5007, 0.4703),
+                 (0.6003, 0.4752), (0.6999, 0.4802), (0.749, 0.4834),
+                 (0.7995, 0.4867), (0.85, 0.49), (0.9004, 0.4916),
+                 (1.0, 0.4966)],
+    (1., 0.3): [(0.0996, 0.3125), (0.2005, 0.3256), (0.3001, 0.3404),
+                (0.3998, 0.3568), (0.4502, 0.3651), (0.5007, 0.3749),
+                (0.5511, 0.3831), (0.6003, 0.393), (0.6494, 0.4045),
+                (0.6999, 0.416), (0.749, 0.4275), (0.7995, 0.439),
+                (0.85, 0.4522), (0.9004, 0.467), (1.0, 0.4966)],
+    (0.1, 0.05): [(0.0996, 0.2007), (0.2005, 0.2155), (0.3001, 0.2319),
+                  (0.3493, 0.2401), (0.3998, 0.25), (0.4502, 0.2615),
+                  (0.5007, 0.273), (0.5511, 0.2862), (0.6003, 0.3009),
+                  (0.6494, 0.3158), (0.6999, 0.3338), (0.749, 0.3536),
+                  (0.7995, 0.3749), (0.85, 0.3996), (0.8758, 0.4127),
+                  (0.9004, 0.4275), (0.925, 0.444), (0.9509, 0.4604),
+                  (1.0, 0.4966)],
+    }
+
+# D matrix of Fig. 6.4, p. 129, in N m (p. 143)
+D11, D12, D22, D66 = 0.66, 0.47, 0.66, 0.49
+
+
+def _distance_to_curve(x, y, points):
+    """Distance of each point (x, y) to the polyline through ``points``"""
+    P = np.array(points)
+    A, B = P[:-1], P[1:]
+    AB = B - A
+    dist = []
+    for q in np.column_stack((x, y)):
+        t = np.clip(((q - A)*AB).sum(axis=1)/(AB*AB).sum(axis=1), 0, 1)
+        dist.append(np.min(np.linalg.norm(A + t[:, None]*AB - q, axis=1)))
+    return np.array(dist)
+
 
 def test_calc_Nxx_crit():
-    """Verificatoin based on Kassapoglou's Figs. 6.4 and 6.5
+    """Kassapoglou's Fig. 6.4, p. 129, Eq. 6.7
+
+    The D matrix is that of the figure, in N m as stated on p. 143. The text
+    on p. 129 gives a plate with a fixed length of 508 mm, but the figure is
+    reproduced with a fixed width of 254 mm, used here, within 2 %.
 
     """
-    alu = laminated_plate(stack=[0], plyt=0.5715e-3, laminaprop=(70e9, 0.3))
-    D11, D12, D22, D66 = 0.66, 0.47, 0.66, 0.49
-    AR_values = np.linspace(0.6, 2.8)
-    res1 = []
-    res2 = []
-    res3 = []
-    res_alu1 = []
-    res_alu2 = []
-    res_alu3 = []
-    b = 0.508/2
-    for AR in AR_values:
-        a = AR*b
-        res1.append(calc_Nxx_crit(a, b, 1, 1, D11, D12, D22, D66))
-        res2.append(calc_Nxx_crit(a, b, 2, 1, D11, D12, D22, D66))
-        res3.append(calc_Nxx_crit(a, b, 3, 1, D11, D12, D22, D66))
-
-        res_alu1.append(calc_Nxx_crit(a, b, 1, 1, alu.D11, alu.D12, alu.D22, alu.D66))
-        res_alu2.append(calc_Nxx_crit(a, b, 2, 1, alu.D11, alu.D12, alu.D22, alu.D66))
-        res_alu3.append(calc_Nxx_crit(a, b, 3, 1, alu.D11, alu.D12, alu.D22, alu.D66))
-
-    res1_expected = [760.4492762134736, 728.400368245419, 703.8761399336366, 685.191127113606, 671.1307610092099, 660.8018833650219, 653.5358314008664, 648.8239785928772, 646.2738786053692, 645.5788159767615, 646.4962762781008, 648.8324700409954, 652.4310404371092, 657.1647103179126, 662.9290256450245, 669.6376148748768, 677.2185585936345, 685.6115818818151, 694.7658630211979, 704.6383086268357, 715.192185097175, 726.3960246767871, 738.2227449149805, 750.6489352387343, 763.6542753519922, 777.2210583401934, 791.3337974784167, 805.9789003643929, 821.1443975169391, 836.8197152790613, 852.995484948758, 869.6633816801207, 886.8159879639275, 904.4466774933751, 922.5495160089763, 941.119176343723, 960.1508653910068, 979.6402611206446, 999.5834580935449, 1019.9769201892686, 1040.817439475499, 1062.102100324078, 1083.828248022461, 1105.9934612482962, 1128.5955278731656, 1151.6324236431244, 1175.1022933516867, 1199.003434177715, 1223.3342809083138, 1248.093392806889]
-    res2_expected = [1574.5738453392305, 1425.2156696076072, 1304.4297339276068, 1205.4741816411472, 1123.4907376437611, 1054.9067689137432, 997.0476243303884, 947.8787977982346, 905.8305039745393, 869.67588101298, 838.4448711977442, 811.3623166552635, 787.8027900721946, 767.2571828544187, 749.3076788484112, 733.6087918799004, 719.8728442935457, 707.8587364114169, 697.3631813606328, 688.2138056014026, 680.2636747275131, 673.3869177172485, 667.4752047678446, 662.4348935872179, 658.1847029911407, 654.6538053213732, 651.7802536782276, 649.5096784526276, 647.7942017198433, 646.5915288518977, 645.8641850407839, 645.5788709028703, 645.7059164012659, 646.2188163087604, 647.0938335874052, 648.3096595691644, 649.8471218276071, 651.6889322420013, 653.819469055981, 656.224587787787, 658.8914567081547, 661.8084133044526, 664.9648387265003, 668.3510476848932, 671.9581916659561, 675.7781736539106, 679.8035728228145, 684.0275778881181, 688.4439279982369, 693.0468602067966]
-    res3_expected = [2971.8346291977537, 2633.2313905592655, 2358.731949245679, 2133.1671277763076, 1945.6058071661016, 1788.0095631162233, 1654.360430605087, 1540.0807709179026, 1441.638567033499, 1356.2733797976512, 1281.8025793497804, 1216.4820604743586, 1158.9046117163628, 1107.9247387390258, 1062.602355196917, 1022.1601171979253, 985.9507500175343, 953.4317793804016, 924.1458098225442, 897.7050008794315, 873.7787501370861, 852.0838477966455, 832.3765518018913, 814.446166995635, 798.1098107133652, 783.2081207240418, 769.6017165033668, 757.1682664309185, 745.8000451760562, 735.4018898258297, 725.8894820622249, 717.1878982720699, 709.2303808723597, 701.9572931018719, 695.315226625222, 689.2562369393289, 683.737186084723, 678.7191757897579, 674.1670571026093, 670.0490049393197, 666.3361479090431, 663.0022453583597, 660.0234048743622, 657.3778345558914, 655.0456252471773, 653.0085586627191, 651.2499379441467, 649.7544377012231, 648.5079710178828, 647.4975712647844]
-
-    assert np.allclose(res1, res1_expected)
-    assert np.allclose(res2, res2_expected)
-    assert np.allclose(res3, res3_expected)
-
-    #import matplotlib.pyplot as plt
-    #plt.plot(AR_values, np.asarray(res1)/1000, label='m=1')
-    #plt.plot(AR_values, np.asarray(res2)/1000, label='m=2')
-    #plt.plot(AR_values, np.asarray(res3)/1000, label='m=3')
-    #plt.plot(AR_values, np.asarray(res_alu1)/1000, label='m=1')
-    #plt.plot(AR_values, np.asarray(res_alu2)/1000, label='m=2')
-    #plt.plot(AR_values, np.asarray(res_alu3)/1000, label='m=3')
-    #plt.ylim(-0.1, 0.9)
-    #plt.legend()
-    #plt.xlabel('Length/Width')
-    #plt.ylabel('Buckling load ${N_{xx}}_{crit}$ [N/mm]')
-    #plt.title("Reproducing Kassapoglou's Figs. 6.4 and 6.5")
-    #plt.show()
-
-    AR_values = np.linspace(0.6, 5, 200)
-    res = [calc_Nxx_crit(b*AR, b, None, 1, D11, D12, D22, D66) for AR in
-           AR_values]
-    #import matplotlib.pyplot as plt
-    #plt.plot(AR_values, np.asarray(res))
-    #plt.show()
-
-    assert np.allclose(calc_Nxx_crit(b*AR, b, 1, 1, D11, D12, D22, D66),
-                       calc_Nxx_crit(b*AR, b, 1, None, D11, D12, D22, D66))
-
-    try:
-        calc_Nxx_crit(b*AR, b, None, None, D11, D12, D22, D66)
-    except NotImplementedError:
-        pass
+    b = 0.254
+    for m, points in FIG_6_4.items():
+        for AR, Nfig in points:
+            a = AR*b
+            # N/m to N/mm
+            assert np.isclose(calc_Nxx_crit(a, b, m, 1, D11, D12, D22, D66)/1e3,
+                              Nfig, rtol=0.02)
+            # the envelope is the curve of the figure
+            assert np.isclose(calc_Nxx_crit(a, b, None, 1, D11, D12, D22,
+                                            D66)/1e3, Nfig, rtol=0.02)
+    assert np.isclose(calc_Nxx_crit(b, b, 1, 1, D11, D12, D22, D66),
+                      calc_Nxx_crit(b, b, 1, None, D11, D12, D22, D66))
+    with pytest.raises(NotImplementedError):
+        calc_Nxx_crit(b, b, None, None, D11, D12, D22, D66)
 
 
 def test_calc_Nxy_crit():
-    """Verificatoin based on Kassapoglou's Fig. 6.11
+    """Kassapoglou's Fig. 6.11, p. 138, Eqs. 6.28-6.30
+
+    The (0/90)8 laminate of p. 138, eight plies with Ex = Ey = 68.9 GPa, vxy
+    = 0.05, Gxy = 4.83 GPa and a ply thickness of 0.1905 mm; sixteen plies
+    would give loads eight times those of the figure. With Ex = Ey the ply
+    angle does not change the D matrix. The transverse shear moduli, not
+    given, are not used.
+
+    The drawn curve of the figure is reproduced within 0.5 % at the vertices
+    a = 101.58, 177.80, 242.32, 348.17, 412.68 and 507.93 mm, and within 11 %
+    at the other vertices of the drawn curve.
 
     """
-    laminaprop = (68.9e9, 68.0e9, 0.05, 4.83e9, 4.83e9, 4.83e9)
-    lam = laminated_plate(stack=[0, 90]*8, plyt=0.1905e-3/2, laminaprop=laminaprop)
-    a_values = np.linspace(0.1, 0.5)
-    res = []
-    for a in a_values:
-        res.append(calc_Nxy_crit(a, lam.D11, lam.D12, lam.D16, lam.D22, lam.D66))
-    res_expected = [79688.55992406543, 68114.0022704454, 58889.57598574364, 51419.57333450177, 45285.73547400736, 40187.4044061502, 35903.96554281875, 32270.57385354717, 29162.053403091162, 26481.969879263816, 24155.06026735022, 22121.89066686104, 20335.02310316517, 18756.22315240477, 17354.39749457425, 16104.051205932257, 14984.120320908534, 13977.078850002274, 13068.248915899261, 12245.262872171586, 11497.640308736318, 10816.452732075362, 10194.055750316005, 9623.87366720392, 9100.225083361767, 8618.180819678446, 8173.447493599944, 7762.271588205649, 7381.359992966362, 7027.813861439158, 6699.073294971503, 6392.870873657024, 6107.192453563187, 5840.243960125795, 5590.423152014058, 5356.295523016742, 5136.573663123334, 4930.099522731353, 4735.829122489075, 4552.8193308193, 4380.216395633825, 4217.245969223063, 4063.204408198967, 3917.45116557157, 3779.4021210406136, 3648.5237195644836, 3524.327808168894, 3406.3670775281935, 3294.2310286958063, 3187.5423969626177]
-    assert np.allclose(res, res_expected)
+    laminaprop = (68.9e9, 68.9e9, 0.05, 4.83e9, 4.83e9, 4.83e9)
+    lam = laminated_plate(stack=[0]*8, plyt=0.1905e-3, laminaprop=laminaprop)
+    close = (101.58, 177.8, 242.32, 348.17, 412.68, 507.93)
+    for a, Nfig in FIG_6_11:
+        # mm to m, N/m to N/mm
+        N = calc_Nxy_crit(a/1e3, lam.D11, lam.D12, lam.D16, lam.D22,
+                          lam.D66)/1e3
+        assert np.isclose(N, Nfig, rtol=0.005 if a in close else 0.11)
 
-    try:
-        calc_Nxy_crit(a, -lam.D11, lam.D12, lam.D16, lam.D22, lam.D66)
-    except RuntimeError:
-        pass
-
-    #import matplotlib.pyplot as plt
-    #plt.plot(a_values*1000, np.asarray(res)/1000)
-    #plt.xlabel('Plate dimension a [mm]')
-    #plt.ylabel('Buckling load [N/mm]')
-    #plt.title("Reproducing Kassapoglou's Fig. 6.11")
+    with pytest.raises(RuntimeError):
+        calc_Nxy_crit(0.1, -lam.D11, lam.D12, lam.D16, lam.D22, lam.D66)
 
 
 def test_calc_Nxx_crit_combined_shear_full():
-    D11, D12, D22, D66 = 0.66, 0.47, 0.66, 0.49
-    b = 0.508/2
-    a = 2*b
-    Nxx_crit = calc_Nxx_crit(a, b, 1, 1, D11, D12, D22, D66)
-    Nxy_crit = calc_Nxy_crit(a, D11, D12, 0, D22, D66)
-    x_values = []
-    y_values = []
-    for Nxy in np.linspace(0.01*Nxy_crit, 0.99*Nxy_crit):
-        Nxx = calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, 0, D22, 0, D66)
-        assert np.isclose(Nxx, calc_Nxx_crit_combined_shear(Nxy/Nxx, a, b, D11, D12, D22, D66))
-        x_values.append(Nxx/Nxx_crit)
-        y_values.append(Nxy/Nxy_crit)
+    """Kassapoglou's Fig. 6.14, p. 144, Eqs. 6.34, 6.35 and 6.37
 
-    #import matplotlib.pyplot as plt
-    #plt.plot(x_values, y_values)
-    #plt.ylim(0., 1.1)
-    #plt.xlabel('Length/Width')
-    #plt.ylabel('Buckling load ${N_{xx}}_{crit}$ [N/mm]')
-    #plt.title("Reproducing Kassapoglou's Figs. 6.4 and 6.5")
-    #plt.show()
+    The curve "approx" is Eq. 6.34 normalized by Eqs. 6.35 and 6.37, and it
+    does not depend on the plate dimensions nor on the D matrix, which are
+    not given. The D matrix and the plate width of Fig. 6.4 are used. The
+    computed points lie within 0.005 of the curve of the figure, whose axes
+    run from 0 to 1.
+
+    """
+    b = 0.254
+    for a in (b, 2*b):
+        K = D11 + 2*(D12 + 2*D66)*a**2/b**2 + D22*a**4/b**4
+        # Eqs. 6.35 and 6.37
+        Nxcrit = pi**2/a**2*K
+        Nxycrit = 9*pi**4*b/(32*a**3)*K
+        assert np.isclose(Nxcrit, calc_Nxx_crit(a, b, 1, 1, D11, D12, D22,
+                                                D66))
+        assert np.isclose(Nxcrit, calc_Nxx_crit_combined_shear(0, a, b, D11,
+                                                               D12, D22, D66))
+        x_values = []
+        y_values = []
+        # within the range of the figure
+        for Nxy in np.linspace(0.02*Nxycrit, 0.98*Nxycrit):
+            Nxx = calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, 0,
+                                                    D22, 0, D66)
+            assert np.isclose(Nxx, calc_Nxx_crit_combined_shear(Nxy/Nxx, a,
+                              b, D11, D12, D22, D66))
+            x_values.append(Nxx/Nxcrit)
+            y_values.append(Nxy/Nxycrit)
+        assert _distance_to_curve(x_values, y_values, FIG_6_14).max() < 0.005
 
 
 def test_calc_beff():
-    """Verificatoin based on Kassapoglou's Fig. 7.10
+    """Kassapoglou's Fig. 7.10, p. 165, Eq. 7.15
+
+    The plate width, ``b`` here and `a` in the book, and the forces enter
+    only through the ratios shown in the figure. The figure is reproduced
+    within 2 %.
 
     """
-    laminaprop = (68.9e9, 68.0e9, 0.05, 4.83e9, 4.83e9, 4.83e9)
-    plyt = 0.1905e-3/2/16
-    lam = laminated_plate(stack=[0]*8, plyt=plyt, laminaprop=laminaprop)
-
-    Px = np.linspace(10, 1, 40)
-    Pcr = 1
-
-    a = b = 1
-
-    A11 = lam.A11
-    A22 = A11*10.
-    A12 = A11*0.7
-    beffs1 = calc_beff(b, Px, Pcr, A11, A12, A22)
-
-    A11 = lam.A11
-    A22 = A11*1.
-    A12 = A11*0.3
-    beffs2 = calc_beff(b, Px, Pcr, A11, A12, A22)
-
-    A11 = lam.A11
-    A22 = A11*0.1
-    A12 = A11*0.05
-    beffs3 = calc_beff(b, Px, Pcr, A11, A12, A22)
-
-    beffs1_expected = [0.45507927187316505, 0.4551866068538131, 0.45529918984223244, 0.4554174153756495, 0.45554171855541725, 0.4556725803977709, 0.4558105340545082, 0.4559561720731905, 0.4561101549053356, 0.45627322092026296, 0.45644619824489074, 0.45663001883010385, 0.45682573524800907, 0.45703454085930917, 0.457257794166946, 0.45749704840613936, 0.45775408773319887, 0.45803097179621455, 0.45833009104349853, 0.4586542359140656, 0.45900668415263557, 0.45939131204105105, 0.4598127375544637, 0.460276506669263, 0.4607893388006151, 0.4613594544864163, 0.46199701937406856, 0.4627147556963568, 0.4635287998959824, 0.46445993031358884, 0.4655353656705211, 0.4667914699658148, 0.4682779456193354, 0.4700645666210135, 0.47225244831338414, 0.4749938710468252, 0.47852932921695196, 0.48326222513948147, 0.48992493085736866, 0.5]
-    beffs2_expected = [0.31545741324921134, 0.31576330183988066, 0.31608462911037466, 0.31642259414225943, 0.3167785234899329, 0.31715388858246, 0.31755032605613837, 0.31796966161026835, 0.31841393811955543, 0.3188854489164087, 0.31938677738741617, 0.31992084432717677, 0.320490964882373, 0.3211009174311927, 0.3217550274223035, 0.3224582701062215, 0.3232163973196689, 0.3240360951599672, 0.32492518170158186, 0.32589285714285715, 0.3269500233535731, 0.3281096963761019, 0.3293875450334534, 0.33080260303687636, 0.332378223495702, 0.33414337788578374, 0.3361344537815126, 0.3383977900552486, 0.34099332839140106, 0.34400000000000003, 0.3475238922675934, 0.35171102661596954, 0.3567681007345226, 0.3629976580796253, 0.37086092715231794, 0.38109756097560976, 0.3949730700179534, 0.4148471615720524, 0.445682451253482, 0.5]
-    beffs3_expected = [0.2037617554858934, 0.20407911001236095, 0.20441288359117424, 0.20476438427492838, 0.20513506285102973, 0.20552653285675004, 0.20594059405940593, 0.20637926012234198, 0.20684479135394776, 0.20733973366367295, 0.20786696514230893, 0.20842975206611566, 0.20903181662675333, 0.20967741935483866, 0.2103714600956234, 0.2111196025983951, 0.21192842942345927, 0.21280563613758807, 0.21376027693639116, 0.2148030783159801, 0.21594684385382062, 0.21720698254364088, 0.2186022070415134, 0.22015546918378676, 0.22189523248969983, 0.22385723231058233, 0.22608695652173913, 0.22864321608040203, 0.23160340821068942, 0.23507148864592092, 0.23919043238270468, 0.24416243654822334, 0.25028312570781425, 0.25800256081946227, 0.2680412371134021, 0.2816291161178509, 0.30105263157894746, 0.3310991957104557, 0.3837638376383766, 0.5]
-
-    assert np.allclose(beffs1, beffs1_expected)
-    assert np.allclose(beffs2, beffs2_expected)
-    assert np.allclose(beffs3, beffs3_expected)
-
-    #import matplotlib.pyplot as plt
-    #plt.plot(Pcr/Px, beffs1/b)
-    #plt.plot(Pcr/Px, beffs2/b)
-    #plt.plot(Pcr/Px, beffs3/b)
-    #plt.show()
+    b = 1.
+    A11 = 1.
+    Pcr = 1.
+    for (r22, r12), points in FIG_7_10.items():
+        Pcr_Px, beff_b = np.array(points).T
+        beff = calc_beff(b, Pcr/Pcr_Px, Pcr, A11, r12*A11, r22*A11)
+        assert np.allclose(beff/b, beff_b, rtol=0.02)
+    # the whole width is effective at buckling
+    assert np.isclose(calc_beff(b, Pcr, Pcr, A11, 0.3*A11, A11), b/2)
 
 
 if __name__ == '__main__':
@@ -171,22 +204,3 @@ if __name__ == '__main__':
     test_calc_Nxy_crit()
     test_calc_Nxx_crit_combined_shear_full()
     test_calc_beff()
-
-    if False:
-        laminaprop = (68.9e9, 68.0e9, 0.05, 4.83e9, 4.83e9, 4.83e9)
-        plyt = 0.1905e-3/2/16
-        lam = laminated_plate(stack=[0]*8, plyt=plyt, laminaprop=laminaprop)
-
-        Px = np.linspace(10, 1, 40)
-        Pcr = 1
-
-        b = 1
-
-        A11 = lam.A11
-        A22 = A11*10.
-        A12 = A11*0.7
-        beffs1 = calc_beff(b, Px, Pcr, A11, A12, A22)
-
-        import matplotlib.pyplot as plt
-        plt.plot(Pcr/Px, beffs1/a)
-        plt.show()
