@@ -27,7 +27,7 @@ def test_lampar_tri_axial():
     ply.thetadeg = 45.
     ply.h = 3.
     ply.matlamina = matlamina
-    ply.get_transf_matrix_displ_to_laminate()
+    ply.get_transf_matrix_displ_to_lamina()
     ply.get_constitutive_matrix()
     ply.get_transf_matrix_stress_to_lamina()
     ply.get_transf_matrix_stress_to_laminate()
@@ -72,7 +72,7 @@ def test_lampar_plane_stress():
     ply.thetadeg = 45.
     ply.h = 3.
     ply.matlamina = matlamina
-    ply.get_transf_matrix_displ_to_laminate()
+    ply.get_transf_matrix_displ_to_lamina()
     ply.get_constitutive_matrix()
     ply.get_transf_matrix_stress_to_lamina()
     ply.get_transf_matrix_stress_to_laminate()
@@ -563,3 +563,20 @@ def test_example_tsdt_matrices():
                                      + gamma @ C[3:, 3:] @ gamma)
             zk += ply.h
         assert np.isclose(0.5*e @ K @ e, U, rtol=1e-12)
+
+
+def test_transf_matrix_displ_to_lamina():
+    ply = Lamina()
+    ply.thetadeg = 30.
+    ply.h = 1.
+    ply.matlamina = read_laminaprop((142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
+    ply.rebuild()
+    T = np.asarray(ply.get_transf_matrix_displ_to_lamina())
+    c, s = np.cos(np.deg2rad(30.)), np.sin(np.deg2rad(30.))
+    # a displacement along the material direction 1, given in laminate axes
+    assert np.allclose(T @ np.array([c, s, 0.]), [1., 0., 0.])
+    assert np.allclose(T @ T.T, np.eye(3))
+    with pytest.warns(DeprecationWarning,
+                      match='get_transf_matrix_displ_to_lamina'):
+        Told = np.asarray(ply.get_transf_matrix_displ_to_laminate())
+    assert np.array_equal(Told, T)

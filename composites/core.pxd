@@ -34,10 +34,13 @@ cdef class Lamina:
     cdef public double q11L, q12L, q22L, q16L, q26L, q66L, q44L, q45L, q55L
     cdef public MatLamina matlamina
     cpdef void rebuild(Lamina)
+    # NOTE deprecated, kept for cimporting packages, same as
+    #      get_transf_matrix_displ_to_lamina
     cpdef double [:, ::1] get_transf_matrix_displ_to_laminate(Lamina)
     cpdef double [:, ::1] get_constitutive_matrix(Lamina)
     cpdef double [:, ::1] get_transf_matrix_stress_to_lamina(Lamina)
     cpdef double [:, ::1] get_transf_matrix_stress_to_laminate(Lamina)
+    cpdef double [:, ::1] get_transf_matrix_displ_to_lamina(Lamina)
 
 
 cdef class Laminate:

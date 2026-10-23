@@ -32,6 +32,14 @@ class, instead of leaving the attribute at its default value.
   differing by 4.65%. `get_constitutive_matrix()` is now the inverse of the
   orthotropic compliance matrix, and `q31 = q13`.
 
+### Deprecated
+
+- `Lamina.get_transf_matrix_displ_to_laminate()`: use
+  `Lamina.get_transf_matrix_displ_to_lamina()`. The matrix maps the
+  displacements from the laminate axes to the material axes of the ply,
+  contrary to what the old name said; the matrix itself is unchanged. The old
+  name still works, but it emits a `DeprecationWarning`.
+
 ### Documentation
 
 - Pages on the laminate constitutive matrices of the CLPT, FSDT and TSDT, the

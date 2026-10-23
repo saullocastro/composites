@@ -660,11 +660,13 @@ cdef class Lamina:
         #     stresses... to take into account eventual thermal expansions or
         #     contractions
 
-    cpdef double [:, ::1] get_transf_matrix_displ_to_laminate(Lamina self):
-        r"""Return displacement transformation matrix from lamina to laminate
+    cpdef double [:, ::1] get_transf_matrix_displ_to_lamina(Lamina self):
+        r"""Return displacement transformation matrix from laminate to lamina
 
         Builds ``[[cost, sint, 0], [-sint, cost, 0], [0, 0, 1]]`` from the
-        terms computed by :meth:`rebuild`.
+        terms computed by :meth:`rebuild`, which maps the displacement
+        components in the laminate axes to those in the material axes of the
+        ply.
 
         Returns
         -------
@@ -677,16 +679,31 @@ cdef class Lamina:
         the material direction 1, as in the stiffnesses of :meth:`rebuild`,
         the material direction 1 is `\{\cos\theta, \sin\theta, 0\}` in the
         laminate axes, such that `\{u_1, u_2, u_3\}^T = T \{u_x, u_y,
-        u_z\}^T`.
-
-        TODO(author): this maps the laminate components to the lamina
-        components, while the name and the summary say from lamina to
-        laminate.
+        u_z\}^T`. The matrix is orthogonal, and its transpose maps the
+        material components back to the laminate axes.
 
         """
         return np.array([[ self.cost, self.sint, 0],
                          [-self.sint, self.cost, 0],
                          [   0,     0, 1]], dtype=DOUBLE)
+
+    cpdef double [:, ::1] get_transf_matrix_displ_to_laminate(Lamina self):
+        r"""Deprecated, use :meth:`get_transf_matrix_displ_to_lamina` instead
+
+        Issues a :class:`DeprecationWarning` and returns the matrix of
+        :meth:`get_transf_matrix_displ_to_lamina`, which maps the
+        displacements from the laminate axes to the material axes, contrary
+        to what the old name says.
+
+        Returns
+        -------
+        T : double[:, ::1]
+            Memoryview of shape ``(3, 3)``, dimensionless.
+
+        """
+        _warn_deprecated('Lamina.get_transf_matrix_displ_to_laminate',
+                         'Lamina.get_transf_matrix_displ_to_lamina')
+        return self.get_transf_matrix_displ_to_lamina()
 
     cpdef double [:, ::1] get_constitutive_matrix(Lamina self):
         r"""Return the constitutive matrix
