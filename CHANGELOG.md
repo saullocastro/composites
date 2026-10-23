@@ -57,6 +57,20 @@ unchanged, the compression load `N_o = -N_x`, positive in compression.
   `laminate_from_LaminationParameters()` and vanishes when all plies are at
   0 or 90 degrees; it is now set to zero, as `Abar45` by
   `Laminate.make_orthotropic()`.
+- `Laminate.make_balanced()` set to zero `B16` and `B26`, which do not
+  vanish in a balanced laminate in general, e.g. in an antisymmetric
+  `[+45/-45]` laminate, and left `Abar45`, `Abarbar45` and `A45`, which
+  vanish in every balanced laminate. It now sets to zero only the terms that
+  vanish for any position of the `+theta` and `-theta` plies, the integrals
+  of `z^0` of `q16L`, `q26L` and `q45L`: `A16`, `A26`, `Abar45`,
+  `Abarbar45` (unless `nan`), and `A45` except with
+  `shear_correction='rohwer'`, whose `A45` does not vanish in general, e.g.
+  for a `[+30/-30/0]s` laminate. `B16`, `B26` and the other integrals of
+  `z^n`, `n >= 1` (`D16` to `H26`, `D45`, `F45`) keep the values of
+  `calc_constitutive_matrix()`.
+- `make_balanced_LP()` left `xiAts2` unchanged, which gives `Abar45` in
+  `laminate_from_LaminationParameters()` and vanishes in every balanced
+  laminate; it is now set to zero, as `Abar45` by `Laminate.make_balanced()`.
 
 ### Deprecated
 

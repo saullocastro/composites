@@ -59,8 +59,8 @@ Methods and their scope
 
 The scalar methods apply their factors as ``A55 = k13*Abar55``, ``A44 =
 k23*Abar44`` and ``A45 = (k13 + k23)/2*Abar45``, which gives ``A45 = 0``
-whenever ``Abar45 = 0``, e.g. for laminates of ``0``, ``90`` and balanced
-``+-45`` plies, whereas ``'rohwer'`` captures the coupling of the
+whenever ``Abar45 = 0``, e.g. for every balanced laminate, see
+:meth:`.Laminate.make_balanced`, whereas ``'rohwer'`` captures the coupling of the
 bending-twisting terms ``D16``, ``D26``. The details of each method are in
 :meth:`.Laminate.calc_transverse_shear_stiffness`.
 
