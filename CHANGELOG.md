@@ -6,6 +6,10 @@
 
 - Python 3.9 is no longer supported, it reached its end of life in October 2025: Python 3.10 or newer is required, and the tests and wheels cover Python 3.10 to 3.14.
 
+### Packaging
+
+- Packaging: the metadata, with the version, in `pyproject.toml` (PEP 621), built with `setuptools>=77` and Cython; `setup.py` keeps only the Cython extension with the compiler flags, including those of the WebAssembly build, and writes `composites/version.py` from `pyproject.toml`. The license is given as the SPDX expression `BSD-3-Clause` instead of a classifier, wheel is no longer a build requirement, and README.md, LICENSE and version.py are no longer installed in the root of the Python environment (`data_files`).
+
 ### Mass integrals of the TSDT
 
 - `Laminate.intrhoz3`, `intrhoz4` and `intrhoz6`: the moments of the density
