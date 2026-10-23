@@ -580,3 +580,23 @@ def test_transf_matrix_displ_to_lamina():
                       match='get_transf_matrix_displ_to_lamina'):
         Told = np.asarray(ply.get_transf_matrix_displ_to_laminate())
     assert np.array_equal(Told, T)
+
+
+def test_transf_matrix_stress_order():
+    # {s11, s22, s33, t23, t13, t12} = T {sxx, syy, szz, tyz, txz, txy}
+    ply = Lamina()
+    ply.thetadeg = 30.
+    ply.h = 1.
+    ply.matlamina = read_laminaprop((142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
+    ply.rebuild()
+    c, s = np.cos(np.deg2rad(30.)), np.sin(np.deg2rad(30.))
+    R = np.array([[c, s, 0], [-s, c, 0], [0, 0, 1]])
+    sig = np.array([[1.0, 0.4, -0.3], [0.4, -2.0, 0.7], [-0.3, 0.7, 0.5]])
+    sig_mat = R @ sig @ R.T
+    order = [(0, 0), (1, 1), (2, 2), (1, 2), (0, 2), (0, 1)]
+    v = np.array([sig[i, j] for i, j in order])
+    v_mat = np.array([sig_mat[i, j] for i, j in order])
+    T_lamina = np.asarray(ply.get_transf_matrix_stress_to_lamina())
+    T_laminate = np.asarray(ply.get_transf_matrix_stress_to_laminate())
+    assert np.allclose(T_lamina @ v, v_mat)
+    assert np.allclose(T_laminate @ v_mat, v)

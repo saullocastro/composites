@@ -729,8 +729,10 @@ cdef class Lamina:
         r"""Return stress transformation matrix from laminate to lamina
 
         Builds the matrix from the terms ``cost``, ``sint`` and ``sin2t``
-        computed by :meth:`rebuild`. TODO(author): order of the six stress
-        components.
+        computed by :meth:`rebuild`, such that `\{\sigma_{11}, \sigma_{22},
+        \sigma_{33}, \tau_{23}, \tau_{13}, \tau_{12}\}^T = T \{\sigma_{xx},
+        \sigma_{yy}, \sigma_{zz}, \tau_{yz}, \tau_{xz}, \tau_{xy}\}^T`, with
+        the material axes 1, 2, 3 and the laminate axes `x`, `y`, `z`.
 
         Returns
         -------
@@ -777,8 +779,11 @@ cdef class Lamina:
         Builds the matrix from the terms ``cost``, ``sint`` and ``sin2t``
         computed by :meth:`rebuild`, with the opposite sign of all the terms
         in ``sint`` and ``sin2t`` with respect to
-        :meth:`get_transf_matrix_stress_to_lamina`. TODO(author): order of the
-        six stress components.
+        :meth:`get_transf_matrix_stress_to_lamina`, such that
+        `\{\sigma_{xx}, \sigma_{yy}, \sigma_{zz}, \tau_{yz}, \tau_{xz},
+        \tau_{xy}\}^T = T \{\sigma_{11}, \sigma_{22}, \sigma_{33}, \tau_{23},
+        \tau_{13}, \tau_{12}\}^T`, with the material axes 1, 2, 3 and the
+        laminate axes `x`, `y`, `z`.
 
         Returns
         -------
