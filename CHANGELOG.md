@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.31 (unreleased)
+## 0.10.0 (unreleased)
 
 ### Mass integrals of the TSDT
 
