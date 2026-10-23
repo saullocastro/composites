@@ -33,7 +33,7 @@ from composites.core import Laminate, Lamina
 # that each comparison uses half a unit of the last printed digit as tolerance,
 # see ``assert_printed``. Input data are kept as floats.
 
-# Rohwer, K. "Improved transverse shear stiffness for layered finite elements",
+# Rohwer, K. "Improved transverse shear stiffnesses for layered finite elements",
 # DFVLR-FB 88-32, 1988. Pages as printed in the report.
 ROHWER_1988 = {
     # Section 4.1, p. 17: for a homogeneous isotropic plate "the computed

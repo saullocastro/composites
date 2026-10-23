@@ -114,7 +114,7 @@ adopted by Reddy [8]_, see :class:`.Laminate`.
 
 References
 ----------
-.. [1] Rohwer, K., Improved transverse shear stiffness for layered finite
+.. [1] Rohwer, K., Improved transverse shear stiffnesses for layered finite
    elements, DFVLR-FB 88-32, 1988.
 .. [2] Vlachoutsis, S., Shear correction factors for plates and shells,
    International Journal for Numerical Methods in Engineering, 33,
