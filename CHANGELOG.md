@@ -31,6 +31,13 @@ class, instead of leaving the attribute at its default value.
   for `e2 != e3`, and `q31` used `nu12*nu32` instead of `nu12*nu23`,
   differing by 4.65%. `get_constitutive_matrix()` is now the inverse of the
   orthotropic compliance matrix, and `q31 = q13`.
+- `Laminate.make_symmetric()` set to zero `F16`, `F26`, `H16`, `H26`, `D45`
+  and `F45`, which are integrals of even powers of `z` and do not vanish in a
+  symmetric laminate, e.g. `F16`, `H16` and `D45` of a `[30/-45/60]s`
+  laminate. Only the integrals of odd powers, `B11` to `B66` and `E11` to
+  `E66`, are now set to zero; the other attributes keep the values of
+  `calc_constitutive_matrix()`. This changes the TSDT stiffnesses and the
+  transverse shear terms `D45`, `F45` after `make_symmetric()`.
 
 ### Deprecated
 

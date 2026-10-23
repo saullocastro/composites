@@ -600,3 +600,25 @@ def test_transf_matrix_stress_order():
     T_laminate = np.asarray(ply.get_transf_matrix_stress_to_laminate())
     assert np.allclose(T_lamina @ v, v_mat)
     assert np.allclose(T_laminate @ v_mat, v)
+
+
+def test_make_symmetric_keeps_even_powers():
+    # [30/-45/60]s: the integrals of the even powers of z are not zero
+    stack = [30, -45, 60, 60, -45, 30]
+    plyt = 0.125e-3
+    lam = laminated_plate(stack, plyt=plyt,
+            laminaprop=(142.5e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.0e9))
+    z = -lam.h/2 + plyt*np.arange(len(stack) + 1)
+    def integral(name, n):
+        return sum(getattr(ply, name)*(z[k+1]**(n+1) - z[k]**(n+1))/(n+1)
+                   for k, ply in enumerate(lam.plies))
+    even = {'D16': ('q16L', 2), 'D26': ('q26L', 2), 'F16': ('q16L', 4),
+            'F26': ('q26L', 4), 'H16': ('q16L', 6), 'H26': ('q26L', 6),
+            'D45': ('q45L', 2), 'F45': ('q45L', 4)}
+    lam.make_symmetric()
+    for attr, (name, n) in even.items():
+        ref = integral(name, n)
+        assert abs(ref) > 0
+        assert np.isclose(getattr(lam, attr), ref, rtol=1e-12, atol=0)
+    assert np.allclose(lam.B, 0, rtol=0, atol=0)
+    assert np.allclose(lam.E, 0, rtol=0, atol=0)

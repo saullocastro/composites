@@ -2661,8 +2661,8 @@ cdef class Laminate:
 
         The `B_{ij}` terms of the constitutive matrix are set to zero.
 
-        The attributes ``E11`` to ``E66``, ``F16``, ``F26``, ``H16``,
-        ``H26``, ``D45`` and ``F45`` are also set to zero.
+        The attributes ``E11`` to ``E66`` of the TSDT are also set to zero.
+        The other attributes are not modified.
 
         Raises
         ------
@@ -2673,11 +2673,12 @@ cdef class Laminate:
         -----
         In a laminate symmetric about its mid-surface the integrands of the
         odd powers of `z` are odd functions of `z`, see
-        :meth:`.calc_constitutive_matrix`, such that `B_{ij} = E_{ij} = 0`.
-
-        TODO(author): ``F16``, ``F26``, ``H16``, ``H26``, ``D45`` and ``F45``
-        are integrals of even powers of `z`, which the symmetry does not make
-        zero; why are they set to zero?
+        :meth:`.calc_constitutive_matrix`, such that `B_{ij} = E_{ij} = 0`,
+        `ij = 11, 12, 16, 22, 26, 66`, the integrals of `z` and `z^3`. The
+        integrands of the even powers of `z`, i.e. of `A_{ij}`, `D_{ij}`,
+        `F_{ij}`, `H_{ij}` and of the transverse shear terms `D_{ij}`,
+        `F_{ij}`, `ij = 44, 45, 55`, are even functions of `z`, which the
+        symmetry does not make zero.
 
         """
         if self.offset != 0.:
@@ -2697,14 +2698,6 @@ cdef class Laminate:
         self.E22 = 0
         self.E26 = 0
         self.E66 = 0
-
-        self.F16 = 0
-        self.F26 = 0
-        self.H16 = 0
-        self.H26 = 0
-
-        self.D45 = 0
-        self.F45 = 0
 
 
     cpdef void make_smeared(Laminate self):
