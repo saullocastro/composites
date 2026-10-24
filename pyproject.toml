@@ -1,2 +1,65 @@
+# NOTE only Cython is needed to build: core.pyx cimports neither numpy nor
+#      any other package. Every package listed here must also be resolved
+#      when cross-compiling to WebAssembly, see .github/workflows/pyodide.yml
 [build-system]
-requires = ["setuptools", "wheel", "cython"]
+requires = [
+    "setuptools>=77",
+    "cython",
+    "tomli; python_version < '3.11'",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "composites"
+version = "0.10.0"
+description = "Methods for analysis and design of composites"
+readme = "README.md"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [
+    { name = "Saullo G. P. Castro", email = "S.G.P.Castro@tudelft.nl" },
+]
+keywords = [
+    "mechanics", "composite", "materials", "composites", "shell", "classical",
+    "first-order", "laminated", "plate", "theory",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Education",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: Unix",
+    "Operating System :: POSIX :: BSD",
+    "Environment :: WebAssembly :: Emscripten",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "numpy",
+]
+
+[project.urls]
+Homepage = "https://github.com/saullocastro/composites"
+Documentation = "https://saullocastro.github.io/composites/"
+Repository = "https://github.com/saullocastro/composites"
+
+# NOTE only the package data below, as with setup.py before, which did not
+#      set include_package_data (true by default with pyproject.toml)
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+include = ["composites*"]
+
+[tool.setuptools.package-data]
+composites = ["*.pxd", "*.pyx"]

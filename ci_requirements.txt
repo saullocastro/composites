@@ -1,4 +1,5 @@
 cython
+tomli; python_version < "3.11"
 numpy
 coverage
 coveralls

@@ -1,6 +1,7 @@
 r"""
+======================================================
 Saving and loading in JSON (:mod:`composites.json_io`)
-==============================================================
+======================================================
 
 .. currentmodule:: composites.json_io
 
@@ -37,8 +38,8 @@ The format of the saved data is::
 
     {
       "type": "Laminate",
-      "format_version": 1,
-      "composites_version": "0.9.21",
+      "format_version": 2,
+      "composites_version": "0.10.0",
       "data": {...}
     }
 
@@ -55,7 +56,7 @@ from .core import (MatLamina, Lamina, Laminate, LaminationParameters,
                    GradABD, _LAMINATE_STATE, _GRADABD_STATE)
 
 
-FORMAT_VERSION = 1
+FORMAT_VERSION = 2
 
 # NOTE names of the "cdef public" attributes of each class, they must follow
 #      core.pxd (checked in tests/test_json.py)
@@ -128,12 +129,16 @@ def _check_keys(data, allowed, typename):
     if unknown:
         raise ValueError('Unknown keys for %s: %s'
                          % (typename, ', '.join(sorted(unknown))))
+    # NOTE every key of the format is required, there are no defaults
+    missing = set(allowed) - set(data)
+    if missing:
+        raise ValueError('Missing keys for %s: %s'
+                         % (typename, ', '.join(sorted(missing))))
 
 
 def _decode_fields(obj, data, names):
     for name in names:
-        if name in data:
-            setattr(obj, name, _decode_float(data[name]))
+        setattr(obj, name, _decode_float(data[name]))
 
 
 def _matlamina_to_data(mat):
@@ -157,12 +162,11 @@ def _lamina_to_data(ply, matlamina):
 def _lamina_from_data(data, matlamina):
     _check_keys(data, ('plyid', 'matlamina') + _LAMINA_FIELDS, 'Lamina')
     ply = Lamina()
-    if 'plyid' in data:
-        plyid = data['plyid']
-        if not isinstance(plyid, numbers.Integral) or isinstance(plyid, bool):
-            raise ValueError('Expected an integer for plyid, got %r'
-                             % (plyid, ))
-        ply.plyid = plyid
+    plyid = data['plyid']
+    if not isinstance(plyid, numbers.Integral) or isinstance(plyid, bool):
+        raise ValueError('Expected an integer for plyid, got %r'
+                         % (plyid, ))
+    ply.plyid = plyid
     _decode_fields(ply, data, _LAMINA_FIELDS)
     ply.matlamina = matlamina
     return ply
@@ -196,18 +200,15 @@ def _laminate_from_data(data):
                 'Laminate')
     lam = Laminate()
     _decode_fields(lam, data, _LAMINATE_FIELDS)
-    if 'shear_correction' in data:
-        shear_correction = data['shear_correction']
-        if shear_correction is not None and not isinstance(shear_correction,
-                                                           str):
-            raise ValueError('Expected a string or null for '
-                             'shear_correction, got %r' % (shear_correction, ))
-        lam.shear_correction = shear_correction
-    lam.stack = [_decode_number(angle) for angle in data.get('stack', [])]
-    materials = [_matlamina_from_data(mat)
-                 for mat in data.get('materials', [])]
+    shear_correction = data['shear_correction']
+    if shear_correction is not None and not isinstance(shear_correction, str):
+        raise ValueError('Expected a string or null for '
+                         'shear_correction, got %r' % (shear_correction, ))
+    lam.shear_correction = shear_correction
+    lam.stack = [_decode_number(angle) for angle in data['stack']]
+    materials = [_matlamina_from_data(mat) for mat in data['materials']]
     plies = []
-    for ply in data.get('plies', []):
+    for ply in data['plies']:
         if not isinstance(ply, dict):
             raise ValueError('Expected a JSON object for Lamina, got %r'
                              % type(ply).__name__)
@@ -245,8 +246,6 @@ def _gradabd_from_data(data):
     _check_keys(data, _GRADABD_STATE, 'GradABD')
     grad = GradABD()
     for name in _GRADABD_STATE:
-        if name not in data:
-            continue
         try:
             value = np.array([[_decode_float(v) for v in row]
                               for row in data[name]], dtype=np.float64)
@@ -288,6 +287,15 @@ _TYPES = (
 def to_dict(obj):
     r"""Convert an object into a dictionary of JSON-compatible types
 
+    The type of ``obj`` is identified with :func:`isinstance`, checking
+    :class:`.Laminate` first, then :class:`.Lamina`, :class:`.MatLamina`,
+    :class:`.LaminationParameters` and :class:`.GradABD`. ``'type'`` is the
+    name of the class found, ``'format_version'`` the format version of this
+    module (``2``), ``'composites_version'`` the version of the installed
+    composites and ``'data'`` the stored attributes, see the module
+    documentation. The values ``nan``, ``inf`` and ``-inf`` are stored as
+    the strings ``"NaN"``, ``"Infinity"`` and ``"-Infinity"``.
+
     Parameters
     ----------
     obj : :class:`.Laminate`, :class:`.Lamina`, :class:`.MatLamina`, :class:`.LaminationParameters` or :class:`.GradABD`
@@ -299,6 +307,15 @@ def to_dict(obj):
         Dictionary with the keys ``'type'``, ``'format_version'``,
         ``'composites_version'`` and ``'data'``, containing only ``dict``,
         ``list``, ``str``, ``int``, ``float`` and ``None``.
+
+    Raises
+    ------
+    TypeError
+        If ``obj`` is not an instance of one of the classes above.
+
+    See Also
+    --------
+    from_dict, to_json
 
     """
     for typename, cls, encode, _ in _TYPES:
@@ -314,6 +331,17 @@ def to_dict(obj):
 def from_dict(d):
     r"""Create an object from a dictionary created by :func:`.to_dict`
 
+    ``d`` must be a dictionary with exactly the keys ``'type'``,
+    ``'format_version'``, ``'composites_version'`` and ``'data'``, with an
+    integer ``'format_version'`` equal to the format version of this module
+    (``2``), and with a ``'type'`` equal to ``'Laminate'``, ``'Lamina'``,
+    ``'MatLamina'``, ``'LaminationParameters'`` or ``'GradABD'``. Files of
+    other format versions are not read. The object is created from
+    ``d['data']``, which must contain every key that :func:`.to_dict` writes
+    for that type, without defaults for missing keys.
+    ``'composites_version'`` is only used in the error message of another
+    format version.
+
     Parameters
     ----------
     d : dict
@@ -322,13 +350,17 @@ def from_dict(d):
     Returns
     -------
     obj : :class:`.Laminate`, :class:`.Lamina`, :class:`.MatLamina`, :class:`.LaminationParameters` or :class:`.GradABD`
-        The object. Attributes missing in ``d`` keep their default values.
+        The object.
 
     Raises
     ------
     ValueError
-        If ``d`` is not valid, has unknown keys, or was created by a newer
-        format version.
+        If ``d`` is not valid, has unknown or missing keys, at any level,
+        or was created with another format version, older or newer.
+
+    See Also
+    --------
+    to_dict, from_json
 
     """
     if not isinstance(d, dict):
@@ -339,20 +371,25 @@ def from_dict(d):
     if (not isinstance(format_version, numbers.Integral)
             or isinstance(format_version, bool) or format_version < 1):
         raise ValueError('Invalid format_version: %r' % (format_version, ))
-    if format_version > FORMAT_VERSION:
-        raise ValueError('format_version %d was saved by a newer version of '
-                         'composites (%s), this version reads up to %d'
-                         % (format_version, d.get('composites_version'),
-                            FORMAT_VERSION))
+    if format_version != FORMAT_VERSION:
+        raise ValueError('format_version %d was saved by %s version of '
+                         'composites (%s), this version reads only %d'
+                         % (format_version, 'a newer' if format_version >
+                            FORMAT_VERSION else 'an older',
+                            d.get('composites_version'), FORMAT_VERSION))
     typename = d.get('type')
     for name, _, _, decode in _TYPES:
         if typename == name:
-            return decode(d.get('data', {}))
+            return decode(d['data'])
     raise ValueError('Unknown type: %r' % (typename, ))
 
 
 def to_json(obj, **kwargs):
     r"""Convert an object into a JSON string
+
+    Returns ``json.dumps(to_dict(obj), allow_nan=False, **kwargs)``, see
+    :func:`.to_dict`, which raises a :class:`TypeError` for an object of
+    another type.
 
     Parameters
     ----------
@@ -373,6 +410,9 @@ def to_json(obj, **kwargs):
 def from_json(s):
     r"""Create an object from a JSON string created by :func:`.to_json`
 
+    Returns ``from_dict(json.loads(s))``, see :func:`.from_dict`, which
+    raises a :class:`ValueError` for invalid content.
+
     Parameters
     ----------
     s : str or bytes
@@ -390,6 +430,11 @@ def from_json(s):
 def save_json(obj, fname, indent=2):
     r"""Save an object to a JSON file
 
+    The string of :func:`.to_json` is written to ``fname``. When ``fname``
+    has a ``write`` method, the string is written with it and the file
+    object is not closed; otherwise the file is opened with the encoding
+    UTF-8, overwriting an existing file, and closed after writing.
+
     Parameters
     ----------
     obj : :class:`.Laminate`, :class:`.Lamina`, :class:`.MatLamina`, :class:`.LaminationParameters` or :class:`.GradABD`
@@ -398,6 +443,11 @@ def save_json(obj, fname, indent=2):
         Name of the file, or a file object opened in text mode for writing.
     indent : int or None, optional
         Indentation of the JSON output, ``None`` for the most compact form.
+        Default ``2``.
+
+    See Also
+    --------
+    load_json
 
     """
     s = to_json(obj, indent=indent)
@@ -410,6 +460,10 @@ def save_json(obj, fname, indent=2):
 
 def load_json(fname):
     r"""Load an object from a JSON file created by :func:`.save_json`
+
+    When ``fname`` has a ``read`` method, the content is read with it and the
+    file object is not closed; otherwise the file is opened with the encoding
+    UTF-8. The content is converted with :func:`.from_json`.
 
     Parameters
     ----------

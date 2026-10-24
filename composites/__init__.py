@@ -3,7 +3,7 @@ r"""
 composites API (:mod:`composites`)
 ==================================
 
-.. currentmodule::composites
+.. currentmodule:: composites
 
 The ``composites`` module includes functions used to calculate properties and
 perform analysis on laminated composites and isotropic plates.
@@ -19,37 +19,27 @@ corresponding to ``yz`` and index 5 to ``xz``. All these matrices are part of
 the :class:`.Laminate` object.
 
 The FSDT transverse shear stiffness ``Ats`` already contains the shear
-correction, computed by default with the equilibrium approach of Rohwer
-(1988), see :meth:`.Laminate.calc_transverse_shear_stiffness`, such that no
-shear correction factor should be applied to it. The uncorrected
-constant-strain stiffness, used in the TSDT, is ``Abar_ts``. Other methods are
-selected with the argument ``shear_correction`` of
-:func:`.laminated_plate` and :func:`.isotropic_plate`:
+correction, computed by default with the method ``'rohwer'``, see
+:meth:`.Laminate.calc_transverse_shear_stiffness`, such that no shear
+correction factor should be applied to it. The uncorrected constant-strain
+stiffness, used in the TSDT, is ``Abar_ts``. Other methods are selected with
+the argument ``shear_correction`` of :func:`.laminated_plate` and
+:func:`.isotropic_plate`:
 
-- ``'rohwer'`` (default): Rohwer (1988), equilibrium of two cylindrical
-  bending states, full 2x2 matrix
-- ``'vlachoutsis'``: Vlachoutsis (1992), energy equivalence with
-  direction-wise neutral surfaces
-- ``'whitney'``: Whitney (1973), unsymmetric orthotropic laminates, identical
-  to ``'vlachoutsis'``
-- ``'chow'``: Chow (1971), symmetric laminates only
-- ``'birman_bert'``: Birman and Bert (2002), equivalence of the average
-  transverse shear strain
-- ``'thickness_shear'``: Yang, Norris and Stavsky (1966), first
-  thickness-shear frequency, requires positive ply densities
+- ``'rohwer'`` (default): equilibrium approach, full 2x2 matrix
+- ``'vlachoutsis'``: scalar factors per direction
+- ``'whitney'``: identical to ``'vlachoutsis'``
+- ``'chow'``: symmetric laminates only
+- ``'birman_bert'``: scalar factors per direction, average shear strain
+- ``'thickness_shear'``: scalar factors per direction, dynamic, requires
+  positive ply densities
 - ``'constant'``: 5/6
 - ``None``: no correction
 
-Problem-dependent, a posteriori factors in the sense of Noor and Peters (1989)
-are supported by :meth:`.Laminate.calc_equilibrium_transverse_shear` and
-:meth:`.Laminate.calc_aposteriori_energy`, which recover the transverse shear
-stresses and their energies from the strain gradients of an FSDT solution.
-
-The implementation of the CLTP, FSDT and TSDT closely follows the notation
-adopted by::
-
-    Reddy J.N., Mechanics of laminated composite plates and shells, theory and
-    analysis. Second Edition, Boca Raton: CRC Press, 2004.
+The transverse shear stresses and their energies can also be recovered from
+the strain gradients of an FSDT solution with
+:meth:`.Laminate.calc_equilibrium_transverse_shear` and
+:meth:`.Laminate.calc_aposteriori_energy`.
 
 For isotropic plates, the :class:`.Laminate` object is also used for
 convenience, and since offsetting the mid-surface is supported, there can be an
@@ -97,17 +87,54 @@ Objects are saved to and loaded from JSON files with::
 
 see :mod:`composites.json_io`.
 
-.. automodule:: composites.core
-    :members:
+Notes
+-----
+The shear correction methods are, see
+:meth:`.Laminate.calc_transverse_shear_stiffness`:
 
-.. automodule:: composites.utils
-    :members:
+- ``'rohwer'`` (default): Rohwer (1988) [1]_, equilibrium of two cylindrical
+  bending states, full 2x2 matrix
+- ``'vlachoutsis'``: Vlachoutsis (1992) [2]_, energy equivalence with
+  direction-wise neutral surfaces
+- ``'whitney'``: Whitney (1973) [3]_, unsymmetric orthotropic laminates,
+  identical to ``'vlachoutsis'``
+- ``'chow'``: Chow (1971) [4]_, symmetric laminates only
+- ``'birman_bert'``: Birman and Bert (2002) [5]_, equivalence of the average
+  transverse shear strain
+- ``'thickness_shear'``: Yang, Norris and Stavsky (1966) [6]_, first
+  thickness-shear frequency, requires positive ply densities
 
-.. automodule:: composites.kassapoglou
-    :members:
+Problem-dependent, a posteriori factors in the sense of Noor and Peters (1989)
+[7]_ are supported by :meth:`.Laminate.calc_equilibrium_transverse_shear` and
+:meth:`.Laminate.calc_aposteriori_energy`, which recover the transverse shear
+stresses and their energies from the strain gradients of an FSDT solution.
 
-.. automodule:: composites.json_io
-    :members: to_dict, from_dict, to_json, from_json, save_json, load_json
+The implementation of the CLTP, FSDT and TSDT closely follows the notation
+adopted by Reddy [8]_, see :class:`.Laminate`.
+
+References
+----------
+.. [1] Rohwer, K., Improved transverse shear stiffnesses for layered finite
+   elements, DFVLR-FB 88-32, 1988.
+.. [2] Vlachoutsis, S., Shear correction factors for plates and shells,
+   International Journal for Numerical Methods in Engineering, 33,
+   1537-1552, 1992.
+.. [3] Whitney, J. M., Shear correction factors for orthotropic laminates
+   under static load, Journal of Applied Mechanics, 40, 302-304, 1973.
+.. [4] Chow, T. S., On the propagation of flexural waves in an orthotropic
+   laminated plate and its response to an impulsive load, Journal of
+   Composite Materials, 5, 306-319, 1971.
+.. [5] Birman, V. and Bert, C. W., On the choice of shear correction factor
+   in sandwich structures, Journal of Sandwich Structures and Materials, 4,
+   83-95, 2002.
+.. [6] Yang, P. C., Norris, C. H. and Stavsky, Y., Elastic wave propagation
+   in heterogeneous plates, International Journal of Solids and Structures,
+   2, 665-684, 1966.
+.. [7] Noor, A. K. and Peters, J. M., A posteriori estimates for the shear
+   correction factors in multi-layered composite cylinders, Journal of
+   Engineering Mechanics, 115, 1225-1244, 1989.
+.. [8] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells,
+   CRC Press, 2003. https://doi.org/10.1201/b12409
 
 """
 import os
@@ -118,4 +145,17 @@ from .json_io import (to_dict, from_dict, to_json, from_json,
                       save_json, load_json)
 
 def get_include():
+    """Directory of the installed ``composites`` package
+
+    Returns the directory that contains the ``__init__.py`` of this package,
+    together with the Cython declarations ``core.pxd`` of
+    :mod:`composites.core`, which are installed with the package.
+
+    Returns
+    -------
+    path : str
+        Absolute or relative path of the directory, as given by the
+        ``__file__`` of this module.
+
+    """
     return os.path.join(os.path.dirname(__file__))

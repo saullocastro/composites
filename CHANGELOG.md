@@ -1,5 +1,106 @@
 # Changelog
 
+## 0.10.0 (2026-10-24)
+
+### Python versions
+
+- Python 3.9 is no longer supported, it reached its end of life in October 2025: Python 3.10 or newer is required, and the tests and wheels cover Python 3.10 to 3.14.
+
+### Packaging
+
+- Packaging: the metadata, with the version, in `pyproject.toml` (PEP 621), built with `setuptools>=77` and Cython; `setup.py` keeps only the Cython extension with the compiler flags, including those of the WebAssembly build, and writes `composites/version.py` from `pyproject.toml`. The license is given as the SPDX expression `BSD-3-Clause` instead of a classifier, wheel is no longer a build requirement, and README.md, LICENSE and version.py are no longer installed in the root of the Python environment (`data_files`).
+
+### Mass integrals of the TSDT
+
+- `Laminate.intrhoz3`, `intrhoz4` and `intrhoz6`: the moments of the density
+  `int rho z^n dz` for `n = 3, 4, 6`, computed by `calc_constitutive_matrix`
+  next to `intrho`, `intrhoz`, `intrhoz2`, with `z` measured from the
+  reference surface. Together they are the moments `I_0` to `I_4` and `I_6`
+  required by the mass matrices of the third-order shear deformation theory.
+  They are zero for laminates without plies, e.g. created from lamination
+  parameters.
+
+### Breaking: JSON format version 2
+
+The JSON files now have `format_version` 2, which stores `intrhoz3`,
+`intrhoz4` and `intrhoz6`. `from_dict`, `from_json` and `load_json` read only
+the current format version and raise `ValueError` for an older or a newer
+one, such that the files of format 1, saved by version 0.9.21, must be
+created again. Every key of the format is required: a key missing from
+`'data'`, at any level, raises `ValueError` naming the missing keys and the
+class, instead of leaving the attribute at its default value.
+
+### Breaking: sign of the shear load of the Kassapoglou combined buckling
+
+`composites.kassapoglou.calc_Nxx_crit_combined_shear_full(Nxy, ...)` now
+takes `Nxy` positive in tension, the `N_xy` of the energy of Kassapoglou's
+Eq. 6.32, instead of its negative, the `k*N_o` of Eqs. 6.32a and 6.33. The
+result changes only when `D16` or `D26` is not zero: a caller that passed
+`k*N_o` must now pass `-k*N_o` to keep its results. The returned load is
+unchanged, the compression load `N_o = -N_x`, positive in compression.
+
+### Fixes
+
+- `GradABD.calc_LP_grad` left the derivatives `dA66/dxiA3`, `dB66/dxiB3` and
+  `dD66/dxiD3` at zero, instead of `-h*u3`, `-h^2/4*u3` and `-h^3/12*u3`.
+- `MatLamina.rebuild`: the stiffness constant `c11` used `nu23*nu23` instead
+  of `nu23*nu32`, differing by 4.3% from the inverse of the compliance matrix
+  for `e2 != e3`, and `q31` used `nu12*nu32` instead of `nu12*nu23`,
+  differing by 4.65%. `get_constitutive_matrix()` is now the inverse of the
+  orthotropic compliance matrix, and `q31 = q13`.
+- `Laminate.make_symmetric()` set to zero `F16`, `F26`, `H16`, `H26`, `D45`
+  and `F45`, which are integrals of even powers of `z` and do not vanish in a
+  symmetric laminate, e.g. `F16`, `H16` and `D45` of a `[30/-45/60]s`
+  laminate. Only the integrals of odd powers, `B11` to `B66` and `E11` to
+  `E66`, are now set to zero; the other attributes keep the values of
+  `calc_constitutive_matrix()`. This changes the TSDT stiffnesses and the
+  transverse shear terms `D45`, `F45` after `make_symmetric()`.
+- `Laminate.make_orthotropic()` set to zero only `A16`, `A26`, `B16`, `B26`,
+  `D16` and `D26`. It now also sets to zero the other terms that vanish in a
+  laminate with all plies at 0 or 90 degrees, the integrals of `q16L`,
+  `q26L` and `q45L`: `E16`, `E26`, `F16`, `F26`, `H16`, `H26`, `D45`, `F45`,
+  `Abar45`, `Abarbar45` and `A45`. This changes the TSDT stiffnesses and the
+  transverse shear coupling terms after `make_orthotropic()`. `Abarbar45`
+  is kept when it is `nan`, i.e. when a ply has a singular transverse shear
+  stiffness matrix, as by `make_balanced()`.
+- `make_orthotropic_LP()` left `xiAts2` unchanged, which gives `Abar45` in
+  `laminate_from_LaminationParameters()` and vanishes when all plies are at
+  0 or 90 degrees; it is now set to zero, as `Abar45` by
+  `Laminate.make_orthotropic()`.
+- `Laminate.make_balanced()` set to zero `B16` and `B26`, which do not
+  vanish in a balanced laminate in general, e.g. in an antisymmetric
+  `[+45/-45]` laminate, and left `Abar45`, `Abarbar45` and `A45`, which
+  vanish in every balanced laminate. It now sets to zero only the terms that
+  vanish for any position of the `+theta` and `-theta` plies, the integrals
+  of `z^0` of `q16L`, `q26L` and `q45L`: `A16`, `A26`, `Abar45`,
+  `Abarbar45` (unless `nan`), and `A45` except with
+  `shear_correction='rohwer'`, whose `A45` does not vanish in general, e.g.
+  for a `[+30/-30/0]s` laminate. `B16`, `B26` and the other integrals of
+  `z^n`, `n >= 1` (`D16` to `H26`, `D45`, `F45`) keep the values of
+  `calc_constitutive_matrix()`.
+- `make_balanced_LP()` left `xiAts2` unchanged, which gives `Abar45` in
+  `laminate_from_LaminationParameters()` and vanishes in every balanced
+  laminate; it is now set to zero, as `Abar45` by `Laminate.make_balanced()`.
+
+### Deprecated
+
+- `Lamina.get_transf_matrix_displ_to_laminate()`: use
+  `Lamina.get_transf_matrix_displ_to_lamina()`. The matrix maps the
+  displacements from the laminate axes to the material axes of the ply,
+  contrary to what the old name said; the matrix itself is unchanged. The old
+  name still works, but it emits a `DeprecationWarning`.
+
+### Documentation
+
+- Pages on the laminate constitutive matrices of the CLPT, FSDT and TSDT, the
+  thickness integrals for mass matrices, the conventions for defining a
+  laminate, the choice of the transverse shear correction, saving and
+  loading in JSON, installing and building, and the changelog.
+- Usage examples extracted from the tests, one API page per module, and two
+  tutorials: plate properties for the CLPT, FSDT and TSDT, and transverse
+  shear stresses through the thickness.
+- Reddy's book is cited as Reddy (2003), https://doi.org/10.1201/b12409.
+
 ## 0.9.21 (2026-10-08)
 
 ### Saving and loading in JSON

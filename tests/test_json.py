@@ -193,6 +193,8 @@ def test_errors():
     d = to_dict(make_laminate())
     with pytest.raises(ValueError, match='newer'):
         from_dict(dict(d, format_version=FORMAT_VERSION + 1))
+    with pytest.raises(ValueError, match='older'):
+        from_dict(dict(d, format_version=FORMAT_VERSION - 1))
     with pytest.raises(ValueError, match='format_version'):
         from_dict(dict(d, format_version='1'))
     with pytest.raises(ValueError, match='Unknown type'):
@@ -237,16 +239,78 @@ def test_errors():
 
 @pytest.mark.parametrize('cls', [MatLamina, Lamina, Laminate,
                                  LaminationParameters, GradABD])
-def test_missing_keys_keep_defaults(cls):
-    d = to_dict(cls())
-    d['data'] = {}
-    obj = from_dict(d)
-    assert type(obj) is cls
-    if cls is GradABD:
-        for name in ('gradAij', 'gradBij', 'gradDij', 'gradAtsij'):
-            np.testing.assert_array_equal(getattr(obj, name),
-                                          getattr(cls(), name))
-    else:
-        assert_same(cls(), obj)
-    del d['data']
-    assert type(from_dict(d)) is cls
+def test_missing_keys_raise(cls):
+    obj = make_laminate() if cls is Laminate else cls()
+    d = to_dict(obj)
+    # a complete dictionary loads
+    assert type(from_dict(json.loads(json.dumps(d)))) is cls
+    # every key of the format is required
+    for key in d['data']:
+        data = dict(d['data'])
+        del data[key]
+        with pytest.raises(ValueError,
+                           match='Missing keys for %s: %s$' % (cls.__name__,
+                                                               key)):
+            from_dict(dict(d, data=data))
+    for key in d:
+        incomplete = dict(d)
+        del incomplete[key]
+        with pytest.raises(ValueError, match='Missing keys for the saved '
+                           'object: %s$' % key):
+            from_dict(incomplete)
+
+
+def test_missing_keys_nested():
+    d = to_dict(make_laminate())
+    ply = dict(d['data']['plies'][0])
+    del ply['q55L']
+    with pytest.raises(ValueError, match='Missing keys for Lamina: q55L$'):
+        from_dict(dict(d, data=dict(d['data'], plies=[ply])))
+    mat = dict(d['data']['materials'][0])
+    del mat['g13'], mat['rho']
+    with pytest.raises(ValueError,
+                       match='Missing keys for MatLamina: g13, rho$'):
+        from_dict(dict(d, data=dict(d['data'], materials=[mat])))
+    names = ('intrhoz3', 'intrhoz4', 'intrhoz6')
+    data = {k: v for k, v in d['data'].items() if k not in names}
+    with pytest.raises(ValueError, match='Missing keys for Laminate: '
+                       'intrhoz3, intrhoz4, intrhoz6$'):
+        from_dict(dict(d, data=data))
+
+
+DENSITY_MOMENTS = ('intrho', 'intrhoz', 'intrhoz2', 'intrhoz3', 'intrhoz4',
+                   'intrhoz6')
+
+
+def make_laminate_densities():
+    return laminated_plate([0, 45, 90, -30],
+                           plyts=[0.2e-3, 0.5e-3, 0.3e-3, 0.4e-3],
+                           laminaprop=laminaprop,
+                           rhos=[1600., 1200., 2700., 900.], offset=0.37e-3)
+
+
+def test_laminate_density_moments():
+    lam = make_laminate_densities()
+    d = to_dict(lam)
+    for name in DENSITY_MOMENTS:
+        assert d['data'][name] == getattr(lam, name) != 0.
+    lam2 = roundtrip(lam)
+    assert_same(lam, lam2)
+    for name in DENSITY_MOMENTS:
+        assert getattr(lam2, name) == getattr(lam, name)
+
+
+def test_example_embed_in_json_document(tmp_path):
+    lam = laminated_plate([0, 45, -45, 90], plyt=0.125e-3,
+                          laminaprop=laminaprop, rho=1600.)
+    # to_dict returns JSON types, to be embedded in another JSON document
+    doc = {'name': 'skin', 'mesh_size': 0.01, 'laminate': to_dict(lam)}
+    fname = tmp_path / 'model.json'
+    with open(fname, 'w') as f:
+        json.dump(doc, f)
+    with open(fname) as f:
+        doc2 = json.load(f)
+    lam2 = from_dict(doc2['laminate'])
+    np.testing.assert_array_equal(lam2.ABD, lam.ABD)
+    np.testing.assert_array_equal(lam2.Ats, lam.Ats)
+    assert lam2.intrhoz6 == lam.intrhoz6

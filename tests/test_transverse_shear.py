@@ -33,7 +33,7 @@ from composites.core import Laminate, Lamina
 # that each comparison uses half a unit of the last printed digit as tolerance,
 # see ``assert_printed``. Input data are kept as floats.
 
-# Rohwer, K. "Improved transverse shear stiffness for layered finite elements",
+# Rohwer, K. "Improved transverse shear stiffnesses for layered finite elements",
 # DFVLR-FB 88-32, 1988. Pages as printed in the report.
 ROHWER_1988 = {
     # Section 4.1, p. 17: for a homogeneous isotropic plate "the computed
@@ -1357,3 +1357,38 @@ def test_large_offset_stresses():
         assert np.allclose(tyz, tyz0, rtol=0, atol=tol*np.abs(tyz0).max())
         U = np.array(lam.calc_aposteriori_energy(gx, gy))
         assert np.allclose(U, U0, rtol=0, atol=tol*np.abs(U0).max())
+
+
+def test_example_shear_stress_cross_ply():
+    # [0/90/0] CFRP plate, SI units, under the shear force Qx only
+    laminaprop = (142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9)
+    lam = laminated_plate([0, 90, 0], plyt=0.5e-3, laminaprop=laminaprop)
+    h = lam.h
+    Qy, Qx = 0., 1e3 # N/m
+    zs = np.linspace(-h/2, h/2, 31)
+    tau = np.array([lam.calc_transverse_shear_stress(z, Qy, Qx) for z in zs])
+    tau_yz, tau_xz = tau[:, 0], tau[:, 1]
+    tol = 1e-10*Qx/h
+    # traction-free faces
+    assert abs(tau_xz[0]) < tol and abs(tau_xz[-1]) < tol
+    # orthotropic plies in the laminate axes: Qx gives no tau_yz
+    assert np.allclose(tau_yz, 0, atol=tol)
+    # the stresses integrate to the shear forces, and their complementary
+    # energy defines Ats: 1/2 Q^T Ats^-1 Q = int 1/2 tau^T Cs^-1 tau dz
+    Q = np.array([Qy, Qx])
+    xi, w = np.polynomial.legendre.leggauss(3)
+    zk = -h/2
+    resultant = np.zeros(2)
+    Ustar = 0.
+    for ply in lam.plies:
+        Cs = np.asarray(ply.get_constitutive_matrix())[3:, 3:]
+        for x, wi in zip(xi, w):
+            z = zk + ply.h*(x + 1)/2
+            t = np.array(lam.calc_transverse_shear_stress(z, Qy, Qx))
+            resultant += wi*ply.h/2*t
+            Ustar += wi*ply.h/2*0.5*t @ np.linalg.solve(Cs, t)
+        zk += ply.h
+    assert np.allclose(resultant, Q, rtol=1e-12, atol=1e-12*Qx)
+    assert np.isclose(Ustar, 0.5*Q @ np.linalg.solve(lam.Ats, Q), rtol=1e-12)
+    # the constant-strain stiffness overestimates the shear stiffness
+    assert lam.scf_k13 < 1
