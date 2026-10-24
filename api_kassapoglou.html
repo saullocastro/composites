@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Kassapoglou’s methods (composites.kassapoglou) &#8212; composites 0.10.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="_static/documentation_options.js?v=82662543"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api_kassapoglou';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installing composites" href="install.html" />
+    <link rel="prev" title="Saving and loading in JSON (composites.json_io)" href="api_json_io.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">composites 0.10.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="conventions.html">
+    Defining a laminate: conventions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="constitutive_matrices.html">
+    Laminate constitutive matrices per plate theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="mass_integrals.html">
+    Thickness integrals for mass matrices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="shear_correction.html">
+    Choosing the transverse shear correction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="saving_loading.html">
+    Saving and loading (JSON)
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="ex_laminated_plate.html">
+    Laminated plate and ABD matrix
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="ex_isotropic_offset.html">
+    Isotropic plate with an offset
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="ex_tsdt.html">
+    Matrices of the third-order shear deformation theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="ex_transverse_shear.html">
+    Transverse shear stresses
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="ex_json.html">
+    Saving and loading in JSON
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="install.html">
+    Installing composites
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="changelog.html">
+    Changelog
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="conventions.html">
+    Defining a laminate: conventions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="constitutive_matrices.html">
+    Laminate constitutive matrices per plate theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="mass_integrals.html">
+    Thickness integrals for mass matrices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="shear_correction.html">
+    Choosing the transverse shear correction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="saving_loading.html">
+    Saving and loading (JSON)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ex_laminated_plate.html">
+    Laminated plate and ABD matrix
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ex_isotropic_offset.html">
+    Isotropic plate with an offset
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ex_tsdt.html">
+    Matrices of the third-order shear deformation theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ex_transverse_shear.html">
+    Transverse shear stresses
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ex_json.html">
+    Saving and loading in JSON
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="install.html">
+    Installing composites
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="changelog.html">
+    Changelog
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="api_core.html">Composites Core Module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.core</span></code>)</a></li>
+
+
+
+
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="api_utils.html">Composites Core Utils Module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.utils</span></code>)</a></li>
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="api_json_io.html">Saving and loading in JSON (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.json_io</span></code>)</a></li>
+
+
+
+
+
+
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Kassapoglou’s methods (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.kassapoglou</span></code>)</a></li>
+
+
+
+
+
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="api.html" class="nav-link">API reference</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Kassapoglou’s methods (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.kassapoglou</span></code>)</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="kassapoglou-s-methods-composites-kassapoglou">
+<span id="module-composites.kassapoglou"></span><h1>Kassapoglou’s methods (<a class="reference internal" href="#module-composites.kassapoglou" title="composites.kassapoglou"><code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.kassapoglou</span></code></a>)<a class="headerlink" href="#kassapoglou-s-methods-composites-kassapoglou" title="Link to this heading">#</a></h1>
+<p>Methods based on Kassapoglou’s book: buckling loads of rectangular plates
+under compression, shear and combined compression and shear, and the
+effective width of a buckled plate, see the functions of this module.</p>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">#</a></h2>
+<p>The functions implement the equations of Kassapoglou <a class="reference internal" href="#r93e949c60d10-1" id="id1">[1]</a>, chapters 6 and
+7, whose numbers are given in each function.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<div role="list" class="citation-list">
+<div class="citation" id="r93e949c60d10-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Kassapoglou, C., Design and Analysis of Composite Structures, Second
+Edition, John Wiley &amp; Sons, 2013.</p>
+</div>
+</div>
+</section>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="composites.kassapoglou.calc_Nxx_crit">
+<span class="sig-prename descclassname"><span class="pre">composites.kassapoglou.</span></span><span class="sig-name descname"><span class="pre">calc_Nxx_crit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D11</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D22</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D66</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.kassapoglou.calc_Nxx_crit" title="Link to this definition">#</a></dt>
+<dd><p>Calculate uniaxial compression buckling for a composite plate</p>
+<p>If <span class="math notranslate nohighlight">\(m\)</span> or <span class="math notranslate nohighlight">\(n\)</span> is set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, the function searchers for the critical number of
+half-waves in the corresponding direction, up to 10 half-waves.</p>
+<p>The load is evaluated for every value of <span class="math notranslate nohighlight">\(m\)</span> and <span class="math notranslate nohighlight">\(n\)</span>, the <code class="docutils literal notranslate"><span class="pre">None</span></code> one
+replaced by <code class="docutils literal notranslate"><span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">...,</span> <span class="pre">10</span></code>, and the minimum is returned. <span class="math notranslate nohighlight">\(m\)</span> and <span class="math notranslate nohighlight">\(n\)</span>
+may also be given as arrays, which are broadcast against each other.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>a, b</strong><span class="classifier">float</span></dt><dd><p>Plate length and width, dimension length.</p>
+</dd>
+<dt><strong>m, n</strong><span class="classifier">int or None</span></dt><dd><p>Number of half-waves along the plate length and width, respectively.</p>
+</dd>
+<dt><strong>D11, D12, D22, D66</strong><span class="classifier">float</span></dt><dd><p>Terms of the D matrix, dimension force times length.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>Nxx_crit</strong><span class="classifier">float</span></dt><dd><p>Critical uniaxial compression buckling load, force per unit length.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>NotImplementedError</dt><dd><p>If both <span class="math notranslate nohighlight">\(m\)</span> and <span class="math notranslate nohighlight">\(n\)</span> are <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The output of this function is the result of Eq. 6.6, section 6.2 page
+129 of <a class="reference internal" href="#r7886123e0d2c-1" id="id2">[1]</a>, with <span class="math notranslate nohighlight">\(AR = a/b\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[N_{xx,crit} = \frac{\pi^2}{a^2 m^2} \left( D_{11} m^4 + 2 (D_{12} +
+2 D_{66}) m^2 n^2 AR^2 + D_{22} n^4 AR^4 \right)\]</div>
+<p>i.e. the buckling load of a rectangular plate with the buckling mode
+<span class="math notranslate nohighlight">\(\sin(m \pi x/a) \sin(n \pi y/b)\)</span>, exact for a specially orthotropic
+plate, <span class="math notranslate nohighlight">\(D_{16} = D_{26} = 0\)</span>, simply supported on its four edges.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="r7886123e0d2c-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
+<p>Kassapoglou, C., Design and Analysis of Composite Structures,
+Second Edition, John Wiley &amp; Sons, 2013.</p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="composites.kassapoglou.calc_Nxx_crit_combined_shear">
+<span class="sig-prename descclassname"><span class="pre">composites.kassapoglou.</span></span><span class="sig-name descname"><span class="pre">calc_Nxx_crit_combined_shear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D11</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D22</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D66</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.kassapoglou.calc_Nxx_crit_combined_shear" title="Link to this definition">#</a></dt>
+<dd><p>Calculate combined uniaxial-shear buckling load for a composite plate</p>
+<p>This function calculates the critical <span class="math notranslate nohighlight">\(N_{xx}\)</span> buckling load under the
+current level of shear load given by <span class="math notranslate nohighlight">\(N_{xy} = k N_{xx}\)</span>. <span class="math notranslate nohighlight">\(D16\)</span> and <span class="math notranslate nohighlight">\(D26\)</span>
+are neglected.</p>
+<p>The equation gives two roots, and the smaller of their absolute values
+is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>k</strong><span class="classifier">float</span></dt><dd><p>Load ratio defined as <span class="math notranslate nohighlight">\(k=N_{xy}/N_{xx}\)</span>, where <span class="math notranslate nohighlight">\(N_{xy}\)</span> is the current
+shear load, and <span class="math notranslate nohighlight">\(N_{xx}\)</span> the current compression load, both with the
+sign of Eq. 6.32 of Kassapoglou, positive in tension. Only <span class="math notranslate nohighlight">\(k^2\)</span>
+enters, such that the sign of <span class="math notranslate nohighlight">\(k\)</span> does not change the result.
+Dimensionless.</p>
+</dd>
+<dt><strong>a, b</strong><span class="classifier">float</span></dt><dd><p>Plate length and width, dimension length.</p>
+</dd>
+<dt><strong>D11, D12, D22, D66</strong><span class="classifier">float</span></dt><dd><p>Terms of the D matrix, dimension force times length.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>N0</strong><span class="classifier">float</span></dt><dd><p>Critical <span class="math notranslate nohighlight">\(N_{xx}\)</span> buckling load under the current level of shear load
+given by <span class="math notranslate nohighlight">\(N_{xy} = k N_{xx}\)</span>, force per unit length, non-negative.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#composites.kassapoglou.calc_Nxx_crit_combined_shear_full" title="composites.kassapoglou.calc_Nxx_crit_combined_shear_full"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_Nxx_crit_combined_shear_full</span></code></a></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>The output of this function is the result of Eq. 6.34, section 6.5 page
+142 of <a class="reference internal" href="#rbff6c273be99-1" id="id4">[1]</a>:</p>
+<div class="math notranslate nohighlight">
+\[N_{xx,crit} = \frac{\pi^2}{a^2} \frac{D_{11} + 2 (D_{12} + 2 D_{66})
+a^2/b^2 + D_{22} a^4/b^4}{2 - \frac{8192}{81} \frac{a^2 k^2}{b^2
+\pi^4}} \left( 5 \pm \sqrt{9 + \frac{65536}{81} \frac{a^2
+k^2}{b^2 \pi^4}} \right)\]</div>
+<p>It is the solution of <a class="reference internal" href="#composites.kassapoglou.calc_Nxx_crit_combined_shear_full" title="composites.kassapoglou.calc_Nxx_crit_combined_shear_full"><code class="xref py py-func docutils literal notranslate"><span class="pre">calc_Nxx_crit_combined_shear_full()</span></code></a> with
+<span class="math notranslate nohighlight">\(D_{16} = D_{26} = 0\)</span> and <span class="math notranslate nohighlight">\(N_{xy} = k N_{xx} = -k N_o\)</span>, <span class="math notranslate nohighlight">\(N_o\)</span> being the
+returned load, and with <span class="math notranslate nohighlight">\(k = 0\)</span> it is the load of <a class="reference internal" href="#composites.kassapoglou.calc_Nxx_crit" title="composites.kassapoglou.calc_Nxx_crit"><code class="xref py py-func docutils literal notranslate"><span class="pre">calc_Nxx_crit()</span></code></a>
+with <span class="math notranslate nohighlight">\(m = n = 1\)</span>.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="rbff6c273be99-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">1</a><span class="fn-bracket">]</span></span>
+<p>Kassapoglou, C., Design and Analysis of Composite Structures,
+Second Edition, John Wiley &amp; Sons, 2013.</p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="composites.kassapoglou.calc_Nxx_crit_combined_shear_full">
+<span class="sig-prename descclassname"><span class="pre">composites.kassapoglou.</span></span><span class="sig-name descname"><span class="pre">calc_Nxx_crit_combined_shear_full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Nxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D11</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D22</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D26</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D66</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.kassapoglou.calc_Nxx_crit_combined_shear_full" title="Link to this definition">#</a></dt>
+<dd><p>Calculate combined uniaxial-shear buckling load for a composite plate</p>
+<p>This solution does not ignore the D16 and D26 terms. Furthermore, this
+solution takes as input <span class="math notranslate nohighlight">\(N_{xy}\)</span> instead of the <span class="math notranslate nohighlight">\(k=N_{xy}/N_{xx}\)</span>
+originally used by Kassapoglou.</p>
+<p>This function calculates the critical <span class="math notranslate nohighlight">\(N_{xx}\)</span> by <span class="math notranslate nohighlight">\(N_{xy}\)</span>.</p>
+<p>The equation gives two roots, and the smaller of their absolute values
+is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Nxy</strong><span class="classifier">float</span></dt><dd><p>Shear load <span class="math notranslate nohighlight">\(N_{xy}\)</span>, force per unit length, positive in tension, i.e.
+with the sign of the <span class="math notranslate nohighlight">\(N_{xy}\)</span> of the energy of Eq. 6.32 of
+Kassapoglou, see Notes. Its sign matters only when <span class="math notranslate nohighlight">\(D_{16}\)</span> or
+<span class="math notranslate nohighlight">\(D_{26}\)</span> is not zero.</p>
+</dd>
+<dt><strong>a, b</strong><span class="classifier">float</span></dt><dd><p>Plate length and width, dimension length.</p>
+</dd>
+<dt><strong>D11, D12, D16, D22, D26, D66</strong><span class="classifier">float</span></dt><dd><p>All terms of the D matrix, dimension force times length.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>Nxx_crit</strong><span class="classifier">float</span></dt><dd><p>Critical compression load <span class="math notranslate nohighlight">\(N_o = -N_x\)</span> under the shear load given by
+<code class="docutils literal notranslate"><span class="pre">Nxy</span></code>, positive in compression, force per unit length,
+non-negative.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#composites.kassapoglou.calc_Nxx_crit_combined_shear" title="composites.kassapoglou.calc_Nxx_crit_combined_shear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_Nxx_crit_combined_shear</span></code></a></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>Based on section 6.5 of <a class="reference internal" href="#r01d9dca15070-1" id="id6">[1]</a>, pp. 138-142, for a plate simply supported
+on its four edges (Fig. 6.12). The Rayleigh-Ritz method used therein is
+applied with the two terms of Eq. 6.31, <span class="math notranslate nohighlight">\(w = w_1 \sin(\pi x/a) \sin(\pi
+y/b) + w_2 \sin(2 \pi x/a) \sin(2 \pi y/b)\)</span>, to the energy of Eq. 6.32
+(p. 140), here including <span class="math notranslate nohighlight">\(D_{16}\)</span> and <span class="math notranslate nohighlight">\(D_{26}\)</span>, with the resultants
+<span class="math notranslate nohighlight">\(N_x\)</span> and <span class="math notranslate nohighlight">\(N_{xy}\)</span> positive in tension:</p>
+<div class="math notranslate nohighlight">
+\[\Pi = \int_0^a \int_0^b \left[ \frac{1}{2} \left( D_{11} w_{,xx}^2
++ 2 D_{12} w_{,xx} w_{,yy} + D_{22} w_{,yy}^2 + 4 D_{66} w_{,xy}^2 + 4
+D_{16} w_{,xx} w_{,xy} + 4 D_{26} w_{,yy} w_{,xy} \right) +
+\frac{1}{2} N_x w_{,x}^2 + N_{xy} w_{,x} w_{,y} \right] dx dy\]</div>
+<p>As in Eq. 6.32a (p. 141), the compression load is <span class="math notranslate nohighlight">\(N_o = -N_x\)</span>, positive
+in compression, and the shear load enters as <span class="math notranslate nohighlight">\(k N_o\)</span>, with <span class="math notranslate nohighlight">\(k =
+N_{xy}/N_x\)</span>, such that <span class="math notranslate nohighlight">\(k N_o = -N_{xy}\)</span>. The argument <code class="docutils literal notranslate"><span class="pre">Nxy</span></code> of this
+function is the <span class="math notranslate nohighlight">\(N_{xy}\)</span> of Eq. 6.32, and the returned load is <span class="math notranslate nohighlight">\(N_o\)</span>.
+The stationarity of <span class="math notranslate nohighlight">\(\Pi\)</span> with respect to <span class="math notranslate nohighlight">\(w_1\)</span> and <span class="math notranslate nohighlight">\(w_2\)</span> gives <span class="math notranslate nohighlight">\(([a] -
+[b]) \{w_1, w_2\} = 0\)</span>, with</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}a_{11} = \frac{\pi^4 D_{11} b}{4 a^3} + \frac{\pi^4 D_{12}}{2 a b}
++ \frac{\pi^4 D_{22} a}{4 b^3} + \frac{\pi^4 D_{66}}{a b}, \quad
+a_{12} = a_{21} = -\frac{160 \pi^2 D_{16}}{9 a^2} - \frac{160
+\pi^2 D_{26}}{9 b^2} \\
+a_{22} = \frac{4 \pi^4 D_{11} b}{a^3} + \frac{8 \pi^4 D_{12}}{a b}
++ \frac{4 \pi^4 D_{22} a}{b^3} + \frac{16 \pi^4 D_{66}}{a b} \\
+b_{11} = \frac{\pi^2 N_o b}{4 a}, \quad
+b_{22} = \frac{\pi^2 N_o b}{a}, \quad
+b_{12} = b_{21} = -\frac{32 k N_o}{9} = \frac{32 N_{xy}}{9}\end{split}\]</div>
+<p>which, with <span class="math notranslate nohighlight">\(D_{16} = D_{26} = 0\)</span>, is the generalized eigenvalue problem
+of Eqs. 6.33 (p. 141). <span class="math notranslate nohighlight">\(\det([a] - [b]) = 0\)</span> is a quadratic equation in
+<span class="math notranslate nohighlight">\(N_o\)</span>, whose roots are</p>
+<div class="math notranslate nohighlight">
+\[N_o = \frac{a \left( 36 a_{11} + 9 a_{22} \mp \sqrt{t}
+\right)}{18 \pi^2 b}, \quad
+t = 16384 N_{xy}^2 - 4608 N_{xy} (a_{12} + a_{21}) + 1296 a_{11}^2
+- 648 a_{11} a_{22} + 1296 a_{12} a_{21} + 81 a_{22}^2\]</div>
+<p>With <span class="math notranslate nohighlight">\(D_{16} = D_{26} = 0\)</span>, <span class="math notranslate nohighlight">\(a_{12} = a_{21} = 0\)</span> and only <span class="math notranslate nohighlight">\(N_{xy}^2 =
+(k N_o)^2\)</span> enters, as in Eq. 6.34 (p. 142); otherwise the sign of the
+shear load changes the result.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="r01d9dca15070-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">1</a><span class="fn-bracket">]</span></span>
+<p>Kassapoglou, C., Design and Analysis of Composite Structures,
+Second Edition, John Wiley &amp; Sons, 2013.</p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="composites.kassapoglou.calc_Nxy_crit">
+<span class="sig-prename descclassname"><span class="pre">composites.kassapoglou.</span></span><span class="sig-name descname"><span class="pre">calc_Nxy_crit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D11</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D22</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D66</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.kassapoglou.calc_Nxy_crit" title="Link to this definition">#</a></dt>
+<dd><p>Calculate shear buckling for a composite plate</p>
+<p>Variables <span class="math notranslate nohighlight">\(AR\)</span> and <span class="math notranslate nohighlight">\(\alpha\)</span> of the buckling pattern are solved using a
+Newton-Raphson scheme. The iterations start from <span class="math notranslate nohighlight">\(\alpha = \pi/6\)</span> and
+stop when the residual is close to zero according to
+<code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.isclose()</span></code>. <span class="math notranslate nohighlight">\(D16\)</span> is not used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>a</strong><span class="classifier">float</span></dt><dd><p>Width of the long plate, i.e. its short dimension, along <span class="math notranslate nohighlight">\(x\)</span>,
+dimension length.</p>
+</dd>
+<dt><strong>D11, D12, D16, D22, D66</strong><span class="classifier">float</span></dt><dd><p>Terms of the D matrix, dimension force times length.</p>
+</dd>
+<dt><strong>rtol, atol</strong><span class="classifier">float, optional</span></dt><dd><p>Relative and absolute tolerances intended for the residual of the
+Newton-Raphson scheme. Default <code class="docutils literal notranslate"><span class="pre">1e-5</span></code> and <code class="docutils literal notranslate"><span class="pre">1e-6</span></code>. They are not
+used: the convergence check uses the fixed values <code class="docutils literal notranslate"><span class="pre">atol=1e-6</span></code> and
+<code class="docutils literal notranslate"><span class="pre">rtol=1e-5</span></code>.</p>
+</dd>
+<dt><strong>max_iter</strong><span class="classifier">int, optional</span></dt><dd><p>Maximum number of iterations used in the Newton-Raphson scheme.
+Default <code class="docutils literal notranslate"><span class="pre">50</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>Nxy_crit</strong><span class="classifier">float</span></dt><dd><p>Critical shear buckling load, force per unit length.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>RuntimeError</dt><dd><p>If the Newton-Raphson scheme does not converge within <span class="math notranslate nohighlight">\(max_iter\)</span>
+iterations.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The output of this function is the result of Eq. 6.28, section 6.4 page
+137 of <a class="reference internal" href="#rf263e77d1a48-1" id="id8">[1]</a>, for a long rectangular plate of width <span class="math notranslate nohighlight">\(a\)</span>, simply supported
+on its long edges <span class="math notranslate nohighlight">\(x = 0\)</span> and <span class="math notranslate nohighlight">\(x = a\)</span>, made of a symmetric laminate with
+<span class="math notranslate nohighlight">\(D_{16} = D_{26} = 0\)</span>, under the shear load <span class="math notranslate nohighlight">\(N_{xy}\)</span> (pp. 136-137). The
+buckling mode, Eq. 6.20,</p>
+<div class="math notranslate nohighlight">
+\[w = w_o \sin\frac{\pi x}{a} \sin\frac{\pi (y - x \tan\alpha)}{L}\]</div>
+<p>is zero along the long edges and along lines inclined by the angle
+<span class="math notranslate nohighlight">\(\alpha\)</span> to the <span class="math notranslate nohighlight">\(x\)</span> axis, separated by the distance <span class="math notranslate nohighlight">\(L\)</span> along the long
+direction <span class="math notranslate nohighlight">\(y\)</span> (Fig. 6.10), such that the length of the plate does not
+enter, and <span class="math notranslate nohighlight">\(AR = a/L\)</span> (p. 137). Eq. 6.28 follows from the minimum of the
+total potential energy with respect to <span class="math notranslate nohighlight">\(w_o\)</span>, Eqs. 6.21-6.27, and the
+critical <span class="math notranslate nohighlight">\(AR\)</span> and <span class="math notranslate nohighlight">\(\alpha\)</span> minimize it, Eqs. 6.29 and 6.30 (p. 138).
+Variables <span class="math notranslate nohighlight">\(AR\)</span> and <span class="math notranslate nohighlight">\(\alpha\)</span> are solved using a Newton-Raphson scheme
+that finds the solution of Eqs. 6.29 and 6.30 simultaneously:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}AR = \left( \frac{D_{11}}{D_{11} \tan^4\alpha + 2 (D_{12} + 2
+D_{66}) \tan^2\alpha + D_{22}} \right)^{1/4} \\
+r(\alpha) = 3 D_{11} AR^4 \tan^4\alpha + (6 D_{11} AR^2 + 2 (D_{12}
++ 2 D_{66}) AR^4) \tan^2\alpha - (D_{11} + 2 (D_{12} + 2 D_{66})
+AR^2 + D_{22} AR^4) = 0 \\
+N_{xy,crit} = \frac{\pi^2}{2 AR^2 a^2 \tan\alpha} \left( D_{11} (1
++ 6 \tan^2\alpha AR^2 + \tan^4\alpha AR^4) + 2 (D_{12} + 2 D_{66})
+(AR^2 + AR^4 \tan^2\alpha) + D_{22} AR^4 \right)\end{split}\]</div>
+<p>The tolerances <code class="docutils literal notranslate"><span class="pre">rtol</span></code> and <code class="docutils literal notranslate"><span class="pre">atol</span></code> are intended for the residual <span class="math notranslate nohighlight">\(r\)</span>
+of Eq. 6.30. At each iteration <span class="math notranslate nohighlight">\(AR\)</span> is updated with Eq. 6.29 and
+<span class="math notranslate nohighlight">\(\alpha\)</span> is corrected by <span class="math notranslate nohighlight">\(-r/(\partial r/\partial \alpha)\)</span>, the
+derivative being taken at constant <span class="math notranslate nohighlight">\(AR\)</span>.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="rf263e77d1a48-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id8">1</a><span class="fn-bracket">]</span></span>
+<p>Kassapoglou, C., Design and Analysis of Composite Structures,
+Second Edition, John Wiley &amp; Sons, 2013.</p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="composites.kassapoglou.calc_beff">
+<span class="sig-prename descclassname"><span class="pre">composites.kassapoglou.</span></span><span class="sig-name descname"><span class="pre">calc_beff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Px</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Pcr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A11</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A22</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.kassapoglou.calc_beff" title="Link to this definition">#</a></dt>
+<dd><p>Calculate the effective width of a plate</p>
+<p>The effective width <span class="math notranslate nohighlight">\(b_{eff}\)</span> is defined as:</p>
+<p><span class="math notranslate nohighlight">\(\int_y N_{xx} dy = 2{N_x}_{max} b_{eff}\)</span></p>
+<p><span class="math notranslate nohighlight">\(Px\)</span> and <span class="math notranslate nohighlight">\(Pcr\)</span> enter only through the ratio <code class="docutils literal notranslate"><span class="pre">Pcr/Px</span></code>, and the terms
+of the A matrix only through ratios between them, such that the result
+has the dimension of <span class="math notranslate nohighlight">\(b\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>b</strong><span class="classifier">float</span></dt><dd><p>Plate width, dimension length.</p>
+</dd>
+<dt><strong>Px</strong><span class="classifier">float</span></dt><dd><p>Applied compressive force, of the same dimension as <span class="math notranslate nohighlight">\(Pcr\)</span>.</p>
+</dd>
+<dt><strong>Pcr</strong><span class="classifier">float</span></dt><dd><p>Critical buckling force, of the same dimension as <span class="math notranslate nohighlight">\(Px\)</span>.</p>
+</dd>
+<dt><strong>A11, A12, A22</strong><span class="classifier">float</span></dt><dd><p>Terms of the A matrix, dimension force per unit length.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>beff</strong><span class="classifier">float</span></dt><dd><p>Effective width of the plate, dimension length.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The output of this function is the result of Eq. 7.15, section 7.1 page
+164 of <a class="reference internal" href="#r215c73b7504d-1" id="id10">[1]</a>:</p>
+<div class="math notranslate nohighlight">
+\[b_{eff} = \frac{b}{2 \left( 1 + 2 \left( 1 + \frac{A_{12}}{A_{11}}
+\right) \left( 1 - \frac{P_{cr}}{P_x} \right) \frac{A_{11}}{A_{11}
++ 3 A_{22}} \right)}\]</div>
+<p>At <span class="math notranslate nohighlight">\(P_x = P_{cr}\)</span>, <span class="math notranslate nohighlight">\(b_{eff} = b/2\)</span>, i.e. the whole width is effective;
+the expression is meant for the post-buckling regime, <span class="math notranslate nohighlight">\(P_x \ge P_{cr}\)</span>.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="r215c73b7504d-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id10">1</a><span class="fn-bracket">]</span></span>
+<p>Kassapoglou, C., Design and Analysis of Composite Structures,
+Second Edition, John Wiley &amp; Sons, 2013.</p>
+</div>
+</div>
+</dd></dl>
+
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="api_json_io.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Saving and loading in JSON (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.json_io</span></code>)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="install.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Installing composites</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Kassapoglou’s methods (<code class="xref py py-mod docutils literal notranslate"><span class="pre">composites.kassapoglou</span></code>)</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notes">Notes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.kassapoglou.calc_Nxx_crit"><code class="docutils literal notranslate"><span class="pre">calc_Nxx_crit()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.kassapoglou.calc_Nxx_crit_combined_shear"><code class="docutils literal notranslate"><span class="pre">calc_Nxx_crit_combined_shear()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.kassapoglou.calc_Nxx_crit_combined_shear_full"><code class="docutils literal notranslate"><span class="pre">calc_Nxx_crit_combined_shear_full()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.kassapoglou.calc_Nxy_crit"><code class="docutils literal notranslate"><span class="pre">calc_Nxy_crit()</span></code></a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#composites.kassapoglou.calc_beff"><code class="docutils literal notranslate"><span class="pre">calc_beff()</span></code></a></li>
+</ul>
+
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="_sources/api_kassapoglou.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2012-2026, Saullo G. P. Castro.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
