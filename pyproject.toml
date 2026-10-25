@@ -11,7 +11,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "composites"
-version = "0.10.0"
+version = "0.10.1"
 description = "Methods for analysis and design of composites"
 readme = "README.md"
 license = "BSD-3-Clause"
