@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Tutorial: Lightweight optimisation using a gradient-based smeared approach &#8212; composites 0.10.0 documentation</title>
+    <title>Tutorial: Lightweight optimisation using a gradient-based smeared approach &#8212; composites 0.10.1 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=82662543"></script>
+    <script src="_static/documentation_options.js?v=261ea15a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -121,7 +121,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.0 documentation</p>
+    <p class="title logo__title">composites 0.10.1 documentation</p>
   
 </a></div>
     
@@ -747,9 +747,9 @@ def calc_buckling_analytical(prop):
     D66 = prop.D[5, 5]
 
     lambda_b_min = 1e30
-    dlambda_b_dh0 = None
-    dlambda_b_dh45 = None
-    dlambda_b_dh90 = None
+    lambda_b_h0 = None
+    lambda_b_h45 = None
+    lambda_b_h90 = None
 
     for m in range(1, 21):
         for n in range(1, 21):
@@ -762,35 +762,35 @@ def calc_buckling_analytical(prop):
             lambda_b_min = lambdas[argmin]
 
             den = (m/a**2)*Nxx + (n/b)**2*Nyy
-            dlambda_b_dD11 = pi**2*(m/a)**4/den
-            dlambda_b_dD12 = 2*pi**2*(m/a)**2*(n/b)**2/den
-            dlambda_b_dD22 = pi**2*(n/b)**4/den
-            dlambda_b_dD66 = 4*pi**2*(m/a)**2*(n/b)**2/den
+            lambda_b_D11 = pi**2*(m/a)**4/den
+            lambda_b_D12 = 2*pi**2*(m/a)**2*(n/b)**2/den
+            lambda_b_D22 = pi**2*(n/b)**4/den
+            lambda_b_D66 = 4*pi**2*(m/a)**2*(n/b)**2/den
 
-            dD_dh0 = prop.h/6*prop.A + prop.h**2/12*prop.Q0
-            dD_dh45 = prop.h/6*prop.A + prop.h**2/12*(prop.Q45_sum/2) # NOTE using average Q45
-            dD_dh90 = prop.h/6*prop.A + prop.h**2/12*prop.Q90
+            D_h0 = prop.h/6*prop.A + prop.h**2/12*prop.Q0
+            D_h45 = prop.h/6*prop.A + prop.h**2/12*(prop.Q45_sum/2) # NOTE using average Q45
+            D_h90 = prop.h/6*prop.A + prop.h**2/12*prop.Q90
 
-            dlambda_b_dh0_new = (dlambda_b_dD11*dD_dh0[0, 0]
-                                 + dlambda_b_dD12*dD_dh0[0, 1]
-                                 + dlambda_b_dD22*dD_dh0[1, 1]
-                                 + dlambda_b_dD66*dD_dh0[5, 5])
-            dlambda_b_dh45_new = (dlambda_b_dD11*dD_dh45[0, 0]
-                                 + dlambda_b_dD12*dD_dh45[0, 1]
-                                 + dlambda_b_dD22*dD_dh45[1, 1]
-                                 + dlambda_b_dD66*dD_dh45[5, 5])
-            dlambda_b_dh90_new = (dlambda_b_dD11*dD_dh90[0, 0]
-                                 + dlambda_b_dD12*dD_dh90[0, 1]
-                                 + dlambda_b_dD22*dD_dh90[1, 1]
-                                 + dlambda_b_dD66*dD_dh90[5, 5])
+            lambda_b_h0_new = (lambda_b_D11*D_h0[0, 0]
+                                 + lambda_b_D12*D_h0[0, 1]
+                                 + lambda_b_D22*D_h0[1, 1]
+                                 + lambda_b_D66*D_h0[5, 5])
+            lambda_b_h45_new = (lambda_b_D11*D_h45[0, 0]
+                                 + lambda_b_D12*D_h45[0, 1]
+                                 + lambda_b_D22*D_h45[1, 1]
+                                 + lambda_b_D66*D_h45[5, 5])
+            lambda_b_h90_new = (lambda_b_D11*D_h90[0, 0]
+                                 + lambda_b_D12*D_h90[0, 1]
+                                 + lambda_b_D22*D_h90[1, 1]
+                                 + lambda_b_D66*D_h90[5, 5])
 
-            dlambda_b_dh0 = [dlambda_b_dh0, dlambda_b_dh0_new][argmin]
-            dlambda_b_dh45 = [dlambda_b_dh45, dlambda_b_dh45_new][argmin]
-            dlambda_b_dh90 = [dlambda_b_dh90, dlambda_b_dh90_new][argmin]
+            lambda_b_h0 = [lambda_b_h0, lambda_b_h0_new][argmin]
+            lambda_b_h45 = [lambda_b_h45, lambda_b_h45_new][argmin]
+            lambda_b_h90 = [lambda_b_h90, lambda_b_h90_new][argmin]
 
-    dlambda_b_dhtheta = [dlambda_b_dh0, dlambda_b_dh45, dlambda_b_dh90]
+    lambda_b_htheta = [lambda_b_h0, lambda_b_h45, lambda_b_h90]
 
-    return dlambda_b_dhtheta
+    return lambda_b_htheta
 </pre></div>
 </div>
 </div>
@@ -861,8 +861,8 @@ lambda_cb_ref_analytical 12181.43642260919
 
 def calc_constr_buckling_jac(x):
     prop = SmearedProp(*x)
-    dlambda_b_dh = calc_buckling_analytical_jac(prop)
-    return np.asarray(dlambda_b_dh)/target_lambda
+    lambda_b_h = calc_buckling_analytical_jac(prop)
+    return np.asarray(lambda_b_h)/target_lambda
 
 test = np.asarray(2*[2, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
 h0 = np.sum(test==0)*ply_thickness

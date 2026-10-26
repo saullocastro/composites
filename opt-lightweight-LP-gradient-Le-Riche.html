@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Tutorial: Lightweight optimisation using a gradient-based lamination parameter approach &#8212; composites 0.10.0 documentation</title>
+    <title>Tutorial: Lightweight optimisation using a gradient-based lamination parameter approach &#8212; composites 0.10.1 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=82662543"></script>
+    <script src="_static/documentation_options.js?v=261ea15a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -121,7 +121,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.0 documentation</p>
+    <p class="title logo__title">composites 0.10.1 documentation</p>
   
 </a></div>
     
@@ -757,9 +757,9 @@ def calc_buckling_analytical(prop):
     D66 = prop.D66
 
     lambda_b_min = 1e30
-    dlambda_b_dh = None
-    dlambda_b_dxiD1 = None
-    dlambda_b_dxiD3 = None
+    lambda_b_h = None
+    lambda_b_xiD1 = None
+    lambda_b_xiD3 = None
 
     for m in range(1, 21):
         for n in range(1, 21):
@@ -772,61 +772,61 @@ def calc_buckling_analytical(prop):
             lambda_b_min = lambdas[argmin]
 
             den = (m/a**2)*Nxx + (n/b)**2*Nyy
-            dlambda_b_dD11 = pi**2*(m/a)**4/den
-            dlambda_b_dD12 = 2*pi**2*(m/a)**2*(n/b)**2/den
-            dlambda_b_dD22 = pi**2*(n/b)**4/den
-            dlambda_b_dD66 = 4*pi**2*(m/a)**2*(n/b)**2/den
+            lambda_b_D11 = pi**2*(m/a)**4/den
+            lambda_b_D12 = 2*pi**2*(m/a)**2*(n/b)**2/den
+            lambda_b_D22 = pi**2*(n/b)**4/den
+            lambda_b_D66 = 4*pi**2*(m/a)**2*(n/b)**2/den
 
             # Derivatives of D11
-            dD11_dh = 3 * prop.h**2 / 12 * (prop.U1 + prop.xiD1 * prop.U2 + prop.xiD3 * prop.U3)
-            dD11_dxiD1 = prop.h**3 / 12 * prop.U2
-            #dD11_dxiD2 = 0
-            dD11_dxiD3 = prop.h**3 / 12 * prop.U3
-            #dD11_dxiD4 = 0
+            D11_h = 3 * prop.h**2 / 12 * (prop.U1 + prop.xiD1 * prop.U2 + prop.xiD3 * prop.U3)
+            D11_xiD1 = prop.h**3 / 12 * prop.U2
+            #D11_xiD2 = 0
+            D11_xiD3 = prop.h**3 / 12 * prop.U3
+            #D11_xiD4 = 0
 
             # Derivatives of D22
-            dD22_dh = 3 * prop.h**2 / 12 * (prop.U1 - prop.xiD1 * prop.U2 + prop.xiD3 * prop.U3)
-            dD22_dxiD1 = -prop.h**3 / 12 * prop.U2
-            #dD22_dxiD2 = 0
-            dD22_dxiD3 = prop.h**3 / 12 * prop.U3
-            #dD22_dxiD4 = 0
+            D22_h = 3 * prop.h**2 / 12 * (prop.U1 - prop.xiD1 * prop.U2 + prop.xiD3 * prop.U3)
+            D22_xiD1 = -prop.h**3 / 12 * prop.U2
+            #D22_xiD2 = 0
+            D22_xiD3 = prop.h**3 / 12 * prop.U3
+            #D22_xiD4 = 0
 
             # Derivatives of D12
-            dD12_dh = 0
-            dD12_dxiD1 = 0
-            #dD12_dxiD2 = 0
-            dD12_dxiD3 = -prop.h**3 / 12 * prop.U3
-            #dD12_dxiD4 = 0
+            D12_h = 0
+            D12_xiD1 = 0
+            #D12_xiD2 = 0
+            D12_xiD3 = -prop.h**3 / 12 * prop.U3
+            #D12_xiD4 = 0
 
             # Derivatives of D66
-            dD66_dh = 0
-            dD66_dxiD1 = 0
-            dD66_dxiD2 = 0
-            dD66_dxiD3 = -prop.h**3 / 12 * prop.U3
-            dD66_dxiD4 = 0
+            D66_h = 0
+            D66_xiD1 = 0
+            D66_xiD2 = 0
+            D66_xiD3 = -prop.h**3 / 12 * prop.U3
+            D66_xiD4 = 0
 
-            dlambda_b_dh_new = (dlambda_b_dD11 * dD11_dh
-                                + dlambda_b_dD12 * dD12_dh
-                                + dlambda_b_dD22 * dD22_dh
-                                + dlambda_b_dD66 * dD66_dh)
+            lambda_b_h_new = (lambda_b_D11 * D11_h
+                                + lambda_b_D12 * D12_h
+                                + lambda_b_D22 * D22_h
+                                + lambda_b_D66 * D66_h)
 
-            dlambda_b_dxiD1_new = (dlambda_b_dD11 * dD11_dxiD1
-                                    + dlambda_b_dD22 * dD22_dxiD1
-                                    + dlambda_b_dD12 * dD12_dxiD1
-                                    + dlambda_b_dD66 * dD66_dxiD1)
+            lambda_b_xiD1_new = (lambda_b_D11 * D11_xiD1
+                                    + lambda_b_D22 * D22_xiD1
+                                    + lambda_b_D12 * D12_xiD1
+                                    + lambda_b_D66 * D66_xiD1)
 
-            dlambda_b_dxiD3_new = (dlambda_b_dD11 * dD11_dxiD3
-                                    + dlambda_b_dD22 * dD22_dxiD3
-                                    + dlambda_b_dD12 * dD12_dxiD3
-                                    + dlambda_b_dD66 * dD66_dxiD3)
+            lambda_b_xiD3_new = (lambda_b_D11 * D11_xiD3
+                                    + lambda_b_D22 * D22_xiD3
+                                    + lambda_b_D12 * D12_xiD3
+                                    + lambda_b_D66 * D66_xiD3)
 
-            dlambda_b_dh = [dlambda_b_dh, dlambda_b_dh_new][argmin]
-            dlambda_b_dxiD1 = [dlambda_b_dxiD1, dlambda_b_dxiD1_new][argmin]
-            dlambda_b_dxiD3 = [dlambda_b_dxiD3, dlambda_b_dxiD3_new][argmin]
+            lambda_b_h = [lambda_b_h, lambda_b_h_new][argmin]
+            lambda_b_xiD1 = [lambda_b_xiD1, lambda_b_xiD1_new][argmin]
+            lambda_b_xiD3 = [lambda_b_xiD3, lambda_b_xiD3_new][argmin]
 
-    dlambda_b_dx = [dlambda_b_dh, dlambda_b_dxiD1, dlambda_b_dxiD3]
+    lambda_b_x = [lambda_b_h, lambda_b_xiD1, lambda_b_xiD3]
 
-    return dlambda_b_dx
+    return lambda_b_x
 </pre></div>
 </div>
 </div>
@@ -899,8 +899,8 @@ lambda_cb_ref_analytical 14167.52318389982
 
 def calc_constr_buckling_jac(x):
     prop = LaminationParameterProp(*x)
-    dlambda_b_dx = calc_buckling_analytical_jac(prop)
-    return np.asarray(dlambda_b_dx)/target_lambda
+    lambda_b_x = calc_buckling_analytical_jac(prop)
+    return np.asarray(lambda_b_x)/target_lambda
 </pre></div>
 </div>
 </div>

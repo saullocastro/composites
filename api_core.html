@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Composites Core Module (composites.core) &#8212; composites 0.10.0 documentation</title>
+    <title>Composites Core Module (composites.core) &#8212; composites 0.10.1 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=82662543"></script>
+    <script src="_static/documentation_options.js?v=261ea15a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -120,7 +120,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.0 documentation</p>
+    <p class="title logo__title">composites 0.10.1 documentation</p>
   
 </a></div>
     
@@ -1061,13 +1061,13 @@ sixth power</p>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_aposteriori_energy" title="composites.core.Laminate.calc_aposteriori_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_aposteriori_energy</span></code></a>(grad_x, grad_y)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_aposteriori_energy" title="composites.core.Laminate.calc_aposteriori_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_aposteriori_energy</span></code></a>([eps_x, eps_y, ...])</p></td>
 <td><p>Transverse shear strain energy of the recovered stresses</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_constitutive_matrix" title="composites.core.Laminate.calc_constitutive_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_constitutive_matrix</span></code></a>()</p></td>
 <td><p>Calculate the laminate constitutive terms</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_equilibrium_transverse_shear" title="composites.core.Laminate.calc_equilibrium_transverse_shear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_equilibrium_transverse_shear</span></code></a>(grad_x, grad_y)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_equilibrium_transverse_shear" title="composites.core.Laminate.calc_equilibrium_transverse_shear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_equilibrium_transverse_shear</span></code></a>([eps_x, ...])</p></td>
 <td><p>Transverse shear stresses recovered from the actual strain gradients</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#composites.core.Laminate.calc_equivalent_properties" title="composites.core.Laminate.calc_equivalent_properties"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_equivalent_properties</span></code></a>()</p></td>
@@ -1383,7 +1383,7 @@ at each access, such that changing it does not change the attributes.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Laminate.calc_aposteriori_energy">
-<span class="sig-name descname"><span class="pre">calc_aposteriori_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grad_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_aposteriori_energy" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">calc_aposteriori_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eps_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_aposteriori_energy" title="Link to this definition">#</a></dt>
 <dd><p>Transverse shear strain energy of the recovered stresses</p>
 <p>With the stresses of <a class="reference internal" href="#composites.core.Laminate.calc_equilibrium_transverse_shear" title="composites.core.Laminate.calc_equilibrium_transverse_shear"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_equilibrium_transverse_shear()</span></code></a> at
 the three Gauss-Legendre points of each ply, computes at each point
@@ -1394,7 +1394,10 @@ Gauss-Legendre points per ply.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>grad_x, grad_y</strong><span class="classifier">array-like</span></dt><dd><p>See <a class="reference internal" href="#composites.core.Laminate.calc_equilibrium_transverse_shear" title="composites.core.Laminate.calc_equilibrium_transverse_shear"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_equilibrium_transverse_shear()</span></code></a>.</p>
+<dt><strong>eps_x, eps_y</strong><span class="classifier">array-like</span></dt><dd><p>See <a class="reference internal" href="#composites.core.Laminate.calc_equilibrium_transverse_shear" title="composites.core.Laminate.calc_equilibrium_transverse_shear"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_equilibrium_transverse_shear()</span></code></a>.</p>
+</dd>
+<dt><strong>grad_x, grad_y</strong><span class="classifier">array-like, optional</span></dt><dd><p>Deprecated, use <code class="docutils literal notranslate"><span class="pre">eps_x</span></code> and <code class="docutils literal notranslate"><span class="pre">eps_y</span></code> instead, see
+<a class="reference internal" href="#composites.core.Laminate.calc_equilibrium_transverse_shear" title="composites.core.Laminate.calc_equilibrium_transverse_shear"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_equilibrium_transverse_shear()</span></code></a>.</p>
 </dd>
 </dl>
 </dd>
@@ -1411,6 +1414,9 @@ for <code class="docutils literal notranslate"><span class="pre">U13</span></cod
 <dd class="field-odd"><dl class="simple">
 <dt>ValueError</dt><dd><p>If a ply has a singular transverse shear constitutive matrix
 <span class="math notranslate nohighlight">\(C_s^{(k)}\)</span>, e.g. <code class="docutils literal notranslate"><span class="pre">g13</span> <span class="pre">=</span> <span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">g23</span> <span class="pre">=</span> <span class="pre">0</span></code>.</p>
+</dd>
+<dt>TypeError</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">eps_x</span></code> or <code class="docutils literal notranslate"><span class="pre">eps_y</span></code> is missing, or given together with its
+deprecated alias <code class="docutils literal notranslate"><span class="pre">grad_x</span></code> or <code class="docutils literal notranslate"><span class="pre">grad_y</span></code>.</p>
 </dd>
 </dl>
 </dd>
@@ -1499,26 +1505,31 @@ CRC Press, 2003. <a class="reference external" href="https://doi.org/10.1201/b12
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.Laminate.calc_equilibrium_transverse_shear">
-<span class="sig-name descname"><span class="pre">calc_equilibrium_transverse_shear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grad_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_equilibrium_transverse_shear" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">calc_equilibrium_transverse_shear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eps_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grad_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.Laminate.calc_equilibrium_transverse_shear" title="Link to this definition">#</a></dt>
 <dd><p>Transverse shear stresses recovered from the actual strain gradients</p>
 <p>Integrates through the thickness, from the bottom face, the
 equilibrium of the in-plane stresses of the plies given by the
-derivatives <code class="docutils literal notranslate"><span class="pre">grad_x</span></code> and <code class="docutils literal notranslate"><span class="pre">grad_y</span></code> of the generalized strains, e.g.
+derivatives <code class="docutils literal notranslate"><span class="pre">eps_x</span></code> and <code class="docutils literal notranslate"><span class="pre">eps_y</span></code> of the generalized strains, e.g.
 those of an FSDT solution, at <code class="docutils literal notranslate"><span class="pre">npts</span></code> points, and returns the
 transverse shear stresses at the heights <code class="docutils literal notranslate"><span class="pre">z</span></code>. The stresses vanish at
 the bottom face; at the top face they do not vanish in general.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>grad_x, grad_y</strong><span class="classifier">array-like, shape <code class="docutils literal notranslate"><span class="pre">(6,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(npts,</span> <span class="pre">6)</span></code></span></dt><dd><p>Derivatives with respect to <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> of <span class="math notranslate nohighlight">\(\{\varepsilon_{xx}^{(0)},
+<dt><strong>eps_x, eps_y</strong><span class="classifier">array-like, shape <code class="docutils literal notranslate"><span class="pre">(6,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(npts,</span> <span class="pre">6)</span></code></span></dt><dd><p>Derivatives with respect to <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> of <span class="math notranslate nohighlight">\(\{\varepsilon_{xx}^{(0)},
 \varepsilon_{yy}^{(0)}, \gamma_{xy}^{(0)}, \varepsilon_{xx}^{(1)},
 \varepsilon_{yy}^{(1)}, \gamma_{xy}^{(1)}\}\)</span>, at <code class="docutils literal notranslate"><span class="pre">npts</span></code> points.
 The first three entries are per unit length and the last three
-per unit length squared.</p>
+per unit length squared. Required; the default <code class="docutils literal notranslate"><span class="pre">None</span></code> only
+allows the deprecated aliases <code class="docutils literal notranslate"><span class="pre">grad_x</span></code> and <code class="docutils literal notranslate"><span class="pre">grad_y</span></code>.</p>
 </dd>
 <dt><strong>z</strong><span class="classifier">array-like or None, optional</span></dt><dd><p>Heights from the reference surface. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the three
 Gauss-Legendre points of each ply are used. Default <code class="docutils literal notranslate"><span class="pre">None</span></code>.
 Length.</p>
+</dd>
+<dt><strong>grad_x, grad_y</strong><span class="classifier">array-like, optional</span></dt><dd><p>Deprecated, use <code class="docutils literal notranslate"><span class="pre">eps_x</span></code> and <code class="docutils literal notranslate"><span class="pre">eps_y</span></code> instead. Default
+<code class="docutils literal notranslate"><span class="pre">None</span></code>; when not <code class="docutils literal notranslate"><span class="pre">None</span></code>, the value is used as <code class="docutils literal notranslate"><span class="pre">eps_x</span></code> or
+<code class="docutils literal notranslate"><span class="pre">eps_y</span></code> and a <code class="xref py py-class docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> is issued.</p>
 </dd>
 </dl>
 </dd>
@@ -1534,6 +1545,9 @@ stresses.</p>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>ValueError</dt><dd><p>If a value of <code class="docutils literal notranslate"><span class="pre">z</span></code> is outside the laminate.</p>
+</dd>
+<dt>TypeError</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">eps_x</span></code> or <code class="docutils literal notranslate"><span class="pre">eps_y</span></code> is missing, or given together with its
+deprecated alias <code class="docutils literal notranslate"><span class="pre">grad_x</span></code> or <code class="docutils literal notranslate"><span class="pre">grad_y</span></code>.</p>
 </dd>
 </dl>
 </dd>

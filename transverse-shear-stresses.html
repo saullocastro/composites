@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Transverse shear stresses through the thickness &#8212; composites 0.10.0 documentation</title>
+    <title>Transverse shear stresses through the thickness &#8212; composites 0.10.1 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=82662543"></script>
+    <script src="_static/documentation_options.js?v=261ea15a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -121,7 +121,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.0 documentation</p>
+    <p class="title logo__title">composites 0.10.1 documentation</p>
   
 </a></div>
     
@@ -653,9 +653,9 @@ Abar_ts =
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>grad_x = np.linalg.solve(cp.ABD, [0, 0, 0, Qx, 0, 0])
-grad_y = np.zeros(6)
-z, tyz, txz = cp.calc_equilibrium_transverse_shear(grad_x, grad_y, z=zs)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>eps_x = np.linalg.solve(cp.ABD, [0, 0, 0, Qx, 0, 0])
+eps_y = np.zeros(6)
+z, tyz, txz = cp.calc_equilibrium_transverse_shear(eps_x, eps_y, z=zs)
 print('max difference [Pa]:',
       np.abs(txz[0] - np.array(tau_xz)).max())
 </pre></div>
@@ -674,7 +674,7 @@ max difference [Pa]: 6.984919309616089e-10
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>U13, U23, Qy_r, Qx_r = cp.calc_aposteriori_energy(grad_x, grad_y)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>U13, U23, Qy_r, Qx_r = cp.calc_aposteriori_energy(eps_x, eps_y)
 print('resultant of the recovered stresses: Qx = %.6f N/m' % Qx_r[0])
 print('a posteriori k13 = %.4f' % (Qx**2/(2*cp.Abar55*U13[0])))
 print("'rohwer' scf_k13 = %.4f" % cp.scf_k13)

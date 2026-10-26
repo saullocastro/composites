@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Transverse shear stresses &#8212; composites 0.10.0 documentation</title>
+    <title>Transverse shear stresses &#8212; composites 0.10.1 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=82662543"></script>
+    <script src="_static/documentation_options.js?v=261ea15a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -120,7 +120,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.0 documentation</p>
+    <p class="title logo__title">composites 0.10.1 documentation</p>
   
 </a></div>
     
@@ -591,10 +591,10 @@ for a homogeneous plate in cylindrical bending, recovering the factor 5/6:</p>
     <span class="n">lam</span> <span class="o">=</span> <span class="n">isotropic_plate</span><span class="p">(</span><span class="n">thickness</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="n">nu</span><span class="p">)</span>
     <span class="n">Qx</span> <span class="o">=</span> <span class="mf">1.7</span>
     <span class="n">D</span> <span class="o">=</span> <span class="n">E</span><span class="o">*</span><span class="n">h</span><span class="o">**</span><span class="mi">3</span><span class="o">/</span><span class="p">(</span><span class="mi">12</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">nu</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">grad_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">eps_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
     <span class="c1"># M_xx,x = Qx with the plane strain curvature of cylindrical bending</span>
-    <span class="n">grad_x</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">Qx</span><span class="o">/</span><span class="n">D</span>
-    <span class="n">U13</span><span class="p">,</span> <span class="n">U23</span><span class="p">,</span> <span class="n">Qy_r</span><span class="p">,</span> <span class="n">Qx_r</span> <span class="o">=</span> <span class="n">lam</span><span class="o">.</span><span class="n">calc_aposteriori_energy</span><span class="p">(</span><span class="n">grad_x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+    <span class="n">eps_x</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">Qx</span><span class="o">/</span><span class="n">D</span>
+    <span class="n">U13</span><span class="p">,</span> <span class="n">U23</span><span class="p">,</span> <span class="n">Qy_r</span><span class="p">,</span> <span class="n">Qx_r</span> <span class="o">=</span> <span class="n">lam</span><span class="o">.</span><span class="n">calc_aposteriori_energy</span><span class="p">(</span><span class="n">eps_x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
     <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">Qx_r</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Qx</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">U13</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.6</span><span class="o">*</span><span class="n">Qx</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="n">h</span><span class="p">),</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">Qx</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="n">h</span><span class="p">)</span><span class="o">/</span><span class="n">U13</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">5</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>
