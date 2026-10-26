@@ -21,7 +21,7 @@ abstract: >-
     CLPT, FSDT and TSDT
 message: >-
   Please, cite this software using:
-  Saullo G. P. Castro (2026). Methods for analysis and design of composites (Version 0.10.0). Zenodo. DOI: https://doi.org/10.5281/zenodo.2871782
+  Saullo G. P. Castro (2026). Methods for analysis and design of composites (Version 0.10.1). Zenodo. DOI: https://doi.org/10.5281/zenodo.2871782
 authors:
   - family-names: Castro
     given-names: Saullo G. P.
@@ -34,5 +34,5 @@ identifiers:
 repository-code: 'https://github.com/saullocastro/composites'
 url: 'https://saullocastro.github.io/composites/'
 license: BSD-3-Clause
-version: 0.10.0
-date-released: '2026-10-24'
+version: 0.10.1
+date-released: '2026-10-26'

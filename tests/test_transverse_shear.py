@@ -1184,10 +1184,10 @@ def test_aposteriori_energy_homogeneous():
     lam = isotropic_plate(thickness=h, E=E, nu=nu)
     Qx = 1.7
     D = E*h**3/(12*(1 - nu**2))
-    grad_x = np.zeros(6)
+    eps_x = np.zeros(6)
     # M_xx,x = Qx with the plane strain curvature of cylindrical bending
-    grad_x[3] = Qx/D
-    U13, U23, Qy_r, Qx_r = lam.calc_aposteriori_energy(grad_x, np.zeros(6))
+    eps_x[3] = Qx/D
+    U13, U23, Qy_r, Qx_r = lam.calc_aposteriori_energy(eps_x, np.zeros(6))
     assert np.isclose(Qx_r[0], Qx, rtol=1e-12)
     assert np.isclose(U13[0], 0.6*Qx**2/(G*h), rtol=1e-12)
     assert np.isclose(0.5*Qx**2/(G*h)/U13[0], 5/6, rtol=1e-12)
@@ -1300,10 +1300,53 @@ def test_equilibrium_z_outside():
 def test_aposteriori_energy_singular_Cs():
     laminaprops = [CFRP, (138., 9.3, 0.3, 4.6, 0., 2.3), CFRP]
     lam = _manual_laminate([0, 0, 0], 0.25, laminaprops, None)
-    grad_x = np.zeros(6)
-    grad_x[3] = 1.
+    eps_x = np.zeros(6)
+    eps_x[3] = 1.
     with pytest.raises(ValueError, match='Ply 1'):
-        lam.calc_aposteriori_energy(grad_x, np.zeros(6))
+        lam.calc_aposteriori_energy(eps_x, np.zeros(6))
+
+
+def test_deprecated_grad_x_grad_y():
+    lam = laminated_plate([0, 90, 45, -45, 30], plyt=0.2, laminaprop=CFRP,
+                          offset=0.1)
+    rng = np.random.default_rng(1)
+    eps_x = rng.normal(size=(3, 6))
+    eps_y = rng.normal(size=(3, 6))
+    zs = np.linspace(-0.4, 0.6, 7)
+    ref = lam.calc_equilibrium_transverse_shear(eps_x, eps_y, zs)
+    ref_kw = lam.calc_equilibrium_transverse_shear(eps_x=eps_x, eps_y=eps_y,
+                                                   z=zs)
+    for r, a in zip(ref, ref_kw):
+        assert np.array_equal(r, a)
+    with pytest.warns(DeprecationWarning) as record:
+        old = lam.calc_equilibrium_transverse_shear(grad_x=eps_x,
+                                                    grad_y=eps_y, z=zs)
+    assert len(record) == 2
+    assert "'grad_x' is deprecated, use 'eps_x'" in str(record[0].message)
+    assert "'grad_y' is deprecated, use 'eps_y'" in str(record[1].message)
+    for r, a in zip(ref, old):
+        assert np.array_equal(r, a)
+    with pytest.warns(DeprecationWarning, match="'grad_y'"):
+        mixed = lam.calc_equilibrium_transverse_shear(eps_x, grad_y=eps_y,
+                                                      z=zs)
+    for r, a in zip(ref, mixed):
+        assert np.array_equal(r, a)
+    U = lam.calc_aposteriori_energy(eps_x, eps_y)
+    with pytest.warns(DeprecationWarning) as record:
+        U_old = lam.calc_aposteriori_energy(grad_x=eps_x, grad_y=eps_y)
+    assert len(record) == 2
+    for r, a in zip(U, U_old):
+        assert np.array_equal(r, a)
+    for f in (lam.calc_equilibrium_transverse_shear,
+              lam.calc_aposteriori_energy):
+        with pytest.raises(TypeError, match="both 'eps_x'"):
+            f(eps_x, eps_y, grad_x=eps_x)
+        with pytest.raises(TypeError, match="both 'eps_y'"):
+            f(eps_x, eps_y=eps_y, grad_y=eps_y)
+        with pytest.raises(TypeError, match="missing the argument 'eps_x'"):
+            f(eps_y=eps_y)
+        with pytest.raises(TypeError, match="missing the argument 'eps_y'"):
+            f(eps_x)
 
 
 # Large offsets
@@ -1331,11 +1374,11 @@ def test_large_offset_stresses():
     tau0 = np.array([lam0.calc_transverse_shear_stress(z, 0.7, -1.3)
                      for z in zs])
     rng = np.random.default_rng(0)
-    grad_x = rng.normal(size=6)
-    grad_y = rng.normal(size=6)
-    _, tyz0, txz0 = lam0.calc_equilibrium_transverse_shear(grad_x, grad_y,
+    eps_x = rng.normal(size=6)
+    eps_y = rng.normal(size=6)
+    _, tyz0, txz0 = lam0.calc_equilibrium_transverse_shear(eps_x, eps_y,
                                                            z=zs)
-    U0 = np.array(lam0.calc_aposteriori_energy(grad_x, grad_y))
+    U0 = np.array(lam0.calc_aposteriori_energy(eps_x, eps_y))
     for offset in [1e2, -1e4, 1e6]:
         lam = laminated_plate(stack, plyt=0.2, laminaprop=CFRP,
                               offset=offset)
@@ -1346,16 +1389,16 @@ def test_large_offset_stresses():
                         for z in zs])
         assert np.allclose(tau, tau0, rtol=0, atol=tol*np.abs(tau0).max())
         # same strain field, eps0 + z eps1, about the new reference surface
-        gx = grad_x.copy()
-        gy = grad_y.copy()
-        gx[:3] -= offset*gx[3:]
-        gy[:3] -= offset*gy[3:]
-        z, tyz, txz = lam.calc_equilibrium_transverse_shear(gx, gy,
+        eps_x0 = eps_x.copy()
+        eps_y0 = eps_y.copy()
+        eps_x0[:3] -= offset*eps_x0[3:]
+        eps_y0[:3] -= offset*eps_y0[3:]
+        z, tyz, txz = lam.calc_equilibrium_transverse_shear(eps_x0, eps_y0,
                                                             z=zs + offset)
         assert np.array_equal(z, zs + offset)
         assert np.allclose(txz, txz0, rtol=0, atol=tol*np.abs(txz0).max())
         assert np.allclose(tyz, tyz0, rtol=0, atol=tol*np.abs(tyz0).max())
-        U = np.array(lam.calc_aposteriori_energy(gx, gy))
+        U = np.array(lam.calc_aposteriori_energy(eps_x0, eps_y0))
         assert np.allclose(U, U0, rtol=0, atol=tol*np.abs(U0).max())
 
 

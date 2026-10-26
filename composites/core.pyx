@@ -950,27 +950,32 @@ def _thickness_shear_frequency(Gs, rhos, hs, double omega_ref):
     return (wa + wb)/2.
 
 
-def _equilibrium_integrals(Lamina ply, gx, gy, double za, double zb):
+def _equilibrium_integrals(Lamina ply, eps_x, eps_y, double za, double zb):
     r"""`\int_{z_a}^{z_b}` of the in-plane stress gradients of one ply
 
     Returns the integrands of `-\tau_{xz}` and `-\tau_{yz}` of
-    :meth:`.Laminate.calc_equilibrium_transverse_shear`, for the gradients
-    ``gx``, ``gy`` with shape ``(npts, 6)``.
+    :meth:`.Laminate.calc_equilibrium_transverse_shear`, for the derivatives
+    ``eps_x``, ``eps_y`` of the generalized strains, with shape
+    ``(npts, 6)``.
 
     Notes
     -----
     With `c_1 = \{q_{11L}, q_{12L}, q_{16L}\}`, `c_2 = \{q_{12L}, q_{22L},
     q_{26L}\}` and `c_3 = \{q_{16L}, q_{26L}, q_{66L}\}` of the ply, and the
-    gradients `g = \{\varepsilon^{(0)}, \varepsilon^{(1)}\}_{,x}` or
-    `_{,y}` split into their first and last three entries, `g^{(0)}` and
-    `g^{(1)}`, the integrals are computed exactly:
+    derivatives `\{\varepsilon^{(0)}, \varepsilon^{(1)}\}_{,x}` and
+    `\{\varepsilon^{(0)}, \varepsilon^{(1)}\}_{,y}` split into their first
+    and last three entries, `\varepsilon^{(0)}_{,x}`,
+    `\varepsilon^{(1)}_{,x}` and `\varepsilon^{(0)}_{,y}`,
+    `\varepsilon^{(1)}_{,y}`, the integrals are computed exactly:
 
     .. math::
 
-        i_x = \int_{z_a}^{z_b} \left( c_1 (g_x^{(0)} + z g_x^{(1)}) + c_3
-        (g_y^{(0)} + z g_y^{(1)}) \right) dz \\
-        i_y = \int_{z_a}^{z_b} \left( c_2 (g_y^{(0)} + z g_y^{(1)}) + c_3
-        (g_x^{(0)} + z g_x^{(1)}) \right) dz
+        i_x = \int_{z_a}^{z_b} \left( c_1 (\varepsilon^{(0)}_{,x} + z
+        \varepsilon^{(1)}_{,x}) + c_3 (\varepsilon^{(0)}_{,y} + z
+        \varepsilon^{(1)}_{,y}) \right) dz \\
+        i_y = \int_{z_a}^{z_b} \left( c_2 (\varepsilon^{(0)}_{,y} + z
+        \varepsilon^{(1)}_{,y}) + c_3 (\varepsilon^{(0)}_{,x} + z
+        \varepsilon^{(1)}_{,x}) \right) dz
 
     """
     c1 = np.array([ply.q11L, ply.q12L, ply.q16L])
@@ -978,11 +983,31 @@ def _equilibrium_integrals(Lamina ply, gx, gy, double za, double zb):
     c3 = np.array([ply.q16L, ply.q26L, ply.q66L])
     d1 = zb - za
     d2 = (zb*zb - za*za)/2.
-    ix = (d1*(gx[:, :3] @ c1) + d2*(gx[:, 3:] @ c1)
-          + d1*(gy[:, :3] @ c3) + d2*(gy[:, 3:] @ c3))
-    iy = (d1*(gy[:, :3] @ c2) + d2*(gy[:, 3:] @ c2)
-          + d1*(gx[:, :3] @ c3) + d2*(gx[:, 3:] @ c3))
+    ix = (d1*(eps_x[:, :3] @ c1) + d2*(eps_x[:, 3:] @ c1)
+          + d1*(eps_y[:, :3] @ c3) + d2*(eps_y[:, 3:] @ c3))
+    iy = (d1*(eps_y[:, :3] @ c2) + d2*(eps_y[:, 3:] @ c2)
+          + d1*(eps_x[:, :3] @ c3) + d2*(eps_x[:, 3:] @ c3))
     return ix, iy
+
+
+def _strain_derivatives(name, eps_x, eps_y, grad_x, grad_y):
+    # NOTE grad_x and grad_y are the deprecated names of eps_x and eps_y
+    if grad_x is not None:
+        if eps_x is not None:
+            raise TypeError("%s() got both 'eps_x' and its deprecated alias "
+                            "'grad_x'" % name)
+        _warn_deprecated('grad_x', 'eps_x')
+        eps_x = grad_x
+    if grad_y is not None:
+        if eps_y is not None:
+            raise TypeError("%s() got both 'eps_y' and its deprecated alias "
+                            "'grad_y'" % name)
+        _warn_deprecated('grad_y', 'eps_y')
+        eps_y = grad_y
+    if eps_x is None or eps_y is None:
+        raise TypeError("%s() missing the argument '%s'"
+                        % (name, 'eps_x' if eps_x is None else 'eps_y'))
+    return eps_x, eps_y
 
 
 def _singular_Cs_error(int k, Lamina ply):
@@ -2204,29 +2229,34 @@ cdef class Laminate:
               + (fc[k, 0, 1, 1] + zm*fc[k, 1, 1, 1] + zm*zm*fc[k, 2, 1, 1])*Qx)
 
 
-    def calc_equilibrium_transverse_shear(Laminate self, grad_x, grad_y,
-            z=None):
+    def calc_equilibrium_transverse_shear(Laminate self, eps_x=None,
+            eps_y=None, z=None, grad_x=None, grad_y=None):
         r"""Transverse shear stresses recovered from the actual strain gradients
 
         Integrates through the thickness, from the bottom face, the
         equilibrium of the in-plane stresses of the plies given by the
-        derivatives ``grad_x`` and ``grad_y`` of the generalized strains, e.g.
+        derivatives ``eps_x`` and ``eps_y`` of the generalized strains, e.g.
         those of an FSDT solution, at ``npts`` points, and returns the
         transverse shear stresses at the heights ``z``. The stresses vanish at
         the bottom face; at the top face they do not vanish in general.
 
         Parameters
         ----------
-        grad_x, grad_y : array-like, shape ``(6,)`` or ``(npts, 6)``
+        eps_x, eps_y : array-like, shape ``(6,)`` or ``(npts, 6)``
             Derivatives with respect to `x` and `y` of `\{\varepsilon_{xx}^{(0)},
             \varepsilon_{yy}^{(0)}, \gamma_{xy}^{(0)}, \varepsilon_{xx}^{(1)},
             \varepsilon_{yy}^{(1)}, \gamma_{xy}^{(1)}\}`, at ``npts`` points.
             The first three entries are per unit length and the last three
-            per unit length squared.
+            per unit length squared. Required; the default ``None`` only
+            allows the deprecated aliases ``grad_x`` and ``grad_y``.
         z : array-like or None, optional
             Heights from the reference surface. If ``None``, the three
             Gauss-Legendre points of each ply are used. Default ``None``.
             Length.
+        grad_x, grad_y : array-like, optional
+            Deprecated, use ``eps_x`` and ``eps_y`` instead. Default
+            ``None``; when not ``None``, the value is used as ``eps_x`` or
+            ``eps_y`` and a :class:`DeprecationWarning` is issued.
 
         Returns
         -------
@@ -2240,6 +2270,9 @@ cdef class Laminate:
         ------
         ValueError
             If a value of ``z`` is outside the laminate.
+        TypeError
+            If ``eps_x`` or ``eps_y`` is missing, or given together with its
+            deprecated alias ``grad_x`` or ``grad_y``.
 
         See Also
         --------
@@ -2282,13 +2315,15 @@ cdef class Laminate:
            Journal of Engineering Mechanics, 115, 1225-1244, 1989.
 
         """
-        gx = np.atleast_2d(np.asarray(grad_x, dtype=DOUBLE))
-        gy = np.atleast_2d(np.asarray(grad_y, dtype=DOUBLE))
+        eps_x, eps_y = _strain_derivatives('calc_equilibrium_transverse_shear',
+                                           eps_x, eps_y, grad_x, grad_y)
+        eps_x = np.atleast_2d(np.asarray(eps_x, dtype=DOUBLE))
+        eps_y = np.atleast_2d(np.asarray(eps_y, dtype=DOUBLE))
         # NOTE integrated about the mid-surface, avoiding the round-off of
         #      large offsets: eps0 + z eps1 = (eps0 + offset eps1) + zm eps1
         off = self.offset
-        gx = np.hstack((gx[:, :3] + off*gx[:, 3:], gx[:, 3:]))
-        gy = np.hstack((gy[:, :3] + off*gy[:, 3:], gy[:, 3:]))
+        eps_x = np.hstack((eps_x[:, :3] + off*eps_x[:, 3:], eps_x[:, 3:]))
+        eps_y = np.hstack((eps_y[:, :3] + off*eps_y[:, 3:], eps_y[:, 3:]))
         zi = self._ply_interfaces()
         N = len(self.plies)
         if z is None:
@@ -2303,26 +2338,27 @@ cdef class Laminate:
         tol = 1e-12*(zi[N] - zi[0])
         if np.any(zm < zi[0] - tol) or np.any(zm > zi[N] + tol):
             raise ValueError('z outside the laminate')
-        acc_x = np.zeros((N + 1, gx.shape[0]))
-        acc_y = np.zeros((N + 1, gx.shape[0]))
+        acc_x = np.zeros((N + 1, eps_x.shape[0]))
+        acc_y = np.zeros((N + 1, eps_x.shape[0]))
         for k in range(N):
-            ix, iy = _equilibrium_integrals(self.plies[k], gx, gy, zi[k],
-                                            zi[k+1])
+            ix, iy = _equilibrium_integrals(self.plies[k], eps_x, eps_y,
+                                            zi[k], zi[k+1])
             acc_x[k+1] = acc_x[k] + ix
             acc_y[k+1] = acc_y[k] + iy
         k_of_z = np.clip(np.searchsorted(zi, zm, side='right') - 1, 0, N - 1)
-        txz = np.zeros((gx.shape[0], z.size))
-        tyz = np.zeros((gx.shape[0], z.size))
+        txz = np.zeros((eps_x.shape[0], z.size))
+        tyz = np.zeros((eps_x.shape[0], z.size))
         for j in range(z.size):
             k = int(k_of_z[j])
-            ix, iy = _equilibrium_integrals(self.plies[k], gx, gy, zi[k],
-                                            zm[j])
+            ix, iy = _equilibrium_integrals(self.plies[k], eps_x, eps_y,
+                                            zi[k], zm[j])
             txz[:, j] = -(acc_x[k] + ix)
             tyz[:, j] = -(acc_y[k] + iy)
         return z, tyz, txz
 
 
-    def calc_aposteriori_energy(Laminate self, grad_x, grad_y):
+    def calc_aposteriori_energy(Laminate self, eps_x=None, eps_y=None,
+            grad_x=None, grad_y=None):
         r"""Transverse shear strain energy of the recovered stresses
 
         With the stresses of :meth:`.calc_equilibrium_transverse_shear` at
@@ -2334,8 +2370,11 @@ cdef class Laminate:
 
         Parameters
         ----------
-        grad_x, grad_y : array-like
+        eps_x, eps_y : array-like
             See :meth:`.calc_equilibrium_transverse_shear`.
+        grad_x, grad_y : array-like, optional
+            Deprecated, use ``eps_x`` and ``eps_y`` instead, see
+            :meth:`.calc_equilibrium_transverse_shear`.
 
         Returns
         -------
@@ -2350,6 +2389,9 @@ cdef class Laminate:
         ValueError
             If a ply has a singular transverse shear constitutive matrix
             `C_s^{(k)}`, e.g. ``g13 = 0`` or ``g23 = 0``.
+        TypeError
+            If ``eps_x`` or ``eps_y`` is missing, or given together with its
+            deprecated alias ``grad_x`` or ``grad_y``.
 
         Notes
         -----
@@ -2380,7 +2422,9 @@ cdef class Laminate:
            Journal of Engineering Mechanics, 115, 1225-1244, 1989.
 
         """
-        z, tyz, txz = self.calc_equilibrium_transverse_shear(grad_x, grad_y)
+        eps_x, eps_y = _strain_derivatives('calc_aposteriori_energy', eps_x,
+                                           eps_y, grad_x, grad_y)
+        z, tyz, txz = self.calc_equilibrium_transverse_shear(eps_x, eps_y)
         zi = self._ply_interfaces()
         N = len(self.plies)
         w = np.array([5./9., 8./9., 5./9.])
