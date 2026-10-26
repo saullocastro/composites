@@ -2,40 +2,6 @@
 
 ## 0.10.1 (2026-10-26)
 
-### Deprecated
-
-- The `grad_x` and `grad_y` arguments of
-  `Laminate.calc_equilibrium_transverse_shear()` and
-  `Laminate.calc_aposteriori_energy()`: use `eps_x` and `eps_y`, the
-  derivatives of the generalized strains with respect to `x` and `y`. The
-  positional order is unchanged, `(eps_x, eps_y, z=None)` and
-  `(eps_x, eps_y)`, such that positional calls are not affected. The old
-  keywords still work, but they emit a `DeprecationWarning`; giving both
-  `eps_x` and `grad_x`, or `eps_y` and `grad_y`, raises `TypeError`.
-
-### Clean-up
-
-- Partial derivatives are named with an underscore before the variable, e.g.
-  `eps_x` for the derivative of `eps` with respect to `x`: the internal
-  derivatives of the generalized strains of
-  `calc_equilibrium_transverse_shear` (`gx`, `gy`), and the derivative
-  `expr_alpha` (`dexpr_dalpha`) of the Newton-Raphson iterations of
-  `kassapoglou.calc_Nxy_crit` and of its generator in `theory/`. The results
-  are unchanged.
-
-### Documentation
-
-- The Notes of the integrals of the equilibrium shear stresses use the
-  derivatives `\varepsilon^{(0)}_{,x}`, `\varepsilon^{(1)}_{,x}`, as those of
-  `calc_equilibrium_transverse_shear`, instead of the symbols `g_x^{(0)}`,
-  `g_x^{(1)}`.
-- The transverse shear tutorial uses `eps_x` and `eps_y`, and the
-  sensitivities of the gradient-based optimisation tutorials follow the same
-  naming, e.g. `lambda_b_h0`, `D_h0`, `D11_xiD1` instead of `dlambda_b_dh0`,
-  `dD_dh0`, `dD11_dxiD1`.
-
-## 0.10.0 (2026-10-24)
-
 ### Python versions
 
 - Python 3.9 is no longer supported, it reached its end of life in October 2025: Python 3.10 or newer is required, and the tests and wheels cover Python 3.10 to 3.14.
@@ -123,6 +89,24 @@ unchanged, the compression load `N_o = -N_x`, positive in compression.
   displacements from the laminate axes to the material axes of the ply,
   contrary to what the old name said; the matrix itself is unchanged. The old
   name still works, but it emits a `DeprecationWarning`.
+- The `grad_x` and `grad_y` arguments of
+  `Laminate.calc_equilibrium_transverse_shear()` and
+  `Laminate.calc_aposteriori_energy()`: use `eps_x` and `eps_y`, the
+  derivatives of the generalized strains with respect to `x` and `y`. The
+  positional order is unchanged, `(eps_x, eps_y, z=None)` and
+  `(eps_x, eps_y)`, such that positional calls are not affected. The old
+  keywords still work, but they emit a `DeprecationWarning`; giving both
+  `eps_x` and `grad_x`, or `eps_y` and `grad_y`, raises `TypeError`.
+
+### Clean-up
+
+- Partial derivatives are named with an underscore before the variable, e.g.
+  `eps_x` for the derivative of `eps` with respect to `x`: the internal
+  derivatives of the generalized strains of
+  `calc_equilibrium_transverse_shear` (`gx`, `gy`), and the derivative
+  `expr_alpha` (`dexpr_dalpha`) of the Newton-Raphson iterations of
+  `kassapoglou.calc_Nxy_crit` and of its generator in `theory/`. The results
+  are unchanged.
 
 ### Documentation
 
@@ -134,6 +118,14 @@ unchanged, the compression load `N_o = -N_x`, positive in compression.
   tutorials: plate properties for the CLPT, FSDT and TSDT, and transverse
   shear stresses through the thickness.
 - Reddy's book is cited as Reddy (2003), https://doi.org/10.1201/b12409.
+- The Notes of the integrals of the equilibrium shear stresses use the
+  derivatives `\varepsilon^{(0)}_{,x}`, `\varepsilon^{(1)}_{,x}`, as those of
+  `calc_equilibrium_transverse_shear`, instead of the symbols `g_x^{(0)}`,
+  `g_x^{(1)}`.
+- The transverse shear tutorial uses `eps_x` and `eps_y`, and the
+  sensitivities of the gradient-based optimisation tutorials follow the same
+  naming, e.g. `lambda_b_h0`, `D_h0`, `D11_xiD1` instead of `dlambda_b_dh0`,
+  `dD_dh0`, `dD11_dxiD1`.
 
 ## 0.9.21 (2026-10-08)
 
