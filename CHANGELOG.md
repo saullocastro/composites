@@ -97,7 +97,11 @@
   `test_rohwer_angle_ply_coupling` replaces the pasted values -0.1204 and
   0.7503 by that implementation and by the symmetries of the laminate,
   consistent with Rohwer's Fig. 7; `test_isotropic_five_sixths` also covers
-  `'constant'`.
+  `'constant'`. In `tests/test_core.py`, `Ats` of
+  `test_laminated_plate_tri_axial` and `test_laminated_plate_plane_stress`
+  is compared with that implementation to `rtol = 1e-12`, instead of
+  values copied from the output of the code to `rtol = 1e-5`, and that of
+  the lamination-parameter tests with the closed form `G h`.
 
 ## 0.10.1 (2026-10-26)
 
