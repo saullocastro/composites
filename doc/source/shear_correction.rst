@@ -69,7 +69,9 @@ not invariant to a rotation of the axes. When a laminate is used with its
 material direction rotated with respect to the axes of a model, a new
 :class:`.Laminate` with the ply angles shifted by the rotation gives the
 transverse shear stiffness in the axes of the model, instead of a tensor
-rotation of ``Ats``.
+rotation of ``Ats``. For the ``[0,90]_s`` CFRP laminate of Rohwer [1]_,
+Table 2, the two differ by 7.0 % in ``A44 = A55`` and by 13.5 % in ``A45``
+at 45 degrees, see his Fig. 7, p. 20.
 
 
 ``scf_k13`` and ``scf_k23``
@@ -127,6 +129,16 @@ bending stiffnesses contradict the stated lay-up, since the ratio `(D_{11} -
 D_{22})/D_{16}`, which depends on the positions of the layers alone, is
 4.216 for the lay-up of his Fig. 9 against 4.71 from the printed values. The
 details are in the comments of ``tests/test_transverse_shear.py``.
+
+For the same reason, two printed factors are checked against the closed
+forms of their papers instead of their printed digits. Chow [4]_, Table 1,
+p. 316, gives `k_2^2 = 0.521` for the graphite-epoxy ``[0,90]_s`` plate,
+whereas his Eqs. (11)-(12), p. 311, give 0.52165 with his data, Eq. (32),
+which reproduce the three other values of the table. Whitney [3]_, p. 304,
+gives `k_1^2 = 0.4098` and `k_2^2 = 0.6915` for a sandwich, whereas his Eqs.
+(3)-(7), p. 303, give 0.40936 and 0.67199 with his data, which reproduce
+the factors of his two laminates on p. 303; no single change of the printed
+data reproduces both sandwich values.
 
 
 References

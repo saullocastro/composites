@@ -1941,8 +1941,12 @@ cdef class Laminate:
           laminates, and the result does not depend on ``offset``. The result
           is not invariant to a rotation of the element axes, because the two
           cylindrical bending states are tied to the `x` and `y` axes. This is
-          inherent to the method: for a `[0, 90]_s` CFRP laminate, deviations
-          up to about 7 % are observed at 45 degrees.
+          inherent to the method, Rohwer (1988) [1]_, Fig. 7, p. 20, and Eq.
+          (44): for his `[0, 90]_s` CFRP laminate of Table 2, computed in axes
+          rotated by 45 degrees, ``A44 = A55`` are 7.0 % and ``A45`` is
+          13.5 % above the tensor rotation of the result in the axes of the
+          plies; ``A44`` or ``A55`` alone deviate by up to 7.2 %, at 41 and
+          49 degrees.
 
         - ``'vlachoutsis'``: the scalar factors `k_{13}`, `k_{23}` of
           Vlachoutsis (1992) [2]_ are applied to the constant-strain

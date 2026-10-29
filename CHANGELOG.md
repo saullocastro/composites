@@ -102,6 +102,30 @@
   is compared with that implementation to `rtol = 1e-12`, instead of
   values copied from the output of the code to `rtol = 1e-5`, and that of
   the lamination-parameter tests with the closed form `G h`.
+- Chow (1971) and Whitney (1973): `test_chow_published_cross_ply`,
+  `test_whitney_published_laminates` and `test_whitney_published_sandwich`
+  compare `'chow'`, `'whitney'` and `'vlachoutsis'` to round-off with
+  Whitney's Eqs. (3)-(7), which are Chow's Eqs. (11)-(12) for a symmetric
+  laminate, written out in the test module. Two printed values are not
+  consistent with the data of their papers, and they are no longer compared
+  with a tolerance fitted to their deviation (`rtol = 1.3e-3` and
+  `1.5e-3`): Chow's `k2^2 = 0.521`, Table 1, against 0.52165 from his
+  Eqs. (11)-(12), which reproduce the other three values of the table; and
+  Whitney's sandwich, p. 304, `k1^2 = 0.4098` and `k2^2 = 0.6915`, against
+  0.40936 and 0.67199 from his Eqs. (3)-(7), which reproduce the factors of
+  his two laminates. The reasons are kept in notes of the test module and
+  in `doc/source/shear_correction.rst`. The release notes of 0.9.12 say
+  that `'whitney'` reproduces the factors printed by Whitney (1973); this
+  holds for his laminates, not for his sandwich.
+- New `test_rohwer_rotation_dependence_cross_ply`: for the `[0,90]s` CFRP
+  laminate of Rohwer (1988), Table 2, computed in axes rotated by 45
+  degrees, `A44 = A55` are 7.0 % and `A45` is 13.5 % above the tensor
+  rotation of the result in the axes of the plies, Rohwer's Fig. 7 and
+  Eq. (44), with both curves from the independent implementation of
+  Eq. (43). The docstring of `Laminate.calc_transverse_shear_stiffness`,
+  which stated "deviations up to about 7 % are observed at 45 degrees",
+  now names these quantities and the source; `A44` or `A55` alone deviate
+  by up to 7.2 %, at 41 and 49 degrees.
 
 ### New: zero Young moduli, antiplane cores
 
