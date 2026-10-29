@@ -1783,11 +1783,20 @@ cdef class Laminate:
                              'shear distribution cannot be computed')
         scale = 1./np.sqrt(diag)
         M = scale[:, None]*ABDnp*scale[None, :]
-        if not np.all(np.isfinite(M)) or np.linalg.cond(M) > 1e12:
+        #NOTE the condition number is tested with isfinite too, since it
+        #     may be inf or nan for a singular matrix, and the inverse as
+        #     well, since np.linalg.inv does not raise LinAlgError for a
+        #     singular matrix on every platform, e.g. Pyodide
+        cond = np.linalg.cond(M) if np.all(np.isfinite(M)) else np.inf
+        if not np.isfinite(cond) or cond > 1e12:
             raise ValueError('The ABD matrix of the laminate is singular or '
                              'ill-conditioned, the transverse shear '
                              'distribution cannot be computed')
         Hs = np.ascontiguousarray(scale[:, None]*np.linalg.inv(M)*scale[None, :])
+        if not np.all(np.isfinite(Hs)):
+            raise ValueError('The ABD matrix of the laminate is singular or '
+                             'ill-conditioned, the transverse shear '
+                             'distribution cannot be computed')
 
         fcoef = np.zeros((N, 3, 2, 2), dtype=DOUBLE)
         acc_x = np.zeros(6, dtype=DOUBLE)
@@ -2638,13 +2647,21 @@ cdef class Laminate:
         where the index 6 is the third row and column of `a`.
 
         """
+        msg = ('The ABD matrix of the laminate is singular, its equivalent '
+               'properties are undefined, e.g. for a laminate of antiplane '
+               'cores only, whose in-plane and bending stiffnesses vanish')
+        #NOTE explicit checks, np.linalg.inv does not raise LinAlgError for
+        #     a singular matrix on every platform, e.g. not with the LAPACK
+        #     of Pyodide, which returns inf or nan instead
+        ABD = np.asarray(self.get_ABD(), dtype=DOUBLE)
+        if not np.all(np.diag(ABD) > 0):
+            raise np.linalg.LinAlgError(msg)
         try:
-            AI = np.linalg.inv(self.get_ABD())
+            AI = np.linalg.inv(ABD)
         except np.linalg.LinAlgError:
-            raise np.linalg.LinAlgError('The ABD matrix of the laminate is '
-                    'singular, its equivalent properties are undefined, e.g. '
-                    'for a laminate of antiplane cores only, whose in-plane '
-                    'and bending stiffnesses vanish')
+            raise np.linalg.LinAlgError(msg)
+        if not np.all(np.isfinite(AI)):
+            raise np.linalg.LinAlgError(msg)
         a11, a12, a22, a33 = AI[0,0], AI[0,1], AI[1,1], AI[2,2]
         self.e1 = 1./(self.h*a11)
         self.e2 = 1./(self.h*a22)

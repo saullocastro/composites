@@ -148,6 +148,13 @@
   a `ValueError`, with a clear message when the `ABD` matrix is singular,
   e.g. for a laminate of antiplane cores only. Results with non-zero moduli
   are unchanged, bit for bit.
+- The singular `ABD` matrix is detected explicitly, by a non-positive
+  diagonal term before the inversion and a non-finite inverse after it,
+  in `Laminate.calc_equivalent_properties()` and in the transverse shear
+  distribution of `'rohwer'`, whose condition number is also required to
+  be finite: `numpy.linalg.inv` does not raise `LinAlgError` for a
+  singular matrix on every platform, e.g. with the LAPACK of Pyodide,
+  where `test_zero_young_modulus_errors` failed.
 - Tests: `test_antiplane_core_matlamina`, `test_zero_young_modulus_errors`
   and `test_antiplane_core_sandwich` in
   `tests/test_plane_stress_invariants.py`, the latter against the classical
