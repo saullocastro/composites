@@ -390,6 +390,83 @@ def test_zero_young_modulus_errors():
         laminated_plate([0, 30], plyts=[1e-3, 2e-3], laminaprop=core)
 
 
+def test_zero_young_modulus_determinant():
+    r"""Stiffness constants with ``e1 = 0`` and the positive-definiteness
+
+    With ``e1 = 0`` and ``nu12 = nu13 = 0``, as required, and ``e2 = e3``,
+    the 2-3 plane is isotropic, ``nu32 = nu23``, and its stiffnesses are
+    those of plane stress in that plane, ``c22 = c33 = e2/(1 - nu23^2)``
+    and ``c23 = nu23 e2/(1 - nu23^2)`` (Jones, 1999, Eq. (2.66), p. 72,
+    written in the 2-3 plane), with ``c11 = c12 = c13 = 0``. The
+    determinant ``1 - nu23 nu32`` must be positive, i.e. ``|nu23| <
+    (e2/e3)**0.5 = 1`` (Jones, 1999, Eq. (2.51), p. 69), and ``ValueError``
+    is raised at ``|nu23| = 1`` and beyond.
+    """
+    E = 8.7e9
+    for nu23 in [0.3, 0.99, -0.99]:
+        m = read_laminaprop((0., E, 0., 5e9, 5e9, 3e9, E, 0., nu23))
+        assert (m.c11, m.c12, m.c13) == (0., 0., 0.)
+        for c, ref in [(m.c22, E/(1 - nu23**2)), (m.c33, E/(1 - nu23**2)),
+                       (m.c23, nu23*E/(1 - nu23**2))]:
+            assert np.isclose(c, ref, rtol=1e-14, atol=0)
+        # NOTE plane stress in the 1-2 plane: only q22 = e2 and q66 = g12
+        assert (m.q11, m.q12, m.q22, m.q66) == (0., 0., E, 5e9)
+    for nu23 in [1., -1., 1.2]:
+        with pytest.raises(ValueError, match='non-positive determinant'):
+            read_laminaprop((0., E, 0., 5e9, 5e9, 3e9, E, 0., nu23))
+
+
+@pytest.mark.parametrize('platform', ['raises', 'inf', 'nan'])
+def test_singular_ABD_any_platform(platform, monkeypatch):
+    r"""The singular ``ABD`` matrix is detected without relying on
+    ``np.linalg.inv`` raising ``LinAlgError``
+
+    ``Laminate.calc_equivalent_properties`` checks the diagonal of ``ABD``
+    before the inversion and the inverse after it, and the transverse shear
+    distribution of ``'rohwer'`` its condition number and the inverse. Here
+    ``np.linalg.inv`` is replaced by one that raises ``LinAlgError``
+    (``'raises'``), or that returns inf or nan, as the LAPACK of Pyodide
+    does for a singular matrix, here for every matrix, such that a regular
+    laminate reaches the branches after the diagonal check. The error of
+    ``calc_equivalent_properties`` must be the same ``LinAlgError``, a
+    ``ValueError``, with the same message in all cases. The core-only
+    laminate, whose ``ABD`` vanishes, is caught by the diagonal checks
+    before any inversion. With the real inversion restored, ``Ats`` is
+    unchanged, bit for bit.
+    """
+    lam = laminated_plate([0, 45, 90], plyt=0.125,
+                          laminaprop=(142e9, 8.7e9, 0.28, 5e9, 5e9, 3e9))
+    Ats = np.array(lam.Ats)
+    inv = np.linalg.inv
+
+    def fake(a):
+        if platform == 'raises':
+            raise np.linalg.LinAlgError('Singular matrix')
+        inv(a)
+        return np.full(np.shape(a), np.inf if platform == 'inf' else np.nan)
+
+    monkeypatch.setattr(np.linalg, 'inv', fake)
+    with pytest.raises(np.linalg.LinAlgError,
+                       match='ABD matrix of the laminate is singular, its'):
+        lam.calc_equivalent_properties()
+    lam.shear_correction = 'rohwer'
+    if platform == 'raises':
+        with pytest.raises(np.linalg.LinAlgError, match='Singular matrix'):
+            lam.calc_transverse_shear_stiffness()
+    else:
+        with pytest.raises(ValueError, match='singular or ill-conditioned'):
+            lam.calc_transverse_shear_stiffness()
+    # NOTE the core-only laminate never reaches the inversion
+    core = ANTIPLANE_CORES['6 entries']
+    for mode in [None, 'rohwer']:
+        with pytest.raises(ValueError, match='singular'):
+            laminated_plate([0, 30], plyts=[1e-3, 2e-3], laminaprop=core,
+                            shear_correction=mode)
+    monkeypatch.undo()
+    lam.calc_transverse_shear_stiffness()
+    assert np.array_equal(np.array(lam.Ats), Ats)
+
+
 @pytest.mark.parametrize('core', ANTIPLANE_CORES.keys())
 @pytest.mark.parametrize('stack', [[0, 0, 0], [0, 30, 90], [45, -20, 0]])
 def test_antiplane_core_sandwich(core, stack):

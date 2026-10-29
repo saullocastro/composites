@@ -154,7 +154,12 @@
   distribution of `'rohwer'`, whose condition number is also required to
   be finite: `numpy.linalg.inv` does not raise `LinAlgError` for a
   singular matrix on every platform, e.g. with the LAPACK of Pyodide,
-  where `test_zero_young_modulus_errors` failed.
+  where `test_zero_young_modulus_errors` failed. New
+  `test_singular_ABD_any_platform` reaches these branches with an inversion
+  that raises or returns inf or nan, and `test_zero_young_modulus_determinant`
+  checks the stiffness constants with `e1 = 0` against the plane-stress
+  closed form of the 2-3 plane and the `ValueError` for a non-positive
+  determinant, `|nu23| >= (e2/e3)**0.5`.
 - Tests: `test_antiplane_core_matlamina`, `test_zero_young_modulus_errors`
   and `test_antiplane_core_sandwich` in
   `tests/test_plane_stress_invariants.py`, the latter against the classical
