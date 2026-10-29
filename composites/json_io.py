@@ -47,7 +47,7 @@ The format of the saved data is::
     {
       "type": "Laminate",
       "format_version": 2,
-      "composites_version": "0.10.2",
+      "composites_version": "0.10.3",
       "data": {...}
     }
 
