@@ -37,6 +37,39 @@ def test_lampar_tri_axial():
         0.5, 0.4, -0.3, -0.6,
         0.5, 0.4, -0.3, -0.6,
         0.5, 0.4)
+    # NOTE with e3 given, the invariants are by default those of the
+    #      plane-stress reduced stiffnesses, see MatLamina.rebuild: Q = E/(1 -
+    #      nu^2) [[1, nu, 0], [nu, 1, 0], [0, 0, (1 - nu)/2]], Jones (1999),
+    #      Eq. (2.71), p. 73. For an isotropic material u2 = u3 = u7 = 0, such
+    #      that the lamination parameters have no effect: A = h Q, B = 0, D =
+    #      h^3/12 Q, Abar_ts = G h I
+    assert matlamina.plane_stress
+    Q = E/(1 - nu**2)*np.array([[1., nu, 0.],
+                                [nu, 1., 0.],
+                                [0., 0., (1 - nu)/2]])
+    scale = Q.max()
+    assert np.allclose(lam.A, thickness*Q, rtol=1e-12, atol=1e-14*scale)
+    assert np.allclose(lam.B, 0, rtol=0, atol=1e-14*scale*thickness)
+    assert np.allclose(lam.D, thickness**3/12*Q, rtol=1e-12,
+                       atol=1e-14*scale*thickness**3)
+    assert np.allclose(lam.Abar_ts, G*thickness*np.eye(2), rtol=1e-12,
+                       atol=1e-14*G*thickness)
+
+    # NOTE three-dimensional option: the invariants are those of the
+    #      three-dimensional stiffness, which for an isotropic material are
+    #      the Lame constants, C11 = lambda + 2 mu, C12 = lambda, C66 = mu
+    matlamina.rebuild(plane_stress=False)
+    assert not matlamina.plane_stress
+    lam = laminate_from_lamination_parameters(thickness, matlamina,
+        0.5, 0.4, -0.3, -0.6,
+        0.5, 0.4, -0.3, -0.6,
+        0.5, 0.4, -0.3, -0.6,
+        0.5, 0.4)
+    lame = E*nu/((1 + nu)*(1 - 2*nu))
+    C = np.array([[lame + 2*G, lame, 0.],
+                  [lame, lame + 2*G, 0.],
+                  [0., 0., G]])
+    assert np.allclose(lam.A, thickness*C, rtol=1e-12, atol=1e-14*C.max())
     A = np.array([[1.05196816e+11, 5.18133569e+10, 0.00000000e+00],
                   [5.18133569e+10, 1.05196816e+11, 0.00000000e+00],
                   [0.00000000e+00, 0.00000000e+00, 2.66917293e+10]])
@@ -424,7 +457,25 @@ def test_matlamina_constitutive_matrix_inverse_compliance():
     C_ref = np.linalg.inv(S)
     C = np.asarray(matlamina.get_constitutive_matrix())
     assert np.allclose(C, C_ref, rtol=1e-12, atol=1e-12*C_ref.max())
-    # the 3D constitutive constants q_ij are the same inverse
+    # NOTE by default the constitutive constants q_ij are those of plane
+    #      stress: the inverse of the reduced compliance S11 = 1/e1, S12 =
+    #      -nu12/e1, S22 = 1/e2 (Jones, 1999, Eqs. (2.61) and (2.62), p. 71),
+    #      equal to the condensed C_ij - C_i3 C_j3/C_33, Eq. (2.64), p. 72
+    assert matlamina.plane_stress
+    Q_ref = np.linalg.inv(np.array([[1/e1, -nu12/e1], [-nu12/e1, 1/e2]]))
+    assert np.allclose(Q_ref, C_ref[:2, :2]
+                       - np.outer(C_ref[:2, 2], C_ref[:2, 2])/C_ref[2, 2],
+                       rtol=1e-12, atol=0)
+    Q = np.array([[matlamina.q11, matlamina.q12, matlamina.q13],
+                  [matlamina.q21, matlamina.q22, matlamina.q23],
+                  [matlamina.q31, matlamina.q32, matlamina.q33]])
+    Q_ref3 = np.zeros((3, 3))
+    Q_ref3[:2, :2] = Q_ref
+    assert np.allclose(Q, Q_ref3, rtol=1e-12, atol=0)
+    # with plane_stress=False, the 3D constitutive constants q_ij are the
+    # same inverse as C
+    matlamina.rebuild(plane_stress=False)
+    assert not matlamina.plane_stress
     Q = np.array([[matlamina.q11, matlamina.q12, matlamina.q13],
                   [matlamina.q21, matlamina.q22, matlamina.q23],
                   [matlamina.q31, matlamina.q32, matlamina.q33]])
