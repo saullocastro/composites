@@ -1721,10 +1721,19 @@ def test_empty_laminate_stress():
 
 
 def test_ill_conditioned_ABD():
-    # A = h E/(1 - nu^2) [[1, nu], [nu, 1]], singular for nu -> 1
+    # A = h E/(1 - nu^2) [[1, nu], [nu, 1]], singular for nu -> 1: the
+    # condition number of the ABD matrix scaled by its diagonal is (1 +
+    # nu)/(1 - nu) = 2e12 in the 2-norm and the 1-norm, above the threshold
+    # 1e12 of 'rohwer' and of calc_equivalent_properties, such that also
+    # 'constant' is refused, since laminated_plate computes the equivalent
+    # properties; with nu = 1 - 1e-10 both are accepted
     nu = 1 - 1e-12
-    with pytest.raises(ValueError, match='ill-conditioned'):
-        isotropic_plate(thickness=1., E=70e3, nu=nu)
+    for mode in ['rohwer', 'constant']:
+        with pytest.raises(ValueError, match='ill-conditioned'):
+            isotropic_plate(thickness=1., E=70e3, nu=nu,
+                            shear_correction=mode)
+    nu = 1 - 1e-10
+    isotropic_plate(thickness=1., E=70e3, nu=nu)
     lam = isotropic_plate(thickness=1., E=70e3, nu=nu,
                           shear_correction='constant')
     assert np.isclose(lam.A55, 5/6*70e3/(2*(1 + nu)), rtol=1e-12)
