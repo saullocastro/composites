@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.10.2 (2026-10-29)
+## 0.10.3 (2026-10-29)
 
 ### Behaviour change: plane-stress invariants of `MatLamina` for any `laminaprop`
 
@@ -169,6 +169,59 @@
   core, `E_c = 0`, instead of `E_c/E_f = 1e-12` and `1e-9`, and agree with
   Eq. (45) of Vlachoutsis (1992) to round-off, `rtol = 1e-12`, without the
   former allowances of 3.3e-13 and 3e-10.
+
+### New: input checks of the material and of the `ABD` matrix
+
+- `MatLamina.rebuild()`, and therefore `read_laminaprop()` and
+  `laminated_plate()`, raise `ValueError` for constants that are not
+  positive definite (Jones, 1999, Sec. 2.4.2, pp. 68-69): negative Young
+  or shear moduli, Eq. (2.45), whose zero limits are kept for antiplane
+  cores and singular transverse shear stiffnesses; `|nu_ij| >=
+  (e_i/e_j)**0.5` for `e_j > 0`, Eq. (2.51); and a non-positive
+  determinant `1 - nu12*nu21 - nu23*nu32 - nu31*nu13 - 2*nu21*nu32*nu13`,
+  Eq. (2.48). The message names the violated conditions and their values.
+  With 2 or 6 entries, where `e3 = 0`, only the in-plane conditions apply.
+  E.g. `e2 = e3 = 8.7e9` with `nu23 = 1.0`, which gave a negative `c22`,
+  and an isotropic `nu = 0.5` with 9 entries, whose determinant vanishes,
+  are now rejected; `(E, 0.5)` is still accepted in plane stress. No test,
+  tutorial or notebook used such constants. Results with admissible
+  constants are unchanged, bit for bit.
+- `Laminate.calc_equivalent_properties()`, called by `laminated_plate()`,
+  also rejects, with `numpy.linalg.LinAlgError`, a `ValueError`, an `ABD`
+  matrix with a positive diagonal that is singular or ill-conditioned,
+  e.g. of a single ply at 45 degrees with `g12 = 0`: the condition number
+  in the 1-norm of the `ABD` matrix about the mid-surface, after the
+  symmetric diagonal scaling of `'rohwer'`, must not exceed `1e12`, the
+  threshold of `'rohwer'`. Singularity is a property of the laminate: the
+  matrix about the reference surface has a condition number growing as
+  `(offset/h)**2`, 1.6e10 at `offset/h = 1e4`, round-off noise near
+  `1e12` from `offset/h = 1e5`, so it would reject valid laminates with a
+  large offset depending on the platform, as `test_large_offset[chow]` of
+  pyfe3d did. The matrix about the mid-surface is the stored one for
+  `offset = 0`, is otherwise integrated from the plies with `z` from the
+  mid-surface, giving the same result for any offset, and, without plies,
+  is shifted back from the stored one, `B - e A`, `D - 2 e B + e^2 A`
+  (Vasiliev and Morozov, 2001, Eq. (5.28)), which with the lamination
+  parameters of `calc_lamination_parameters()`, whose `xiD` carry the
+  round-off of the cubes of the heights, is reliable up to `offset/h =
+  1e4`. The equivalent properties are still computed from the inverse of
+  the stored matrix, unchanged. Measured for an 8-ply laminate,
+  `calc_equivalent_properties()` takes 12 to 16 us, against 28 us with the
+  numpy checks of the diagonal and of the inverse of 0.10.2, now loops,
+  and `laminated_plate()` 180 to 230 us before and after, within the noise
+  of the machine; `np.linalg.cond` would have added about 20 us. The check
+  is blind to a decoupled term that vanishes only to round-off, e.g. `A66`
+  of `[0/90]` with `g12 = 0`.
+  `test_ill_conditioned_ABD`, an isotropic plate with `nu = 1 - 1e-12`,
+  scaled condition number `2e12`, now expects `ValueError` also with
+  `shear_correction='constant'`, and checks `A55` with `nu = 1 - 1e-10`;
+  `test_singular_ABD_any_platform` matches the new message, "singular or
+  ill-conditioned". No other laminate of the test suite is rejected,
+  including the sandwiches with soft and antiplane cores.
+- Tests: `test_not_positive_definite_rejected`,
+  `test_singular_ABD_positive_diagonal` and
+  `test_singular_ABD_offset_invariant`, the latter with offsets up to
+  `1e7 h`, in `tests/test_plane_stress_invariants.py`.
 
 ### Python versions
 

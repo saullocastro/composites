@@ -26,7 +26,7 @@ import pytest
 from composites.utils import read_laminaprop, laminated_plate
 from composites.core import (laminate_from_LaminationParameters,
                              laminate_from_lamination_parameters, GradABD,
-                             LaminationParameters)
+                             LaminationParameters, Laminate)
 
 
 def qbar(E1, E2, nu12, G12, thetadeg):
@@ -447,7 +447,8 @@ def test_singular_ABD_any_platform(platform, monkeypatch):
 
     monkeypatch.setattr(np.linalg, 'inv', fake)
     with pytest.raises(np.linalg.LinAlgError,
-                       match='ABD matrix of the laminate is singular, its'):
+                       match='ABD matrix of the laminate is singular or '
+                             'ill-conditioned, its'):
         lam.calc_equivalent_properties()
     lam.shear_correction = 'rohwer'
     if platform == 'raises':
@@ -516,3 +517,153 @@ def test_antiplane_core_sandwich(core, stack):
         Abar_c = abar_ts([stack[1]], [hc], lamprop[4], lamprop[5])
         assert np.allclose(lam_lp.Abar_ts, Abar_c, rtol=1e-12,
                            atol=1e-14*np.abs(Abar_c).max())
+
+
+def test_not_positive_definite_rejected():
+    r"""Material constants that are not positive definite
+
+    Jones, R. M., Mechanics of Composite Materials, 2nd ed., 1999, Sec.
+    2.4.2, pp. 68-69: ``E_i, G_ij >= 0``, Eq. (2.45) with the zero limits
+    of an antiplane core or of a singular transverse shear stiffness,
+    ``|nu_ij| < (E_i/E_j)**0.5``, Eq. (2.51), and ``1 - nu12 nu21 - nu23
+    nu32 - nu31 nu13 - 2 nu21 nu32 nu13 > 0``, Eq. (2.48). The message
+    names the violated conditions with their values. With 2 or 6 entries
+    only the in-plane conditions apply, e.g. an isotropic ``nu = 0.5`` is
+    accepted in plane stress and rejected with 9 entries, whose determinant
+    ``1 - 3 nu^2 - 2 nu^3`` vanishes.
+    """
+    E = 8.7e9
+    # NOTE e2 = e3 with nu23 = 1 would give a negative c22
+    with pytest.raises(ValueError) as exc:
+        read_laminaprop((142e9, E, 0.28, 5e9, 5e9, 3e9, E, 0.3, 1.0))
+    msg = str(exc.value)
+    assert 'not positive definite' in msg
+    assert '|nu23| = 1.0 is not < (e2/e3)**0.5 = 1.0' in msg
+    assert 'Eq. (2.51)' in msg and 'Eq. (2.48)' in msg
+    for lamprop, matches, absent in [
+            ((142e9, -E, 0.28, 5e9, 5e9, 3e9), ['e2 = %r' % -E,
+                                                 'Eq. (2.45)'], []),
+            ((142e9, E, 0.28, 5e9, -1., 3e9), ['g13 = -1.0',
+                                                'Eq. (2.45)'], []),
+            ((70e9, 1.0), ['|nu12| = 1.0', 'Eq. (2.51)'], []),
+            ((10e9, 1e9, 3.2, 1e9, 1e9, 1e9), ['|nu12| = 3.2',
+                                                'Eq. (2.51)'], []),
+            # NOTE bounds satisfied, determinant 1 - 3 nu^2 - 2 nu^3 < 0
+            ((E, E, 0.6, 1e9, 1e9, 1e9, E, 0.6, 0.6), ['Eq. (2.48)'],
+             ['Eq. (2.51)']),
+            ((E, E, 0.5, 1e9, 1e9, 1e9, E, 0.5, 0.5), ['= 0.0, Eq. (2.48)'],
+             [])]:
+        with pytest.raises(ValueError) as exc:
+            read_laminaprop(lamprop)
+        for match in matches:
+            assert match in str(exc.value), (lamprop, str(exc.value))
+        for match in absent:
+            assert match not in str(exc.value), (lamprop, str(exc.value))
+    # accepted: in-plane conditions only with 2 or 6 entries, the bound
+    # approached from below, and the zero limits
+    read_laminaprop((E, 0.5))
+    read_laminaprop((10e9, 1e9, 0.999*10**0.5, 1e9, 1e9, 1e9))
+    read_laminaprop((142e9, E, 0.28, 5e9, 0., 0.))
+    # the same check when the constants are set directly
+    m = read_laminaprop((142e9, E, 0.28, 5e9, 5e9, 3e9))
+    m.g12 = -1.
+    with pytest.raises(ValueError, match='g12 = -1.0'):
+        m.rebuild()
+
+
+@pytest.mark.parametrize('thetadeg', [45., 30., -60.])
+def test_singular_ABD_positive_diagonal(thetadeg):
+    r"""Singular ABD with a positive diagonal
+
+    A single ply with ``g12 = 0`` has a plane-stress stiffness of rank 2, so
+    ``A`` and ``D`` are singular in any axes, while at an angle other than 0
+    or 90 degrees all their diagonal terms are positive. The equivalent
+    properties are undefined, and ``calc_equivalent_properties`` must
+    detect it by the condition number of the ABD matrix scaled by its
+    diagonal, see its Notes, raising ``LinAlgError``, a ``ValueError``. At 0
+    degrees ``A66 = D66 = 0`` exactly, rejected by the diagonal check. The
+    scaling makes the check blind to a decoupled term that vanishes only to
+    round-off: ``[0/90]`` has ``A66`` of the order of ``E1 cos^2(90 deg)
+    h``, about 1e-22 N/m, decoupled from the other terms, and is accepted
+    with a tiny but finite ``g12``. With ``g12 > 0`` all are accepted.
+    """
+    lamprop = (142e9, 8.7e9, 0.28, 0., 5e9, 3e9)
+    A, B, D = clt_abd([thetadeg], [1e-3], [lamprop])
+    assert np.all(np.diag(A) > 0) and np.all(np.diag(D) > 0)
+    for mode in (None, 'constant'):
+        with pytest.raises(ValueError, match='singular or ill-conditioned'):
+            laminated_plate([thetadeg], plyt=1e-3, laminaprop=lamprop,
+                            shear_correction=mode)
+    with pytest.raises(ValueError, match='singular or ill-conditioned'):
+        laminated_plate([0], plyt=1e-3, laminaprop=lamprop,
+                        shear_correction=None)
+    lam = laminated_plate([0, 90], plyt=1e-3, laminaprop=lamprop,
+                          shear_correction=None)
+    assert 0 < lam.A66 < 1e-15*lam.A11
+    lam = laminated_plate([thetadeg], plyt=1e-3,
+                          laminaprop=lamprop[:3] + (5e9, ) + lamprop[4:],
+                          shear_correction=None)
+    assert np.isfinite(lam.e1) and lam.e1 > 0
+
+
+def test_singular_ABD_offset_invariant():
+    r"""The conditioning check does not depend on the offset
+
+    The condition number of the scaled ABD matrix about the reference
+    surface grows as ``(offset/h)**2``, 1.6e10 at ``offset/h = 1e4``, and
+    is round-off noise near the threshold 1e12 from ``offset/h = 1e5``. The
+    check uses the matrix about the mid-surface, see the Notes of
+    ``calc_equivalent_properties``: a singular laminate, a single ply at 45
+    degrees with ``g12 = 0``, is rejected for every offset, and regular
+    laminates are accepted, with the equivalent properties computed from
+    the stored matrix, as before. Without plies, from lamination parameters,
+    the stored matrix is shifted back, which with the lamination parameters
+    of ``calc_lamination_parameters``, carrying the round-off of the cubes of
+    the heights, is accurate up to ``offset/h = 1e4``.
+    """
+    singular = (142e9, 8.7e9, 0.28, 0., 5e9, 3e9)
+    CFRP = (138.0, 9.3, 0.3, 4.6, 4.6, 2.3)
+    offsets = [0., 1e2, -1e4, 1e5, 1e6, -1e6, 1e7]
+    for offset in offsets:
+        for mode in [None, 'constant']:
+            with pytest.raises(ValueError,
+                               match='singular or ill-conditioned'):
+                laminated_plate([45], plyt=1., laminaprop=singular,
+                                offset=offset, shear_correction=mode)
+    mat = read_laminaprop(CFRP)
+    for stack in ([0, 90, 45, 90, 0], [0, 90, 45, -45, 30]):
+        for offset in offsets:
+            lam = laminated_plate(stack, plyt=0.2, laminaprop=CFRP,
+                                  offset=offset, shear_correction='constant')
+            # NOTE the equivalent properties, about the reference surface,
+            #      fall as (h/offset)**2 and are round-off from offset/h =
+            #      1e5, unchanged
+            assert np.isfinite(lam.e1)
+            if abs(offset) <= 1e4:
+                assert lam.e1 > 0
+                lp = lam.calc_lamination_parameters()
+                lam_lp = laminate_from_LaminationParameters(lam.h, mat, lp,
+                                                            offset)
+                lam_lp.calc_equivalent_properties()
+                assert np.isfinite(lam_lp.e1) and lam_lp.e1 > 0
+
+
+def test_ABD_non_positive_about_mid_surface():
+    r"""Stored ABD whose diagonal about the mid-surface is not positive
+
+    Without plies the matrix about the mid-surface is shifted back from the
+    stored one, ``D - 2 offset B + offset**2 A``. A stored ``ABD`` with a
+    positive diagonal and a regular inverse, but not positive definite,
+    ``A_ii = D_ii = 1`` and ``B_ii = 2``, gives ``D_ii = -2`` about the
+    mid-surface for ``offset = 1``, which the conditioning check rejects.
+    """
+    lam = Laminate()
+    lam.h = 1.
+    lam.offset = 1.
+    lam.A11 = lam.A22 = lam.A66 = 1.
+    lam.B11 = lam.B22 = lam.B66 = 2.
+    lam.D11 = lam.D22 = lam.D66 = 1.
+    assert np.all(np.diag(lam.ABD) > 0)
+    assert np.isfinite(np.linalg.inv(lam.ABD)).all()
+    with pytest.raises(ValueError, match='singular or ill-conditioned'):
+        lam.calc_equivalent_properties()

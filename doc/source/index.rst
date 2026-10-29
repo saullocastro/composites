@@ -47,14 +47,14 @@ https://github.com/saullocastro/composites
 Citing this library
 -------------------
 
-Castro, S. G. P. Methods for analysis and design of composites (Version 0.10.2) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
+Castro, S. G. P. Methods for analysis and design of composites (Version 0.10.3) [Computer software]. 2026. https://doi.org/10.5281/zenodo.2871782
 
 Bibtex::
 
     @misc{composites2026,
         author = {Castro, Saullo G. P.},
         doi = {10.5281/zenodo.2871782},
-        title = {{Methods for analysis and design of composites (Version 0.10.2)}},
+        title = {{Methods for analysis and design of composites (Version 0.10.3)}},
         year = 2026
         }
 

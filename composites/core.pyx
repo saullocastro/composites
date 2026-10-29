@@ -20,6 +20,8 @@ from the angles of an N-double laminate. The functions of
 :mod:`composites.utils` create these objects from the ply data.
 
 """
+from libc.math cimport fabs, sqrt, INFINITY
+
 import copyreg
 import warnings
 
@@ -131,6 +133,97 @@ def _warn_deprecated(old, new):
     #      pointing to the line of the caller
     warnings.warn("'%s' is deprecated, use '%s' instead" % (old, new),
                   DeprecationWarning, stacklevel=1)
+
+
+cdef inline bint _poisson_admissible(double nuij, double ei,
+                                     double ej) noexcept nogil:
+    # NOTE |nu_ij| < (e_i/e_j)**0.5, Jones (1999), Eq. (2.51), and its limit
+    #      nu_ij = 0 for e_i = 0 < e_j; no bound for e_j = 0
+    if ej > 0:
+        if ei > 0:
+            return nuij*nuij*ej < ei
+        return nuij == 0
+    return True
+
+
+def _not_positive_definite(MatLamina mat, double det):
+    r"""Message naming the violated conditions of :meth:`.MatLamina.rebuild`
+    """
+    msgs = []
+    for name in ('e1', 'e2', 'e3', 'g12', 'g13', 'g23'):
+        value = getattr(mat, name)
+        if not value >= 0:
+            msgs.append('%s = %r is not >= 0, Eq. (2.45)' % (name, value))
+    if not det > 0:
+        msgs.append('non-positive determinant 1 - nu12*nu21 - nu23*nu32 - '
+                    'nu31*nu13 - 2*nu21*nu32*nu13 = %r, Eq. (2.48)' % det)
+    for ij in ('12', '13', '23'):
+        nu = getattr(mat, 'nu' + ij)
+        ei = getattr(mat, 'e' + ij[0])
+        ej = getattr(mat, 'e' + ij[1])
+        if not _poisson_admissible(nu, ei, ej):
+            msgs.append('|nu%s| = %r is not < (e%s/e%s)**0.5 = %r, with e%s = '
+                        '%r and e%s = %r, Eq. (2.51)' % (ij, abs(nu), ij[0],
+                        ij[1], (ei/ej)**0.5 if ej > 0 and ei >= 0 else
+                        float('nan'), ij[0], ei, ij[1], ej))
+    return ('MatLamina constants not positive definite (Jones, R. M., '
+            'Mechanics of Composite Materials, 2nd ed., 1999, Sec. 2.4.2): '
+            + '; '.join(msgs))
+
+
+cdef double _scaled_cond1(double *M) noexcept nogil:
+    # NOTE condition number in the 1-norm of the symmetric 6x6 matrix M
+    #      scaled by its diagonal, S M S with S = diag(M)^(-1/2), inverted by
+    #      Gauss-Jordan elimination with partial pivoting; INFINITY for a
+    #      non-positive diagonal term, inf or nan for a vanishing pivot,
+    #      divided by with cdivision, nan propagated; M is overwritten
+    cdef int i, j, k, p
+    cdef double n1, n2, col, piv, f, tmp
+    cdef double sq[6]
+    cdef double W[72]
+    for i in range(6):
+        if not M[7*i] > 0:
+            return INFINITY
+        sq[i] = sqrt(M[7*i])
+    n1 = 0.
+    for j in range(6):
+        col = 0.
+        for i in range(6):
+            M[6*i + j] = M[6*i + j]/(sq[i]*sq[j])
+            col += fabs(M[6*i + j])
+        if col > n1 or col != col:
+            n1 = col
+    for i in range(6):
+        for j in range(6):
+            W[12*i + j] = M[6*i + j]
+            W[12*i + 6 + j] = 1. if i == j else 0.
+    for k in range(6):
+        p = k
+        for i in range(k + 1, 6):
+            if fabs(W[12*i + k]) > fabs(W[12*p + k]):
+                p = i
+        if p != k:
+            for j in range(12):
+                tmp = W[12*k + j]
+                W[12*k + j] = W[12*p + j]
+                W[12*p + j] = tmp
+        piv = W[12*k + k]
+        for j in range(12):
+            W[12*k + j] = W[12*k + j]/piv
+        for i in range(6):
+            if i != k:
+                f = W[12*i + k]
+                if f != 0:
+                    for j in range(12):
+                        W[12*i + j] -= f*W[12*k + j]
+    n2 = 0.
+    for j in range(6):
+        col = 0.
+        for i in range(6):
+            col += fabs(W[12*i + 6 + j])
+        if col > n2 or col != col:
+            n2 = col
+    return n1*n2
 
 
 cdef class MatLamina:
@@ -270,8 +363,29 @@ cdef class MatLamina:
             the attribute ``plane_stress``. The stiffness constants ``c11``
             to ``c66`` are three-dimensional in both cases.
 
+        Raises
+        ------
+        ValueError
+            If the constants are not those of a positive-definite material,
+            see the Notes. The message names the violated conditions and
+            their values.
+
         Notes
         -----
+        The constants must be those of a positive-definite material (Jones
+        [3]_, Sec. 2.4.2, pp. 68-69): `e_1, e_2, e_3, g_{23}, g_{13}, g_{12}
+        \ge 0`, Eq. (2.45), whose strict inequality is relaxed to admit the
+        limits of an antiplane core, zero `e_1`, `e_2` and `g_{12}`, and of a
+        ply with a singular transverse shear stiffness, zero `g_{13}` or
+        `g_{23}`; `|\nu_{ij}| < (e_i/e_j)^{1/2}` for `e_j > 0`, Eq. (2.51),
+        i.e. `\nu_{ij} = 0` for `e_i = 0 < e_j`; and `\Delta = 1 -
+        \nu_{12}\nu_{21} - \nu_{23}\nu_{32} - \nu_{31}\nu_{13} -
+        2\nu_{21}\nu_{32}\nu_{13} > 0`, Eq. (2.48). With `e_3 = 0`, as given
+        by :func:`.read_laminaprop` for 2 or 6 entries, `\nu_{31} = \nu_{32}
+        = 0` and only the in-plane conditions remain, `\Delta = 1 -
+        \nu_{12}\nu_{21}`. E.g. `e_2 = e_3` with `\nu_{23} = 1`, which would
+        give a negative `c_{22}`, is rejected.
+
         With ``plane_stress=True``, the default, the constitutive constants
         are the plane-stress reduced stiffnesses of Jones [3]_, Sec. 2.5,
         Eq. (2.66), p. 72, and of Reddy [1]_, Sec. 2.4, Eq. (2.4.4), p. 101:
@@ -419,6 +533,7 @@ cdef class MatLamina:
 
         """
         cdef double e1, e2, e3, nu12, nu21, nu13, nu31, nu23, nu32, delta, den
+        cdef double det
         e1 = self.e1
         e2 = self.e2
         e3 = self.e3
@@ -428,8 +543,17 @@ cdef class MatLamina:
         nu31 = self.nu31
         nu23 = self.nu23
         nu32 = self.nu32
+        # NOTE positive-definite material (Jones, 1999, Sec. 2.4.2), with
+        #      zero moduli as its limit, see the Notes
+        det = 1-nu12*nu21-nu23*nu32-nu31*nu13-2*nu21*nu32*nu13
+        if not (e1 >= 0 and e2 >= 0 and e3 >= 0 and self.g12 >= 0
+                and self.g13 >= 0 and self.g23 >= 0 and det > 0
+                and _poisson_admissible(nu12, e1, e2)
+                and _poisson_admissible(nu13, e1, e3)
+                and _poisson_admissible(nu23, e2, e3)):
+            raise ValueError(_not_positive_definite(self, det))
         if e1 != 0 and e2 != 0:
-            delta = (1-nu12*nu21-nu23*nu32-nu31*nu13-2*nu21*nu32*nu13)/(e1*e2)
+            delta = det/(e1*e2)
             self.c11 = (1    - nu23*nu32)/(delta*e2)
             self.c12 = (nu21 + nu31*nu23)/(delta*e2)
             self.c13 = (nu31 + nu21*nu32)/(delta*e2)
@@ -440,17 +564,12 @@ cdef class MatLamina:
             # NOTE zero e1 or e2, e.g. an antiplane core: the same constants
             #      with delta e1 e2 = 1 - nu12 nu21 - ..., without dividing by
             #      the moduli, see the Notes
-            den = 1-nu12*nu21-nu23*nu32-nu31*nu13-2*nu21*nu32*nu13
-            if not den > 0:
-                raise ValueError('MatLamina with a non-positive determinant '
-                                 '1 - nu12*nu21 - nu23*nu32 - nu31*nu13 - '
-                                 '2*nu21*nu32*nu13 = %r' % den)
-            self.c11 = e1*(1    - nu23*nu32)/den
-            self.c12 = e1*(nu21 + nu31*nu23)/den
-            self.c13 = e1*(nu31 + nu21*nu32)/den
-            self.c22 = e2*(1    - nu13*nu31)/den
-            self.c23 = e2*(nu32 + nu12*nu31)/den
-            self.c33 = e3*(1    - nu12*nu21)/den
+            self.c11 = e1*(1    - nu23*nu32)/det
+            self.c12 = e1*(nu21 + nu31*nu23)/det
+            self.c13 = e1*(nu31 + nu21*nu32)/det
+            self.c22 = e2*(1    - nu13*nu31)/det
+            self.c23 = e2*(nu32 + nu12*nu31)/det
+            self.c33 = e3*(1    - nu12*nu21)/det
         self.c44 = self.g23
         self.c55 = self.g13
         self.c66 = self.g12
@@ -2629,13 +2748,60 @@ cdef class Laminate:
         Raises
         ------
         numpy.linalg.LinAlgError
-            A subclass of ``ValueError``, if the ``ABD`` matrix is singular,
-            e.g. for a laminate of antiplane cores only, whose in-plane and
-            bending stiffnesses vanish: the equivalent properties are then
-            undefined.
+            A subclass of ``ValueError``, if the ``ABD`` matrix is singular
+            or ill-conditioned, see the Notes, e.g. for a laminate of
+            antiplane cores only, whose in-plane and bending stiffnesses
+            vanish, or for a single ply at 45 degrees with ``g12 = 0``,
+            whose ``ABD`` has a positive diagonal: the equivalent properties
+            are then undefined.
 
         Notes
         -----
+        The ``ABD`` matrix must have a positive diagonal and a finite
+        inverse, and the ``ABD`` matrix about the mid-surface, `[[A, B^0],
+        [B^0, D^0]]`, must have a condition number not above `10^{12}` after
+        the symmetric diagonal scaling `M = S \, ABD \, S`, `S =
+        \mathrm{diag}(ABD)^{-1/2}`, which does not depend on the units; the
+        scaling and the threshold are those of the ``'rohwer'`` transverse
+        shear distribution, see :meth:`.calc_transverse_shear_stiffness`.
+        Singularity is a property of the laminate, and the matrix about the
+        mid-surface makes the check independent of ``offset``, while the
+        condition number of the matrix about the reference surface, `B = B^0
+        + e A`, `D = D^0 + 2 e B^0 + e^2 A` (Vasiliev and Morozov [1]_, Eq.
+        (5.28), p. 235), grows as `(e/h)^2`, e.g. from 2.3 to `1.6 \cdot
+        10^{10}` at `e/h = 10^4` and to round-off noise near `10^{12}` from
+        `e/h = 10^5`. With ``offset = 0`` the matrix is the stored ``ABD``;
+        otherwise it is integrated from the plies, with `z` measured from the
+        mid-surface, exactly as for ``offset = 0``, such that the check gives
+        the same result for any offset. The matrix about the reference
+        surface cannot be shifted back accurately at large offsets: its
+        `D_{ij}` carry the round-off of the cubes of the heights, about
+        `\epsilon (e/h)^3` relative to `D^0`, which reaches 1 at `e/h
+        \approx 10^5`. Without plies, e.g. created from lamination
+        parameters, the stored matrix is shifted back, `B^0 = B - e A`, `D^0
+        = D - 2 e B + e^2 A`, with a relative round-off of about `12 \epsilon
+        (e/h)^2`, measured `8 \cdot 10^{-4}` at `e/h = 10^6` and 0.16 at
+        `e/h = 10^7` for exact lamination parameters, plus the round-off of
+        the stored matrix itself: the `\xi_{Di}` of
+        :meth:`.calc_lamination_parameters`, integrated about the reference
+        surface, carry that of the cubes, `\epsilon (e/h)^3`: the shifted
+        `D^0_{11}` of the five-ply laminates of the tests is off by about
+        `2 \cdot 10^{-4}` at `e/h = 10^4` and by 20 to 50 per cent at `e/h =
+        10^5`, such that a valid laminate given with them is accepted up to
+        `e/h = 10^4` and may be rejected from `e/h = 10^5`. The condition
+        number is that of the
+        1-norm, `\kappa_1(M) = \|M\|_1 \|M^{-1}\|_1`, with `M^{-1}` by
+        Gauss-Jordan elimination with partial pivoting of the 6x6 matrix,
+        which, with the integration over the plies, adds about 1 us, while
+        ``np.linalg.cond``, of the 2-norm, would add about 20 us;
+        `\kappa_2/6 \le \kappa_1 \le 6 \kappa_2` for a 6x6 matrix. Being
+        invariant to the scaling, the check does not detect a term that
+        vanishes only to round-off and is decoupled from the others, e.g.
+        ``A66`` of a ``[0/90]`` laminate with ``g12 = 0``, of the order of
+        `e_1 \cos^2 90^\circ \, h`, which gives a tiny but finite ``g12``
+        instead. The equivalent properties are computed from the inverse of
+        the stored ``ABD``, about the reference surface.
+
         With `a = [[A, B], [B, D]]^{-1}`, whose upper-left 3x3 block is the
         membrane compliance of the laminate with zero moments and free
         curvatures:
@@ -2649,21 +2815,78 @@ cdef class Laminate:
 
         where the index 6 is the third row and column of `a`.
 
+        References
+        ----------
+        .. [1] Vasiliev, V. V. and Morozov, E. V., Mechanics and Analysis of
+           Composite Materials, Elsevier, Oxford, 2001.
+
         """
-        msg = ('The ABD matrix of the laminate is singular, its equivalent '
-               'properties are undefined, e.g. for a laminate of antiplane '
-               'cores only, whose in-plane and bending stiffnesses vanish')
+        cdef int i, j
+        cdef double e, za, zb, dz1, dz2, dz3, hsum, Aij, Bij, Dij
+        cdef double q[9]
+        cdef double Mmid[36]
+        cdef double [:, ::1] ABDv, AIv
+        cdef Lamina ply
+        msg = ('The ABD matrix of the laminate is singular or '
+               'ill-conditioned, its equivalent properties are undefined, '
+               'e.g. for a laminate of antiplane cores only, whose in-plane '
+               'and bending stiffnesses vanish')
         #NOTE explicit checks, np.linalg.inv does not raise LinAlgError for
         #     a singular matrix on every platform, e.g. not with the LAPACK
         #     of Pyodide, which returns inf or nan instead
-        ABD = np.asarray(self.get_ABD(), dtype=DOUBLE)
-        if not np.all(np.diag(ABD) > 0):
-            raise np.linalg.LinAlgError(msg)
+        ABDv = self.get_ABD()
+        for i in range(6):
+            if not ABDv[i, i] > 0:
+                raise np.linalg.LinAlgError(msg)
         try:
-            AI = np.linalg.inv(ABD)
+            AI = np.linalg.inv(ABDv)
         except np.linalg.LinAlgError:
             raise np.linalg.LinAlgError(msg)
-        if not np.all(np.isfinite(AI)):
+        AIv = AI
+        for i in range(6):
+            for j in range(6):
+                if not fabs(AIv[i, j]) <= 1.7976931348623157e308:
+                    raise np.linalg.LinAlgError(msg)
+        # NOTE conditioning of the ABD matrix about the mid-surface, which
+        #      does not depend on the offset, see the Notes
+        e = self.offset
+        if e == 0:
+            for i in range(6):
+                for j in range(6):
+                    Mmid[6*i + j] = ABDv[i, j]
+        elif len(self.plies) > 0:
+            for i in range(36):
+                Mmid[i] = 0.
+            hsum = 0.
+            for ply in self.plies:
+                hsum += ply.h
+            za = -hsum/2.
+            for ply in self.plies:
+                zb = za + ply.h
+                dz1 = zb - za
+                dz2 = (zb*zb - za*za)/2.
+                dz3 = (zb*zb*zb - za*za*za)/3.
+                q[0] = ply.q11L; q[1] = ply.q12L; q[2] = ply.q16L
+                q[3] = ply.q12L; q[4] = ply.q22L; q[5] = ply.q26L
+                q[6] = ply.q16L; q[7] = ply.q26L; q[8] = ply.q66L
+                for i in range(3):
+                    for j in range(3):
+                        Mmid[6*i + j] += q[3*i + j]*dz1
+                        Mmid[6*i + j + 3] += q[3*i + j]*dz2
+                        Mmid[6*(i + 3) + j] += q[3*i + j]*dz2
+                        Mmid[6*(i + 3) + j + 3] += q[3*i + j]*dz3
+                za = zb
+        else:
+            for i in range(3):
+                for j in range(3):
+                    Aij = ABDv[i, j]
+                    Bij = ABDv[i, j + 3] - e*Aij
+                    Dij = ABDv[i + 3, j + 3] - 2*e*ABDv[i, j + 3] + e*e*Aij
+                    Mmid[6*i + j] = Aij
+                    Mmid[6*i + j + 3] = Bij
+                    Mmid[6*(i + 3) + j] = Bij
+                    Mmid[6*(i + 3) + j + 3] = Dij
+        if not _scaled_cond1(Mmid) <= 1e12:
             raise np.linalg.LinAlgError(msg)
         a11, a12, a22, a33 = AI[0,0], AI[0,1], AI[1,1], AI[2,2]
         self.e1 = 1./(self.h*a11)
