@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.10.2 (2026-10-29)
 
 ### Behaviour change: plane-stress invariants of `MatLamina` for any `laminaprop`
 
@@ -133,8 +133,6 @@
   core, `E_c = 0`, instead of `E_c/E_f = 1e-12` and `1e-9`, and agree with
   Eq. (45) of Vlachoutsis (1992) to round-off, `rtol = 1e-12`, without the
   former allowances of 3.3e-13 and 3e-10.
-
-## 0.10.1 (2026-10-26)
 
 ### Python versions
 
