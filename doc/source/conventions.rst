@@ -71,6 +71,15 @@ Material properties
   the properties of the three-dimensional constitutive matrix of
   :meth:`.MatLamina.get_constitutive_matrix`.
 
+The Young moduli may be zero, e.g. ``(0, 0, nu12, 0, G13, G23)``, or ``(0,
+0, nu12, 0, G13, G23, E33, 0, 0)``, for an antiplane core, "an idealized
+core in which the modulus of elasticity in planes parallel with the faces is
+zero but the shear modulus in planes perpendicular to the faces is finite"
+(Allen, Analysis and Design of Structural Sandwich Panels, Pergamon Press,
+1969, p. 14), which adds only transverse shear stiffness to a sandwich. A
+zero ``Ei`` with a non-zero ``Ej`` requires ``nuij = 0``, see
+:func:`.read_laminaprop`.
+
 The index 1 is the fibre direction, 2 the in-plane transverse direction and 3
 the normal direction. The ply stiffnesses used in the laminate integrals are
 always the plane-stress ones, see :meth:`.Lamina.rebuild`; ``G13`` and

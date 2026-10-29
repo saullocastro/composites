@@ -99,6 +99,37 @@
   consistent with Rohwer's Fig. 7; `test_isotropic_five_sixths` also covers
   `'constant'`.
 
+### New: zero Young moduli, antiplane cores
+
+- `read_laminaprop()` and `MatLamina.rebuild()` accept zero Young moduli,
+  e.g. `laminaprop = (0, 0, nu12, 0, G13, G23)` for the antiplane core of
+  Allen (1969), p. 14, with zero moduli in the plane of the faces and
+  finite transverse shear moduli. Before, `nu21 = nu12*e2/e1` raised
+  `ZeroDivisionError`. With `ei = 0`, the reciprocal Poisson's ratio
+  `nuji` is stored as zero; a non-zero `nuij` with `ei = 0` and `ej != 0`,
+  which violates `|nuij| < (ei/ej)**0.5` (Jones, 1999, Eq. (2.51)), raises
+  `ValueError`. The plane-stress constants and invariants of such a core
+  vanish except `q44 = g23`, `q55 = g13`, `u6` and `u7`, such that it adds
+  only transverse shear stiffness; with `e1 = 0` or `e2 = 0` the stiffness
+  constants `c11` to `c33` are computed without dividing by the moduli,
+  e.g. only `c33 = e3`, `c44`, `c55` are non-zero for an antiplane core,
+  and `ValueError` is raised if the determinant `1 - nu12*nu21 - ...` is
+  not positive. `trace_normalize_plane_stress()` raises `ValueError` for a
+  non-positive trace, e.g. of an antiplane core, and
+  `Laminate.calc_equivalent_properties()` raises `numpy.linalg.LinAlgError`,
+  a `ValueError`, with a clear message when the `ABD` matrix is singular,
+  e.g. for a laminate of antiplane cores only. Results with non-zero moduli
+  are unchanged, bit for bit.
+- Tests: `test_antiplane_core_matlamina`, `test_zero_young_modulus_errors`
+  and `test_antiplane_core_sandwich` in
+  `tests/test_plane_stress_invariants.py`, the latter against the classical
+  lamination theory and the constant-strain transverse shear stiffness to
+  `rtol = 1e-12`. `test_sandwich_antiplane_core_converges_to_allen_1969`
+  and `test_vlachoutsis_published_spherical_shell` use a true antiplane
+  core, `E_c = 0`, instead of `E_c/E_f = 1e-12` and `1e-9`, and agree with
+  Eq. (45) of Vlachoutsis (1992) to round-off, `rtol = 1e-12`, without the
+  former allowances of 3.3e-13 and 3e-10.
+
 ## 0.10.1 (2026-10-26)
 
 ### Python versions
