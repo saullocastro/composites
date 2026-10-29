@@ -44,6 +44,19 @@ holds for the odd moments of the density, see :doc:`mass_integrals`.
 :meth:`.Laminate.make_symmetric` and :meth:`.Laminate.make_smeared` require
 ``offset = 0``.
 
+For any laminate, `B = B_{d=0} + d A` and `D = D_{d=0} + 2 d B_{d=0} + d^2
+A`, the shift of the stiffness integrals to another reference plane
+(Vasiliev and Morozov, Mechanics and Analysis of Composite Materials,
+Elsevier, 2001, Eq. (5.28), p. 235), while `A` and the transverse shear
+stiffnesses ``Abar44``, ``Abar45``, ``Abar55`` do not change. The lamination
+parameters of :meth:`.Laminate.calc_lamination_parameters` are integrated
+about the reference surface, i.e. they include the offset, and
+:func:`.laminate_from_LaminationParameters` needs the same ``offset`` to
+give back the stiffnesses:
+
+.. literalinclude:: ../../tests/test_plane_stress_invariants.py
+    :pyobject: test_lamination_parameters_offset
+
 
 Material properties
 -------------------

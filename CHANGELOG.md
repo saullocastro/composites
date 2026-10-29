@@ -41,6 +41,32 @@
   invariants use `Q66` and `Q44`, `Q55` in their places (the values are
   unchanged, all shear moduli of the test being equal).
 
+### Fix: lamination parameters with an offset
+
+- `laminate_from_LaminationParameters()` and
+  `laminate_from_lamination_parameters()` take a new argument `offset`,
+  default `0.`, and `GradABD.calc_LP_grad()` too. Since 0.3.0,
+  `Laminate.calc_lamination_parameters()` integrates `xiB` and `xiD` about
+  the reference surface, i.e. including `offset`, while
+  `laminate_from_LaminationParameters()` assumed the mid-surface: it left
+  out the terms `offset*A` of `B` and `offset**2*A` of `D` of the invariant
+  `u1`, `u4`, `u5` parts, such that the round trip of a laminate with an
+  offset gave wrong `B` and `D`, e.g. `B11` 4.8 times too small for a
+  `[0/90]s` laminate with `offset = 0.2 mm` and `0.125 mm` plies. Given the
+  same `offset`, the stiffnesses now satisfy `B = B0 + e A` and `D = D0 +
+  2 e B0 + e^2 A` (Vasiliev and Morozov, 2001, Eq. (5.28)), and reproduce
+  `laminated_plate()` to round-off; the created laminate stores `offset`.
+  `A` and `Abar44`, `Abar45`, `Abar55` do not depend on the offset. The
+  derivatives of `GradABD` with respect to the thickness are taken at
+  constant lamination parameters and offset. Results with `offset = 0` are
+  unchanged.
+- Tests: `test_lamination_parameters_offset` in
+  `tests/test_plane_stress_invariants.py`, with offsets of +0.2 mm,
+  -0.2 mm and one ply thickness, for the materials and layups above,
+  against the classical lamination theory to `rtol = 1e-12`, the shift of
+  Vasiliev and Morozov, the transverse shear stiffness and central
+  differences of `GradABD`.
+
 ## 0.10.1 (2026-10-26)
 
 ### Python versions
