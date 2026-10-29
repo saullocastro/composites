@@ -101,7 +101,8 @@ cdef class GradABD:
     cdef public double [:, ::1] gradBij
     cdef public double [:, ::1] gradDij
     cdef public double [:, ::1] gradAtsij
-    cpdef void calc_LP_grad(GradABD, double, MatLamina, LaminationParameters)
+    cpdef void calc_LP_grad(GradABD, double, MatLamina, LaminationParameters,
+                            double offset=*)
 
 
 cpdef Laminate n_double_laminate(double thickness, int n, double[::1] angles_deg, MatLamina matlamina)
