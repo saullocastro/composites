@@ -12,6 +12,8 @@ from composites.core import (laminate_from_LaminationParameters,
                              make_symmetric_LP, Lamina, GradABD,
                              LaminationParameters)
 
+from test_transverse_shear import RohwerReference, stack_from_laminate
+
 
 def test_lampar_tri_axial():
     E = 71e9
@@ -79,14 +81,15 @@ def test_lampar_tri_axial():
     D = np.array([[8.76640130e+09, 4.31777974e+09, 0.00000000e+00],
                   [4.31777974e+09, 8.76640130e+09, 0.00000000e+00],
                   [0.00000000e+00, 0.00000000e+00, 2.22431078e+09]])
-    Ats = np.array([[2.66917293e+10, 0.00000000e+00],
-                    [0.00000000e+00, 2.66917293e+10]])
+    # NOTE no shear correction from lamination parameters, Ats = Abar_ts
+    #      = G h I for an isotropic material
+    Ats = E/(2*(1 + nu))*thickness*np.eye(2)
     assert np.allclose(lam.A, A)
     lam.make_symmetric()
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.Ats, Ats)
-    assert np.allclose(lam.Abar_ts, Ats)
+    assert np.allclose(lam.Ats, Ats, rtol=1e-12, atol=0)
+    assert np.allclose(lam.Abar_ts, Ats, rtol=1e-12, atol=0)
     ABD = lam.ABD
     assert np.allclose(ABD[:3, :3], A)
     assert np.allclose(ABD[3:, 3:], D)
@@ -124,8 +127,9 @@ def test_lampar_plane_stress():
     D = np.array([[6.63973366e+09, 2.19111211e+09, 9.53674316e-08],
                   [2.19111211e+09, 6.63973366e+09, -9.53674316e-08],
                   [9.53674316e-08, -9.53674316e-08, 2.22431078e+09]])
-    Ats = np.array([[2.66917293e+10, 0.00000000e+00],
-                    [0.00000000e+00, 2.66917293e+10]])
+    # NOTE no shear correction from lamination parameters, Ats = Abar_ts
+    #      = G h I for an isotropic material
+    Ats = E/(2*(1 + nu))*thickness*np.eye(2)
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.E, lam.E.T)
     assert np.allclose(lam.F, lam.F.T)
@@ -133,8 +137,8 @@ def test_lampar_plane_stress():
     lam.make_symmetric()
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.Ats, Ats)
-    assert np.allclose(lam.Abar_ts, Ats)
+    assert np.allclose(lam.Ats, Ats, rtol=1e-12, atol=0)
+    assert np.allclose(lam.Abar_ts, Ats, rtol=1e-12, atol=0)
     ABD = lam.ABD
     assert np.allclose(ABD[:3, :3], A)
     assert np.allclose(ABD[3:, 3:], D)
@@ -156,13 +160,15 @@ def test_laminated_plate_tri_axial():
                   [ 0.00262445, 0.00262445, 0.0326602 ]])
     Abar_ts = np.array([[ 2625000.,       0.],
                         [       0., 2625000.]])
-    Ats = np.array([[2014905.27266639, -27210.29377157],
-                    [ -27210.29377157, 2014905.27266639]])
+    # NOTE Rohwer (1988), Eq. (43), with the independent implementation of
+    #      tests/test_transverse_shear.py, instead of the values
+    #      2014905.27 and -27210.29 copied from the output of the code
+    Ats = RohwerReference(stack_from_laminate(lam)).Ats
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
     assert np.allclose(lam.Abar_ts, Abar_ts)
-    assert np.allclose(lam.Ats, Ats)
+    assert np.allclose(lam.Ats, Ats, rtol=1e-12, atol=1e-14*Ats.max())
 
 
 def test_laminated_plate_plane_stress():
@@ -190,8 +196,10 @@ def test_laminated_plate_plane_stress():
                   [1.71625578e-20, 1.71625578e-20, 1.63068348e-17]])
     Abar_ts = np.array([[ 2625000.,       0.],
                         [       0., 2625000.]])
-    Ats = np.array([[2014905.27266639, -27210.29377157],
-                    [ -27210.29377157, 2014905.27266639]])
+    # NOTE Rohwer (1988), Eq. (43), with the independent implementation of
+    #      tests/test_transverse_shear.py, instead of the values
+    #      2014905.27 and -27210.29 copied from the output of the code
+    Ats = RohwerReference(stack_from_laminate(lam)).Ats
     Dts = np.array([[0.03076172, 0.],
                     [0., 0.03076172]])
     Fts = np.array([[6.48880005e-10, 0.00000000e+00],
@@ -204,7 +212,7 @@ def test_laminated_plate_plane_stress():
     assert np.allclose(lam.F, F)
     assert np.allclose(lam.H, H)
     assert np.allclose(lam.Abar_ts, Abar_ts)
-    assert np.allclose(lam.Ats, Ats)
+    assert np.allclose(lam.Ats, Ats, rtol=1e-12, atol=1e-14*Ats.max())
     assert np.allclose(lam.Dts, Dts)
     assert np.allclose(lam.Fts, Fts)
     with pytest.warns(DeprecationWarning):
