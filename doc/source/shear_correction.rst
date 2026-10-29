@@ -69,7 +69,9 @@ not invariant to a rotation of the axes. When a laminate is used with its
 material direction rotated with respect to the axes of a model, a new
 :class:`.Laminate` with the ply angles shifted by the rotation gives the
 transverse shear stiffness in the axes of the model, instead of a tensor
-rotation of ``Ats``.
+rotation of ``Ats``. For the ``[0,90]_s`` CFRP laminate of Rohwer [1]_,
+Table 2, the two differ by 7.0 % in ``A44 = A55`` and by 13.5 % in ``A45``
+at 45 degrees, see his Fig. 7, p. 20.
 
 
 ``scf_k13`` and ``scf_k23``
@@ -107,6 +109,38 @@ gives their strain energies, which lead to a posteriori factors in the sense
 of Noor and Peters [7]_. See :doc:`ex_transverse_shear`.
 
 
+Verification
+------------
+
+``tests/test_transverse_shear.py`` compares the methods with the values
+printed in the references, to half a unit of their last digit, e.g. the
+``[0,90]_s`` laminate of Rohwer [1]_, Table 2, p. 19, and the isotropic
+sandwiches of Vlachoutsis [2]_, Tables I and II, p. 1548, and with closed
+forms: the factor of a symmetrical sandwich of Vlachoutsis [2]_, Eqs. (44),
+(45) and (48), and, for an antiplane core, the shear stiffness `G_c d^2/c`
+of Allen [8]_, Eq. (2.15b), p. 17, which the result approaches within bounds
+derived from the terms that Allen neglects.
+
+Rohwer [1]_, Sec. 4.3, also gives the stiffnesses of a sandwich panel,
+Table 4, p. 23, which are not used as a test: its transverse shear
+stiffnesses are reproduced only with a foam shear modulus of
+0.04 kN/mm\ :sup:`2`, i.e. `\nu = 0.25` instead of the stated 0.3, and its
+bending stiffnesses contradict the stated lay-up, since the ratio `(D_{11} -
+D_{22})/D_{16}`, which depends on the positions of the layers alone, is
+4.216 for the lay-up of his Fig. 9 against 4.71 from the printed values. The
+details are in the comments of ``tests/test_transverse_shear.py``.
+
+For the same reason, two printed factors are checked against the closed
+forms of their papers instead of their printed digits. Chow [4]_, Table 1,
+p. 316, gives `k_2^2 = 0.521` for the graphite-epoxy ``[0,90]_s`` plate,
+whereas his Eqs. (11)-(12), p. 311, give 0.52165 with his data, Eq. (32),
+which reproduce the three other values of the table. Whitney [3]_, p. 304,
+gives `k_1^2 = 0.4098` and `k_2^2 = 0.6915` for a sandwich, whereas his Eqs.
+(3)-(7), p. 303, give 0.40936 and 0.67199 with his data, which reproduce
+the factors of his two laminates on p. 303; no single change of the printed
+data reproduces both sandwich values.
+
+
 References
 ----------
 
@@ -132,3 +166,6 @@ References
    Correction Factors in Multi-layered Composite Cylinders, Journal of
    Engineering Mechanics, 115(6), 1225-1244, 1989.
    https://doi.org/10.1061/(asce)0733-9399(1989)115:6(1225)
+.. [8] Allen, H. G., Analysis and Design of Structural Sandwich Panels,
+   Pergamon Press, 1969, Chap. 2.
+   https://doi.org/10.1016/B978-0-08-012870-2.50006-7

@@ -1,6 +1,174 @@
 # Changelog
 
-## 0.10.1 (2026-10-26)
+## 0.10.2 (2026-10-29)
+
+### Behaviour change: plane-stress invariants of `MatLamina` for any `laminaprop`
+
+- `MatLamina.rebuild()` computes `q11`, `q12`, `q21`, `q22` and the
+  invariants `u1` to `u5` with the plane-stress reduced stiffnesses,
+  `sigma33 = 0` (Jones, 1999, Eq. (2.66); Reddy, 2003, Eq. (2.4.4)), also
+  when `e3`, `nu13` and `nu23` are given, i.e. for a 9-entry `laminaprop`,
+  and sets `q13`, `q23`, `q31`, `q32` and `q33` to zero. Before, with
+  `e3 != 0` they were the three-dimensional stiffnesses, such that
+  `laminate_from_LaminationParameters()`,
+  `laminate_from_lamination_parameters()`, `GradABD.calc_LP_grad()`,
+  `trace_normalize_plane_stress()`, `n_double_laminate()` and
+  `double_double_laminate()` gave stiffer `A`, `B`, `D` than
+  `laminated_plate()` for the same material and layup, e.g. `(lambda +
+  2 mu) h` instead of `E h/(1 - nu^2)` for an isotropic material, 32% higher
+  for `nu = 0.33`. Both routes now agree to round-off for any layup. The
+  results with a 2- or 6-entry `laminaprop` (`e3 = 0`) and those of
+  `laminated_plate()` are unchanged, bit for bit.
+- New option `MatLamina.rebuild(plane_stress=False)`, which keeps the
+  three-dimensional constants and invariants, e.g. for continuum shell
+  elements; the choice is stored in the new read-only attribute
+  `MatLamina.plane_stress`, `True` by default, which is pickled and, in
+  JSON, restored from `q33` without a change of the format version.
+  `trace_normalize_plane_stress()` raises `ValueError` for
+  `plane_stress=False`, since the trace of Melo et al. (2017), Eq. (1), is
+  that of the plane-stress stiffness matrix. The stiffness constants `c11`
+  to `c66` and `get_constitutive_matrix()` remain three-dimensional.
+- Tests: new `tests/test_plane_stress_invariants.py`, where
+  `laminated_plate()` and `laminate_from_LaminationParameters()` are
+  compared, for an isotropic and an orthotropic material with nine
+  constants and four layups, including unbalanced and unsymmetric ones,
+  with the classical lamination theory to `rtol = 1e-12`, together with the
+  trace normalization and `GradABD`. `test_lampar_tri_axial` and
+  `test_matlamina_constitutive_matrix_inverse_compliance` check the
+  plane-stress default and the three-dimensional option. In
+  `tests/test_DD_laminate.py`, the trace is checked against Table 1 of Melo
+  et al. (2017) to half a unit of its last printed digit, and the reference
+  invariants use `Q66` and `Q44`, `Q55` in their places (the values are
+  unchanged, all shear moduli of the test being equal).
+
+### Fix: lamination parameters with an offset
+
+- `laminate_from_LaminationParameters()` and
+  `laminate_from_lamination_parameters()` take a new argument `offset`,
+  default `0.`, and `GradABD.calc_LP_grad()` too. Since 0.3.0,
+  `Laminate.calc_lamination_parameters()` integrates `xiB` and `xiD` about
+  the reference surface, i.e. including `offset`, while
+  `laminate_from_LaminationParameters()` assumed the mid-surface: it left
+  out the terms `offset*A` of `B` and `offset**2*A` of `D` of the invariant
+  `u1`, `u4`, `u5` parts, such that the round trip of a laminate with an
+  offset gave wrong `B` and `D`, e.g. `B11` 4.8 times too small for a
+  `[0/90]s` laminate with `offset = 0.2 mm` and `0.125 mm` plies. Given the
+  same `offset`, the stiffnesses now satisfy `B = B0 + e A` and `D = D0 +
+  2 e B0 + e^2 A` (Vasiliev and Morozov, 2001, Eq. (5.28)), and reproduce
+  `laminated_plate()` to round-off; the created laminate stores `offset`.
+  `A` and `Abar44`, `Abar45`, `Abar55` do not depend on the offset. The
+  derivatives of `GradABD` with respect to the thickness are taken at
+  constant lamination parameters and offset. Results with `offset = 0` are
+  unchanged.
+- Tests: `test_lamination_parameters_offset` in
+  `tests/test_plane_stress_invariants.py`, with offsets of +0.2 mm,
+  -0.2 mm and one ply thickness, for the materials and layups above,
+  against the classical lamination theory to `rtol = 1e-12`, the shift of
+  Vasiliev and Morozov, the transverse shear stiffness and central
+  differences of `GradABD`.
+
+### Tests: transverse shear correction anchored to closed forms
+
+- `tests/test_transverse_shear.py`: the stiffnesses of the sandwich panel of
+  Rohwer (1988), Table 4, p. 23, are no longer used as a test
+  (`test_rohwer_published_solar_panel` is removed): its transverse shear
+  stiffnesses are reproduced only with a foam shear modulus of 0.04 kN/mm^2
+  instead of the 0.0385 kN/mm^2 of the stated `nu = 0.3`, and its bending
+  stiffnesses contradict the stated lay-up, `(D11 - D22)/D16 = 4.216` for
+  the layer positions of Fig. 9 against 4.71 from the printed values. The
+  reasons are kept in a note of the test module and in
+  `doc/source/shear_correction.rst`, new section "Verification".
+- The sandwich tests are compared, to round-off, with the closed forms of
+  Vlachoutsis (1992), Eqs. (44), (45) and (48), for `'rohwer'` and
+  `'vlachoutsis'`: Tables I and II and Eqs. (49)-(51), the curve of
+  Rohwer (1988), Fig. 5, and `test_sandwich_soft_core`, whose value was
+  0.0051 within 5e-5, copied from the output of the code. In
+  `test_vlachoutsis_published_spherical_shell`, `K = 0.0776843` agrees with
+  Eq. (45) to 3e-10, the effect of `Ec/Ef = 1e-9`, while the printed 0.07769
+  is 0.57 units of its last digit away and is checked with one unit.
+- New `test_sandwich_vlachoutsis_1992_example_close_to_allen_1969` and
+  `test_sandwich_antiplane_core_converges_to_allen_1969`: the shear
+  stiffness of Allen (1969), Eq. (2.15b), `G_c d^2/c`, is approached by
+  `'rohwer'` and `'vlachoutsis'` within bounds derived from the local
+  bending stiffness and the shear strains of the faces, which Allen
+  neglects, with a deviation that decreases by a factor 100 per step.
+- `test_rohwer_published_cross_ply` checks the closed forms of Rohwer's
+  Eqs. (22) and (25) and the independent implementation of Eq. (43);
+  `test_rohwer_angle_ply_coupling` replaces the pasted values -0.1204 and
+  0.7503 by that implementation and by the symmetries of the laminate,
+  consistent with Rohwer's Fig. 7; `test_isotropic_five_sixths` also covers
+  `'constant'`. In `tests/test_core.py`, `Ats` of
+  `test_laminated_plate_tri_axial` and `test_laminated_plate_plane_stress`
+  is compared with that implementation to `rtol = 1e-12`, instead of
+  values copied from the output of the code to `rtol = 1e-5`, and that of
+  the lamination-parameter tests with the closed form `G h`.
+- Chow (1971) and Whitney (1973): `test_chow_published_cross_ply`,
+  `test_whitney_published_laminates` and `test_whitney_published_sandwich`
+  compare `'chow'`, `'whitney'` and `'vlachoutsis'` to round-off with
+  Whitney's Eqs. (3)-(7), which are Chow's Eqs. (11)-(12) for a symmetric
+  laminate, written out in the test module. Two printed values are not
+  consistent with the data of their papers, and they are no longer compared
+  with a tolerance fitted to their deviation (`rtol = 1.3e-3` and
+  `1.5e-3`): Chow's `k2^2 = 0.521`, Table 1, against 0.52165 from his
+  Eqs. (11)-(12), which reproduce the other three values of the table; and
+  Whitney's sandwich, p. 304, `k1^2 = 0.4098` and `k2^2 = 0.6915`, against
+  0.40936 and 0.67199 from his Eqs. (3)-(7), which reproduce the factors of
+  his two laminates. The reasons are kept in notes of the test module and
+  in `doc/source/shear_correction.rst`. The release notes of 0.9.12 say
+  that `'whitney'` reproduces the factors printed by Whitney (1973); this
+  holds for his laminates, not for his sandwich.
+- New `test_rohwer_rotation_dependence_cross_ply`: for the `[0,90]s` CFRP
+  laminate of Rohwer (1988), Table 2, computed in axes rotated by 45
+  degrees, `A44 = A55` are 7.0 % and `A45` is 13.5 % above the tensor
+  rotation of the result in the axes of the plies, Rohwer's Fig. 7 and
+  Eq. (44), with both curves from the independent implementation of
+  Eq. (43). The docstring of `Laminate.calc_transverse_shear_stiffness`,
+  which stated "deviations up to about 7 % are observed at 45 degrees",
+  now names these quantities and the source; `A44` or `A55` alone deviate
+  by up to 7.2 %, at 41 and 49 degrees.
+
+### New: zero Young moduli, antiplane cores
+
+- `read_laminaprop()` and `MatLamina.rebuild()` accept zero Young moduli,
+  e.g. `laminaprop = (0, 0, nu12, 0, G13, G23)` for the antiplane core of
+  Allen (1969), p. 14, with zero moduli in the plane of the faces and
+  finite transverse shear moduli. Before, `nu21 = nu12*e2/e1` raised
+  `ZeroDivisionError`. With `ei = 0`, the reciprocal Poisson's ratio
+  `nuji` is stored as zero; a non-zero `nuij` with `ei = 0` and `ej != 0`,
+  which violates `|nuij| < (ei/ej)**0.5` (Jones, 1999, Eq. (2.51)), raises
+  `ValueError`. The plane-stress constants and invariants of such a core
+  vanish except `q44 = g23`, `q55 = g13`, `u6` and `u7`, such that it adds
+  only transverse shear stiffness; with `e1 = 0` or `e2 = 0` the stiffness
+  constants `c11` to `c33` are computed without dividing by the moduli,
+  e.g. only `c33 = e3`, `c44`, `c55` are non-zero for an antiplane core,
+  and `ValueError` is raised if the determinant `1 - nu12*nu21 - ...` is
+  not positive. `trace_normalize_plane_stress()` raises `ValueError` for a
+  non-positive trace, e.g. of an antiplane core, and
+  `Laminate.calc_equivalent_properties()` raises `numpy.linalg.LinAlgError`,
+  a `ValueError`, with a clear message when the `ABD` matrix is singular,
+  e.g. for a laminate of antiplane cores only. Results with non-zero moduli
+  are unchanged, bit for bit.
+- The singular `ABD` matrix is detected explicitly, by a non-positive
+  diagonal term before the inversion and a non-finite inverse after it,
+  in `Laminate.calc_equivalent_properties()` and in the transverse shear
+  distribution of `'rohwer'`, whose condition number is also required to
+  be finite: `numpy.linalg.inv` does not raise `LinAlgError` for a
+  singular matrix on every platform, e.g. with the LAPACK of Pyodide,
+  where `test_zero_young_modulus_errors` failed. New
+  `test_singular_ABD_any_platform` reaches these branches with an inversion
+  that raises or returns inf or nan, and `test_zero_young_modulus_determinant`
+  checks the stiffness constants with `e1 = 0` against the plane-stress
+  closed form of the 2-3 plane and the `ValueError` for a non-positive
+  determinant, `|nu23| >= (e2/e3)**0.5`.
+- Tests: `test_antiplane_core_matlamina`, `test_zero_young_modulus_errors`
+  and `test_antiplane_core_sandwich` in
+  `tests/test_plane_stress_invariants.py`, the latter against the classical
+  lamination theory and the constant-strain transverse shear stiffness to
+  `rtol = 1e-12`. `test_sandwich_antiplane_core_converges_to_allen_1969`
+  and `test_vlachoutsis_published_spherical_shell` use a true antiplane
+  core, `E_c = 0`, instead of `E_c/E_f = 1e-12` and `1e-9`, and agree with
+  Eq. (45) of Vlachoutsis (1992) to round-off, `rtol = 1e-12`, without the
+  former allowances of 3.3e-13 and 3e-10.
 
 ### Python versions
 

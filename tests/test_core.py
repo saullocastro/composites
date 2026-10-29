@@ -12,6 +12,8 @@ from composites.core import (laminate_from_LaminationParameters,
                              make_symmetric_LP, Lamina, GradABD,
                              LaminationParameters)
 
+from test_transverse_shear import RohwerReference, stack_from_laminate
+
 
 def test_lampar_tri_axial():
     E = 71e9
@@ -37,6 +39,39 @@ def test_lampar_tri_axial():
         0.5, 0.4, -0.3, -0.6,
         0.5, 0.4, -0.3, -0.6,
         0.5, 0.4)
+    # NOTE with e3 given, the invariants are by default those of the
+    #      plane-stress reduced stiffnesses, see MatLamina.rebuild: Q = E/(1 -
+    #      nu^2) [[1, nu, 0], [nu, 1, 0], [0, 0, (1 - nu)/2]], Jones (1999),
+    #      Eq. (2.71), p. 73. For an isotropic material u2 = u3 = u7 = 0, such
+    #      that the lamination parameters have no effect: A = h Q, B = 0, D =
+    #      h^3/12 Q, Abar_ts = G h I
+    assert matlamina.plane_stress
+    Q = E/(1 - nu**2)*np.array([[1., nu, 0.],
+                                [nu, 1., 0.],
+                                [0., 0., (1 - nu)/2]])
+    scale = Q.max()
+    assert np.allclose(lam.A, thickness*Q, rtol=1e-12, atol=1e-14*scale)
+    assert np.allclose(lam.B, 0, rtol=0, atol=1e-14*scale*thickness)
+    assert np.allclose(lam.D, thickness**3/12*Q, rtol=1e-12,
+                       atol=1e-14*scale*thickness**3)
+    assert np.allclose(lam.Abar_ts, G*thickness*np.eye(2), rtol=1e-12,
+                       atol=1e-14*G*thickness)
+
+    # NOTE three-dimensional option: the invariants are those of the
+    #      three-dimensional stiffness, which for an isotropic material are
+    #      the Lame constants, C11 = lambda + 2 mu, C12 = lambda, C66 = mu
+    matlamina.rebuild(plane_stress=False)
+    assert not matlamina.plane_stress
+    lam = laminate_from_lamination_parameters(thickness, matlamina,
+        0.5, 0.4, -0.3, -0.6,
+        0.5, 0.4, -0.3, -0.6,
+        0.5, 0.4, -0.3, -0.6,
+        0.5, 0.4)
+    lame = E*nu/((1 + nu)*(1 - 2*nu))
+    C = np.array([[lame + 2*G, lame, 0.],
+                  [lame, lame + 2*G, 0.],
+                  [0., 0., G]])
+    assert np.allclose(lam.A, thickness*C, rtol=1e-12, atol=1e-14*C.max())
     A = np.array([[1.05196816e+11, 5.18133569e+10, 0.00000000e+00],
                   [5.18133569e+10, 1.05196816e+11, 0.00000000e+00],
                   [0.00000000e+00, 0.00000000e+00, 2.66917293e+10]])
@@ -46,14 +81,15 @@ def test_lampar_tri_axial():
     D = np.array([[8.76640130e+09, 4.31777974e+09, 0.00000000e+00],
                   [4.31777974e+09, 8.76640130e+09, 0.00000000e+00],
                   [0.00000000e+00, 0.00000000e+00, 2.22431078e+09]])
-    Ats = np.array([[2.66917293e+10, 0.00000000e+00],
-                    [0.00000000e+00, 2.66917293e+10]])
+    # NOTE no shear correction from lamination parameters, Ats = Abar_ts
+    #      = G h I for an isotropic material
+    Ats = E/(2*(1 + nu))*thickness*np.eye(2)
     assert np.allclose(lam.A, A)
     lam.make_symmetric()
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.Ats, Ats)
-    assert np.allclose(lam.Abar_ts, Ats)
+    assert np.allclose(lam.Ats, Ats, rtol=1e-12, atol=0)
+    assert np.allclose(lam.Abar_ts, Ats, rtol=1e-12, atol=0)
     ABD = lam.ABD
     assert np.allclose(ABD[:3, :3], A)
     assert np.allclose(ABD[3:, 3:], D)
@@ -91,8 +127,9 @@ def test_lampar_plane_stress():
     D = np.array([[6.63973366e+09, 2.19111211e+09, 9.53674316e-08],
                   [2.19111211e+09, 6.63973366e+09, -9.53674316e-08],
                   [9.53674316e-08, -9.53674316e-08, 2.22431078e+09]])
-    Ats = np.array([[2.66917293e+10, 0.00000000e+00],
-                    [0.00000000e+00, 2.66917293e+10]])
+    # NOTE no shear correction from lamination parameters, Ats = Abar_ts
+    #      = G h I for an isotropic material
+    Ats = E/(2*(1 + nu))*thickness*np.eye(2)
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.E, lam.E.T)
     assert np.allclose(lam.F, lam.F.T)
@@ -100,8 +137,8 @@ def test_lampar_plane_stress():
     lam.make_symmetric()
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
-    assert np.allclose(lam.Ats, Ats)
-    assert np.allclose(lam.Abar_ts, Ats)
+    assert np.allclose(lam.Ats, Ats, rtol=1e-12, atol=0)
+    assert np.allclose(lam.Abar_ts, Ats, rtol=1e-12, atol=0)
     ABD = lam.ABD
     assert np.allclose(ABD[:3, :3], A)
     assert np.allclose(ABD[3:, 3:], D)
@@ -123,13 +160,15 @@ def test_laminated_plate_tri_axial():
                   [ 0.00262445, 0.00262445, 0.0326602 ]])
     Abar_ts = np.array([[ 2625000.,       0.],
                         [       0., 2625000.]])
-    Ats = np.array([[2014905.27266639, -27210.29377157],
-                    [ -27210.29377157, 2014905.27266639]])
+    # NOTE Rohwer (1988), Eq. (43), with the independent implementation of
+    #      tests/test_transverse_shear.py, instead of the values
+    #      2014905.27 and -27210.29 copied from the output of the code
+    Ats = RohwerReference(stack_from_laminate(lam)).Ats
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.B, B)
     assert np.allclose(lam.D, D)
     assert np.allclose(lam.Abar_ts, Abar_ts)
-    assert np.allclose(lam.Ats, Ats)
+    assert np.allclose(lam.Ats, Ats, rtol=1e-12, atol=1e-14*Ats.max())
 
 
 def test_laminated_plate_plane_stress():
@@ -157,8 +196,10 @@ def test_laminated_plate_plane_stress():
                   [1.71625578e-20, 1.71625578e-20, 1.63068348e-17]])
     Abar_ts = np.array([[ 2625000.,       0.],
                         [       0., 2625000.]])
-    Ats = np.array([[2014905.27266639, -27210.29377157],
-                    [ -27210.29377157, 2014905.27266639]])
+    # NOTE Rohwer (1988), Eq. (43), with the independent implementation of
+    #      tests/test_transverse_shear.py, instead of the values
+    #      2014905.27 and -27210.29 copied from the output of the code
+    Ats = RohwerReference(stack_from_laminate(lam)).Ats
     Dts = np.array([[0.03076172, 0.],
                     [0., 0.03076172]])
     Fts = np.array([[6.48880005e-10, 0.00000000e+00],
@@ -171,7 +212,7 @@ def test_laminated_plate_plane_stress():
     assert np.allclose(lam.F, F)
     assert np.allclose(lam.H, H)
     assert np.allclose(lam.Abar_ts, Abar_ts)
-    assert np.allclose(lam.Ats, Ats)
+    assert np.allclose(lam.Ats, Ats, rtol=1e-12, atol=1e-14*Ats.max())
     assert np.allclose(lam.Dts, Dts)
     assert np.allclose(lam.Fts, Fts)
     with pytest.warns(DeprecationWarning):
@@ -424,7 +465,25 @@ def test_matlamina_constitutive_matrix_inverse_compliance():
     C_ref = np.linalg.inv(S)
     C = np.asarray(matlamina.get_constitutive_matrix())
     assert np.allclose(C, C_ref, rtol=1e-12, atol=1e-12*C_ref.max())
-    # the 3D constitutive constants q_ij are the same inverse
+    # NOTE by default the constitutive constants q_ij are those of plane
+    #      stress: the inverse of the reduced compliance S11 = 1/e1, S12 =
+    #      -nu12/e1, S22 = 1/e2 (Jones, 1999, Eqs. (2.61) and (2.62), p. 71),
+    #      equal to the condensed C_ij - C_i3 C_j3/C_33, Eq. (2.64), p. 72
+    assert matlamina.plane_stress
+    Q_ref = np.linalg.inv(np.array([[1/e1, -nu12/e1], [-nu12/e1, 1/e2]]))
+    assert np.allclose(Q_ref, C_ref[:2, :2]
+                       - np.outer(C_ref[:2, 2], C_ref[:2, 2])/C_ref[2, 2],
+                       rtol=1e-12, atol=0)
+    Q = np.array([[matlamina.q11, matlamina.q12, matlamina.q13],
+                  [matlamina.q21, matlamina.q22, matlamina.q23],
+                  [matlamina.q31, matlamina.q32, matlamina.q33]])
+    Q_ref3 = np.zeros((3, 3))
+    Q_ref3[:2, :2] = Q_ref
+    assert np.allclose(Q, Q_ref3, rtol=1e-12, atol=0)
+    # with plane_stress=False, the 3D constitutive constants q_ij are the
+    # same inverse as C
+    matlamina.rebuild(plane_stress=False)
+    assert not matlamina.plane_stress
     Q = np.array([[matlamina.q11, matlamina.q12, matlamina.q13],
                   [matlamina.q21, matlamina.q22, matlamina.q23],
                   [matlamina.q31, matlamina.q32, matlamina.q33]])

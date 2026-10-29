@@ -29,6 +29,14 @@ recomputed on demand. Attributes of Python subclasses that are not public
 attributes of the base class are not stored, and the loaded object has the
 type of the base class.
 
+The read-only ``plane_stress`` of a :class:`.MatLamina` is not stored: it is restored
+from the stored constitutive constants, ``True`` when ``q33 = 0``, which
+holds for the plane-stress constants of :meth:`.MatLamina.rebuild` and,
+with ``e3 = 0``, for the three-dimensional ones, which are then equal to
+them, and ``False`` otherwise. The files saved before ``plane_stress``
+existed, whose constants were three-dimensional when ``e3 != 0``, are
+therefore loaded with the attribute that describes them.
+
 The values ``nan``, ``inf`` and ``-inf``, e.g. ``Abarbar44`` of a ply with a
 singular transverse shear matrix, are stored as the strings ``"NaN"``,
 ``"Infinity"`` and ``"-Infinity"``, such that the output is strict JSON,
@@ -39,7 +47,7 @@ The format of the saved data is::
     {
       "type": "Laminate",
       "format_version": 2,
-      "composites_version": "0.10.1",
+      "composites_version": "0.10.2",
       "data": {...}
     }
 
@@ -149,6 +157,10 @@ def _matlamina_from_data(data):
     _check_keys(data, _MATLAMINA_FIELDS, 'MatLamina')
     mat = MatLamina()
     _decode_fields(mat, data, _MATLAMINA_FIELDS)
+    # NOTE the plane-stress constants of MatLamina.rebuild have q33 = 0, the
+    #      three-dimensional ones q33 = e3 (1 - nu12 nu21)/Delta, which is
+    #      zero only for e3 = 0, when both sets of constants are equal
+    mat._set_plane_stress(mat.q33 == 0.)
     return mat
 
 
