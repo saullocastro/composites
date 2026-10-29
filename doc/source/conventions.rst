@@ -62,6 +62,15 @@ The index 1 is the fibre direction, 2 the in-plane transverse direction and 3
 the normal direction. The ply stiffnesses used in the laminate integrals are
 always the plane-stress ones, see :meth:`.Lamina.rebuild`; ``G13`` and
 ``G23`` give the transverse shear stiffnesses ``q44L``, ``q45L``, ``q55L``.
+``E33``, ``nu13`` and ``nu23`` do not change them. The constitutive
+constants and the invariants of :class:`.MatLamina`, used by
+:func:`.laminate_from_LaminationParameters`, :class:`.GradABD` and
+:meth:`.MatLamina.trace_normalize_plane_stress`, are by default those of the
+same plane-stress stiffnesses, also with 9 entries, such that the
+lamination parameters of :meth:`.Laminate.calc_lamination_parameters` give
+back the stiffnesses of :func:`.laminated_plate`;
+``MatLamina.rebuild(plane_stress=False)`` gives the three-dimensional ones,
+e.g. for continuum shell elements, see :meth:`.MatLamina.rebuild`.
 
 
 Ply angle

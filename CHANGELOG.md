@@ -1,5 +1,46 @@
 # Changelog
 
+## Unreleased
+
+### Behaviour change: plane-stress invariants of `MatLamina` for any `laminaprop`
+
+- `MatLamina.rebuild()` computes `q11`, `q12`, `q21`, `q22` and the
+  invariants `u1` to `u5` with the plane-stress reduced stiffnesses,
+  `sigma33 = 0` (Jones, 1999, Eq. (2.66); Reddy, 2003, Eq. (2.4.4)), also
+  when `e3`, `nu13` and `nu23` are given, i.e. for a 9-entry `laminaprop`,
+  and sets `q13`, `q23`, `q31`, `q32` and `q33` to zero. Before, with
+  `e3 != 0` they were the three-dimensional stiffnesses, such that
+  `laminate_from_LaminationParameters()`,
+  `laminate_from_lamination_parameters()`, `GradABD.calc_LP_grad()`,
+  `trace_normalize_plane_stress()`, `n_double_laminate()` and
+  `double_double_laminate()` gave stiffer `A`, `B`, `D` than
+  `laminated_plate()` for the same material and layup, e.g. `(lambda +
+  2 mu) h` instead of `E h/(1 - nu^2)` for an isotropic material, 32% higher
+  for `nu = 0.33`. Both routes now agree to round-off for any layup. The
+  results with a 2- or 6-entry `laminaprop` (`e3 = 0`) and those of
+  `laminated_plate()` are unchanged, bit for bit.
+- New option `MatLamina.rebuild(plane_stress=False)`, which keeps the
+  three-dimensional constants and invariants, e.g. for continuum shell
+  elements; the choice is stored in the new read-only attribute
+  `MatLamina.plane_stress`, `True` by default, which is pickled and, in
+  JSON, restored from `q33` without a change of the format version.
+  `trace_normalize_plane_stress()` raises `ValueError` for
+  `plane_stress=False`, since the trace of Melo et al. (2017), Eq. (1), is
+  that of the plane-stress stiffness matrix. The stiffness constants `c11`
+  to `c66` and `get_constitutive_matrix()` remain three-dimensional.
+- Tests: new `tests/test_plane_stress_invariants.py`, where
+  `laminated_plate()` and `laminate_from_LaminationParameters()` are
+  compared, for an isotropic and an orthotropic material with nine
+  constants and four layups, including unbalanced and unsymmetric ones,
+  with the classical lamination theory to `rtol = 1e-12`, together with the
+  trace normalization and `GradABD`. `test_lampar_tri_axial` and
+  `test_matlamina_constitutive_matrix_inverse_compliance` check the
+  plane-stress default and the three-dimensional option. In
+  `tests/test_DD_laminate.py`, the trace is checked against Table 1 of Melo
+  et al. (2017) to half a unit of its last printed digit, and the reference
+  invariants use `Q66` and `Q44`, `Q55` in their places (the values are
+  unchanged, all shear moduli of the test being equal).
+
 ## 0.10.1 (2026-10-26)
 
 ### Python versions
