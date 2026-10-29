@@ -589,10 +589,12 @@ def test_vlachoutsis_published_spherical_shell(mode):
 
     The facings are isotropic and the core antiplane, so K is the closed form
     ``K_ant`` of Eq. (45), p. 1545, with ``Gc/Gf`` from Eqs. (69) and (70)
-    and ``Gf = Ef/(2 (1 + nu))``, here 0.0776843. The core is given ``Ec/Ef
-    = 1e-9`` instead of zero, which changes K by 3e-10 relative to Eq.
-    (45), measured with Eq. (44) of Vlachoutsis, i.e. the derived allowance
-    ``rtol = 1e-9``. The printed ``K = 0.07769`` of the caption of Fig. 14,
+    and ``Gf = Ef/(2 (1 + nu))``, here 0.0776843. The core is antiplane,
+    ``laminaprop = (0, 0, 0, 0, Gc, Gc)``, with zero moduli in the plane of
+    the facings (Allen, 1969, p. 14), for which Eq. (44) of Vlachoutsis
+    reduces to Eq. (45); measured, both modes agree with Eq. (45) within
+    3e-15, checked with ``rtol = 1e-12`` for round-off. The printed ``K =
+    0.07769`` of the caption of Fig. 14,
     p. 1551, which is reported from the finite element computations of his
     Reference 8, is 0.57 units of its last digit above Eq. (45), just outside
     half a unit: it would need ``alpha = 0.099992`` instead of 0.1, so the
@@ -610,17 +612,15 @@ def test_vlachoutsis_published_spherical_shell(mode):
     Ef_Gc = e_s*h*R*np.sqrt(12*(1 - nu**2))/(3*t*d)
     Ef = 70e3
     Gc = Ef/Ef_Gc
-    # antiplane core, Dc/Df -> 0
-    Ec = 1e-9*Ef
-    core = (Ec, Ec, 0., Gc, Gc, Gc)
+    # antiplane core, Dc/Df = 0
+    core = (0., 0., 0., 0., Gc, Gc)
     lam = laminated_plate([0, 0, 0], plyts=[t, c, t],
             laminaprops=[(Ef, nu), core, (Ef, nu)], shear_correction=mode)
     Gf = Ef/(2*(1 + nu))
-    K, K_ant, _ = vlachoutsis_sandwich_K(c/h, Ec/Ef, Gc/Gf)
-    # NOTE the allowance of the core with Ec/Ef = 1e-9
-    assert abs(K/K_ant - 1) < 1e-9
+    K, K_ant, _ = vlachoutsis_sandwich_K(c/h, 0., Gc/Gf)
+    assert K == K_ant
     for k in [lam.scf_k13, lam.scf_k23]:
-        assert np.isclose(k, K_ant, rtol=1e-9, atol=0)
+        assert np.isclose(k, K_ant, rtol=1e-12, atol=0)
         # NOTE one unit of the last printed digit, see the docstring
         assert abs(k - float(ref['K'])) <= 1e-5
 
@@ -668,8 +668,12 @@ def test_sandwich_vlachoutsis_1992_example_close_to_allen_1969():
 def test_sandwich_antiplane_core_converges_to_allen_1969():
     r"""Antiplane core: closed form and convergence to Allen (1969)
 
-    An antiplane core has ``E_c = 0`` and a finite transverse shear modulus
-    ``G_c``, p. 14. Then the shear stress is constant in the core, Eq.
+    An antiplane core is "an idealized core in which the modulus of
+    elasticity in planes parallel with the faces is zero but the shear
+    modulus in planes perpendicular to the faces is finite", ``E_c = 0``, p.
+    14, given here as ``laminaprop = (0, 0, nu, 0, G_c, G_c)``, see
+    :func:`.read_laminaprop`. Then the shear stress is constant in the core,
+    Eq.
     (2.12), p. 13, ``tau_c = Q E_f t d/(2 D)``, with ``D = E_f (t^3/6 + t
     d^2/2)``, Eq. (2.2), p. 9, i.e. ``tau_c = Q/(d phi)``, ``phi = 1 +
     t^2/(3 d^2)``, and parabolic in the faces, Eq. (2.9), p. 11, ``tau_f = Q
@@ -696,33 +700,34 @@ def test_sandwich_antiplane_core_converges_to_allen_1969():
 
     ===  =======  =========  =============  ===========  ======
      k    eps      phi^2-1    A/A_Allen - 1  composites   K
-                                             vs Eq. (44)
+                                             vs Eq. (45)
     ===  =======  =========  =============  ===========  ======
-     1    3.4e-4   1.51e-3    1.17e-3        9e-16        0.1003
-     2    3.3e-6   1.65e-5    1.32e-5        1e-14        0.0918
-     3    3.3e-8   1.67e-7    1.33e-7        5e-14        0.0910
+     1    3.4e-4   1.51e-3    1.17e-3        7e-16        0.1003
+     2    3.3e-6   1.65e-5    1.32e-5        3e-14        0.0918
+     3    3.3e-8   1.67e-7    1.33e-7        2e-13        0.0910
     ===  =======  =========  =============  ===========  ======
 
     The deviation from Allen decreases by a factor 100 per step, as both
     bounds, while K tends to 1/11, such that the constant 5/6 overestimates
-    the shear stiffness 9.2 times. ``read_laminaprop`` divides by ``E_1`` of
-    the core, ``nu21 = nu12 E2/E1``, so ``E_c = 0`` is replaced by ``E_c/E_f
-    = 1e-12``, which changes K by 3.3e-13 relative to the antiplane Eq.
-    (45), measured with Eq. (44) of Vlachoutsis. This difference, plus
-    1e-12 for the round-off of composites against Eq. (44), is the only
-    allowance added to the derived bounds.
+    the shear stiffness 9.2 times. The column "composites vs Eq. (45)" is
+    the largest relative difference of ``A44`` and ``A55`` of ``'rohwer'``
+    and ``'vlachoutsis'`` and of the independent ``RohwerReference`` from
+    ``K_ant sum_i G_i h_i``. With ``E_c = 0``, Eq. (44) of Vlachoutsis
+    reduces to Eq. (45), ``K = K_ant``, checked exactly, and the only
+    allowance added to the derived bounds is 1e-12 for round-off, also the
+    tolerance against Eq. (45).
     """
     Ef = 70e3
     nu = 0.3
     Gf = Ef/(2*(1 + nu))
     c = 10.
-    Ec = 1e-12*Ef
     lf = (Ef, Ef, nu, Gf, Gf, Gf)
     devs = []
     for k in [1, 2, 3]:
         t = c*10.**(-k)/2
         Gc = Gf*10.**(-k)/10
-        lc = (Ec, Ec, nu, Ec/(2*(1 + nu)), Gc, Gc)
+        # NOTE antiplane core, E_c = 0 in the plane of the faces
+        lc = (0., 0., nu, 0., Gc, Gc)
         plyts = [t, c, t]
         h = c + 2*t
         p = c/h
@@ -731,12 +736,12 @@ def test_sandwich_antiplane_core_converges_to_allen_1969():
         eps = Gc/Gf*2*t*(h**2/3 - h*t/2 + t**2/5)/(c*d**2)
         A_allen = Gc*d**2/c
         Abar = 2*t*Gf + c*Gc
-        K, K_ant, _ = vlachoutsis_sandwich_K(p, Ec/Ef, Gc/Gf)
-        # NOTE the closed form above is Eq. (45) of Vlachoutsis (1992)
+        K, K_ant, _ = vlachoutsis_sandwich_K(p, 0., Gc/Gf)
+        # NOTE the closed form above is Eq. (45) of Vlachoutsis (1992), and
+        #      Eq. (44) reduces to it for Dc/Df = 0
         assert np.isclose(A_allen*phi**2/(1 + eps), K_ant*Abar, rtol=1e-13, atol=0)
-        # NOTE E_c/E_f = 1e-12 is the antiplane core to round-off
-        slack = abs(K/K_ant - 1) + 1e-12
-        assert slack < 2e-12
+        assert K == K_ant
+        slack = 1e-12
         for mode in ['rohwer', 'vlachoutsis']:
             lam = laminated_plate([0, 0, 0], plyts=plyts,
                                   laminaprops=[lf, lc, lf],
