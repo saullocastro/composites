@@ -107,6 +107,28 @@ gives their strain energies, which lead to a posteriori factors in the sense
 of Noor and Peters [7]_. See :doc:`ex_transverse_shear`.
 
 
+Verification
+------------
+
+``tests/test_transverse_shear.py`` compares the methods with the values
+printed in the references, to half a unit of their last digit, e.g. the
+``[0,90]_s`` laminate of Rohwer [1]_, Table 2, p. 19, and the isotropic
+sandwiches of Vlachoutsis [2]_, Tables I and II, p. 1548, and with closed
+forms: the factor of a symmetrical sandwich of Vlachoutsis [2]_, Eqs. (44),
+(45) and (48), and, for an antiplane core, the shear stiffness `G_c d^2/c`
+of Allen [8]_, Eq. (2.15b), p. 17, which the result approaches within bounds
+derived from the terms that Allen neglects.
+
+Rohwer [1]_, Sec. 4.3, also gives the stiffnesses of a sandwich panel,
+Table 4, p. 23, which are not used as a test: its transverse shear
+stiffnesses are reproduced only with a foam shear modulus of
+0.04 kN/mm\ :sup:`2`, i.e. `\nu = 0.25` instead of the stated 0.3, and its
+bending stiffnesses contradict the stated lay-up, since the ratio `(D_{11} -
+D_{22})/D_{16}`, which depends on the positions of the layers alone, is
+4.216 for the lay-up of his Fig. 9 against 4.71 from the printed values. The
+details are in the comments of ``tests/test_transverse_shear.py``.
+
+
 References
 ----------
 
@@ -132,3 +154,6 @@ References
    Correction Factors in Multi-layered Composite Cylinders, Journal of
    Engineering Mechanics, 115(6), 1225-1244, 1989.
    https://doi.org/10.1061/(asce)0733-9399(1989)115:6(1225)
+.. [8] Allen, H. G., Analysis and Design of Structural Sandwich Panels,
+   Pergamon Press, 1969, Chap. 2.
+   https://doi.org/10.1016/B978-0-08-012870-2.50006-7

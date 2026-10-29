@@ -67,6 +67,38 @@
   Vasiliev and Morozov, the transverse shear stiffness and central
   differences of `GradABD`.
 
+### Tests: transverse shear correction anchored to closed forms
+
+- `tests/test_transverse_shear.py`: the stiffnesses of the sandwich panel of
+  Rohwer (1988), Table 4, p. 23, are no longer used as a test
+  (`test_rohwer_published_solar_panel` is removed): its transverse shear
+  stiffnesses are reproduced only with a foam shear modulus of 0.04 kN/mm^2
+  instead of the 0.0385 kN/mm^2 of the stated `nu = 0.3`, and its bending
+  stiffnesses contradict the stated lay-up, `(D11 - D22)/D16 = 4.216` for
+  the layer positions of Fig. 9 against 4.71 from the printed values. The
+  reasons are kept in a note of the test module and in
+  `doc/source/shear_correction.rst`, new section "Verification".
+- The sandwich tests are compared, to round-off, with the closed forms of
+  Vlachoutsis (1992), Eqs. (44), (45) and (48), for `'rohwer'` and
+  `'vlachoutsis'`: Tables I and II and Eqs. (49)-(51), the curve of
+  Rohwer (1988), Fig. 5, and `test_sandwich_soft_core`, whose value was
+  0.0051 within 5e-5, copied from the output of the code. In
+  `test_vlachoutsis_published_spherical_shell`, `K = 0.0776843` agrees with
+  Eq. (45) to 3e-10, the effect of `Ec/Ef = 1e-9`, while the printed 0.07769
+  is 0.57 units of its last digit away and is checked with one unit.
+- New `test_sandwich_vlachoutsis_1992_example_close_to_allen_1969` and
+  `test_sandwich_antiplane_core_converges_to_allen_1969`: the shear
+  stiffness of Allen (1969), Eq. (2.15b), `G_c d^2/c`, is approached by
+  `'rohwer'` and `'vlachoutsis'` within bounds derived from the local
+  bending stiffness and the shear strains of the faces, which Allen
+  neglects, with a deviation that decreases by a factor 100 per step.
+- `test_rohwer_published_cross_ply` checks the closed forms of Rohwer's
+  Eqs. (22) and (25) and the independent implementation of Eq. (43);
+  `test_rohwer_angle_ply_coupling` replaces the pasted values -0.1204 and
+  0.7503 by that implementation and by the symmetries of the laminate,
+  consistent with Rohwer's Fig. 7; `test_isotropic_five_sixths` also covers
+  `'constant'`.
+
 ## 0.10.1 (2026-10-26)
 
 ### Python versions
