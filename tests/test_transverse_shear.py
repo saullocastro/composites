@@ -202,7 +202,10 @@ CHOW_1971 = {
     # Eq. (32): "G12/E22 = 0.6, G23/E22 = 0.5, nu12 = 0.25 together with
     # E11/E22 = 3 for glass-epoxy and E11/E22 = 40 for graphite-epoxy".
     # Table 1, p. 316: "Values of k1 and k2 Calculated from the Equations
-    # (12)", printed as k1^2 and k2^2, which are scf_k13 and scf_k23
+    # (12)", printed as k1^2 and k2^2, which are scf_k13 and scf_k23. G13 is
+    # not given; G13 = G12, a transversely isotropic ply, is the reading
+    # under which Eq. (12) reproduces the other three values of Table 1,
+    # whereas G13 = G23 gives 0.858, 0.758, 0.868 and 0.479
     'cross_ply': dict(stack=[0, 90, 90, 0], G12_E2=0.6, G23_E2=0.5,
         nu12=0.25, rows=[
             # E11/E22, k1^2, k2^2
@@ -214,25 +217,63 @@ CHOW_1971 = {
     'homogeneous': dict(K=5/6),
 }
 
+# NOTE The value k2^2 = 0.521 of Chow (1971), Table 1, p. 316, graphite-epoxy,
+#      is not reproduced by his own Eqs. (11)-(12), p. 311, with the data of
+#      Eq. (32): they give 0.52165, which rounds to 0.522, whereas the three
+#      other values of the table, 0.815, 0.807 and 0.828, are reproduced to
+#      half a unit of their last digit with the same equations and data,
+#      0.81459, 0.80700 and 0.82773. The Poisson ratio has no effect, the
+#      factor 1/(1 - nu12 nu21) cancelling in Eq. (12), and the printed
+#      value is not a truncation, since 0.81459 is printed as 0.815. Within
+#      the stated data, 0.521 needs E11/E22 between 40.10 and 40.77, or
+#      G13/E22 between 0.5971 and 0.5996 with E11/E22 = 40, i.e. no reading
+#      of the printed data. The graphite-epoxy column of Table 2, p. 317, is
+#      not consistent with these data either: D11/D22 = 5.98 for E11/E22 =
+#      40 against the printed 6.98, and (D12 + 2 D66)/D22 = 0.247 against
+#      0.063, whereas the glass-epoxy column, 2.2 and 1.13, is reproduced
+#      within 1 %, 2.20 and 1.14. Hence k2^2 of graphite-epoxy is checked
+#      against Eqs. (11)-(12), written out in chow_whitney_factor, and not
+#      against the printed digits, see test_chow_published_cross_ply.
+
 # Whitney, J. M. "Shear correction factors for orthotropic laminates under
-# static load", Journal of Applied Mechanics, Vol. 40, 302-304, 1973. p. 303:
-# "each ply has the following unidirectional properties: EL = 25 x 10^6 psi,
-# ET = 10^6 psi, nu_LT = 0.25, G_LT = 0.5 x 10^6 psi, G_TT = 0.2 x 10^6 psi",
-# "Both a 4-layer symmetric and a 2-layer unsymmetric square plate are
-# considered", [0/90/90/0] and [0/90] in his Fig. 1, "For the two-ply
-# laminate k1^2 = k2^2 = 0.8212, and for the four-ply laminate k1^2 = 0.5952
-# and k2^2 = 0.7205". p. 304, sandwich with faces of "unidirectional
-# graphite/epoxy oriented at 0 deg" of thickness h/10 and the core of Pagano
-# (1970), "k1^2 = 0.4098 and k2^2 = 0.6915"; k1^2 is obtained within 0.1 %,
-# whereas k2^2 = 0.672 is obtained, 2.8 % below the printed value, with any
-# reading of the data, and it is therefore not tested.
+# static load", Journal of Applied Mechanics, Vol. 40, 302-304, 1973. Pages as
+# printed in the journal. p. 303: "each ply has the following unidirectional
+# properties: EL = 25 x 10^6 psi, ET = 10^6 psi, nu_LT = 0.25, G_LT = 0.5 x
+# 10^6 psi, G_TT = 0.2 x 10^6 psi", "Both a 4-layer symmetric and a 2-layer
+# unsymmetric square plate are considered", [0/90/90/0] and [0/90] in his
+# Fig. 1, "For the two-ply laminate k1^2 = k2^2 = 0.8212, and for the
+# four-ply laminate k1^2 = 0.5952 and k2^2 = 0.7205". p. 304, a sandwich with
+# faces of "unidirectional graphite/epoxy oriented at 0 deg with respect to
+# the x-axis" of thickness h/10, and the core "Exx = Eyy = 0.04 x 10^6 psi,
+# Ezz = 0.5 x 10^6 psi, Gxz = Gyz = 0.06 x 10^6 psi, Gxy = 0.016 x 10^6 psi,
+# nu_zx = nu_zy = nu_xy = 0.25", "k1^2 = 0.4098 and k2^2 = 0.6915".
 WHITNEY_1973 = {
     'ply': (25., 1., 0.25, 0.5, 0.5, 0.2),
     'laminates': [([0, 90], '0.8212', '0.8212'),
                   ([0, 90, 90, 0], '0.5952', '0.7205')],
     'sandwich': dict(core=(0.04, 0.04, 0.25, 0.016, 0.06, 0.06), p=0.8,
-                     k13='0.4098'),
+                     k13='0.4098', k23='0.6915'),
 }
+
+# NOTE The two factors of the sandwich of Whitney (1973), p. 304, are not
+#      reproduced by his own Eqs. (5)-(7), p. 303, with the data of p. 304,
+#      whereas the three factors of his laminates, p. 303, are reproduced to
+#      half a unit of their last digit by the same equations, see
+#      test_whitney_published_laminates:
+#      - k1^2: Eq. (7) gives 0.40936, 4.4 units of the last printed digit,
+#        0.11 %, below 0.4098;
+#      - k2^2: Eq. (7) gives 0.67199, 2.8 % below 0.6915.
+#      Eq. (7) uses the plane-stress Q11 of each layer, Eq. (3); with Young's
+#      moduli instead, or with the three-dimensional stiffness for e_zz = 0,
+#      including Ezz of the core, the factors are 0.40936 to 0.40937 and
+#      0.6720 to 0.6735, so the deviations do not come from these readings.
+#      Within the data, 0.4098 needs a face Gxz of 0.4993 instead of 0.5, or
+#      faces of 0.0998 h instead of h/10, and 0.6915 needs a face Gyz of
+#      0.187 instead of G_TT = 0.2, a core Gyz of 0.0642 instead of 0.06, or
+#      faces of 0.0907 h; no single change of the printed data reproduces
+#      both. The sandwich is therefore checked against Eqs. (5)-(7), written
+#      out in chow_whitney_factor, and not against the printed digits, see
+#      test_whitney_published_sandwich.
 
 # Birman, V. and Bert, C. W. "On the choice of shear correction factor in
 # sandwich structures", Journal of Sandwich Structures and Materials, Vol. 4,
@@ -331,6 +372,58 @@ def vlachoutsis_sandwich_K(p, Dc_Df, Gc_Gf):
     K_ant = 4/9*(1 - p**3)**2/(T2*T5)
     r_f = A*Gc_Gf/T4
     return K, K_ant, r_f
+
+
+def chow_whitney_factor(c, G, plyts):
+    r"""Shear correction factor of Whitney (1973), Eqs. (3)-(7), p. 303
+
+    Written out here independently of composites, for orthotropic layers in
+    cylindrical bending about one direction: ``c`` the plane-stress reduced
+    stiffness ``Q11`` of each layer in that direction, ``G`` its transverse
+    shear modulus in the same direction and ``plyts`` the thicknesses, from
+    the bottom face. With ``z`` from the mid-surface, ``(A11, B11, D11) =
+    int Q11 (1, z, z^2) dz`` and ``D = D11 A11 - B11^2``, Eq. (3), the shear
+    stress of Eq. (5) is ``tau = [a + Q11 z (2 B11 - A11 z)] Qx/(2 D)``,
+    with the constants ``a`` given by the continuity at the interfaces and
+    ``tau = 0`` at the bottom face, and Eq. (7) gives ``k^2 = [A55 int
+    tau^2/(G Qx^2) dz]^-1``, ``A55 = int G dz``. For a symmetric laminate
+    ``B11 = 0`` and this is Eqs. (11)-(12) of Chow (1971), p. 311, as stated
+    by Whitney, p. 303. The 3-point Gauss-Legendre rule per layer is exact
+    for ``tau^2``, of degree 4.
+    """
+    plyts = np.asarray(plyts, dtype=float)
+    z = -plyts.sum()/2 + np.concatenate(([0.], np.cumsum(plyts)))
+    A11 = sum(ck*(z[k+1] - z[k]) for k, ck in enumerate(c))
+    B11 = sum(ck*(z[k+1]**2 - z[k]**2)/2 for k, ck in enumerate(c))
+    D11 = sum(ck*(z[k+1]**3 - z[k]**3)/3 for k, ck in enumerate(c))
+    D = D11*A11 - B11**2
+    xg, wg = np.polynomial.legendre.leggauss(3)
+    a = -c[0]*z[0]*(2*B11 - A11*z[0])
+    integral = 0.
+    for k, (ck, Gk) in enumerate(zip(c, G)):
+        if k > 0:
+            a += (c[k-1] - ck)*z[k]*(2*B11 - A11*z[k])
+        zg = (z[k] + z[k+1])/2 + xg*(z[k+1] - z[k])/2
+        tau = (a + ck*zg*(2*B11 - A11*zg))/(2*D)
+        integral += np.sum(wg*tau**2/Gk)*(z[k+1] - z[k])/2
+    A55 = sum(Gk*(z[k+1] - z[k]) for k, Gk in enumerate(G))
+    return 1/(A55*integral)
+
+
+def _orthotropic_factors(stack, plyts, laminaprops):
+    r"""``(k13, k23)`` of :func:`chow_whitney_factor` for plies at 0 or 90
+    degrees, ``laminaprop = (E1, E2, nu12, G12, G13, G23)``"""
+    cx, cy, Gx, Gy = [], [], [], []
+    for theta, (E1, E2, nu12, G12, G13, G23) in zip(stack, laminaprops):
+        delta = 1 - nu12**2*E2/E1
+        Q11, Q22 = E1/delta, E2/delta
+        if theta == 0:
+            cx.append(Q11); cy.append(Q22); Gx.append(G13); Gy.append(G23)
+        else:
+            assert theta == 90
+            cx.append(Q22); cy.append(Q11); Gx.append(G23); Gy.append(G13)
+    return (chow_whitney_factor(cx, Gx, plyts),
+            chow_whitney_factor(cy, Gy, plyts))
 
 
 def _interfaces(lam):
@@ -998,6 +1091,64 @@ def test_rohwer_angle_ply_coupling(stack, sign):
     assert lam.scf_k13 < 1.
 
 
+def _tensor_rotation(Ats, thetadeg):
+    r"""Tensor rotation of ``Ats = [[A44, A45], [A45, A55]]``, Rohwer
+    (1988), Eq. (44), p. 20, to the frame in which every ply angle is
+    increased by ``thetadeg``"""
+    c = np.cos(np.deg2rad(thetadeg))
+    s = np.sin(np.deg2rad(thetadeg))
+    T = np.array([[c, s], [-s, c]])
+    return T @ Ats @ T.T
+
+
+def test_rohwer_rotation_dependence_cross_ply():
+    r"""The result of ``'rohwer'`` is not invariant to a rotation of the axes
+
+    Rohwer (1988), Fig. 7, p. 20, plots the stiffnesses of the ``[0,90]s``
+    laminate of Table 2 against the rotation angle, computed with Eq. (43) in
+    the rotated axes, solid lines, and by the tensor rotation of the result
+    in the axes of the plies, Eq. (44), dashed lines: "Deviations from the
+    dashed lines are evident, especially around a rotation angle of 45 deg".
+    The statement of :meth:`.Laminate.calc_transverse_shear_stiffness` is
+    checked here, with both curves from the independent RohwerReference: at
+    45 degrees ``A44 = A55`` are 7.0 % and ``A45`` is 13.5 % above the
+    tensor rotation, and A44 or A55 alone deviate by up to 7.2 %, at 41 and
+    49 degrees (1-degree steps; at 0.5-degree steps also at 41 degrees),
+    all to half a unit of the last digit given. Read from Fig. 7 at 45
+    degrees, the solid line is at about 0.85 and the dashed one at about
+    0.79 of ``Hbarbar11``, consistent with 0.844 and 0.789.
+    """
+    stack = [0, 90, 90, 0]
+    lam0 = laminated_plate(stack, plyt=0.25, laminaprop=CFRP)
+    H0 = RohwerReference(stack_from_laminate(lam0)).Ats
+    assert np.allclose(lam0.Ats, H0, rtol=1e-12, atol=1e-14*H0.max())
+    devs = []
+    for theta in range(0, 91):
+        lam = laminated_plate([t + theta for t in stack], plyt=0.25,
+                              laminaprop=CFRP)
+        H = RohwerReference(stack_from_laminate(lam)).Ats
+        assert np.allclose(lam.Ats, H, rtol=1e-12, atol=1e-14*H.max())
+        Hr = _tensor_rotation(H0, theta)
+        # NOTE the constant-strain and constant-stress stiffnesses follow
+        #      the tensor rotation, which fixes its sign convention; the
+        #      frame dependence is that of the corrected stiffness only
+        for name in ['Abar_ts', 'Abarbar_ts']:
+            ref = _tensor_rotation(getattr(lam0, name), theta)
+            assert np.allclose(getattr(lam, name), ref, rtol=1e-12,
+                               atol=1e-12*ref.max())
+        devs.append(max(H[0, 0]/Hr[0, 0], H[1, 1]/Hr[1, 1]) - 1)
+        if theta == 45:
+            assert np.isclose(H[0, 0], H[1, 1], rtol=1e-12, atol=0)
+            assert_printed(100*(H[0, 0]/Hr[0, 0] - 1), '7.0')
+            assert_printed(100*(H[0, 1]/Hr[0, 1] - 1), '13.5')
+            assert_printed(H[1, 1]/lam0.Abarbar55, '0.844')
+            assert_printed(Hr[1, 1]/lam0.Abarbar55, '0.789')
+        if theta == 0:
+            assert np.allclose(H, Hr, rtol=1e-14, atol=1e-14*H.max())
+    assert_printed(100*max(devs), '7.2')
+    assert int(np.argmax(devs)) in (41, 49)
+
+
 def _grid():
     cases = []
     for offset in [0., 0.3, -1.2]:
@@ -1266,10 +1417,19 @@ def test_chow_published_cross_ply(E1_E2, k13, k23):
                   ref['G12_E2']*E2, ref['G23_E2']*E2)
     lam = laminated_plate(ref['stack'], plyt=0.25, laminaprop=laminaprop,
             shear_correction='chow')
+    # NOTE Eqs. (11)-(12) of Chow (1971), p. 311, written out in
+    #      chow_whitney_factor, to round-off
+    k1, k2 = _orthotropic_factors(ref['stack'], [0.25]*4, [laminaprop]*4)
+    assert np.isclose(lam.scf_k13, k1, rtol=1e-12, atol=0)
+    assert np.isclose(lam.scf_k23, k2, rtol=1e-12, atol=0)
     assert_printed(lam.scf_k13, k13)
-    # NOTE k2^2 = 0.52165 for graphite-epoxy, which Chow prints as 0.521,
-    #      the other three values round correctly
-    assert_printed(lam.scf_k23, k23, rtol=None if E1_E2 == 3. else 1.3e-3)
+    if E1_E2 == 40.:
+        # NOTE k2^2 = 0.52165 by Eqs. (11)-(12), printed as 0.521, which is
+        #      not consistent with the data of the paper, see the NOTE after
+        #      CHOW_1971; only the closed form above is checked
+        assert abs(lam.scf_k23 - float(k23)) > 0.5e-3
+    else:
+        assert_printed(lam.scf_k23, k23)
 
 
 @pytest.mark.parametrize('seed', SEEDS)
@@ -1418,19 +1578,45 @@ def test_thickness_shear_density():
 @pytest.mark.parametrize('stack, k13, k23', WHITNEY_1973['laminates'])
 @pytest.mark.parametrize('mode', ['whitney', 'vlachoutsis'])
 def test_whitney_published_laminates(stack, k13, k23, mode):
-    lam = laminated_plate(stack, plyt=0.25, laminaprop=WHITNEY_1973['ply'],
+    r"""Laminates of Whitney (1973), p. 303, to half a unit of the last
+    printed digit, and against Eqs. (3)-(7), written out in
+    chow_whitney_factor, to round-off; ``[0, 90]`` is unsymmetric, ``B11 !=
+    0``. G13 = G_LT and G23 = G_TT of the transversely isotropic ply."""
+    plyts = [0.25]*len(stack)
+    lam = laminated_plate(stack, plyts=plyts, laminaprop=WHITNEY_1973['ply'],
             shear_correction=mode)
+    k1, k2 = _orthotropic_factors(stack, plyts,
+                                  [WHITNEY_1973['ply']]*len(stack))
+    assert np.isclose(lam.scf_k13, k1, rtol=1e-12, atol=0)
+    assert np.isclose(lam.scf_k23, k2, rtol=1e-12, atol=0)
     assert_printed(lam.scf_k13, k13)
     assert_printed(lam.scf_k23, k23)
 
 
 def test_whitney_published_sandwich():
+    r"""Sandwich of Whitney (1973), p. 304, against his Eqs. (3)-(7)
+
+    The faces of thickness h/10 are the 0-degree ply of p. 303 and the core
+    is given by its in-plane plane-stress data, ``Exx = Eyy``, ``nu_xy`` and
+    ``Gxy``, and ``Gxz = Gyz``; Ezz does not enter Eq. (3). Eqs. (3)-(7),
+    written out in chow_whitney_factor, give 0.40936 and 0.67199, compared
+    to round-off. The printed k1^2 = 0.4098 and k2^2 = 0.6915 are not
+    consistent with these data, see the NOTE after WHITNEY_1973, and they
+    are not used beyond checking that they are not reproduced.
+    """
     ref = WHITNEY_1973['sandwich']
     p = ref['p']
-    lam = laminated_plate([0, 0, 0], plyts=[(1 - p)/2, p, (1 - p)/2],
-            laminaprops=[WHITNEY_1973['ply'], ref['core'],
-                         WHITNEY_1973['ply']], shear_correction='whitney')
-    assert_printed(lam.scf_k13, ref['k13'], rtol=1.5e-3)
+    plyts = [(1 - p)/2, p, (1 - p)/2]
+    laminaprops = [WHITNEY_1973['ply'], ref['core'], WHITNEY_1973['ply']]
+    for mode in ['whitney', 'vlachoutsis']:
+        lam = laminated_plate([0, 0, 0], plyts=plyts,
+                              laminaprops=laminaprops, shear_correction=mode)
+        k1, k2 = _orthotropic_factors([0, 0, 0], plyts, laminaprops)
+        assert np.isclose(lam.scf_k13, k1, rtol=1e-12, atol=0)
+        assert np.isclose(lam.scf_k23, k2, rtol=1e-12, atol=0)
+    # NOTE 4.4 units of the last digit below 0.4098 and 2.8 % below 0.6915
+    assert abs(lam.scf_k13 - float(ref['k13'])) > 0.5e-4
+    assert abs(lam.scf_k23 - float(ref['k23'])) > 0.5e-4
 
 
 @pytest.mark.parametrize('seed', SEEDS)
