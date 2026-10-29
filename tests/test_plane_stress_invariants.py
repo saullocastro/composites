@@ -26,7 +26,7 @@ import pytest
 from composites.utils import read_laminaprop, laminated_plate
 from composites.core import (laminate_from_LaminationParameters,
                              laminate_from_lamination_parameters, GradABD,
-                             LaminationParameters)
+                             LaminationParameters, Laminate)
 
 
 def qbar(E1, E2, nu12, G12, thetadeg):
@@ -646,3 +646,24 @@ def test_singular_ABD_offset_invariant():
                                                             offset)
                 lam_lp.calc_equivalent_properties()
                 assert np.isfinite(lam_lp.e1) and lam_lp.e1 > 0
+
+
+def test_ABD_non_positive_about_mid_surface():
+    r"""Stored ABD whose diagonal about the mid-surface is not positive
+
+    Without plies the matrix about the mid-surface is shifted back from the
+    stored one, ``D - 2 offset B + offset**2 A``. A stored ``ABD`` with a
+    positive diagonal and a regular inverse, but not positive definite,
+    ``A_ii = D_ii = 1`` and ``B_ii = 2``, gives ``D_ii = -2`` about the
+    mid-surface for ``offset = 1``, which the conditioning check rejects.
+    """
+    lam = Laminate()
+    lam.h = 1.
+    lam.offset = 1.
+    lam.A11 = lam.A22 = lam.A66 = 1.
+    lam.B11 = lam.B22 = lam.B66 = 2.
+    lam.D11 = lam.D22 = lam.D66 = 1.
+    assert np.all(np.diag(lam.ABD) > 0)
+    assert np.isfinite(np.linalg.inv(lam.ABD)).all()
+    with pytest.raises(ValueError, match='singular or ill-conditioned'):
+        lam.calc_equivalent_properties()
