@@ -189,24 +189,39 @@
 - `Laminate.calc_equivalent_properties()`, called by `laminated_plate()`,
   also rejects, with `numpy.linalg.LinAlgError`, a `ValueError`, an `ABD`
   matrix with a positive diagonal that is singular or ill-conditioned,
-  e.g. of a single ply at 45 degrees with `g12 = 0`: its condition number
-  in the 1-norm after the symmetric diagonal scaling of `'rohwer'`, with
-  the inverse already computed, must not exceed `1e12`, the threshold of
-  `'rohwer'`. Measured for an 8-ply laminate, `calc_equivalent_properties()`
-  takes 13 to 15 us instead of 28 us, the numpy checks of the diagonal and
-  of the finiteness of the inverse being replaced by one loop, and
-  `laminated_plate()` 150 to 180 us before and after; `np.linalg.cond`
-  would have added about 20 us. The check is blind to a decoupled term
-  that vanishes only to round-off, e.g. `A66` of `[0/90]` with `g12 = 0`.
+  e.g. of a single ply at 45 degrees with `g12 = 0`: the condition number
+  in the 1-norm of the `ABD` matrix about the mid-surface, after the
+  symmetric diagonal scaling of `'rohwer'`, must not exceed `1e12`, the
+  threshold of `'rohwer'`. Singularity is a property of the laminate: the
+  matrix about the reference surface has a condition number growing as
+  `(offset/h)**2`, 1.6e10 at `offset/h = 1e4`, round-off noise near
+  `1e12` from `offset/h = 1e5`, so it would reject valid laminates with a
+  large offset depending on the platform, as `test_large_offset[chow]` of
+  pyfe3d did. The matrix about the mid-surface is the stored one for
+  `offset = 0`, is otherwise integrated from the plies with `z` from the
+  mid-surface, giving the same result for any offset, and, without plies,
+  is shifted back from the stored one, `B - e A`, `D - 2 e B + e^2 A`
+  (Vasiliev and Morozov, 2001, Eq. (5.28)), which with the lamination
+  parameters of `calc_lamination_parameters()`, whose `xiD` carry the
+  round-off of the cubes of the heights, is reliable up to `offset/h =
+  1e4`. The equivalent properties are still computed from the inverse of
+  the stored matrix, unchanged. Measured for an 8-ply laminate,
+  `calc_equivalent_properties()` takes 12 to 16 us, against 28 us with the
+  numpy checks of the diagonal and of the inverse of 0.10.2, now loops,
+  and `laminated_plate()` 180 to 230 us before and after, within the noise
+  of the machine; `np.linalg.cond` would have added about 20 us. The check
+  is blind to a decoupled term that vanishes only to round-off, e.g. `A66`
+  of `[0/90]` with `g12 = 0`.
   `test_ill_conditioned_ABD`, an isotropic plate with `nu = 1 - 1e-12`,
   scaled condition number `2e12`, now expects `ValueError` also with
   `shear_correction='constant'`, and checks `A55` with `nu = 1 - 1e-10`;
   `test_singular_ABD_any_platform` matches the new message, "singular or
   ill-conditioned". No other laminate of the test suite is rejected,
   including the sandwiches with soft and antiplane cores.
-- Tests: `test_not_positive_definite_rejected` and
-  `test_singular_ABD_positive_diagonal` in
-  `tests/test_plane_stress_invariants.py`.
+- Tests: `test_not_positive_definite_rejected`,
+  `test_singular_ABD_positive_diagonal` and
+  `test_singular_ABD_offset_invariant`, the latter with offsets up to
+  `1e7 h`, in `tests/test_plane_stress_invariants.py`.
 
 ### Python versions
 
