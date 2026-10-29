@@ -170,6 +170,44 @@
   Eq. (45) of Vlachoutsis (1992) to round-off, `rtol = 1e-12`, without the
   former allowances of 3.3e-13 and 3e-10.
 
+### New: input checks of the material and of the `ABD` matrix
+
+- `MatLamina.rebuild()`, and therefore `read_laminaprop()` and
+  `laminated_plate()`, raise `ValueError` for constants that are not
+  positive definite (Jones, 1999, Sec. 2.4.2, pp. 68-69): negative Young
+  or shear moduli, Eq. (2.45), whose zero limits are kept for antiplane
+  cores and singular transverse shear stiffnesses; `|nu_ij| >=
+  (e_i/e_j)**0.5` for `e_j > 0`, Eq. (2.51); and a non-positive
+  determinant `1 - nu12*nu21 - nu23*nu32 - nu31*nu13 - 2*nu21*nu32*nu13`,
+  Eq. (2.48). The message names the violated conditions and their values.
+  With 2 or 6 entries, where `e3 = 0`, only the in-plane conditions apply.
+  E.g. `e2 = e3 = 8.7e9` with `nu23 = 1.0`, which gave a negative `c22`,
+  and an isotropic `nu = 0.5` with 9 entries, whose determinant vanishes,
+  are now rejected; `(E, 0.5)` is still accepted in plane stress. No test,
+  tutorial or notebook used such constants. Results with admissible
+  constants are unchanged, bit for bit.
+- `Laminate.calc_equivalent_properties()`, called by `laminated_plate()`,
+  also rejects, with `numpy.linalg.LinAlgError`, a `ValueError`, an `ABD`
+  matrix with a positive diagonal that is singular or ill-conditioned,
+  e.g. of a single ply at 45 degrees with `g12 = 0`: its condition number
+  in the 1-norm after the symmetric diagonal scaling of `'rohwer'`, with
+  the inverse already computed, must not exceed `1e12`, the threshold of
+  `'rohwer'`. Measured for an 8-ply laminate, `calc_equivalent_properties()`
+  takes 13 to 15 us instead of 28 us, the numpy checks of the diagonal and
+  of the finiteness of the inverse being replaced by one loop, and
+  `laminated_plate()` 150 to 180 us before and after; `np.linalg.cond`
+  would have added about 20 us. The check is blind to a decoupled term
+  that vanishes only to round-off, e.g. `A66` of `[0/90]` with `g12 = 0`.
+  `test_ill_conditioned_ABD`, an isotropic plate with `nu = 1 - 1e-12`,
+  scaled condition number `2e12`, now expects `ValueError` also with
+  `shear_correction='constant'`, and checks `A55` with `nu = 1 - 1e-10`;
+  `test_singular_ABD_any_platform` matches the new message, "singular or
+  ill-conditioned". No other laminate of the test suite is rejected,
+  including the sandwiches with soft and antiplane cores.
+- Tests: `test_not_positive_definite_rejected` and
+  `test_singular_ABD_positive_diagonal` in
+  `tests/test_plane_stress_invariants.py`.
+
 ### Python versions
 
 - Python 3.9 is no longer supported, it reached its end of life in October 2025: Python 3.10 or newer is required, and the tests and wheels cover Python 3.10 to 3.14.
