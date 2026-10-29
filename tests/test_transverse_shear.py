@@ -82,20 +82,47 @@ ROHWER_1988 = {
         # which refers to the H curve, the only one above 30% at a/h = 11
         a_h_19=dict(H='1.10'),
         a_h_11=dict(H_more_than=1.30)),
-
-    # Section 4.3, pp. 22-23: solar panel of Fig. 9, p. 22, with "A foam core
-    # of 9mm thickness is covered with faces from CFRP, layered [0,90,+45,-45],
-    # where the -45deg-layers are adhered to the core. A layer thickness of
-    # 0.125mm leads to a total thickness of 10mm." The stack is symmetric, the
-    # angle of the isotropic core is irrelevant.
-    'solar_panel': dict(stack=[0, 90, 45, -45, 0, -45, 45, 90, 0],
-        plyts=[0.125]*4 + [9.] + [0.125]*4,
-        # Table 3, p. 22: "Foam material constants", kN/mm^2
-        E_foam=0.1, nu_foam=0.3,
-        # Table 4, p. 23: "Sandwich stiffnesses", kNmm and kN/mm
-        D11='1366.08', D12='395.09', D22='1321.97', D13='9.36', D23='9.36',
-        H11='0.416', H12='0.008', H22='0.403'),
 }
+
+# NOTE Rohwer (1988), Sec. 4.3, pp. 22-23, gives a second example, the
+#      sandwich solar panel of Fig. 9, p. 22: faces of four CFRP layers of
+#      0.125 mm, [0,90,+45,-45] on top and [-45,+45,90,0] at the bottom, the
+#      -45 layers adhered to the core, a foam core of 9 mm with E = 0.1
+#      kN/mm^2 and nu = 0.3 (Table 3, p. 22), and the CFRP of Table 1. Its
+#      stiffnesses, Table 4, p. 23, are not used as a test, because they
+#      cannot be reproduced from these data and are not consistent with the
+#      stated lay-up:
+#      - the transverse shear stiffnesses, H11 = 0.416, H12 = 0.008 and
+#        H22 = 0.403 kN/mm, depend on the foam only through its shear
+#        modulus; with nu = 0.3, G = 0.0385 kN/mm^2, Eq. (43) gives 0.400,
+#        0.008 and 0.387; all three round to the printed values for G
+#        between 0.03999 and 0.04005 kN/mm^2, i.e. nu = 0.25 with E = 0.1,
+#        which is the suspected value of the computation;
+#      - D13 = D23 = 9.36 kNmm, the bending-twisting couplings D16 and D26,
+#        are reproduced, 9.3573, but D11 = 1366.08, D12 = 395.09 and D22 =
+#        1321.97 kNmm are not, +0.12, +0.62 and +0.47 per cent with nu = 0.3
+#        and nearly the same with nu = 0.25;
+#      - the printed bending entries contradict each other for this lay-up:
+#        for any ply material, the +-45 layers and the isotropic core add the
+#        same amount to D11 and D22 and Qbar16 = +-(Q11 - Q22)/4 at +-45
+#        degrees, such that (D11 - D22)/D13 = 4 (I0 - I90)/(I+45 - I-45),
+#        with I the integral of z^2 over the layers of each angle, a number
+#        given by the layer positions alone: 4.2162 for Fig. 9, against
+#        4.709 to 4.716 from the printed values within half a unit of their
+#        last digits. No change of the material constants, of the foam or of
+#        the CFRP, can reproduce Table 4; its bending entries were computed
+#        for layer positions, or a lay-up, other than those of Fig. 9, or
+#        are misprinted. A search over all orderings of the face layers and
+#        over the material constants and thicknesses found no single
+#        correction of the data that reproduces the whole table.
+#      The only other publication of this panel found is by the same author,
+#      Rohwer, K., "Improved transverse shear stiffnesses for anisotropic
+#      sandwich plates and shells", Sandwich Constructions 2, Vol. 1, EMAS,
+#      1992, pp. 465-484, not available here. The sandwich case is tested
+#      instead against Vlachoutsis (1992) and Allen (1969), see
+#      test_vlachoutsis_published_sandwich,
+#      test_sandwich_vlachoutsis_1992_example_close_to_allen_1969 and
+#      test_sandwich_antiplane_core_converges_to_allen_1969.
 
 # Vlachoutsis, S. "Shear correction factors for plates and shells", Int.
 # Journal for Numerical Methods in Engineering, Vol. 33, 1537-1552, 1992. Pages
@@ -282,6 +309,30 @@ def sandwich(tf=0.1, tc=0.8, Ef_Ec=1e3, nu=0.3, offset=0., **kwargs):
             laminaprops=laminaprops, offset=offset, **kwargs)
 
 
+def vlachoutsis_sandwich_K(p, Dc_Df, Gc_Gf):
+    r"""Shear correction factors of a symmetrical sandwich, Vlachoutsis (1992)
+
+    Closed forms of pp. 1543-1545: ``A(p)``, Eq. (32); ``T1``-``T5``, Eqs.
+    (37)-(41); the single factor ``K``, Eq. (44); the factor ``K_ant`` of the
+    antiplane core, ``Dc/Df = 0``, Eq. (45); and the energy ratio of the
+    faces ``r_f``, Eq. (48). ``p = c/h``, Eq. (31), ``D = E/(1 - nu12 nu21)``
+    of each material, Eq. (33), and ``G`` its transverse shear modulus, Eq.
+    (34). ``K`` is the factor of the whole section, ``A55 = K Abar55``, Eqs.
+    (24)-(25), p. 1541.
+    """
+    A = (1 - p)**3*(3*p**2 + 9*p + 8)/15
+    T1 = (1 - p**3) + p**3*Dc_Df
+    T2 = (1 - p)/Gc_Gf + p
+    T3 = ((1 - p**2)**2 + 8/15*Dc_Df**2*p**4
+          + 4/3*Dc_Df*p**2*(1 - p**2))
+    T4 = A*Gc_Gf + p*T3
+    T5 = A*Gc_Gf + p*(1 - p**2)**2
+    K = 4/9*T1**2/(T2*T4)
+    K_ant = 4/9*(1 - p**3)**2/(T2*T5)
+    r_f = A*Gc_Gf/T4
+    return K, K_ant, r_f
+
+
 def _interfaces(lam):
     return lam.offset - lam.h/2 + np.concatenate(([0.],
         np.cumsum([ply.h for ply in lam.plies])))
@@ -301,7 +352,7 @@ def _gauss_integral(lam, func):
 # Exactness
 # ---------
 
-@pytest.mark.parametrize('mode', ['rohwer', 'vlachoutsis'])
+@pytest.mark.parametrize('mode', ['rohwer', 'vlachoutsis', 'constant'])
 @pytest.mark.parametrize('nu', [0.0, 0.3, 0.49])
 @pytest.mark.parametrize('offset', [0., +0.37, -1.5])
 def test_isotropic_five_sixths(mode, nu, offset):
@@ -333,9 +384,28 @@ def test_rohwer_published_cross_ply():
     assert_printed(lam.Abar44, ref['Hbar22'])
     assert_printed(lam.Abarbar55, ref['Hbarbar11'])
     assert_printed(lam.Abarbar44, ref['Hbarbar22'])
+    # NOTE closed forms of Eqs. (22) and (25): in the yz plane G23 for the 0
+    #      plies and G13 for the 90 plies, the reverse in the xz plane
+    G13, G23 = CFRP[4], CFRP[5]
+    t = ref['plyt']
+    h = 4*t
+    for Abar in (lam.Abar44, lam.Abar55):
+        assert np.isclose(Abar, 2*t*G23 + 2*t*G13, rtol=1e-14, atol=0)
+    for Abarbar in (lam.Abarbar44, lam.Abarbar55):
+        assert np.isclose(Abarbar, h**2/(2*t/G23 + 2*t/G13), rtol=1e-14, atol=0)
+    # NOTE improved stiffness, Eq. (43), against the independent
+    #      implementation RohwerReference
+    Ats = RohwerReference(stack_from_laminate(lam)).Ats
+    assert np.allclose(lam.Ats, Ats, rtol=1e-12, atol=1e-14*Ats.max())
     assert_printed(lam.A55, ref['H11'])
-    # A44 = 2.5252, 0.17 % above the printed value
-    assert_printed(lam.A44, ref['H22'], rtol=2e-3)
+    # NOTE A44 = 2.52525, and the independent RohwerReference gives the same,
+    #      which Rohwer prints as H22 = 2.521, 0.17 % lower; the other three
+    #      values of Table 2 round correctly, and both 2.52525/3.067 and
+    #      2.521/3.067 round to the reduction 0.82 printed on p. 18, checked
+    #      below to half a unit of its last digit. The relative tolerance only
+    #      records this deviation of the printed value; the anchors of A44
+    #      are Eq. (43), written out in RohwerReference, and the ratio 0.82
+    assert_printed(lam.A44, ref['H22'], rtol=1.7e-3)
     assert abs(lam.A45 - ref['H12']) < 1e-12
     assert_printed(lam.A55/lam.Abarbar55, ref['H11_Hbarbar11'])
     assert_printed(lam.A44/lam.Abarbar44, ref['H22_Hbarbar22'])
@@ -345,12 +415,41 @@ def test_rohwer_published_cross_ply():
 
 
 def test_rohwer_published_sandwich_minimum():
+    r"""Fig. 5 of Rohwer (1988), p. 18, against Vlachoutsis (1992), Eq. (44)
+
+    For isotropic faces and core with one Poisson ratio, the cylindrical
+    bending of Rohwer's Eq. (34) gives the bending stress of a beam, as
+    assumed by Vlachoutsis, such that every point of the curves of Fig. 5,
+    ``H11/Hbarbar11 = K Abar55/Abarbar55``, follows from the closed form of
+    Eq. (44), with ``Dc/Df = Gc/Gf = Ec/Ef``, and from the closed forms of
+    Rohwer's Eqs. (22) and (25); they are compared to round-off: 1e-13, plus
+    ``3 eps/(1 - p)`` for the closed form, which forms ``1 - p`` from ``p =
+    c/h``, with the machine epsilon ``eps`` as absolute error, and raises it
+    to the third power in ``A(p)``, Eq. (32). Measured: at most 8e-15 for
+    ``1 - p > 1e-3`` and 1.5e-12 at ``1 - p = 6e-6``. The minimum
+    of the lowest curve, ``Ef/Ec = 10000``, is 0.44580 at ``log(a_c/a_f) =
+    -1.33``, measured with a bounded scalar search of the closed forms, and
+    the printed "a little less than 0.45" is read as less than 0.01 below.
+    """
     ref = ROHWER_1988['sandwich']
     ratios = []
+    nu = ref['nu']
+    Ef = 70.
+    Ec = Ef/ref['Ef_Ec']
+    Gf, Gc = Ef/(2*(1 + nu)), Ec/(2*(1 + nu))
     # abscissa log(a_c/a_f) of Fig. 5
     for log_ac_af in np.linspace(-6., 6., 241):
-        lam = sandwich(tf=1., tc=10**log_ac_af, Ef_Ec=ref['Ef_Ec'],
-                nu=ref['nu'])
+        tf, tc = 1., 10**log_ac_af
+        lam = sandwich(tf=tf, tc=tc, Ef_Ec=ref['Ef_Ec'], nu=nu)
+        h = 2*tf + tc
+        p = tc/h
+        K = vlachoutsis_sandwich_K(p, Ec/Ef, Gc/Gf)[0]
+        Abar = 2*tf*Gf + tc*Gc
+        Abarbar = h**2/(2*tf/Gf + tc/Gc)
+        assert np.isclose(lam.Abar55, Abar, rtol=1e-13, atol=0)
+        assert np.isclose(lam.Abarbar55, Abarbar, rtol=1e-13, atol=0)
+        rtol = 1e-13 + 3*np.finfo(float).eps/(1 - p)
+        assert np.isclose(lam.A55/lam.Abarbar55, K*Abar/Abarbar, rtol=rtol, atol=0)
         ratios.append(lam.A55/lam.Abarbar55)
     low, high = ref['min_H11_Hbarbar11']
     assert low < min(ratios) < high
@@ -392,25 +491,8 @@ def test_rohwer_published_plate_deflection():
     assert ratio(lam.Ats, 11) > ref['a_h_11']['H_more_than']
 
 
-def test_rohwer_published_solar_panel():
-    ref = ROHWER_1988['solar_panel']
-    foam = (ref['E_foam'], ref['nu_foam'])
-    laminaprops = [CFRP]*4 + [foam] + [CFRP]*4
-    lam = laminated_plate(ref['stack'], plyts=ref['plyts'],
-            laminaprops=laminaprops)
-    assert_printed(lam.D16, ref['D13'])
-    assert_printed(lam.D26, ref['D23'])
-    assert_printed(lam.A45, ref['H12'])
-    # up to 0.62 % above the printed values
-    assert_printed(lam.D11, ref['D11'], rtol=0.01)
-    assert_printed(lam.D12, ref['D12'], rtol=0.01)
-    assert_printed(lam.D22, ref['D22'], rtol=0.01)
-    # A55 = 0.3999 and A44 = 0.3872, 3.9 % below the printed values. Both are
-    # governed by the foam shear modulus, and they round to the printed values
-    # when the foam is given G = 0.04 kN/mm^2 instead of the E/(2(1 + nu)) =
-    # 0.0385 kN/mm^2 that follows from Table 3
-    assert_printed(lam.A55, ref['H11'], rtol=0.05)
-    assert_printed(lam.A44, ref['H22'], rtol=0.05)
+# NOTE the sandwich panel of Rohwer (1988), Sec. 4.3, Table 4, p. 23, is not
+#      used as a test, see the NOTE after ROHWER_1988
 
 
 # Published values, Vlachoutsis (1992)
@@ -471,12 +553,30 @@ def _vlachoutsis_sandwiches():
 
 @pytest.mark.parametrize('E1_E2, c_h, K, K1, K2, rf', _vlachoutsis_sandwiches())
 def test_vlachoutsis_published_sandwich(E1_E2, c_h, K, K1, K2, rf):
+    r"""Isotropic sandwich of Vlachoutsis (1992), Tables I and II, p. 1548,
+    and Eqs. (49)-(51), p. 1546
+
+    For faces and core of isotropic materials with one Poisson ratio,
+    ``Dc/Df = Gc/Gf = E2/E1``, the factor K is the closed form of Eq. (44)
+    and r_f that of Eq. (48), compared to round-off (rtol 1e-12, 1e-10 for
+    r_f, a ratio of energies integrated by Gauss points). The cylindrical
+    bending of Rohwer (1988), Eq. (34), gives then the bending stress of a
+    beam, as assumed by Vlachoutsis, Sec. 2, such that ``'rohwer'`` gives
+    the same K. Measured: K of both modes within 2e-15 of Eq. (44) and r_f
+    within 3e-15 of Eq. (48) for all rows. K, r_f and the per-ply factors
+    K1 and K2 must also round to the printed digits.
+    """
     nu = VLACHOUTSIS_1992['sandwich_isotropic']['nu']
-    lam = sandwich(tf=(1 - c_h)/2, tc=c_h, Ef_Ec=E1_E2, nu=nu,
-            shear_correction='vlachoutsis')
+    K_eq44, _, rf_eq48 = vlachoutsis_sandwich_K(c_h, 1/E1_E2, 1/E1_E2)
+    for mode in ['rohwer', 'vlachoutsis']:
+        lam = sandwich(tf=(1 - c_h)/2, tc=c_h, Ef_Ec=E1_E2, nu=nu,
+                shear_correction=mode)
+        assert np.isclose(lam.scf_k13, K_eq44, rtol=1e-12, atol=0)
+        assert np.isclose(lam.scf_k23, K_eq44, rtol=1e-12, atol=0)
     assert_printed(lam.scf_k13, K)
     assert_printed(lam.scf_k23, K)
     kappa, share = _vlachoutsis_ply_factors(lam)
+    assert np.isclose(share[0] + share[2], rf_eq48, rtol=1e-10, atol=0)
     assert_printed(kappa[0], K1)
     assert_printed(kappa[2], K1)
     assert_printed(kappa[1], K2)
@@ -485,6 +585,21 @@ def test_vlachoutsis_published_sandwich(E1_E2, c_h, K, K1, K2, rf):
 
 @pytest.mark.parametrize('mode', ['vlachoutsis', 'rohwer'])
 def test_vlachoutsis_published_spherical_shell(mode):
+    r"""Spherical sandwich shell of Vlachoutsis (1992), pp. 1550-1551
+
+    The facings are isotropic and the core antiplane, so K is the closed form
+    ``K_ant`` of Eq. (45), p. 1545, with ``Gc/Gf`` from Eqs. (69) and (70)
+    and ``Gf = Ef/(2 (1 + nu))``, here 0.0776843. The core is given ``Ec/Ef
+    = 1e-9`` instead of zero, which changes K by 3e-10 relative to Eq.
+    (45), measured with Eq. (44) of Vlachoutsis, i.e. the derived allowance
+    ``rtol = 1e-9``. The printed ``K = 0.07769`` of the caption of Fig. 14,
+    p. 1551, which is reported from the finite element computations of his
+    Reference 8, is 0.57 units of its last digit above Eq. (45), just outside
+    half a unit: it would need ``alpha = 0.099992`` instead of 0.1, so the
+    rounding of the printed data does not explain it. The printed value is
+    therefore checked with one unit of its last digit, the anchor of the
+    test being Eq. (45) of the same paper.
+    """
     ref = VLACHOUTSIS_1992['spherical_shell']
     R, h, c, d, nu, alpha = (ref[key] for key in
             ['R', 'h', 'c', 'd', 'nu', 'alpha'])
@@ -500,9 +615,147 @@ def test_vlachoutsis_published_spherical_shell(mode):
     core = (Ec, Ec, 0., Gc, Gc, Gc)
     lam = laminated_plate([0, 0, 0], plyts=[t, c, t],
             laminaprops=[(Ef, nu), core, (Ef, nu)], shear_correction=mode)
-    # 0.077684, 0.01 % below the printed value
-    assert_printed(lam.scf_k13, ref['K'], rtol=1e-4)
-    assert_printed(lam.scf_k23, ref['K'], rtol=1e-4)
+    Gf = Ef/(2*(1 + nu))
+    K, K_ant, _ = vlachoutsis_sandwich_K(c/h, Ec/Ef, Gc/Gf)
+    # NOTE the allowance of the core with Ec/Ef = 1e-9
+    assert abs(K/K_ant - 1) < 1e-9
+    for k in [lam.scf_k13, lam.scf_k23]:
+        assert np.isclose(k, K_ant, rtol=1e-9, atol=0)
+        # NOTE one unit of the last printed digit, see the docstring
+        assert abs(k - float(ref['K'])) <= 1e-5
+
+
+# Allen (1969)
+# ------------
+#
+# Allen, H. G., "Analysis and Design of Structural Sandwich Panels", Pergamon
+# Press, 1969, Chap. 2, pp. 8-47,
+# https://doi.org/10.1016/B978-0-08-012870-2.50006-7. Pages as printed in
+# the book.
+
+def test_sandwich_vlachoutsis_1992_example_close_to_allen_1969():
+    r"""Example of Vlachoutsis (1992), p. 1546, and Allen (1969), Eq. (2.15b)
+
+    For ``Dc/Df = Gc/Gf = 1e-3`` and ``p = c/h = 0.95`` Vlachoutsis prints K
+    = 0.01964, Eq. (50), and K = 0.01865, Eqs. (52)-(53), for a constant core
+    shear stress Q/c ignoring the faces, "5 per cent below". The shear
+    stiffness of Allen (1969), Eq. (2.15b), p. 17, ``A G = G_c d^2/c`` per
+    unit width, with ``d = (h + c)/2``, Eq. (2.3), p. 9, the distance between
+    the centroids of the faces, includes the lever arm d of the faces and
+    rounds to the same printed K = 0.01964; composites gives A55/(G_c d^2/c)
+    - 1 = 9.6e-5. The deviation from Allen is bounded with the terms that
+    Allen neglects in :func:`test_sandwich_antiplane_core_converges_to_allen_1969`;
+    here the core is not antiplane, so only the printed digits are compared.
+    """
+    nu = 0.3
+    h = 1.
+    p = 0.95
+    t = (1 - p)*h/2
+    c = p*h
+    d = (h + c)/2
+    Ec, Ef = 1., 1000.
+    Gc, Gf = Ec/(2*(1 + nu)), Ef/(2*(1 + nu))
+    lam = laminated_plate([0, 0, 0], plyts=[t, c, t],
+                          laminaprops=[(Ef, nu), (Ec, nu), (Ef, nu)])
+    Abar = 2*t*Gf + c*Gc
+    assert np.isclose(lam.Abar55, Abar, rtol=1e-14, atol=0)
+    assert_printed(lam.scf_k13, '0.01964')
+    assert_printed(Gc*d**2/c/Abar, '0.01964')
+    assert_printed(Gc*c/Abar, '0.01865')
+    assert 9e-5 < lam.A55/(Gc*d**2/c) - 1 < 1e-4
+
+
+def test_sandwich_antiplane_core_converges_to_allen_1969():
+    r"""Antiplane core: closed form and convergence to Allen (1969)
+
+    An antiplane core has ``E_c = 0`` and a finite transverse shear modulus
+    ``G_c``, p. 14. Then the shear stress is constant in the core, Eq.
+    (2.12), p. 13, ``tau_c = Q E_f t d/(2 D)``, with ``D = E_f (t^3/6 + t
+    d^2/2)``, Eq. (2.2), p. 9, i.e. ``tau_c = Q/(d phi)``, ``phi = 1 +
+    t^2/(3 d^2)``, and parabolic in the faces, Eq. (2.9), p. 11, ``tau_f = Q
+    E_f (h^2/4 - z^2)/(2 D)``. The complementary energy, Rohwer (1988), Eq.
+    (43), gives::
+
+        A = (G_c d^2/c) phi^2/(1 + eps),
+        eps = (G_c/G_f) 2 t (h^2/3 - h t/2 + t^2/5)/(c d^2)
+
+    with eps the ratio of the face to the core shear energy. This is Eq. (45)
+    of Vlachoutsis (1992), p. 1545, ``A = K_ant sum_i G_i h_i``, verified
+    here to round-off. Allen's shear stiffness ``G_c d^2/c``, Eq. (2.15b),
+    p. 17, neglects the local bending stiffness of the faces, the first term
+    of Eq. (2.2), "less than 1%" of the second when ``3 (d/t)^2 > 100``, Eq.
+    (2.4), p. 10, i.e. when ``phi - 1 < 0.01``, and the shear strains of the
+    faces, footnote of p. 17, i.e. eps. Hence the derived bounds, which tend
+    to zero as ``d/t`` and ``G_f/G_c`` grow::
+
+        -eps <= A/(G_c d^2/c) - 1 <= phi^2 - 1
+
+    The family below has ``t/c = 10^-k/2`` and ``G_c/G_f = 10^-k/10``, i.e. a
+    constant share of the core in ``Abar = sum_i G_i h_i``. Measured, with
+    ``E_f = 70 GPa``, ``nu = 0.3``, ``c = 10 mm``:
+
+    ===  =======  =========  =============  ===========  ======
+     k    eps      phi^2-1    A/A_Allen - 1  composites   K
+                                             vs Eq. (44)
+    ===  =======  =========  =============  ===========  ======
+     1    3.4e-4   1.51e-3    1.17e-3        9e-16        0.1003
+     2    3.3e-6   1.65e-5    1.32e-5        1e-14        0.0918
+     3    3.3e-8   1.67e-7    1.33e-7        5e-14        0.0910
+    ===  =======  =========  =============  ===========  ======
+
+    The deviation from Allen decreases by a factor 100 per step, as both
+    bounds, while K tends to 1/11, such that the constant 5/6 overestimates
+    the shear stiffness 9.2 times. ``read_laminaprop`` divides by ``E_1`` of
+    the core, ``nu21 = nu12 E2/E1``, so ``E_c = 0`` is replaced by ``E_c/E_f
+    = 1e-12``, which changes K by 3.3e-13 relative to the antiplane Eq.
+    (45), measured with Eq. (44) of Vlachoutsis. This difference, plus
+    1e-12 for the round-off of composites against Eq. (44), is the only
+    allowance added to the derived bounds.
+    """
+    Ef = 70e3
+    nu = 0.3
+    Gf = Ef/(2*(1 + nu))
+    c = 10.
+    Ec = 1e-12*Ef
+    lf = (Ef, Ef, nu, Gf, Gf, Gf)
+    devs = []
+    for k in [1, 2, 3]:
+        t = c*10.**(-k)/2
+        Gc = Gf*10.**(-k)/10
+        lc = (Ec, Ec, nu, Ec/(2*(1 + nu)), Gc, Gc)
+        plyts = [t, c, t]
+        h = c + 2*t
+        p = c/h
+        d = (h + c)/2
+        phi = 1 + t**2/(3*d**2)
+        eps = Gc/Gf*2*t*(h**2/3 - h*t/2 + t**2/5)/(c*d**2)
+        A_allen = Gc*d**2/c
+        Abar = 2*t*Gf + c*Gc
+        K, K_ant, _ = vlachoutsis_sandwich_K(p, Ec/Ef, Gc/Gf)
+        # NOTE the closed form above is Eq. (45) of Vlachoutsis (1992)
+        assert np.isclose(A_allen*phi**2/(1 + eps), K_ant*Abar, rtol=1e-13, atol=0)
+        # NOTE E_c/E_f = 1e-12 is the antiplane core to round-off
+        slack = abs(K/K_ant - 1) + 1e-12
+        assert slack < 2e-12
+        for mode in ['rohwer', 'vlachoutsis']:
+            lam = laminated_plate([0, 0, 0], plyts=plyts,
+                                  laminaprops=[lf, lc, lf],
+                                  shear_correction=mode)
+            assert np.isclose(lam.A55, K*Abar, rtol=1e-12, atol=0)
+            assert np.isclose(lam.A44, K*Abar, rtol=1e-12, atol=0)
+        Ats = RohwerReference(stack_from_laminate(lam)).Ats
+        assert np.allclose(Ats, K*Abar*np.eye(2), rtol=1e-12,
+                           atol=1e-12*K*Abar)
+        dev = lam.A55/A_allen - 1
+        assert -eps - slack <= dev <= phi**2 - 1 + slack
+        devs.append(dev)
+        # NOTE Allen's condition (2.4) holds
+        assert 3*(d/t)**2 > 100
+        assert (5/6)/K > 8
+    # NOTE convergence: the deviation from Allen decreases with k, as the
+    #      bounds, by a factor 100 per step
+    assert devs[0] > 50*devs[1] > 0 and devs[1] > 50*devs[2] > 0
+    assert devs[-1] < 2e-7
 
 
 # Properties
@@ -699,18 +952,45 @@ class RohwerReference:
 # Regression against the reference implementation
 # ------------------------------------------------
 
-@pytest.mark.parametrize('stack, A45', [
-    ([45, -45, -45, 45], -0.1204),
-    ([-45, 45, 45, -45], +0.1204),
+@pytest.mark.parametrize('stack, sign', [
+    ([45, -45, -45, 45], -1),
+    ([-45, 45, 45, -45], +1),
     ])
-def test_rohwer_angle_ply_coupling(stack, A45):
-    # not published, values from the reference implementation
+def test_rohwer_angle_ply_coupling(stack, sign):
+    r"""The ``[0,90]s`` laminate of Rohwer (1988), Table 2, rotated by 45
+    degrees
+
+    Not published as numbers: Fig. 7, p. 20, plots the stiffnesses of this
+    laminate against the rotation angle, with ``H11 = H22``, about 0.85
+    ``Hbarbar11``, and a coupling ``-H12/Hbarbar11`` of about 0.04 at 45
+    degrees, read from the figure; only the bound ``|A45| > 0.03
+    Abarbar55``, that the coupling is not negligible, is taken from it.
+    The values are checked against the independent implementation of Eq.
+    (43), RohwerReference, and with properties: ``Abar45 = 0``, the 0 and 90
+    plies of the shear moduli cancelling; mirroring the laminate, ``y -> -y``,
+    changes the sign of A45 only; and rotating every ply by 90 degrees maps
+    one laminate onto the other, swapping A44 and A55 and changing the sign
+    of A45, hence ``A44 = A55``. Measured: A45 = -+0.12042, scf_k13 = scf_k23
+    = 0.75029, ``A55/Abarbar55 = 0.844`` and ``|A45|/Abarbar55 = 0.0393``.
+    """
     lam = laminated_plate(stack, plyt=0.25, laminaprop=CFRP)
+    mirror = laminated_plate([-t for t in stack], plyt=0.25, laminaprop=CFRP)
+    rotated = laminated_plate([t + 90 for t in stack], plyt=0.25,
+                              laminaprop=CFRP)
+    ref = RohwerReference(stack_from_laminate(lam)).Ats
+    assert np.allclose(lam.Ats, ref, rtol=1e-12, atol=1e-12*ref.max())
     # the ad-hoc (k13 + k23)/2*Abar45 cannot represent this coupling
-    assert abs(lam.Abar45) < 1e-12
-    assert abs(lam.A45 - A45) < 5e-5
-    assert abs(lam.scf_k13 - 0.7503) < 5e-5
-    assert abs(lam.scf_k23 - 0.7503) < 5e-5
+    assert abs(lam.Abar45) < 1e-14*lam.Abar55
+    assert sign*lam.A45 > 0.03*lam.Abarbar55
+    assert np.isclose(mirror.A45, -lam.A45, rtol=1e-12, atol=0)
+    assert np.allclose([mirror.A44, mirror.A55], [lam.A44, lam.A55],
+                       rtol=1e-12, atol=0)
+    assert np.allclose([rotated.A44, rotated.A55, rotated.A45],
+                       [lam.A55, lam.A44, -lam.A45], rtol=1e-12,
+                       atol=0)
+    assert np.isclose(lam.A44, lam.A55, rtol=1e-12, atol=0)
+    assert np.isclose(lam.scf_k13, lam.scf_k23, rtol=1e-12, atol=0)
+    assert lam.scf_k13 < 1.
 
 
 def _grid():
@@ -748,10 +1028,18 @@ def test_regression_reference(name, param, lam):
 
 
 def test_sandwich_soft_core():
-    lam = sandwich()
-    # the previous implementation returned 1.2564
-    assert abs(lam.scf_k13 - 0.0051) < 5e-5
-    assert abs(lam.scf_k23 - 0.0051) < 5e-5
+    r"""Isotropic sandwich with ``c/h = 0.8`` and ``Ef/Ec = 1000``
+
+    The closed form of Vlachoutsis (1992), Eq. (44), with ``p = 0.8`` and
+    ``Dc/Df = Gc/Gf = 1e-3``, gives K = 0.0050821, for ``'rohwer'`` as well,
+    see :func:`test_vlachoutsis_published_sandwich`; measured within 7e-16.
+    The previous implementation returned 1.2564.
+    """
+    K = vlachoutsis_sandwich_K(0.8, 1e-3, 1e-3)[0]
+    for mode in ['rohwer', 'vlachoutsis']:
+        lam = sandwich(shear_correction=mode)
+        assert np.isclose(lam.scf_k13, K, rtol=1e-12, atol=0)
+        assert np.isclose(lam.scf_k23, K, rtol=1e-12, atol=0)
 
 
 # Other modes and errors
