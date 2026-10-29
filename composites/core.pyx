@@ -393,9 +393,11 @@ cdef class MatLamina:
         26, 44, 45 and 55 of the three-dimensional stiffness matrix of
         :meth:`get_constitutive_matrix` rotated by the ply angle about the 3
         axis, whose in-plane components transform with the same formulas as
-        the plane-stress ones. They are stiffer than the plane-stress
-        `q_{ijL}`, e.g. `\lambda + 2\mu = E (1 - \nu)/((1 + \nu)(1 - 2\nu))`
-        instead of `E/(1 - \nu^2)` for an isotropic material, and are meant
+        the plane-stress ones, but are not the plane-stress stiffnesses
+        (Tsai [5]_, Sec. 3.3, "Transformation in three dimensions"). They are
+        stiffer than the plane-stress `q_{ijL}`, e.g. `\lambda + 2\mu = E (1 -
+        \nu)/((1 + \nu)(1 - 2\nu))` instead of `E/(1 - \nu^2)` for an
+        isotropic material, and are meant
         for three-dimensional properties, e.g. for continuum shell elements
         integrated with a user material (UMAT), not for the plate and shell
         stiffnesses of :class:`.Laminate`.
@@ -413,6 +415,7 @@ cdef class MatLamina:
         .. [4] ABAQUS Example Problems Manual, Vol. 1, Example 1.2.2,
            Laminated composite shell: buckling of a cylindrical panel with a
            circular hole.
+        .. [5] Tsai, S. W., Theory of Composites Design, 2008.
 
         """
         cdef double e1, e2, e3, nu12, nu21, nu13, nu31, nu23, nu32, delta, den
