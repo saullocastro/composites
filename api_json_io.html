@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Saving and loading in JSON (composites.json_io) &#8212; composites 0.10.1 documentation</title>
+    <title>Saving and loading in JSON (composites.json_io) &#8212; composites 0.10.2 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=261ea15a"></script>
+    <script src="_static/documentation_options.js?v=11e62b30"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -118,7 +118,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.1 documentation</p>
+    <p class="title logo__title">composites 0.10.2 documentation</p>
   
 </a></div>
     
@@ -576,6 +576,13 @@ loading. The transverse shear distribution used by
 recomputed on demand. Attributes of Python subclasses that are not public
 attributes of the base class are not stored, and the loaded object has the
 type of the base class.</p>
+<p>The read-only <code class="docutils literal notranslate"><span class="pre">plane_stress</span></code> of a <a class="reference internal" href="api_core.html#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a> is not stored: it is restored
+from the stored constitutive constants, <code class="docutils literal notranslate"><span class="pre">True</span></code> when <code class="docutils literal notranslate"><span class="pre">q33</span> <span class="pre">=</span> <span class="pre">0</span></code>, which
+holds for the plane-stress constants of <a class="reference internal" href="api_core.html#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.rebuild()</span></code></a> and,
+with <code class="docutils literal notranslate"><span class="pre">e3</span> <span class="pre">=</span> <span class="pre">0</span></code>, for the three-dimensional ones, which are then equal to
+them, and <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise. The files saved before <code class="docutils literal notranslate"><span class="pre">plane_stress</span></code>
+existed, whose constants were three-dimensional when <code class="docutils literal notranslate"><span class="pre">e3</span> <span class="pre">!=</span> <span class="pre">0</span></code>, are
+therefore loaded with the attribute that describes them.</p>
 <p>The values <code class="docutils literal notranslate"><span class="pre">nan</span></code>, <code class="docutils literal notranslate"><span class="pre">inf</span></code> and <code class="docutils literal notranslate"><span class="pre">-inf</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">Abarbar44</span></code> of a ply with a
 singular transverse shear matrix, are stored as the strings <code class="docutils literal notranslate"><span class="pre">&quot;NaN&quot;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;Infinity&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;-Infinity&quot;</span></code>, such that the output is strict JSON,
@@ -584,7 +591,7 @@ readable by <code class="docutils literal notranslate"><span class="pre">JSON.pa
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"Laminate"</span><span class="p">,</span>
   <span class="s2">"format_version"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-  <span class="s2">"composites_version"</span><span class="p">:</span> <span class="s2">"0.10.1"</span><span class="p">,</span>
+  <span class="s2">"composites_version"</span><span class="p">:</span> <span class="s2">"0.10.2"</span><span class="p">,</span>
   <span class="s2">"data"</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>

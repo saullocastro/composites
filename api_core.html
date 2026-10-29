@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Composites Core Module (composites.core) &#8212; composites 0.10.1 documentation</title>
+    <title>Composites Core Module (composites.core) &#8212; composites 0.10.2 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=261ea15a"></script>
+    <script src="_static/documentation_options.js?v=11e62b30"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -120,7 +120,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.1 documentation</p>
+    <p class="title logo__title">composites 0.10.2 documentation</p>
   
 </a></div>
     
@@ -635,7 +635,7 @@ columns correspond to:</p>
 <p class="rubric">Methods</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.GradABD.calc_LP_grad" title="composites.core.GradABD.calc_LP_grad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_LP_grad</span></code></a>(thickness, mat, lp)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.GradABD.calc_LP_grad" title="composites.core.GradABD.calc_LP_grad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_LP_grad</span></code></a>(thickness, mat, lp[, offset])</p></td>
 <td><p>Gradients of the shell stiffnesses with respect to the thickness and lamination parameters</p></td>
 </tr>
 </tbody>
@@ -643,15 +643,16 @@ columns correspond to:</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.GradABD.calc_LP_grad">
-<span class="sig-name descname"><span class="pre">calc_LP_grad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.GradABD.calc_LP_grad" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">calc_LP_grad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.GradABD.calc_LP_grad" title="Link to this definition">#</a></dt>
 <dd><p>Gradients of the shell stiffnesses with respect to the thickness and
 lamination parameters</p>
 <p>Updates <code class="docutils literal notranslate"><span class="pre">gradAij</span></code>, <code class="docutils literal notranslate"><span class="pre">gradBij</span></code>, <code class="docutils literal notranslate"><span class="pre">gradDij</span></code> and <code class="docutils literal notranslate"><span class="pre">gradAtsij</span></code> with
 the derivatives of the stiffnesses computed by
 <a class="reference internal" href="#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a> from <code class="docutils literal notranslate"><span class="pre">thickness</span></code>,
-from the invariants <code class="docutils literal notranslate"><span class="pre">u1</span></code> to <code class="docutils literal notranslate"><span class="pre">u7</span></code> of <code class="docutils literal notranslate"><span class="pre">mat</span></code> and from the
-lamination parameters of <code class="docutils literal notranslate"><span class="pre">lp</span></code>; column 0 contains the derivatives
-with respect to the thickness. The entries <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">2]</span></code>, <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">1]</span></code> and
+from the invariants <code class="docutils literal notranslate"><span class="pre">u1</span></code> to <code class="docutils literal notranslate"><span class="pre">u7</span></code> of <code class="docutils literal notranslate"><span class="pre">mat</span></code>, from the
+lamination parameters of <code class="docutils literal notranslate"><span class="pre">lp</span></code> and from <code class="docutils literal notranslate"><span class="pre">offset</span></code>; column 0
+contains the derivatives with respect to the thickness, at constant
+lamination parameters and <code class="docutils literal notranslate"><span class="pre">offset</span></code>. The entries <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">2]</span></code>, <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">1]</span></code> and
 <code class="docutils literal notranslate"><span class="pre">[2,</span> <span class="pre">2]</span></code> of <code class="docutils literal notranslate"><span class="pre">gradAtsij</span></code>, which do not depend on the lamination
 parameters, are not updated. All six rows of <code class="docutils literal notranslate"><span class="pre">gradAij</span></code>,
 <code class="docutils literal notranslate"><span class="pre">gradBij</span></code> and <code class="docutils literal notranslate"><span class="pre">gradDij</span></code> are updated, including row 5 (<code class="docutils literal notranslate"><span class="pre">A66</span></code>,
@@ -667,6 +668,10 @@ parameters, are not updated. All six rows of <code class="docutils literal notra
 </dd>
 <dt><strong>lp</strong><span class="classifier"><a class="reference internal" href="#composites.core.LaminationParameters" title="composites.core.LaminationParameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">LaminationParameters</span></code></a> object</span></dt><dd><p>The container class with all lamination parameters already defined</p>
 </dd>
+<dt><strong>offset</strong><span class="classifier">float, optional</span></dt><dd><p>Offset of the mid-surface from the reference surface, about which
+the lamination parameters are defined, see
+<a class="reference internal" href="#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a>. Length. Default <code class="docutils literal notranslate"><span class="pre">0.</span></code>.</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -678,15 +683,17 @@ parameters, are not updated. All six rows of <code class="docutils literal notra
 </dl>
 <p class="rubric">Notes</p>
 <p>The stiffnesses of <a class="reference internal" href="#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a> are
-<span class="math notranslate nohighlight">\(A = h \, U \{1, \xi_A\}\)</span>, <span class="math notranslate nohighlight">\(B = h^2/4 \, U \{0, \xi_B\}\)</span>, <span class="math notranslate nohighlight">\(D = h^3/12
-\, U \{1, \xi_D\}\)</span> and <span class="math notranslate nohighlight">\(\bar{A}_{ts} = h \, U_{ts} \{1,
-\xi_{A_{ts}}\}\)</span>, with <span class="math notranslate nohighlight">\(U\)</span> the rows of the in-plane terms of
+<span class="math notranslate nohighlight">\(A = h \, U \{1, \xi_A\}\)</span>, <span class="math notranslate nohighlight">\(B = h e \, U \{1, 0\} + h^2/4 \, U \{0,
+\xi_B\}\)</span>, <span class="math notranslate nohighlight">\(D = (h^3/12 + h e^2) \, U \{1, 0\} + h^3/12 \, U \{0,
+\xi_D\}\)</span> and <span class="math notranslate nohighlight">\(\bar{A}_{ts} = h \, U_{ts} \{1, \xi_{A_{ts}}\}\)</span>, with
+<span class="math notranslate nohighlight">\(e\)</span> = <code class="docutils literal notranslate"><span class="pre">offset</span></code>, <span class="math notranslate nohighlight">\(U\)</span> the rows of the in-plane terms of
 <a class="reference internal" href="#composites.core.MatLamina.get_invariant_matrix" title="composites.core.MatLamina.get_invariant_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.get_invariant_matrix()</span></code></a> and <span class="math notranslate nohighlight">\(U_{ts}\)</span> those of the
-transverse shear terms. At constant lamination parameters,
-<span class="math notranslate nohighlight">\(\partial A/\partial h = U \{1, \xi_A\}\)</span>, <span class="math notranslate nohighlight">\(\partial B/\partial h = h/2
-\, U \{0, \xi_B\}\)</span>, <span class="math notranslate nohighlight">\(\partial D/\partial h = h^2/4 \, U \{1, \xi_D\}\)</span>
-and <span class="math notranslate nohighlight">\(\partial \bar{A}_{ts}/\partial h = U_{ts} \{1, \xi_{A_{ts}}\}\)</span>,
-and at constant thickness the derivatives with respect to the
+transverse shear terms. At constant lamination parameters and
+offset, <span class="math notranslate nohighlight">\(\partial A/\partial h = U \{1, \xi_A\}\)</span>, <span class="math notranslate nohighlight">\(\partial
+B/\partial h = e \, U \{1, 0\} + h/2 \, U \{0, \xi_B\}\)</span>, <span class="math notranslate nohighlight">\(\partial
+D/\partial h = (h^2/4 + e^2) \, U \{1, 0\} + h^2/4 \, U \{0,
+\xi_D\}\)</span> and <span class="math notranslate nohighlight">\(\partial \bar{A}_{ts}/\partial h = U_{ts} \{1,
+\xi_{A_{ts}}\}\)</span>, and at constant thickness the derivatives with respect to the
 lamination parameters are the columns of <span class="math notranslate nohighlight">\(U\)</span> multiplied by <span class="math notranslate nohighlight">\(h\)</span>,
 <span class="math notranslate nohighlight">\(h^2/4\)</span> and <span class="math notranslate nohighlight">\(h^3/12\)</span>, respectively, and those of <span class="math notranslate nohighlight">\(U_{ts}\)</span> by <span class="math notranslate nohighlight">\(h\)</span>.</p>
 </dd></dl>
@@ -1604,6 +1611,17 @@ Journal of Engineering Mechanics, 115, 1225-1244, 1989.</p>
 </div></blockquote>
 <p>They are computed from the inverse of the 6x6 <code class="docutils literal notranslate"><span class="pre">ABD</span></code> matrix and from
 <code class="docutils literal notranslate"><span class="pre">h</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>numpy.linalg.LinAlgError</dt><dd><p>A subclass of <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>, if the <code class="docutils literal notranslate"><span class="pre">ABD</span></code> matrix is singular,
+e.g. for a laminate of antiplane cores only, whose in-plane and
+bending stiffnesses vanish: the equivalent properties are then
+undefined.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>With <span class="math notranslate nohighlight">\(a = [[A, B], [B, D]]^{-1}\)</span>, whose upper-left 3x3 block is the
 membrane compliance of the laminate with zero moments and free
@@ -1660,7 +1678,10 @@ d\bar{z} \\
 <p>integrated exactly ply by ply, such that <code class="docutils literal notranslate"><span class="pre">xiAts1</span> <span class="pre">=</span> <span class="pre">xiA1</span></code> and
 <code class="docutils literal notranslate"><span class="pre">xiAts2</span> <span class="pre">=</span> <span class="pre">xiA2</span></code>. With these definitions, the stiffnesses of the
 laminate are linear in the lamination parameters, see
-<a class="reference internal" href="#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a>.</p>
+<a class="reference internal" href="#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a>, which must be given the
+same <code class="docutils literal notranslate"><span class="pre">offset</span></code> to reproduce the stiffnesses of the laminate. The
+<span class="math notranslate nohighlight">\(\xi_{Ai}\)</span> and <span class="math notranslate nohighlight">\(\xi_{A_{ts}i}\)</span> do not depend on <code class="docutils literal notranslate"><span class="pre">offset</span></code>, the
+<span class="math notranslate nohighlight">\(\xi_{Bi}\)</span> and <span class="math notranslate nohighlight">\(\xi_{Di}\)</span> do.</p>
 <p>The <span class="math notranslate nohighlight">\(\xi_{Ai}\)</span> and <span class="math notranslate nohighlight">\(\xi_{Di}\)</span> are those of Krupa et al. <a class="reference internal" href="#rfc76dcd5ada9-1" id="id14">[1]</a>, who
 integrate from <span class="math notranslate nohighlight">\(z = -h/2\)</span> to <span class="math notranslate nohighlight">\(z = h/2\)</span>, i.e. with <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">0</span></code>. The
 <span class="math notranslate nohighlight">\(\xi_{Bi}\)</span> and <span class="math notranslate nohighlight">\(\xi_{A_{ts}i}\)</span>, not defined there, follow the same
@@ -1792,11 +1813,15 @@ The method is valid for arbitrary anisotropic and unsymmetric
 laminates, and the result does not depend on <code class="docutils literal notranslate"><span class="pre">offset</span></code>. The result
 is not invariant to a rotation of the element axes, because the two
 cylindrical bending states are tied to the <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> axes. This is
-inherent to the method: for a <span class="math notranslate nohighlight">\([0, 90]_s\)</span> CFRP laminate, deviations
-up to about 7 % are observed at 45 degrees.</p>
+inherent to the method, Rohwer (1988) <a class="reference internal" href="#re17123b7effa-1" id="id17">[1]</a>, Fig. 7, p. 20, and Eq.
+(44): for his <span class="math notranslate nohighlight">\([0, 90]_s\)</span> CFRP laminate of Table 2, computed in axes
+rotated by 45 degrees, <code class="docutils literal notranslate"><span class="pre">A44</span> <span class="pre">=</span> <span class="pre">A55</span></code> are 7.0 % and <code class="docutils literal notranslate"><span class="pre">A45</span></code> is
+13.5 % above the tensor rotation of the result in the axes of the
+plies; <code class="docutils literal notranslate"><span class="pre">A44</span></code> or <code class="docutils literal notranslate"><span class="pre">A55</span></code> alone deviate by up to 7.2 %, at 41 and
+49 degrees.</p>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>: the scalar factors <span class="math notranslate nohighlight">\(k_{13}\)</span>, <span class="math notranslate nohighlight">\(k_{23}\)</span> of
-Vlachoutsis (1992) <a class="reference internal" href="#re17123b7effa-2" id="id17">[2]</a> are applied to the constant-strain
+Vlachoutsis (1992) <a class="reference internal" href="#re17123b7effa-2" id="id18">[2]</a> are applied to the constant-strain
 stiffness, <code class="docutils literal notranslate"><span class="pre">A55</span> <span class="pre">=</span> <span class="pre">k13*Abar55</span></code>, <code class="docutils literal notranslate"><span class="pre">A44</span> <span class="pre">=</span> <span class="pre">k23*Abar44</span></code>, and the
 ad-hoc <code class="docutils literal notranslate"><span class="pre">A45</span> <span class="pre">=</span> <span class="pre">(k13</span> <span class="pre">+</span> <span class="pre">k23)/2*Abar45</span></code>, which cannot represent the
 coupling of angle-ply laminates with <code class="docutils literal notranslate"><span class="pre">Abar45</span> <span class="pre">=</span> <span class="pre">0</span></code>. The factors use
@@ -1817,8 +1842,8 @@ g(z)/R\)</span> of the one-dimensional equilibrium <span class="math notranslate
 evaluated with three Gauss-Legendre points per ply, which is exact,
 <span class="math notranslate nohighlight">\(g^2\)</span> being a polynomial of degree 4 within each ply.</p>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'whitney'</span></code>: the scalar factors of Whitney (1973) <a class="reference internal" href="#re17123b7effa-3" id="id18">[3]</a>, Eqs.
-(3)-(7), extending Chow (1971) <a class="reference internal" href="#re17123b7effa-4" id="id19">[4]</a> to unsymmetric orthotropic
+<li><p><code class="docutils literal notranslate"><span class="pre">'whitney'</span></code>: the scalar factors of Whitney (1973) <a class="reference internal" href="#re17123b7effa-3" id="id19">[3]</a>, Eqs.
+(3)-(7), extending Chow (1971) <a class="reference internal" href="#re17123b7effa-4" id="id20">[4]</a> to unsymmetric orthotropic
 laminates in cylindrical bending. The derivative of the bending
 stress, Eq. (3), <span class="math notranslate nohighlight">\(\sigma_{xx,x} = -C_{11}(B_{11} - A_{11}z)
 Q_x/(D_{11}A_{11} - B_{11}^2)\)</span>, vanishes at the neutral surface
@@ -1828,7 +1853,7 @@ the equilibrium <span class="math notranslate nohighlight">\(\sigma_{xx,x} + \ta
 the <span class="math notranslate nohighlight">\(\tau_{xz}\)</span> of <code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>, Eq. (5), and the energy
 equivalence, Eqs. (6)-(7), gives the same <span class="math notranslate nohighlight">\(k_{13}\)</span>. The result is
 identical to <code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">'chow'</span></code>: the scalar factors of Chow (1971) <a class="reference internal" href="#re17123b7effa-4" id="id20">[4]</a>, Eqs. (11)-(12),
+<li><p><code class="docutils literal notranslate"><span class="pre">'chow'</span></code>: the scalar factors of Chow (1971) <a class="reference internal" href="#re17123b7effa-4" id="id21">[4]</a>, Eqs. (11)-(12),
 with the transverse shear stress of a symmetric laminate obtained
 from the one-dimensional equilibrium <span class="math notranslate nohighlight">\(\tau_{xz} = Q_x g(z)/D_{11}\)</span>,
 <span class="math notranslate nohighlight">\(g(z) = -\int_{-h/2}^{z} C_{11} \bar{z} d\bar{z}\)</span>, and <span class="math notranslate nohighlight">\(k_{13} =
@@ -1840,7 +1865,7 @@ the result is identical to <code class="docutils literal notranslate"><span clas
 surfaces then coincide with the mid-surface. The factors are
 applied as in <code class="docutils literal notranslate"><span class="pre">'vlachoutsis'</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'birman_bert'</span></code>: the average shear strain factors of Birman and
-Bert (2002) <a class="reference internal" href="#re17123b7effa-5" id="id21">[5]</a>, Eq. (13) and Appendix B, obtained by equating the
+Bert (2002) <a class="reference internal" href="#re17123b7effa-5" id="id22">[5]</a>, Eq. (13) and Appendix B, obtained by equating the
 thickness integral of the transverse shear strain of the
 equilibrium distribution with that of the FSDT, <span class="math notranslate nohighlight">\(k_{13} = R_1 h /
 (\bar{A}_{55} \int g_1/C_{55} dz)\)</span>, analogously for <span class="math notranslate nohighlight">\(k_{23}\)</span>. The
@@ -1853,8 +1878,8 @@ symmetric cross sections, to unsymmetric laminates. It gives <span class="math n
 Bert (2002) for sandwich structures, <span class="math notranslate nohighlight">\(K = 1\)</span> applied to <span class="math notranslate nohighlight">\(\bar{A}_{55}
 = \sum_k C_{55}^{(k)} h_k\)</span> (their Eqs. A5-A7), is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'thickness_shear'</span></code>: dynamic factors of Yang, Norris and Stavsky
-(1966) <a class="reference internal" href="#re17123b7effa-6" id="id22">[6]</a>, as described by Sun and Whitney (1973) <a class="reference internal" href="#re17123b7effa-7" id="id23">[7]</a>, extending
-the criterion of Mindlin (1951) <a class="reference internal" href="#re17123b7effa-8" id="id24">[8]</a> to laminates, i.e. matching
+(1966) <a class="reference internal" href="#re17123b7effa-6" id="id23">[6]</a>, as described by Sun and Whitney (1973) <a class="reference internal" href="#re17123b7effa-7" id="id24">[7]</a>, extending
+the criterion of Mindlin (1951) <a class="reference internal" href="#re17123b7effa-8" id="id25">[8]</a> to laminates, i.e. matching
 the frequency of the first thickness-shear mode of the FSDT,
 <span class="math notranslate nohighlight">\(\omega^2 = k_{13} \bar{A}_{55} / \bar{I}_2\)</span>, with the exact
 frequency of the laminate, computed with a transfer matrix through
@@ -1876,48 +1901,49 @@ homogeneous plate.</p></li>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
 <div class="citation" id="re17123b7effa-1" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id16">1</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id16">1</a>,<a role="doc-backlink" href="#id17">2</a>)</span>
 <p>Rohwer, K., Improved transverse shear stiffnesses for layered
 finite elements, DFVLR-FB 88-32, 1988.</p>
 </div>
 <div class="citation" id="re17123b7effa-2" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id17">2</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id18">2</a><span class="fn-bracket">]</span></span>
 <p>Vlachoutsis, S., Shear correction factors for plates and
 shells, International Journal for Numerical Methods in
 Engineering, 33, 1537-1552, 1992.</p>
 </div>
 <div class="citation" id="re17123b7effa-3" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id18">3</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id19">3</a><span class="fn-bracket">]</span></span>
 <p>Whitney, J. M., Shear correction factors for orthotropic
 laminates under static load, Journal of Applied Mechanics, 40,
 302-304, 1973.</p>
 </div>
 <div class="citation" id="re17123b7effa-4" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id19">1</a>,<a role="doc-backlink" href="#id20">2</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id20">1</a>,<a role="doc-backlink" href="#id21">2</a>)</span>
 <p>Chow, T. S., On the propagation of flexural waves in an
 orthotropic laminated plate and its response to an impulsive load,
 Journal of Composite Materials, 5, 306-319, 1971.</p>
 </div>
 <div class="citation" id="re17123b7effa-5" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id21">5</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id22">5</a><span class="fn-bracket">]</span></span>
 <p>Birman, V. and Bert, C. W., On the choice of shear correction
 factor in sandwich structures, Journal of Sandwich Structures and
 Materials, 4, 83-95, 2002.</p>
 </div>
 <div class="citation" id="re17123b7effa-6" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id22">6</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id23">6</a><span class="fn-bracket">]</span></span>
 <p>Yang, P. C., Norris, C. H. and Stavsky, Y., Elastic wave
 propagation in heterogeneous plates, International Journal of
 Solids and Structures, 2, 665-684, 1966.</p>
 </div>
 <div class="citation" id="re17123b7effa-7" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id23">7</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id24">7</a><span class="fn-bracket">]</span></span>
 <p>Sun, C. T. and Whitney, J. M., Theories for the dynamic
 response of laminated plates, AIAA Journal, 11, 178-183, 1973.</p>
 </div>
 <div class="citation" id="re17123b7effa-8" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id24">8</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id25">8</a><span class="fn-bracket">]</span></span>
 <p>Mindlin, R. D., Influence of rotatory inertia and shear on
 flexural motions of isotropic, elastic plates, Journal of Applied
 Mechanics, 18, 31-38, 1951.</p>
@@ -1968,7 +1994,7 @@ laminate is singular.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>Evaluates the equilibrium distribution of Rohwer (1988) <a class="reference internal" href="#reef0f47c09cc-1" id="id33">[1]</a>, see
+<p>Evaluates the equilibrium distribution of Rohwer (1988) <a class="reference internal" href="#reef0f47c09cc-1" id="id34">[1]</a>, see
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">_calc_transverse_shear_distribution()</span></code>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{Bmatrix} \tau_{yz} \\ \tau_{xz} \end{Bmatrix} =
@@ -1983,7 +2009,7 @@ measured from the mid-surface.</p>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
 <div class="citation" id="reef0f47c09cc-1" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id33">1</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id34">1</a><span class="fn-bracket">]</span></span>
 <p>Rohwer, K., Improved transverse shear stiffnesses for layered
 finite elements, DFVLR-FB 88-32, 1988.</p>
 </div>
@@ -2192,13 +2218,17 @@ they give in <a class="reference internal" href="#composites.core.laminate_from_
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">MatLamina</span></span><a class="headerlink" href="#composites.core.MatLamina" title="Link to this definition">#</a></dt>
 <dd><p>Orthotropic material lamina</p>
 <p>Container of the elastic, thermal, density and strength properties of a
-material, created with all attributes equal to zero. After the elastic
-properties are set, <a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rebuild()</span></code></a> computes the constitutive constants
-<code class="docutils literal notranslate"><span class="pre">q11</span></code> to <code class="docutils literal notranslate"><span class="pre">q66</span></code>, the stiffness constants <code class="docutils literal notranslate"><span class="pre">c11</span></code> to <code class="docutils literal notranslate"><span class="pre">c66</span></code> and the
-invariants <code class="docutils literal notranslate"><span class="pre">u1</span></code> to <code class="docutils literal notranslate"><span class="pre">u7</span></code>, all with the dimension of force per unit
-area; <a class="reference internal" href="#composites.core.MatLamina.trace_normalize_plane_stress" title="composites.core.MatLamina.trace_normalize_plane_stress"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trace_normalize_plane_stress()</span></code></a> divides some of them by the
-trace, such that they become dimensionless. Usually created by
-<a class="reference internal" href="api_utils.html#composites.utils.read_laminaprop" title="composites.utils.read_laminaprop"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_laminaprop()</span></code></a>.</p>
+material, created with all attributes equal to zero, except
+<code class="docutils literal notranslate"><span class="pre">plane_stress</span> <span class="pre">=</span> <span class="pre">True</span></code>. After the elastic properties are set,
+<a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rebuild()</span></code></a> computes the constitutive constants <code class="docutils literal notranslate"><span class="pre">q11</span></code> to <code class="docutils literal notranslate"><span class="pre">q66</span></code>,
+the stiffness constants <code class="docutils literal notranslate"><span class="pre">c11</span></code> to <code class="docutils literal notranslate"><span class="pre">c66</span></code> and the invariants <code class="docutils literal notranslate"><span class="pre">u1</span></code> to
+<code class="docutils literal notranslate"><span class="pre">u7</span></code>, all with the dimension of force per unit area;
+<a class="reference internal" href="#composites.core.MatLamina.trace_normalize_plane_stress" title="composites.core.MatLamina.trace_normalize_plane_stress"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trace_normalize_plane_stress()</span></code></a> divides some of them by the trace,
+such that they become dimensionless. Usually created by
+<a class="reference internal" href="api_utils.html#composites.utils.read_laminaprop" title="composites.utils.read_laminaprop"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_laminaprop()</span></code></a>. By default, the constitutive constants and the
+invariants are those of plane stress, used by the plate and shell
+theories of <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a>, also when <code class="docutils literal notranslate"><span class="pre">e3</span></code>, <code class="docutils literal notranslate"><span class="pre">nu13</span></code> and <code class="docutils literal notranslate"><span class="pre">nu23</span></code>
+are given, see <a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rebuild()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -2244,6 +2274,11 @@ area</p>
 </dd>
 <dt><strong>ss12</strong><span class="classifier">float</span></dt><dd><p>allowable in-plane stress for shear, force per unit area</p>
 </dd>
+<dt><strong>plane_stress</strong><span class="classifier">bool</span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> when the constitutive constants and the invariants are
+those of plane stress, <code class="docutils literal notranslate"><span class="pre">False</span></code> when they are three-dimensional, as
+selected in the last call of <a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rebuild()</span></code></a>. Read-only; it is
+pickled and saved to JSON with the other attributes.</p>
+</dd>
 <dt><strong>q11</strong><span class="classifier">float</span></dt><dd><p>lamina constitutive constant 11</p>
 </dd>
 <dt><strong>q12</strong><span class="classifier">float</span></dt><dd><p>lamina constitutive constant 12</p>
@@ -2284,7 +2319,7 @@ area</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#composites.core.MatLamina.get_invariant_matrix" title="composites.core.MatLamina.get_invariant_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_invariant_matrix</span></code></a>()</p></td>
 <td><p>Return the invariant matrix</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebuild</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rebuild</span></code></a>([plane_stress])</p></td>
 <td><p>Update constitutive and invariant terms</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#composites.core.MatLamina.trace_normalize_plane_stress" title="composites.core.MatLamina.trace_normalize_plane_stress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace_normalize_plane_stress</span></code></a>()</p></td>
@@ -2340,19 +2375,25 @@ combinations used by <a class="reference internal" href="#composites.core.lamina
 <p>The stiffnesses of a ply at the angle <span class="math notranslate nohighlight">\(\theta\)</span> in the laminate axes,
 see <a class="reference internal" href="#composites.core.Lamina.rebuild" title="composites.core.Lamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lamina.rebuild()</span></code></a>, are linear in <span class="math notranslate nohighlight">\(\cos 2\theta\)</span>, <span class="math notranslate nohighlight">\(\sin
 2\theta\)</span>, <span class="math notranslate nohighlight">\(\cos 4\theta\)</span> and <span class="math notranslate nohighlight">\(\sin 4\theta\)</span>, with the invariants of
-<a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rebuild()</span></code></a> as coefficients <a class="reference internal" href="#rda96f1c80b91-1" id="id35">[1]</a>:</p>
+<a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rebuild()</span></code></a> as coefficients <a class="reference internal" href="#rda96f1c80b91-1" id="id36">[1]</a>:</p>
 <div class="math notranslate nohighlight">
 \[\{q_{11L}, q_{22L}, q_{12L}, q_{66L}, q_{16L}, q_{26L}, q_{44L},
 q_{45L}, q_{55L}\}^T = U \{1, \cos 2\theta, \sin 2\theta, \cos
 4\theta, \sin 4\theta\}^T\]</div>
-<p>which holds when <code class="docutils literal notranslate"><span class="pre">u1</span></code> to <code class="docutils literal notranslate"><span class="pre">u5</span></code> are computed from the plane-stress
-reduced stiffnesses, i.e. with <code class="docutils literal notranslate"><span class="pre">e3</span> <span class="pre">=</span> <span class="pre">0</span></code>. Integrated through the
-thickness, the trigonometric terms give the lamination parameters,
-see <a class="reference internal" href="#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a>.</p>
+<p>where <span class="math notranslate nohighlight">\(q_{ijL}\)</span> are the plane-stress stiffnesses of
+<a class="reference internal" href="#composites.core.Lamina.rebuild" title="composites.core.Lamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lamina.rebuild()</span></code></a> when <code class="docutils literal notranslate"><span class="pre">u1</span></code> to <code class="docutils literal notranslate"><span class="pre">u5</span></code> are computed from the
+plane-stress reduced stiffnesses, i.e. with <code class="docutils literal notranslate"><span class="pre">plane_stress=True</span></code>,
+the default of <a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rebuild()</span></code></a>, for any <code class="docutils literal notranslate"><span class="pre">e3</span></code> (Jones <a class="reference internal" href="#rda96f1c80b91-1" id="id37">[1]</a>, Sec.
+2.7, Eq. (2.98), p. 85), and the components of the
+three-dimensional stiffness matrix rotated about the 3 axis after
+<code class="docutils literal notranslate"><span class="pre">rebuild(plane_stress=False)</span></code>. Integrated through the thickness,
+the trigonometric terms give the lamination parameters, see
+<a class="reference internal" href="#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a>.</p>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
 <div class="citation" id="rda96f1c80b91-1" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id35">1</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id36">1</a>,<a role="doc-backlink" href="#id37">2</a>)</span>
 <p>Jones, R. M., Mechanics of Composite Materials, Second
 Edition, Taylor &amp; Francis, Philadelphia, 1999.</p>
 </div>
@@ -2361,19 +2402,56 @@ Edition, Taylor &amp; Francis, Philadelphia, 1999.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.MatLamina.rebuild">
-<span class="sig-name descname"><span class="pre">rebuild</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.MatLamina.rebuild" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">rebuild</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plane_stress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.MatLamina.rebuild" title="Link to this definition">#</a></dt>
 <dd><p>Update constitutive and invariant terms</p>
 <p>Computes, from the moduli <code class="docutils literal notranslate"><span class="pre">e1</span></code>, <code class="docutils literal notranslate"><span class="pre">e2</span></code>, <code class="docutils literal notranslate"><span class="pre">e3</span></code>, <code class="docutils literal notranslate"><span class="pre">g12</span></code>, <code class="docutils literal notranslate"><span class="pre">g13</span></code>,
 <code class="docutils literal notranslate"><span class="pre">g23</span></code> and the Poisson’s ratios <code class="docutils literal notranslate"><span class="pre">nu12</span></code>, <code class="docutils literal notranslate"><span class="pre">nu21</span></code>, <code class="docutils literal notranslate"><span class="pre">nu13</span></code>,
 <code class="docutils literal notranslate"><span class="pre">nu31</span></code>, <code class="docutils literal notranslate"><span class="pre">nu23</span></code>, <code class="docutils literal notranslate"><span class="pre">nu32</span></code>, the stiffness constants <code class="docutils literal notranslate"><span class="pre">c11</span></code> to
 <code class="docutils literal notranslate"><span class="pre">c66</span></code>, the constitutive constants <code class="docutils literal notranslate"><span class="pre">q11</span></code> to <code class="docutils literal notranslate"><span class="pre">q66</span></code> and the
 invariants <code class="docutils literal notranslate"><span class="pre">u1</span></code> to <code class="docutils literal notranslate"><span class="pre">u7</span></code>, with the dimension of force per unit
-area. <code class="docutils literal notranslate"><span class="pre">e1</span></code> and <code class="docutils literal notranslate"><span class="pre">e2</span></code> must be non-zero.</p>
+area. The moduli may be zero, e.g. <code class="docutils literal notranslate"><span class="pre">e1</span> <span class="pre">=</span> <span class="pre">e2</span> <span class="pre">=</span> <span class="pre">g12</span> <span class="pre">=</span> <span class="pre">0</span></code> for an
+antiplane core, see <a class="reference internal" href="api_utils.html#composites.utils.read_laminaprop" title="composites.utils.read_laminaprop"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_laminaprop()</span></code></a> and the Notes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>plane_stress</strong><span class="classifier">bool, optional</span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> (default): <code class="docutils literal notranslate"><span class="pre">q11</span></code> to <code class="docutils literal notranslate"><span class="pre">q33</span></code> and the invariants <code class="docutils literal notranslate"><span class="pre">u1</span></code>
+to <code class="docutils literal notranslate"><span class="pre">u5</span></code> are those of plane stress, <span class="math notranslate nohighlight">\(\sigma_{33} = 0\)</span>, used by
+<a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a>, whether or not <code class="docutils literal notranslate"><span class="pre">e3</span></code>, <code class="docutils literal notranslate"><span class="pre">nu13</span></code> and <code class="docutils literal notranslate"><span class="pre">nu23</span></code>
+are given. <code class="docutils literal notranslate"><span class="pre">False</span></code>: they are three-dimensional, e.g. for
+continuum shell elements, see the Notes. The choice is stored in
+the attribute <code class="docutils literal notranslate"><span class="pre">plane_stress</span></code>. The stiffness constants <code class="docutils literal notranslate"><span class="pre">c11</span></code>
+to <code class="docutils literal notranslate"><span class="pre">c66</span></code> are three-dimensional in both cases.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
-<p>With <span class="math notranslate nohighlight">\(\Delta = 1 - \nu_{12}\nu_{21} - \nu_{13}\nu_{31} -
-\nu_{23}\nu_{32} - \nu_{12}\nu_{23}\nu_{31} -
+<p>With <code class="docutils literal notranslate"><span class="pre">plane_stress=True</span></code>, the default, the constitutive constants
+are the plane-stress reduced stiffnesses of Jones <a class="reference internal" href="#r2b1c61c6c746-3" id="id39">[3]</a>, Sec. 2.5,
+Eq. (2.66), p. 72, and of Reddy <a class="reference internal" href="#r2b1c61c6c746-1" id="id40">[1]</a>, Sec. 2.4, Eq. (2.4.4), p. 101:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}q_{11} = \frac{e_1}{1 - \nu_{12}\nu_{21}}, \quad
+q_{12} = q_{21} = \frac{\nu_{21} e_1}{1 - \nu_{12}\nu_{21}},
+\quad
+q_{22} = \frac{e_2}{1 - \nu_{12}\nu_{21}} \\
+q_{44} = g_{23}, \quad q_{55} = g_{13}, \quad q_{66} = g_{12}\end{split}\]</div>
+<p>and <span class="math notranslate nohighlight">\(q_{13} = q_{23} = q_{31} = q_{32} = q_{33} = 0\)</span>. They follow
+from the three-dimensional stiffnesses with <span class="math notranslate nohighlight">\(\sigma_{33} = 0\)</span>,
+<span class="math notranslate nohighlight">\(q_{ij} = c_{ij} - c_{i3} c_{j3}/c_{33}\)</span>, <span class="math notranslate nohighlight">\(i, j = 1, 2\)</span> (Jones <a class="reference internal" href="#r2b1c61c6c746-3" id="id41">[3]</a>,
+Eq. (2.64), p. 72), and do not depend on <code class="docutils literal notranslate"><span class="pre">e3</span></code>, <code class="docutils literal notranslate"><span class="pre">nu13</span></code> and
+<code class="docutils literal notranslate"><span class="pre">nu23</span></code>: “the reduced stiffnesses involve six independent
+engineering constants: <span class="math notranslate nohighlight">\(E_1\)</span>, <span class="math notranslate nohighlight">\(E_2\)</span>, <span class="math notranslate nohighlight">\(\nu_{12}\)</span>, <span class="math notranslate nohighlight">\(G_{12}\)</span>, <span class="math notranslate nohighlight">\(G_{13}\)</span>,
+and <span class="math notranslate nohighlight">\(G_{23}\)</span>” (Reddy <a class="reference internal" href="#r2b1c61c6c746-1" id="id42">[1]</a>, p. 101). They are the stiffnesses of
+<a class="reference internal" href="#composites.core.Lamina.rebuild" title="composites.core.Lamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lamina.rebuild()</span></code></a>, such that
+<a class="reference internal" href="#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a> with the lamination
+parameters of <a class="reference internal" href="#composites.core.Laminate.calc_lamination_parameters" title="composites.core.Laminate.calc_lamination_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.calc_lamination_parameters()</span></code></a> gives the
+<span class="math notranslate nohighlight">\(A_{ij}\)</span>, <span class="math notranslate nohighlight">\(B_{ij}\)</span> and <span class="math notranslate nohighlight">\(D_{ij}\)</span> of <a class="reference internal" href="api_utils.html#composites.utils.laminated_plate" title="composites.utils.laminated_plate"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminated_plate()</span></code></a> for any
+<code class="docutils literal notranslate"><span class="pre">laminaprop</span></code>.</p>
+<p>With <code class="docutils literal notranslate"><span class="pre">plane_stress=False</span></code> and <span class="math notranslate nohighlight">\(\Delta = 1 - \nu_{12}\nu_{21} -
+\nu_{13}\nu_{31} - \nu_{23}\nu_{32} - \nu_{12}\nu_{23}\nu_{31} -
 \nu_{13}\nu_{21}\nu_{32}\)</span>, the constitutive constants are the
-stiffnesses of the orthotropic material in its principal axes <a class="reference internal" href="#r2b1c61c6c746-2" id="id37">[2]</a>:</p>
+three-dimensional stiffnesses of the orthotropic material in its
+principal axes <a class="reference internal" href="#r2b1c61c6c746-2" id="id43">[2]</a>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}q_{11} = e_1 (1 - \nu_{23}\nu_{32})/\Delta, \quad
 q_{12} = e_1 (\nu_{21} + \nu_{23}\nu_{31})/\Delta, \quad
@@ -2389,15 +2467,12 @@ q_{44} = g_{23}, \quad q_{55} = g_{13}, \quad q_{66} = g_{12}\end{split}\]</div>
 satisfy the reciprocity <span class="math notranslate nohighlight">\(\nu_{ij}/e_i = \nu_{ji}/e_j\)</span>, see
 <a class="reference internal" href="api_utils.html#composites.utils.read_laminaprop" title="composites.utils.read_laminaprop"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_laminaprop()</span></code></a>; the matrix of <span class="math notranslate nohighlight">\(q_{ij}\)</span>, <span class="math notranslate nohighlight">\(i, j = 1, 2, 3\)</span>, is
 then the inverse of the upper-left block of the compliance matrix
-given below. With <span class="math notranslate nohighlight">\(e_3 = 0\)</span>, as given by
+given below, i.e. <span class="math notranslate nohighlight">\(q_{ij} = c_{ij}\)</span>. With <span class="math notranslate nohighlight">\(e_3 = 0\)</span>, as given by
 <a class="reference internal" href="api_utils.html#composites.utils.read_laminaprop" title="composites.utils.read_laminaprop"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_laminaprop()</span></code></a> for 2 or 6 entries, <span class="math notranslate nohighlight">\(\nu_{31} = \nu_{32} =
-0\)</span> and <span class="math notranslate nohighlight">\(q_{11}\)</span>, <span class="math notranslate nohighlight">\(q_{12}\)</span>, <span class="math notranslate nohighlight">\(q_{22}\)</span> are the plane-stress reduced
-stiffnesses <span class="math notranslate nohighlight">\(e_1/(1 - \nu_{12}\nu_{21})\)</span>, <span class="math notranslate nohighlight">\(e_1 \nu_{21}/(1 -
-\nu_{12}\nu_{21})\)</span> and <span class="math notranslate nohighlight">\(e_2/(1 - \nu_{12}\nu_{21})\)</span> used by
-<a class="reference internal" href="#composites.core.Lamina.rebuild" title="composites.core.Lamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lamina.rebuild()</span></code></a>.</p>
+0\)</span> and they are equal to the plane-stress ones.</p>
 <p>The stiffness constants are computed with <span class="math notranslate nohighlight">\(\delta = (1 -
 \nu_{12}\nu_{21} - \nu_{23}\nu_{32} - \nu_{31}\nu_{13} -
-2\nu_{21}\nu_{32}\nu_{13})/(e_1 e_2)\)</span> <a class="reference internal" href="#r2b1c61c6c746-1" id="id38">[1]</a>:</p>
+2\nu_{21}\nu_{32}\nu_{13})/(e_1 e_2)\)</span> <a class="reference internal" href="#r2b1c61c6c746-1" id="id44">[1]</a>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}c_{11} = (1 - \nu_{23}\nu_{32})/(\delta e_2), \quad
 c_{12} = (\nu_{21} + \nu_{31}\nu_{23})/(\delta e_2), \quad
@@ -2412,9 +2487,25 @@ q_{ij}\)</span>. The matrix of the stiffness constants, see
 orthotropic compliance matrix, with <span class="math notranslate nohighlight">\(S_{11} = 1/e_1\)</span>, <span class="math notranslate nohighlight">\(S_{22} =
 1/e_2\)</span>, <span class="math notranslate nohighlight">\(S_{33} = 1/e_3\)</span>, <span class="math notranslate nohighlight">\(S_{12} = -\nu_{12}/e_1\)</span>, <span class="math notranslate nohighlight">\(S_{13} =
 -\nu_{13}/e_1\)</span>, <span class="math notranslate nohighlight">\(S_{23} = -\nu_{23}/e_2\)</span>, <span class="math notranslate nohighlight">\(S_{44} = 1/g_{23}\)</span>,
-<span class="math notranslate nohighlight">\(S_{55} = 1/g_{13}\)</span> and <span class="math notranslate nohighlight">\(S_{66} = 1/g_{12}\)</span> <a class="reference internal" href="#r2b1c61c6c746-1" id="id39">[1]</a>.</p>
-<p>The invariants <span class="math notranslate nohighlight">\(u_1\)</span> to <span class="math notranslate nohighlight">\(u_5\)</span> are those of Jones <a class="reference internal" href="#r2b1c61c6c746-3" id="id40">[3]</a>, and <span class="math notranslate nohighlight">\(u_6\)</span>,
-<span class="math notranslate nohighlight">\(u_7\)</span> the transverse shear invariants of the ABAQUS manual <a class="reference internal" href="#r2b1c61c6c746-4" id="id41">[4]</a>:</p>
+<span class="math notranslate nohighlight">\(S_{55} = 1/g_{13}\)</span> and <span class="math notranslate nohighlight">\(S_{66} = 1/g_{12}\)</span> <a class="reference internal" href="#r2b1c61c6c746-1" id="id45">[1]</a>.</p>
+<p>A zero modulus is the limit of a positive-definite material, where
+the stiffnesses stay finite while the compliances diverge. With
+<span class="math notranslate nohighlight">\(e_1 = 0\)</span> or <span class="math notranslate nohighlight">\(e_2 = 0\)</span>, the stiffness constants are computed as
+<span class="math notranslate nohighlight">\(c_{11} = e_1 (1 - \nu_{23}\nu_{32})/(\delta e_1 e_2)\)</span>, …, <span class="math notranslate nohighlight">\(c_{33}
+= e_3 (1 - \nu_{12}\nu_{21})/(\delta e_1 e_2)\)</span>, with <span class="math notranslate nohighlight">\(\delta e_1 e_2
+= 1 - \nu_{12}\nu_{21} - \nu_{23}\nu_{32} - \nu_{31}\nu_{13} -
+2\nu_{21}\nu_{32}\nu_{13}\)</span>, the same values without dividing by the
+moduli, and <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> is raised if this determinant is not
+positive; the compliance matrix is then undefined and the stiffness
+matrix singular. E.g. an antiplane core given as <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">nu12,</span> <span class="pre">0,</span>
+<span class="pre">g13,</span> <span class="pre">g23,</span> <span class="pre">e3,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>, see <a class="reference internal" href="api_utils.html#composites.utils.read_laminaprop" title="composites.utils.read_laminaprop"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_laminaprop()</span></code></a>, has <span class="math notranslate nohighlight">\(c_{33} =
+e_3\)</span>, <span class="math notranslate nohighlight">\(c_{44} = g_{23}\)</span>, <span class="math notranslate nohighlight">\(c_{55} = g_{13}\)</span> and all other constants
+zero, and its plane-stress <span class="math notranslate nohighlight">\(q_{11} = q_{12} = q_{22} = q_{66} = 0\)</span>
+and <span class="math notranslate nohighlight">\(u_1 = \dots = u_5 = 0\)</span>, such that it adds only transverse shear
+stiffness to a laminate.</p>
+<p>The invariants <span class="math notranslate nohighlight">\(u_1\)</span> to <span class="math notranslate nohighlight">\(u_5\)</span> are those of Tsai and Pagano, as given
+by Jones <a class="reference internal" href="#r2b1c61c6c746-3" id="id46">[3]</a>, Sec. 2.7, Eq. (2.99), p. 86, and <span class="math notranslate nohighlight">\(u_6\)</span>, <span class="math notranslate nohighlight">\(u_7\)</span> the
+transverse shear invariants of the ABAQUS manual <a class="reference internal" href="#r2b1c61c6c746-4" id="id47">[4]</a>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}u_1 = (3 q_{11} + 3 q_{22} + 2 q_{12} + 4 q_{66})/8, \quad
 u_2 = (q_{11} - q_{22})/2 \\
@@ -2425,43 +2516,57 @@ u_6 = (q_{44} + q_{55})/2, \quad
 u_7 = (q_{44} - q_{55})/2\end{split}\]</div>
 <p>They give the stiffnesses of a ply at any angle, see
 <a class="reference internal" href="#composites.core.MatLamina.get_invariant_matrix" title="composites.core.MatLamina.get_invariant_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_invariant_matrix()</span></code></a>.</p>
-<p>The intended use is plane stress, with the default <span class="math notranslate nohighlight">\(e_3 = 0\)</span> of
-<a class="reference internal" href="api_utils.html#composites.utils.read_laminaprop" title="composites.utils.read_laminaprop"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_laminaprop()</span></code></a> for 2 or 6 entries: <span class="math notranslate nohighlight">\(q_{11}\)</span>, <span class="math notranslate nohighlight">\(q_{12}\)</span>,
-<span class="math notranslate nohighlight">\(q_{22}\)</span> are then the plane-stress reduced stiffnesses also used by
-<a class="reference internal" href="#composites.core.Lamina.rebuild" title="composites.core.Lamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lamina.rebuild()</span></code></a>, and the invariants give the plane-stress
-stiffnesses <span class="math notranslate nohighlight">\(q_{ijL}\)</span> of the ply in the laminate axes. With <span class="math notranslate nohighlight">\(e_3 \ne
-0\)</span>, <span class="math notranslate nohighlight">\(q_{11}\)</span>, <span class="math notranslate nohighlight">\(q_{12}\)</span>, <span class="math notranslate nohighlight">\(q_{22}\)</span> are the three-dimensional stiffnesses
-<span class="math notranslate nohighlight">\(c_{11}\)</span>, <span class="math notranslate nohighlight">\(c_{12}\)</span>, <span class="math notranslate nohighlight">\(c_{22}\)</span>, and the invariants give the components
-11, 22, 12, 66, 16, 26, 44, 45 and 55 of the three-dimensional
-stiffness matrix of <a class="reference internal" href="#composites.core.MatLamina.get_constitutive_matrix" title="composites.core.MatLamina.get_constitutive_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_constitutive_matrix()</span></code></a> rotated by the
-ply angle about the 3 axis, which differ from the plane-stress
-<span class="math notranslate nohighlight">\(q_{ijL}\)</span> of <a class="reference internal" href="#composites.core.Lamina.rebuild" title="composites.core.Lamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lamina.rebuild()</span></code></a>. This is meant to compute
-three-dimensional properties, e.g. for continuum shell elements
-integrated with a user material (UMAT).</p>
+<p>With <code class="docutils literal notranslate"><span class="pre">plane_stress=True</span></code>, the invariants are those of the
+plane-stress reduced stiffnesses, as in Jones <a class="reference internal" href="#r2b1c61c6c746-3" id="id48">[3]</a>, and give the
+plane-stress stiffnesses <span class="math notranslate nohighlight">\(q_{ijL}\)</span> of the ply in the laminate axes of
+<a class="reference internal" href="#composites.core.Lamina.rebuild" title="composites.core.Lamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lamina.rebuild()</span></code></a>, Jones <a class="reference internal" href="#r2b1c61c6c746-3" id="id49">[3]</a>, Eqs. (2.85) and (2.98), pp.
+77 and 85. This is what the laminate stiffnesses need, since the
+stress resultants integrate the plane-stress <span class="math notranslate nohighlight">\(q_{ijL}\)</span> (Jones <a class="reference internal" href="#r2b1c61c6c746-3" id="id50">[3]</a>,
+Eq. (4.24), p. 198; Reddy <a class="reference internal" href="#r2b1c61c6c746-1" id="id51">[1]</a>, Eq. (3.3.38), p. 128).</p>
+<p>With <code class="docutils literal notranslate"><span class="pre">plane_stress=False</span></code> and <span class="math notranslate nohighlight">\(e_3 \ne 0\)</span>, <span class="math notranslate nohighlight">\(q_{11}\)</span>, <span class="math notranslate nohighlight">\(q_{12}\)</span>,
+<span class="math notranslate nohighlight">\(q_{22}\)</span> are the three-dimensional stiffnesses <span class="math notranslate nohighlight">\(c_{11}\)</span>, <span class="math notranslate nohighlight">\(c_{12}\)</span>,
+<span class="math notranslate nohighlight">\(c_{22}\)</span>, and the invariants give the components 11, 22, 12, 66, 16,
+26, 44, 45 and 55 of the three-dimensional stiffness matrix of
+<a class="reference internal" href="#composites.core.MatLamina.get_constitutive_matrix" title="composites.core.MatLamina.get_constitutive_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_constitutive_matrix()</span></code></a> rotated by the ply angle about the 3
+axis, whose in-plane components transform with the same formulas as
+the plane-stress ones, but are not the plane-stress stiffnesses
+(Tsai <a class="reference internal" href="#r2b1c61c6c746-5" id="id52">[5]</a>, Sec. 3.3, “Transformation in three dimensions”). They are
+stiffer than the plane-stress <span class="math notranslate nohighlight">\(q_{ijL}\)</span>, e.g. <span class="math notranslate nohighlight">\(\lambda + 2\mu = E (1 -
+\nu)/((1 + \nu)(1 - 2\nu))\)</span> instead of <span class="math notranslate nohighlight">\(E/(1 - \nu^2)\)</span> for an
+isotropic material, and are meant
+for three-dimensional properties, e.g. for continuum shell elements
+integrated with a user material (UMAT), not for the plate and shell
+stiffnesses of <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a>.</p>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
 <div class="citation" id="r2b1c61c6c746-1" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id38">1</a>,<a role="doc-backlink" href="#id39">2</a>)</span>
-<p>Reddy, J. N., Mechanics of Laminated Composite Plates and Shells,
-CRC Press, 2003. <a class="reference external" href="https://doi.org/10.1201/b12409">https://doi.org/10.1201/b12409</a></p>
+<span class="backrefs">(<a role="doc-backlink" href="#id40">1</a>,<a role="doc-backlink" href="#id42">2</a>,<a role="doc-backlink" href="#id44">3</a>,<a role="doc-backlink" href="#id45">4</a>,<a role="doc-backlink" href="#id51">5</a>)</span>
+<p>Reddy, J. N., Mechanics of Laminated Composite Plates and Shells:
+Theory and Analysis, Second Edition, CRC Press, 2003.
+<a class="reference external" href="https://doi.org/10.1201/b12409">https://doi.org/10.1201/b12409</a></p>
 </div>
 <div class="citation" id="r2b1c61c6c746-2" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id37">2</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id43">2</a><span class="fn-bracket">]</span></span>
 <p>Gürdal, Z., Haftka, R. T. and Hajela, P., Design and
 Optimization of Laminated Composite Materials, Wiley-Interscience,
 1999.</p>
 </div>
 <div class="citation" id="r2b1c61c6c746-3" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id40">3</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id39">1</a>,<a role="doc-backlink" href="#id41">2</a>,<a role="doc-backlink" href="#id46">3</a>,<a role="doc-backlink" href="#id48">4</a>,<a role="doc-backlink" href="#id49">5</a>,<a role="doc-backlink" href="#id50">6</a>)</span>
 <p>Jones, R. M., Mechanics of Composite Materials, Second
 Edition, Taylor &amp; Francis, Philadelphia, 1999.</p>
 </div>
 <div class="citation" id="r2b1c61c6c746-4" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id41">4</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id47">4</a><span class="fn-bracket">]</span></span>
 <p>ABAQUS Example Problems Manual, Vol. 1, Example 1.2.2,
 Laminated composite shell: buckling of a cylindrical panel with a
 circular hole.</p>
+</div>
+<div class="citation" id="r2b1c61c6c746-5" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id52">5</a><span class="fn-bracket">]</span></span>
+<p>Tsai, S. W., Theory of Composites Design, 2008.</p>
 </div>
 </div>
 </dd></dl>
@@ -2477,23 +2582,49 @@ trace-normalization: the constitutive constants <code class="docutils literal no
 they become dimensionless trace-normalized values. These can be
 accessed using the same attributes. The other attributes are not
 modified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">plane_stress</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, i.e. after
+<code class="docutils literal notranslate"><span class="pre">rebuild(plane_stress=False)</span></code>, since the trace is defined with
+the plane-stress stiffnesses, or if the trace is not positive,
+e.g. zero for an antiplane core, whose in-plane stiffnesses
+vanish.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
-<p>The trace is calculated according to Eq. 1 of Melo et al. <a class="reference internal" href="#r95a02e64b37c-1" id="id46">[1]</a>, <span class="math notranslate nohighlight">\(tr
-= Q_{11} + Q_{22} + 2Q_{66}\)</span>.  The universal in-plane stress
-stiffness components <span class="math notranslate nohighlight">\(Q_{11},Q_{12},Q_{22},Q_{44},Q_{55},Q_{66}\)</span> are
-divided by <span class="math notranslate nohighlight">\(tr\)</span>, and the invariants <span class="math notranslate nohighlight">\(U_1,U_2,U_3,U_4,U_5,U_6,U_7\)</span> are
-calculated with the normalized stiffnesses, such they also become
-trace-normalized invariants; since the invariants are linear in the
-stiffnesses, they are divided by <span class="math notranslate nohighlight">\(tr\)</span> as well. The trace does not
-depend on the ply angle, since <span class="math notranslate nohighlight">\(q_{11L} + q_{22L} + 2 q_{66L} = 2(u_1
-+ u_5)\)</span>, see <a class="reference internal" href="#composites.core.MatLamina.get_invariant_matrix" title="composites.core.MatLamina.get_invariant_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_invariant_matrix()</span></code></a>.</p>
+<p>The trace is calculated according to Eq. (1), p. 45, of Melo et al.
+<a class="reference internal" href="#r95a02e64b37c-1" id="id58">[1]</a>, <span class="math notranslate nohighlight">\(tr = Q_{11} + Q_{22} + 2Q_{66}\)</span>, the trace of the
+plane-stress stiffness matrix, with the plane-stress reduced
+stiffnesses of <a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rebuild()</span></code></a>, also when <code class="docutils literal notranslate"><span class="pre">e3</span></code> is given, i.e. <span class="math notranslate nohighlight">\(tr
+= (e_1 + e_2)/(1 - \nu_{12}\nu_{21}) + 2 g_{12}\)</span>.  The universal
+in-plane stress stiffness components
+<span class="math notranslate nohighlight">\(Q_{11},Q_{12},Q_{22},Q_{44},Q_{55},Q_{66}\)</span> are divided by <span class="math notranslate nohighlight">\(tr\)</span>, and
+the invariants <span class="math notranslate nohighlight">\(U_1,U_2,U_3,U_4,U_5,U_6,U_7\)</span> are calculated with the
+normalized stiffnesses, such they also become trace-normalized
+invariants; since the invariants are linear in the stiffnesses, they
+are divided by <span class="math notranslate nohighlight">\(tr\)</span> as well. The trace does not depend on the ply
+angle, since <span class="math notranslate nohighlight">\(q_{11L} + q_{22L} + 2 q_{66L} = 2(u_1 + u_5)\)</span>, see
+<a class="reference internal" href="#composites.core.MatLamina.get_invariant_matrix" title="composites.core.MatLamina.get_invariant_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_invariant_matrix()</span></code></a> and Jones <a class="reference internal" href="#r95a02e64b37c-2" id="id59">[2]</a>, Sec. 2.7, Eq. (2.98), p.
+85. Since the stiffnesses of
+<a class="reference internal" href="#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a> are linear in the
+invariants, those computed with the trace-normalized invariants are
+the ones of <a class="reference internal" href="api_utils.html#composites.utils.laminated_plate" title="composites.utils.laminated_plate"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminated_plate()</span></code></a> divided by <span class="math notranslate nohighlight">\(tr\)</span>.</p>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
 <div class="citation" id="r95a02e64b37c-1" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id46">1</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id58">1</a><span class="fn-bracket">]</span></span>
 <p>Melo, J. D. D., Bi, J., and Tsai, S. W., A Novel
 Invariant-Based Design Approach to Carbon Fiber Reinforced
-Laminates, Composite Structures, 159, 44-52, 2017.</p>
+Laminates, Composite Structures, 159, 44-52, 2017.
+<a class="reference external" href="https://doi.org/10.1016/j.compstruct.2016.09.055">https://doi.org/10.1016/j.compstruct.2016.09.055</a></p>
+</div>
+<div class="citation" id="r95a02e64b37c-2" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id59">2</a><span class="fn-bracket">]</span></span>
+<p>Jones, R. M., Mechanics of Composite Materials, Second
+Edition, Taylor &amp; Francis, Philadelphia, 1999.</p>
 </div>
 </div>
 </dd></dl>
@@ -2502,15 +2633,15 @@ Laminates, Composite Structures, 159, 44-52, 2017.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.core.laminate_from_LaminationParameters">
-<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">laminate_from_LaminationParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.laminate_from_LaminationParameters" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">laminate_from_LaminationParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.laminate_from_LaminationParameters" title="Link to this definition">#</a></dt>
 <dd><p>Return a <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> object based in the thickness, material and
 lamination parameters</p>
 <p>In a new <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> object, the stiffnesses <code class="docutils literal notranslate"><span class="pre">A11</span></code> to <code class="docutils literal notranslate"><span class="pre">D66</span></code> and
-<code class="docutils literal notranslate"><span class="pre">Abar44</span></code>, <code class="docutils literal notranslate"><span class="pre">Abar45</span></code>, <code class="docutils literal notranslate"><span class="pre">Abar55</span></code> are computed from <code class="docutils literal notranslate"><span class="pre">thickness</span></code>, from
-the invariants <code class="docutils literal notranslate"><span class="pre">u1</span></code> to <code class="docutils literal notranslate"><span class="pre">u7</span></code> of <code class="docutils literal notranslate"><span class="pre">mat</span></code> and from the lamination
-parameters of <code class="docutils literal notranslate"><span class="pre">lp</span></code>, with the combinations of
+<code class="docutils literal notranslate"><span class="pre">Abar44</span></code>, <code class="docutils literal notranslate"><span class="pre">Abar45</span></code>, <code class="docutils literal notranslate"><span class="pre">Abar55</span></code> are computed from <code class="docutils literal notranslate"><span class="pre">thickness</span></code>,
+<code class="docutils literal notranslate"><span class="pre">offset</span></code>, from the invariants <code class="docutils literal notranslate"><span class="pre">u1</span></code> to <code class="docutils literal notranslate"><span class="pre">u7</span></code> of <code class="docutils literal notranslate"><span class="pre">mat</span></code> and from the
+lamination parameters of <code class="docutils literal notranslate"><span class="pre">lp</span></code>, with the combinations of
 <a class="reference internal" href="#composites.core.MatLamina.get_invariant_matrix" title="composites.core.MatLamina.get_invariant_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.get_invariant_matrix()</span></code></a>. No plies are created, <code class="docutils literal notranslate"><span class="pre">offset</span></code>
-is zero, and the mass integrals <code class="docutils literal notranslate"><span class="pre">intrho</span></code>, <code class="docutils literal notranslate"><span class="pre">intrhoz</span></code>, <code class="docutils literal notranslate"><span class="pre">intrhoz2</span></code>,
+is stored, and the mass integrals <code class="docutils literal notranslate"><span class="pre">intrho</span></code>, <code class="docutils literal notranslate"><span class="pre">intrhoz</span></code>, <code class="docutils literal notranslate"><span class="pre">intrhoz2</span></code>,
 <code class="docutils literal notranslate"><span class="pre">intrhoz3</span></code>, <code class="docutils literal notranslate"><span class="pre">intrhoz4</span></code>, <code class="docutils literal notranslate"><span class="pre">intrhoz6</span></code> and
 the equivalent properties <code class="docutils literal notranslate"><span class="pre">e1</span></code>, <code class="docutils literal notranslate"><span class="pre">e2</span></code>, <code class="docutils literal notranslate"><span class="pre">g12</span></code>, <code class="docutils literal notranslate"><span class="pre">nu12</span></code>, <code class="docutils literal notranslate"><span class="pre">nu21</span></code> are
 not computed, remaining zero.
@@ -2529,6 +2660,11 @@ constant-stress <code class="docutils literal notranslate"><span class="pre">Aba
 </dd>
 <dt><strong>lp</strong><span class="classifier"><a class="reference internal" href="#composites.core.LaminationParameters" title="composites.core.LaminationParameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">LaminationParameters</span></code></a> object</span></dt><dd><p>The container class with all lamination parameters already defined</p>
 </dd>
+<dt><strong>offset</strong><span class="classifier">float, optional</span></dt><dd><p>Offset of the mid-surface of the laminate from the reference surface,
+as <code class="docutils literal notranslate"><span class="pre">offset</span></code> of <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a>, with which <code class="docutils literal notranslate"><span class="pre">lp</span></code> was computed
+by <a class="reference internal" href="#composites.core.Laminate.calc_lamination_parameters" title="composites.core.Laminate.calc_lamination_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.calc_lamination_parameters()</span></code></a>. Length. Default
+<code class="docutils literal notranslate"><span class="pre">0.</span></code>.</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -2543,10 +2679,15 @@ constant-stress <code class="docutils literal notranslate"><span class="pre">Aba
 its angle, with the invariants of <code class="docutils literal notranslate"><span class="pre">mat</span></code> as coefficients, see
 <a class="reference internal" href="#composites.core.MatLamina.get_invariant_matrix" title="composites.core.MatLamina.get_invariant_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.get_invariant_matrix()</span></code></a>, and the lamination parameters
 are their thickness integrals, see
-<a class="reference internal" href="#composites.core.Laminate.calc_lamination_parameters" title="composites.core.Laminate.calc_lamination_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.calc_lamination_parameters()</span></code></a>. For a laminate of a
-single material, with <span class="math notranslate nohighlight">\(h\)</span> = <code class="docutils literal notranslate"><span class="pre">thickness</span></code>, <span class="math notranslate nohighlight">\(\int dz = h \int d\bar{z}\)</span>,
-<span class="math notranslate nohighlight">\(\int z dz = h^2/4 \cdot 4\int \bar{z} d\bar{z}\)</span> and <span class="math notranslate nohighlight">\(\int z^2 dz =
-h^3/12 \cdot 12 \int \bar{z}^2 d\bar{z}\)</span> give:</p>
+<a class="reference internal" href="#composites.core.Laminate.calc_lamination_parameters" title="composites.core.Laminate.calc_lamination_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.calc_lamination_parameters()</span></code></a>, with <span class="math notranslate nohighlight">\(\bar{z} = z/h\)</span> and
+<span class="math notranslate nohighlight">\(z\)</span> measured from the reference surface, i.e. the laminate occupies
+<span class="math notranslate nohighlight">\(\bar{e} - 1/2 \le \bar{z} \le \bar{e} + 1/2\)</span>, <span class="math notranslate nohighlight">\(\bar{e}\)</span> = <code class="docutils literal notranslate"><span class="pre">offset</span></code>
+<span class="math notranslate nohighlight">\(/h\)</span>. For a laminate of a single material, with <span class="math notranslate nohighlight">\(h\)</span> = <code class="docutils literal notranslate"><span class="pre">thickness</span></code>,
+<span class="math notranslate nohighlight">\(\int dz = h \int d\bar{z}\)</span>, <span class="math notranslate nohighlight">\(\int z dz = h^2/4 \cdot 4\int \bar{z}
+d\bar{z}\)</span> and <span class="math notranslate nohighlight">\(\int z^2 dz = h^3/12 \cdot 12 \int \bar{z}^2 d\bar{z}\)</span>,
+and the integrals of the constant terms <span class="math notranslate nohighlight">\(\int d\bar{z} = 1\)</span>, <span class="math notranslate nohighlight">\(4 \int
+\bar{z} d\bar{z} = 4\bar{e}\)</span> and <span class="math notranslate nohighlight">\(12 \int \bar{z}^2 d\bar{z} = 1 + 12
+\bar{e}^2\)</span>, give:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}A_{11} = h (u_1 + u_2 \xi_{A1} + u_3 \xi_{A3}), \quad
 A_{12} = h (u_4 - u_3 \xi_{A3}), \quad
@@ -2554,25 +2695,58 @@ A_{22} = h (u_1 - u_2 \xi_{A1} + u_3 \xi_{A3}) \\
 A_{16} = h (u_2/2 \, \xi_{A2} + u_3 \xi_{A4}), \quad
 A_{26} = h (u_2/2 \, \xi_{A2} - u_3 \xi_{A4}), \quad
 A_{66} = h (u_5 - u_3 \xi_{A3}) \\
-B_{11} = \frac{h^2}{4} (u_2 \xi_{B1} + u_3 \xi_{B3}), \quad
-B_{12} = -\frac{h^2}{4} u_3 \xi_{B3}, \quad
-B_{22} = \frac{h^2}{4} (-u_2 \xi_{B1} + u_3 \xi_{B3}) \\
+B_{11} = \frac{h^2}{4} (4\bar{e} u_1 + u_2 \xi_{B1} + u_3 \xi_{B3}),
+\quad
+B_{12} = \frac{h^2}{4} (4\bar{e} u_4 - u_3 \xi_{B3}), \quad
+B_{22} = \frac{h^2}{4} (4\bar{e} u_1 - u_2 \xi_{B1} + u_3 \xi_{B3}) \\
 B_{16} = \frac{h^2}{4} (u_2/2 \, \xi_{B2} + u_3 \xi_{B4}), \quad
 B_{26} = \frac{h^2}{4} (u_2/2 \, \xi_{B2} - u_3 \xi_{B4}), \quad
-B_{66} = -\frac{h^2}{4} u_3 \xi_{B3} \\
+B_{66} = \frac{h^2}{4} (4\bar{e} u_5 - u_3 \xi_{B3}) \\
 \bar{A}_{44} = h (u_6 + u_7 \xi_{A_{ts}1}), \quad
 \bar{A}_{45} = -h u_7 \xi_{A_{ts}2}, \quad
 \bar{A}_{55} = h (u_6 - u_7 \xi_{A_{ts}1})\end{split}\]</div>
-<p>and <span class="math notranslate nohighlight">\(D_{ij}\)</span> as <span class="math notranslate nohighlight">\(A_{ij}\)</span>, with the factor <span class="math notranslate nohighlight">\(h^3/12\)</span> instead of <span class="math notranslate nohighlight">\(h\)</span> and
-<span class="math notranslate nohighlight">\(\xi_{Di}\)</span> instead of <span class="math notranslate nohighlight">\(\xi_{Ai}\)</span>. Since the through-thickness
-distribution of the plies is not known from the lamination parameters,
-no shear correction can be computed, hence the uncorrected transverse
-shear stiffnesses.</p>
+<p>and <span class="math notranslate nohighlight">\(D_{ij}\)</span> as <span class="math notranslate nohighlight">\(A_{ij}\)</span>, with the factor <span class="math notranslate nohighlight">\(h^3/12\)</span> instead of <span class="math notranslate nohighlight">\(h\)</span>,
+<span class="math notranslate nohighlight">\(\xi_{Di}\)</span> instead of <span class="math notranslate nohighlight">\(\xi_{Ai}\)</span> and <span class="math notranslate nohighlight">\((1 + 12\bar{e}^2) u_1\)</span>, <span class="math notranslate nohighlight">\((1 +
+12\bar{e}^2) u_4\)</span>, <span class="math notranslate nohighlight">\((1 + 12\bar{e}^2) u_5\)</span> instead of <span class="math notranslate nohighlight">\(u_1\)</span>, <span class="math notranslate nohighlight">\(u_4\)</span>,
+<span class="math notranslate nohighlight">\(u_5\)</span>. The <span class="math notranslate nohighlight">\(\xi_{Bi}\)</span> and <span class="math notranslate nohighlight">\(\xi_{Di}\)</span> about the reference surface are
+related to those about the mid-surface, <span class="math notranslate nohighlight">\(\xi_{Bi}^0\)</span> and <span class="math notranslate nohighlight">\(\xi_{Di}^0\)</span>,
+by <span class="math notranslate nohighlight">\(\xi_{Bi} = \xi_{Bi}^0 + 4\bar{e} \xi_{Ai}\)</span> and <span class="math notranslate nohighlight">\(\xi_{Di} =
+\xi_{Di}^0 + 6\bar{e} \xi_{Bi}^0 + 12\bar{e}^2 \xi_{Ai}\)</span>, such that
+<span class="math notranslate nohighlight">\(B = B^0 + e A\)</span> and <span class="math notranslate nohighlight">\(D = D^0 + 2 e B^0 + e^2 A\)</span>, the shift of the
+stiffness integrals to another reference plane (Vasiliev and Morozov
+<a class="reference internal" href="#r87220121de52-2" id="id62">[2]</a>, Eq. (5.28), p. 235), with <span class="math notranslate nohighlight">\(B^0\)</span>, <span class="math notranslate nohighlight">\(D^0\)</span> about the mid-surface.
+<code class="docutils literal notranslate"><span class="pre">A</span></code> and the transverse shear stiffnesses do not depend on <code class="docutils literal notranslate"><span class="pre">offset</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">lp</span></code> with an offset may lie outside the feasible region of the
+lamination parameters about the mid-surface.</p>
+<p>With the plane-stress invariants of
+<a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.rebuild()</span></code></a>, its default <code class="docutils literal notranslate"><span class="pre">plane_stress=True</span></code>, these are
+the stiffnesses of the classical lamination theory, the thickness
+integrals of the plane-stress <span class="math notranslate nohighlight">\(q_{ijL}\)</span> (Jones <a class="reference internal" href="#r87220121de52-1" id="id63">[1]</a>, Eq. (4.24), p.
+198), equal to those of <a class="reference internal" href="api_utils.html#composites.utils.laminated_plate" title="composites.utils.laminated_plate"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminated_plate()</span></code></a> for the same layup and
+<code class="docutils literal notranslate"><span class="pre">offset</span></code>, also when <code class="docutils literal notranslate"><span class="pre">e3</span></code>, <code class="docutils literal notranslate"><span class="pre">nu13</span></code> and <code class="docutils literal notranslate"><span class="pre">nu23</span></code> are given; after
+<code class="docutils literal notranslate"><span class="pre">mat.rebuild(plane_stress=False)</span></code> they integrate the rotated
+three-dimensional stiffnesses instead, see <a class="reference internal" href="#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.rebuild()</span></code></a>.
+Since the through-thickness distribution of the plies is not known from
+the lamination parameters, no shear correction can be computed, hence
+the uncorrected transverse shear stiffnesses.</p>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="r87220121de52-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id63">1</a><span class="fn-bracket">]</span></span>
+<p>Jones, R. M., Mechanics of Composite Materials, Second Edition,
+Taylor &amp; Francis, Philadelphia, 1999.</p>
+</div>
+<div class="citation" id="r87220121de52-2" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id62">2</a><span class="fn-bracket">]</span></span>
+<p>Vasiliev, V. V. and Morozov, E. V., Mechanics and Analysis of
+Composite Materials, Elsevier, Oxford, 2001.</p>
+</div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="composites.core.laminate_from_lamination_parameters">
-<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">laminate_from_lamination_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matlamina</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAts1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAts2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAtrans1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAtrans2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.laminate_from_lamination_parameters" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">composites.core.</span></span><span class="sig-name descname"><span class="pre">laminate_from_lamination_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matlamina</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiA4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiB4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiD4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAts1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAts2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAtrans1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xiAtrans2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.laminate_from_lamination_parameters" title="Link to this definition">#</a></dt>
 <dd><p>Return a <a class="reference internal" href="#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a> object based in the thickness, material and
 lamination parameters</p>
 <p>The 14 lamination parameters according to the first-order shear
@@ -2600,6 +2774,10 @@ dimensionless. Default <code class="docutils literal notranslate"><span class="p
 <dt><strong>xiAtrans1, xiAtrans2</strong><span class="classifier">float, optional</span></dt><dd><p>Deprecated, use <code class="docutils literal notranslate"><span class="pre">xiAts1</span></code> and <code class="docutils literal notranslate"><span class="pre">xiAts2</span></code> instead. Default <code class="docutils literal notranslate"><span class="pre">None</span></code>;
 when not <code class="docutils literal notranslate"><span class="pre">None</span></code>, the value replaces <code class="docutils literal notranslate"><span class="pre">xiAts1</span></code> or <code class="docutils literal notranslate"><span class="pre">xiAts2</span></code> and a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> is issued.</p>
+</dd>
+<dt><strong>offset</strong><span class="classifier">float, optional</span></dt><dd><p>Offset of the mid-surface from the reference surface, about which
+the lamination parameters are defined, see
+<a class="reference internal" href="#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a>. Length. Default <code class="docutils literal notranslate"><span class="pre">0.</span></code>.</p>
 </dd>
 </dl>
 </dd>
@@ -2730,7 +2908,11 @@ laminate.</p>
 <p>In a laminate symmetric about its mid-surface, the integrands of
 <span class="math notranslate nohighlight">\(\xi_{Bi}\)</span>, linear in <span class="math notranslate nohighlight">\(\bar{z}\)</span>, are odd functions of <span class="math notranslate nohighlight">\(\bar{z}\)</span>, see
 <a class="reference internal" href="#composites.core.Laminate.calc_lamination_parameters" title="composites.core.Laminate.calc_lamination_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.calc_lamination_parameters()</span></code></a>, such that <span class="math notranslate nohighlight">\(\xi_{Bi} = 0\)</span>
-and the coupling stiffnesses <span class="math notranslate nohighlight">\(B_{ij}\)</span> vanish.</p>
+and the coupling stiffnesses <span class="math notranslate nohighlight">\(B_{ij}\)</span> vanish. This holds for the
+lamination parameters about the mid-surface, i.e. with <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">0</span></code>,
+as <a class="reference internal" href="#composites.core.Laminate.make_symmetric" title="composites.core.Laminate.make_symmetric"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.make_symmetric()</span></code></a>: about another reference surface
+<span class="math notranslate nohighlight">\(\xi_{Bi} = 4 (e/h) \xi_{Ai}\)</span> in a symmetric laminate, see
+<a class="reference internal" href="#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -2777,11 +2959,11 @@ at least <code class="docutils literal notranslate"><span class="pre">n</span></
 <p class="rubric">Notes</p>
 <p>With the principle of homogenization, at the limit where many plies are
 used we have that <span class="math notranslate nohighlight">\(B=0\)</span>. Based on the double-double laminate as described
-by Shrivastava et al. <a class="reference internal" href="#re0132d59c8bd-1" id="id48">[1]</a>. The plies at <span class="math notranslate nohighlight">\(\pm\phi_i\)</span> have the same
+by Shrivastava et al. <a class="reference internal" href="#re0132d59c8bd-1" id="id66">[1]</a>. The plies at <span class="math notranslate nohighlight">\(\pm\phi_i\)</span> have the same
 thickness, such that the stiffnesses are the averages of the ply
 stiffnesses of <a class="reference internal" href="#composites.core.MatLamina.get_invariant_matrix" title="composites.core.MatLamina.get_invariant_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.get_invariant_matrix()</span></code></a> over the <span class="math notranslate nohighlight">\(2n\)</span>
 angles, written with the trace <span class="math notranslate nohighlight">\(tr\)</span> and the trace-normalized invariants
-<span class="math notranslate nohighlight">\(u_i^*\)</span> of <a class="reference internal" href="#composites.core.MatLamina.trace_normalize_plane_stress" title="composites.core.MatLamina.trace_normalize_plane_stress"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.trace_normalize_plane_stress()</span></code></a> <a class="reference internal" href="#re0132d59c8bd-2" id="id49">[2]</a>:</p>
+<span class="math notranslate nohighlight">\(u_i^*\)</span> of <a class="reference internal" href="#composites.core.MatLamina.trace_normalize_plane_stress" title="composites.core.MatLamina.trace_normalize_plane_stress"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.trace_normalize_plane_stress()</span></code></a> <a class="reference internal" href="#re0132d59c8bd-2" id="id67">[2]</a>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}A_{11}^* = u_1^* + \frac{1}{n} \sum_{i=1}^{n} \left( u_2^* \cos
 2\phi_i + u_3^* \cos 4\phi_i \right), \quad
@@ -2797,14 +2979,14 @@ see <a class="reference internal" href="#composites.core.Laminate.make_smeared" 
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
 <div class="citation" id="re0132d59c8bd-1" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id48">1</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id66">1</a><span class="fn-bracket">]</span></span>
 <p>Shrivastava, S., Sharma, N., Tsai, S. W., and Mohite, P. M., D
 and DD-Drop Layup Optimization of Aircraft Wing Panels under
 Multi-Load Case Design Environment, Composite Structures, 248, 112518,
 2020.</p>
 </div>
 <div class="citation" id="re0132d59c8bd-2" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id49">2</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id67">2</a><span class="fn-bracket">]</span></span>
 <p>Melo, J. D. D., Bi, J., and Tsai, S. W., A Novel Invariant-Based
 Design Approach to Carbon Fiber Reinforced Laminates, Composite
 Structures, 159, 44-52, 2017.</p>

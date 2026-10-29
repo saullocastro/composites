@@ -24,7 +24,10 @@ from JSON by the functions of :mod:`composites.json_io`, all available from
 
 All the public attributes are stored, including the derived ones, such as the
 stiffnesses, the mass integrals and the ply stiffnesses, such that the loaded
-object is identical to the saved one without any recomputation. JSON files
+object is identical to the saved one without any recomputation. The
+read-only ``plane_stress`` of a :class:`.MatLamina`, see
+:meth:`.MatLamina.rebuild`, is restored from the stored constants, see
+:mod:`composites.json_io`. JSON files
 are plain text, independent of the Python version and safe to load from
 untrusted sources, unlike pickle, which remains supported for
 ``copy.deepcopy`` and ``multiprocessing`` but is not recommended for

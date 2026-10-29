@@ -44,6 +44,19 @@ holds for the odd moments of the density, see :doc:`mass_integrals`.
 :meth:`.Laminate.make_symmetric` and :meth:`.Laminate.make_smeared` require
 ``offset = 0``.
 
+For any laminate, `B = B_{d=0} + d A` and `D = D_{d=0} + 2 d B_{d=0} + d^2
+A`, the shift of the stiffness integrals to another reference plane
+(Vasiliev and Morozov, Mechanics and Analysis of Composite Materials,
+Elsevier, 2001, Eq. (5.28), p. 235), while `A` and the transverse shear
+stiffnesses ``Abar44``, ``Abar45``, ``Abar55`` do not change. The lamination
+parameters of :meth:`.Laminate.calc_lamination_parameters` are integrated
+about the reference surface, i.e. they include the offset, and
+:func:`.laminate_from_LaminationParameters` needs the same ``offset`` to
+give back the stiffnesses:
+
+.. literalinclude:: ../../tests/test_plane_stress_invariants.py
+    :pyobject: test_lamination_parameters_offset
+
 
 Material properties
 -------------------
@@ -58,10 +71,28 @@ Material properties
   the properties of the three-dimensional constitutive matrix of
   :meth:`.MatLamina.get_constitutive_matrix`.
 
+The Young moduli may be zero, e.g. ``(0, 0, nu12, 0, G13, G23)``, or ``(0,
+0, nu12, 0, G13, G23, E33, 0, 0)``, for an antiplane core, "an idealized
+core in which the modulus of elasticity in planes parallel with the faces is
+zero but the shear modulus in planes perpendicular to the faces is finite"
+(Allen, Analysis and Design of Structural Sandwich Panels, Pergamon Press,
+1969, p. 14), which adds only transverse shear stiffness to a sandwich. A
+zero ``Ei`` with a non-zero ``Ej`` requires ``nuij = 0``, see
+:func:`.read_laminaprop`.
+
 The index 1 is the fibre direction, 2 the in-plane transverse direction and 3
 the normal direction. The ply stiffnesses used in the laminate integrals are
 always the plane-stress ones, see :meth:`.Lamina.rebuild`; ``G13`` and
 ``G23`` give the transverse shear stiffnesses ``q44L``, ``q45L``, ``q55L``.
+``E33``, ``nu13`` and ``nu23`` do not change them. The constitutive
+constants and the invariants of :class:`.MatLamina`, used by
+:func:`.laminate_from_LaminationParameters`, :class:`.GradABD` and
+:meth:`.MatLamina.trace_normalize_plane_stress`, are by default those of the
+same plane-stress stiffnesses, also with 9 entries, such that the
+lamination parameters of :meth:`.Laminate.calc_lamination_parameters` give
+back the stiffnesses of :func:`.laminated_plate`;
+``MatLamina.rebuild(plane_stress=False)`` gives the three-dimensional ones,
+e.g. for continuum shell elements, see :meth:`.MatLamina.rebuild`.
 
 
 Ply angle

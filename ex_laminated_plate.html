@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Laminated plate and ABD matrix &#8212; composites 0.10.1 documentation</title>
+    <title>Laminated plate and ABD matrix &#8212; composites 0.10.2 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=261ea15a"></script>
+    <script src="_static/documentation_options.js?v=11e62b30"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -118,7 +118,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.1 documentation</p>
+    <p class="title logo__title">composites 0.10.2 documentation</p>
   
 </a></div>
     
@@ -581,8 +581,10 @@ with reference values in:</p>
                   <span class="p">[</span><span class="mf">1.71625578e-20</span><span class="p">,</span> <span class="mf">1.71625578e-20</span><span class="p">,</span> <span class="mf">1.63068348e-17</span><span class="p">]])</span>
     <span class="n">Abar_ts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mf">2625000.</span><span class="p">,</span>       <span class="mf">0.</span><span class="p">],</span>
                         <span class="p">[</span>       <span class="mf">0.</span><span class="p">,</span> <span class="mf">2625000.</span><span class="p">]])</span>
-    <span class="n">Ats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2014905.27266639</span><span class="p">,</span> <span class="o">-</span><span class="mf">27210.29377157</span><span class="p">],</span>
-                    <span class="p">[</span> <span class="o">-</span><span class="mf">27210.29377157</span><span class="p">,</span> <span class="mf">2014905.27266639</span><span class="p">]])</span>
+    <span class="c1"># NOTE Rohwer (1988), Eq. (43), with the independent implementation of</span>
+    <span class="c1">#      tests/test_transverse_shear.py, instead of the values</span>
+    <span class="c1">#      2014905.27 and -27210.29 copied from the output of the code</span>
+    <span class="n">Ats</span> <span class="o">=</span> <span class="n">RohwerReference</span><span class="p">(</span><span class="n">stack_from_laminate</span><span class="p">(</span><span class="n">lam</span><span class="p">))</span><span class="o">.</span><span class="n">Ats</span>
     <span class="n">Dts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.03076172</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
                     <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.03076172</span><span class="p">]])</span>
     <span class="n">Fts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">6.48880005e-10</span><span class="p">,</span> <span class="mf">0.00000000e+00</span><span class="p">],</span>
@@ -595,7 +597,7 @@ with reference values in:</p>
     <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lam</span><span class="o">.</span><span class="n">F</span><span class="p">,</span> <span class="n">F</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lam</span><span class="o">.</span><span class="n">H</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lam</span><span class="o">.</span><span class="n">Abar_ts</span><span class="p">,</span> <span class="n">Abar_ts</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lam</span><span class="o">.</span><span class="n">Ats</span><span class="p">,</span> <span class="n">Ats</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lam</span><span class="o">.</span><span class="n">Ats</span><span class="p">,</span> <span class="n">Ats</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-14</span><span class="o">*</span><span class="n">Ats</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
     <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lam</span><span class="o">.</span><span class="n">Dts</span><span class="p">,</span> <span class="n">Dts</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lam</span><span class="o">.</span><span class="n">Fts</span><span class="p">,</span> <span class="n">Fts</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">warns</span><span class="p">(</span><span class="ne">DeprecationWarning</span><span class="p">):</span>

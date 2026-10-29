@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Getting started: plate properties for CLPT, FSDT and TSDT &#8212; composites 0.10.1 documentation</title>
+    <title>Getting started: plate properties for CLPT, FSDT and TSDT &#8212; composites 0.10.2 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=261ea15a"></script>
+    <script src="_static/documentation_options.js?v=11e62b30"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -121,7 +121,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.1 documentation</p>
+    <p class="title logo__title">composites 0.10.2 documentation</p>
   
 </a></div>
     
@@ -554,7 +554,8 @@ plyt = 0.125e-3 # m
 </div>
 <section id="A-quasi-isotropic-laminate">
 <h2>A quasi-isotropic laminate<a class="headerlink" href="#A-quasi-isotropic-laminate" title="Link to this heading">#</a></h2>
-<p>The stacking sequence is given from the bottom to the top ply. <code class="docutils literal notranslate"><span class="pre">ABD</span></code> is the 6x6 matrix of the CLPT and of the FSDT, relating <span class="math notranslate nohighlight">\(\{N_{xx}, N_{yy}, N_{xy}, M_{xx}, M_{yy}, M_{xy}\}\)</span> to the membrane strains and curvatures of the reference surface.</p>
+<p>The stacking sequence is given from the bottom to the top ply. <code class="docutils literal notranslate"><span class="pre">ABD</span></code> is the 6x6 matrix of the CLPT and of the FSDT, relating <span class="math notranslate nohighlight">\(\{N_{xx}, N_{yy}, N_{xy},
+M_{xx}, M_{yy}, M_{xy}\}\)</span> to the membrane strains and curvatures of the reference surface.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -588,7 +589,8 @@ D =
  [0.5232 0.5232 1.4925]]
 </pre></div></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">B</span></code> is zero for this symmetric laminate, up to round-off. <code class="docutils literal notranslate"><span class="pre">A</span></code> is isotropic, <span class="math notranslate nohighlight">\(A_{11} = A_{22}\)</span>, <span class="math notranslate nohighlight">\(A_{66} = (A_{11} - A_{12})/2\)</span> and <span class="math notranslate nohighlight">\(A_{16} = A_{26} = 0\)</span>, whereas <code class="docutils literal notranslate"><span class="pre">D</span></code> is not: the <span class="math notranslate nohighlight">\(\pm 45\)</span> plies give <span class="math notranslate nohighlight">\(D_{16}\)</span> and <span class="math notranslate nohighlight">\(D_{26}\)</span>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">B</span></code> is zero for this symmetric laminate, up to round-off. <code class="docutils literal notranslate"><span class="pre">A</span></code> is isotropic, <span class="math notranslate nohighlight">\(A_{11} =
+A_{22}\)</span>, <span class="math notranslate nohighlight">\(A_{66} = (A_{11} - A_{12})/2\)</span> and <span class="math notranslate nohighlight">\(A_{16} = A_{26} = 0\)</span>, whereas <code class="docutils literal notranslate"><span class="pre">D</span></code> is not: the <span class="math notranslate nohighlight">\(\pm 45\)</span> plies give <span class="math notranslate nohighlight">\(D_{16}\)</span> and <span class="math notranslate nohighlight">\(D_{26}\)</span>.</p>
 </section>
 <section id="FSDT:-transverse-shear-stiffness">
 <h2>FSDT: transverse shear stiffness<a class="headerlink" href="#FSDT:-transverse-shear-stiffness" title="Link to this heading">#</a></h2>
@@ -716,7 +718,8 @@ E =
 </section>
 <section id="Effect-of-the-offset">
 <h2>Effect of the offset<a class="headerlink" href="#Effect-of-the-offset" title="Link to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">offset</span></code> is the position of the mid-surface relative to the reference surface. For an isotropic plate the closed form is <span class="math notranslate nohighlight">\(B = d h C\)</span> and <span class="math notranslate nohighlight">\(D = h (d^2 + h^2/12) C\)</span>, with <span class="math notranslate nohighlight">\(d\)</span> the offset: <span class="math notranslate nohighlight">\(B\)</span> grows linearly and <span class="math notranslate nohighlight">\(D\)</span> quadratically with the offset, while <span class="math notranslate nohighlight">\(A\)</span> and <code class="docutils literal notranslate"><span class="pre">Ats</span></code> do not change.</p>
+<p><code class="docutils literal notranslate"><span class="pre">offset</span></code> is the position of the mid-surface relative to the reference surface. For an isotropic plate the closed form is <span class="math notranslate nohighlight">\(B = d h C\)</span> and <span class="math notranslate nohighlight">\(D = h
+(d^2 + h^2/12) C\)</span>, with <span class="math notranslate nohighlight">\(d\)</span> the offset: <span class="math notranslate nohighlight">\(B\)</span> grows linearly and <span class="math notranslate nohighlight">\(D\)</span> quadratically with the offset, while <span class="math notranslate nohighlight">\(A\)</span> and <code class="docutils literal notranslate"><span class="pre">Ats</span></code> do not change.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -761,7 +764,8 @@ A55 constant: True
 </section>
 <section id="Moments-of-the-density">
 <h2>Moments of the density<a class="headerlink" href="#Moments-of-the-density" title="Link to this heading">#</a></h2>
-<p>The mass matrices use the moments <span class="math notranslate nohighlight">\(I_n = \int \rho z^n dz\)</span>: <code class="docutils literal notranslate"><span class="pre">intrho</span></code>, <code class="docutils literal notranslate"><span class="pre">intrhoz</span></code>, <code class="docutils literal notranslate"><span class="pre">intrhoz2</span></code> for the CLPT and the FSDT, and also <code class="docutils literal notranslate"><span class="pre">intrhoz3</span></code>, <code class="docutils literal notranslate"><span class="pre">intrhoz4</span></code>, <code class="docutils literal notranslate"><span class="pre">intrhoz6</span></code> for the TSDT. Without offset the odd moments of a homogeneous plate vanish; with an offset <span class="math notranslate nohighlight">\(d\)</span>, <span class="math notranslate nohighlight">\(I_1 = \rho h d\)</span> and <span class="math notranslate nohighlight">\(I_2 = \rho h (d^2 + h^2/12)\)</span>.</p>
+<p>The mass matrices use the moments <span class="math notranslate nohighlight">\(I_n = \int \rho z^n dz\)</span>: <code class="docutils literal notranslate"><span class="pre">intrho</span></code>, <code class="docutils literal notranslate"><span class="pre">intrhoz</span></code>, <code class="docutils literal notranslate"><span class="pre">intrhoz2</span></code> for the CLPT and the FSDT, and also <code class="docutils literal notranslate"><span class="pre">intrhoz3</span></code>, <code class="docutils literal notranslate"><span class="pre">intrhoz4</span></code>, <code class="docutils literal notranslate"><span class="pre">intrhoz6</span></code> for the TSDT. Without offset the odd moments of a homogeneous plate vanish; with an offset <span class="math notranslate nohighlight">\(d\)</span>, <span class="math notranslate nohighlight">\(I_1 = \rho h d\)</span> and <span class="math notranslate nohighlight">\(I_2 =
+\rho h (d^2 + h^2/12)\)</span>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
