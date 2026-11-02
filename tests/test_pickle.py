@@ -1,3 +1,14 @@
+"""Pickling and copying of the objects of :mod:`composites.core`
+
+Verifies that :class:`.MatLamina`, :class:`.Lamina`,
+:class:`.LaminationParameters`, :class:`.Laminate` and :class:`.GradABD`
+survive a pickle round trip and :func:`copy.deepcopy`
+with every public attribute equal to the original, also for every
+``shear_correction``, an offset, the default object, a Python subclass, a
+filled transverse shear cache and states pickled with the former name
+``gradAtransij``; and that ``_LAMINATE_STATE`` names every public attribute.
+The reference is the original object.
+"""
 import sys
 sys.path.append('..')
 

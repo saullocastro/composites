@@ -1,3 +1,16 @@
+"""JSON input and output of :mod:`composites.json_io`
+
+Verifies that :func:`.to_dict`, :func:`.from_dict`, :func:`.to_json`,
+:func:`.from_json`, :func:`.save_json` and :func:`.load_json` restore
+:class:`.MatLamina`, :class:`.Lamina`, :class:`.LaminationParameters`,
+:class:`.Laminate` and :class:`.GradABD` with every public attribute equal
+to the original, including non-finite values, shared materials, laminates
+from lamination parameters, the density moments and a laminate embedded
+in another JSON document; that the output
+contains only JSON types; that the field lists follow the public attributes
+of the classes; and that malformed input, wrong types, unknown and missing
+keys raise errors. The reference is the original object.
+"""
 import sys
 sys.path.append('..')
 
