@@ -72,26 +72,34 @@ Theory and conventions
     saving_loading.rst
 
 
-Usage examples
---------------
+.. toctree::
+    :maxdepth: 1
+    :caption: Worked examples
+
+    notebooks/ex_laminated_plate
+    notebooks/ex_isotropic_offset
+    notebooks/ex_tsdt
+    notebooks/ex_transverse_shear
+    notebooks/ex_json
 
 .. toctree::
     :maxdepth: 1
+    :caption: Tutorials
 
-    ex_laminated_plate.rst
-    ex_isotropic_offset.rst
-    ex_tsdt.rst
-    ex_transverse_shear.rst
-    ex_json.rst
-
-
-Tutorials
----------
+    notebooks/getting-started-plate-properties
+    notebooks/transverse-shear-stresses
+    notebooks/post-polar-plots-laminate-stiffness
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
+    :caption: Optimisation tutorials
 
-    tutorials.rst
+    notebooks/opt-lightweight-discrete-ghost-layer
+    notebooks/opt-lightweight-LP-gradient-Le-Riche
+    notebooks/opt-lightweight-smeared-finite-diff-Le-Riche
+    notebooks/opt-lightweight-smeared-gradient-Le-Riche
+    notebooks/opt1
+    notebooks/opt2
 
 
 composites API
@@ -112,11 +120,9 @@ Installing composites
     install.rst
 
 
-Changelog
----------
-
 .. toctree::
     :maxdepth: 1
+    :caption: Changelog
 
     changelog.rst
 
