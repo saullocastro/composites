@@ -29,7 +29,7 @@ import numpy as np
 from composites.utils import (read_laminaprop, double_double_laminate,
                               laminated_plate)
 
-# published material constants and traces, see the module docstring, in Pa
+# published material constants and traces, in Pa
 data = {
 'IM6/epoxy': dict(Ex=203e9, Ey=11.20e9, vx=0.32, Es=8.40e9, tr=232e9),
 'IM7/977-3': dict(Ex=191e9, Ey=9.94e9, vx=0.35, Es=7.79e9, tr=218e9),
@@ -66,7 +66,7 @@ def test_trace_normalized():
     for material, d in data.items():
         m = read_laminaprop((d['Ex'], d['Ey'], d['vx'], d['Es'], d['Es'], d['Es']))
         tr = m.q11 + m.q22 + 2*m.q66
-        # NOTE printed trace rounded to integer GPa, see the Notes
+        # NOTE printed trace rounded to integer GPa
         assert np.isclose(tr, d['tr'], atol=0.5e9, rtol=0)
         q11 = m.q11
         q12 = m.q12

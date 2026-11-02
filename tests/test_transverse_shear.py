@@ -252,7 +252,7 @@ from composites.core import Laminate, Lamina
 # that each comparison uses half a unit of the last printed digit as tolerance,
 # see ``assert_printed``. Input data are kept as floats.
 
-# Published values of Rohwer's report, kN and mm, see the module docstring
+# Published values of Rohwer's report, kN and mm
 ROHWER_1988 = {
     # homogeneous isotropic plate
     'isotropic': dict(H_Hbar=5/6, H_Hbarbar=5/6),
@@ -282,10 +282,9 @@ ROHWER_1988 = {
         a_h_11=dict(H_more_than=1.30)),
 }
 
-# the sandwich solar panel of Rohwer's report is not used, see the module
-# docstring
+# the sandwich solar panel of Rohwer's report is not used
 
-# Published values of Vlachoutsis' paper, see the module docstring
+# Published values of Vlachoutsis' paper
 VLACHOUTSIS_1992 = {
     # homogeneous plate
     'homogeneous': dict(K=5/6),
@@ -329,7 +328,7 @@ VLACHOUTSIS_1992 = {
 }
 
 
-# Published values of Chow's paper, see the module docstring
+# Published values of Chow's paper
 CHOW_1971 = {
     # four-layer symmetric cross-ply laminate, glass-epoxy and graphite-epoxy
     'cross_ply': dict(stack=[0, 90, 90, 0], G12_E2=0.6, G23_E2=0.5,
@@ -342,10 +341,9 @@ CHOW_1971 = {
     'homogeneous': dict(K=5/6),
 }
 
-# the printed k2^2 of graphite-epoxy is not used, see the module docstring
+# the printed k2^2 of graphite-epoxy is not used
 
-# Published values of Whitney's paper, ply data in 10^6 psi, see the module
-# docstring
+# Published values of Whitney's paper, ply data in 10^6 psi
 WHITNEY_1973 = {
     'ply': (25., 1., 0.25, 0.5, 0.5, 0.2),
     'laminates': [([0, 90], '0.8212', '0.8212'),
@@ -354,10 +352,9 @@ WHITNEY_1973 = {
                      k13='0.4098', k23='0.6915'),
 }
 
-# the printed factors of the sandwich are not used, see the module docstring
+# the printed factors of the sandwich are not used
 
-# Published values of Birman and Bert's paper, GPa and mm, see the module
-# docstring
+# Published values of Birman and Bert's paper, GPa and mm
 BIRMAN_BERT_2002 = {
     # single layer
     'homogeneous': dict(K=1.),
@@ -630,7 +627,7 @@ def test_rohwer_published_cross_ply():
     Ats = RohwerReference(stack_from_laminate(lam)).Ats
     assert np.allclose(lam.Ats, Ats, rtol=1e-12, atol=1e-14*Ats.max())
     assert_printed(lam.A55, ref['H11'])
-    # NOTE the printed H22 is 0.17 % lower, see the docstring
+    # NOTE the printed H22 is 0.17 % lower
     assert_printed(lam.A44, ref['H22'], rtol=1.7e-3)
     assert abs(lam.A45 - ref['H12']) < 1e-12
     assert_printed(lam.A55/lam.Abarbar55, ref['H11_Hbarbar11'])
@@ -747,8 +744,7 @@ def test_rohwer_published_plate_deflection():
     assert ratio(lam.Ats, 11) > ref['a_h_11']['H_more_than']
 
 
-# NOTE the sandwich panel of Rohwer's report is not used as a test, see the
-#      module docstring
+# NOTE the sandwich panel of Rohwer's report is not used as a test
 
 
 # Published values of Vlachoutsis' paper
@@ -826,7 +822,7 @@ def _vlachoutsis_sandwiches():
     for c_h, K, K1, K2, rf in table['rows']:
         params.append(pytest.param(table['E1_E2'], c_h, K, K1, K2, rf,
             id='Table II, c/h=%g' % c_h))
-    # the example as a sandwich of isotropic materials, see the docstring
+    # the example as a sandwich of isotropic materials
     ex = VLACHOUTSIS_1992['sandwich_example']
     params.append(pytest.param(1/ex['Gc_Gf'], ex['p'], ex['K'], ex['Kf'],
         ex['Kc'], ex['rf'], id='Eqs. (49)-(51)'))
@@ -920,7 +916,7 @@ def test_vlachoutsis_published_spherical_shell(mode):
             ['R', 'h', 'c', 'd', 'nu', 'alpha'])
     t = d - c
     assert np.isclose(c + 2*t, h)
-    # Ef/Gc from the geometry and alpha, see the docstring
+    # Ef/Gc from the geometry and alpha
     e_s = np.sqrt(3*alpha**2/(1 + alpha**2))
     Ef_Gc = e_s*h*R*np.sqrt(12*(1 - nu**2))/(3*t*d)
     Ef = 70e3
@@ -934,7 +930,7 @@ def test_vlachoutsis_published_spherical_shell(mode):
     assert K == K_ant
     for k in [lam.scf_k13, lam.scf_k23]:
         assert np.isclose(k, K_ant, rtol=1e-12, atol=0)
-        # NOTE one unit of the last printed digit, see the docstring
+        # NOTE one unit of the last printed digit
         assert abs(k - float(ref['K'])) <= 1e-5
 
 
@@ -1077,7 +1073,7 @@ def test_sandwich_antiplane_core_converges_to_allen_1969():
         A_allen = Gc*d**2/c
         Abar = 2*t*Gf + c*Gc
         K, K_ant, _ = vlachoutsis_sandwich_K(p, 0., Gc/Gf)
-        # NOTE the closed form above is that of K_ant, see the docstring
+        # NOTE the closed form above is that of K_ant
         assert np.isclose(A_allen*phi**2/(1 + eps), K_ant*Abar, rtol=1e-13, atol=0)
         assert K == K_ant
         slack = 1e-12
@@ -1376,7 +1372,7 @@ def test_rohwer_angle_ply_coupling(stack, sign):
                               laminaprop=CFRP)
     ref = RohwerReference(stack_from_laminate(lam)).Ats
     assert np.allclose(lam.Ats, ref, rtol=1e-12, atol=1e-12*ref.max())
-    # the constant-strain coupling vanishes, see the docstring
+    # the constant-strain coupling vanishes
     assert abs(lam.Abar45) < 1e-14*lam.Abar55
     assert sign*lam.A45 > 0.03*lam.Abarbar55
     assert np.isclose(mirror.A45, -lam.A45, rtol=1e-12, atol=0)
@@ -1743,7 +1739,7 @@ def test_in_plane_resultants(seed):
     ``[I, 0]``.
     """
     lam = random_laminate(seed)
-    # blocks of the inverse of the ABD matrix, see the docstring
+    # blocks of the inverse of the ABD matrix
     Hstar = np.linalg.inv(lam.ABD)
     def CP(k, ply, z):
         C = np.array([[ply.q11L, ply.q12L, ply.q16L],
@@ -1826,7 +1822,7 @@ def test_chow_published_cross_ply(E1_E2, k13, k23):
     assert np.isclose(lam.scf_k23, k2, rtol=1e-12, atol=0)
     assert_printed(lam.scf_k13, k13)
     if E1_E2 == 40.:
-        # NOTE the printed value is not reproduced, see the docstring
+        # NOTE the printed value is not reproduced
         assert abs(lam.scf_k23 - float(k23)) > 0.5e-3
     else:
         assert_printed(lam.scf_k23, k23)
@@ -2019,7 +2015,7 @@ def test_thickness_shear_finite_elements(kwargs):
     for alpha, kappa, Abar in [(0, lam.scf_k13, lam.Abar55),
                                (1, lam.scf_k23, lam.Abar44)]:
         omega = _thickness_shear_fe(lam, alpha)
-        # FSDT frequency, see the docstring
+        # FSDT frequency
         assert np.isclose(kappa, omega**2*I2c/Abar, rtol=1e-6)
 
 
@@ -2195,7 +2191,7 @@ def test_aposteriori_energy_homogeneous():
     Qx = 1.7
     D = E*h**3/(12*(1 - nu**2))
     eps_x = np.zeros(6)
-    # curvature gradient of cylindrical bending, see the docstring
+    # curvature gradient of cylindrical bending
     eps_x[3] = Qx/D
     U13, U23, Qy_r, Qx_r = lam.calc_aposteriori_energy(eps_x, np.zeros(6))
     assert np.isclose(Qx_r[0], Qx, rtol=1e-12)
@@ -2204,8 +2200,7 @@ def test_aposteriori_energy_homogeneous():
     assert abs(U23[0]) < 1e-20
 
 
-# Published factors of Noor's cross-ply laminates in cylindrical bending, see
-# the module docstring
+# Published factors of Noor's cross-ply laminates in cylindrical bending
 NOOR_1975 = {
     'ply': (30., 1., 0.25, 0.6, 0.6, 0.5),
     'rows': [
@@ -2257,7 +2252,7 @@ def test_thickness_shear_frequency():
     thickness-shear frequency ``omega = pi/h sqrt(G/rho)``.
     """
     from composites.core import _thickness_shear_frequency
-    # homogeneous layer with traction-free faces, see the docstring
+    # homogeneous layer with traction-free faces
     omega = _thickness_shear_frequency([4.], [1.], [2.], 1.)
     assert np.isclose(omega, np.pi/2.*np.sqrt(4./1.), rtol=1e-14)
     # the search stops at 100 times the reference frequency
@@ -2489,7 +2484,7 @@ def test_example_shear_stress_cross_ply():
     assert abs(tau_xz[0]) < tol and abs(tau_xz[-1]) < tol
     # orthotropic plies in the laminate axes: Qx gives no tau_yz
     assert np.allclose(tau_yz, 0, atol=tol)
-    # resultants and complementary energy, see the docstring
+    # resultants and complementary energy
     Q = np.array([Qy, Qx])
     xi, w = np.polynomial.legendre.leggauss(3)
     zk = -h/2

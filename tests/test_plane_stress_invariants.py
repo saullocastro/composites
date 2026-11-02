@@ -188,7 +188,7 @@ def test_lamination_parameters_three_dimensional_constants(material, layup):
     lamprop = LAMINAPROPS_9[material]
     stack, plyts = LAYUPS[layup]
     h = sum(plyts)
-    # NOTE no shear correction, see the Notes
+    # NOTE no shear correction
     lam = laminated_plate(stack, plyts=plyts, laminaprop=lamprop,
                           shear_correction=None)
     mat = read_laminaprop(lamprop)
@@ -211,8 +211,7 @@ def test_lamination_parameters_three_dimensional_constants(material, layup):
                  'u3', 'u4', 'u5', 'u6', 'u7'):
         assert getattr(mat, name) == getattr(mat6, name), name
 
-    # NOTE thickness derivatives at constant lamination parameters, see the
-    #      Notes
+    # NOTE thickness derivatives at constant lamination parameters
     grad = GradABD()
     grad.calc_LP_grad(lam.h, mat, lp)
     ij = ((0, 0), (0, 1), (0, 2), (1, 1), (1, 2), (2, 2))
@@ -386,8 +385,7 @@ def test_plane_stress_attribute_saved(material):
             assert m2.q11 == m.q11 and m2.u1 == m.u1
 
 
-# Antiplane cores with G13 != G23, given with 6 and with 9 entries, see the
-# module docstring
+# Antiplane cores with G13 != G23, given with 6 and with 9 entries
 G13_CORE, G23_CORE = 50e6, 30e6
 ANTIPLANE_CORES = {
     '6 entries': (0., 0., 0.3, 0., G13_CORE, G23_CORE),
@@ -442,7 +440,7 @@ def test_antiplane_core_matlamina(core):
     C = np.asarray(m.get_constitutive_matrix())
     assert np.all(np.isfinite(C))
     assert np.array_equal(C, C_ref)
-    # NOTE limit of a positive-definite material, see the Notes
+    # NOTE limit of a positive-definite material
     if e3 > 0:
         eps = 1e-8*e3
         m_eps = read_laminaprop((eps, eps) + lamprop[2:])
@@ -534,7 +532,7 @@ def test_zero_young_modulus_determinant():
         for c, ref in [(m.c22, E/(1 - nu23**2)), (m.c33, E/(1 - nu23**2)),
                        (m.c23, nu23*E/(1 - nu23**2))]:
             assert np.isclose(c, ref, rtol=1e-14, atol=0)
-        # NOTE plane stress in the 1-2 plane, see the Notes
+        # NOTE plane stress in the 1-2 plane
         assert (m.q11, m.q12, m.q22, m.q66) == (0., 0., E, 5e9)
     for nu23 in [1., -1., 1.2]:
         with pytest.raises(ValueError, match='non-positive determinant'):
@@ -674,7 +672,7 @@ def test_not_positive_definite_rejected():
 
     """
     E = 8.7e9
-    # NOTE e2 = e3 with nu23 = 1, see the Notes
+    # NOTE e2 = e3 with nu23 = 1
     with pytest.raises(ValueError) as exc:
         read_laminaprop((142e9, E, 0.28, 5e9, 5e9, 3e9, E, 0.3, 1.0))
     msg = str(exc.value)
@@ -689,7 +687,7 @@ def test_not_positive_definite_rejected():
             ((70e9, 1.0), ['|nu12| = 1.0', 'Eq. (2.51)'], []),
             ((10e9, 1e9, 3.2, 1e9, 1e9, 1e9), ['|nu12| = 3.2',
                                                 'Eq. (2.51)'], []),
-            # NOTE bounds satisfied, negative determinant, see the Notes
+            # NOTE bounds satisfied, negative determinant
             ((E, E, 0.6, 1e9, 1e9, 1e9, E, 0.6, 0.6), ['Eq. (2.48)'],
              ['Eq. (2.51)']),
             ((E, E, 0.5, 1e9, 1e9, 1e9, E, 0.5, 0.5), ['= 0.0, Eq. (2.48)'],
@@ -794,7 +792,7 @@ def test_singular_ABD_offset_invariant():
         for offset in offsets:
             lam = laminated_plate(stack, plyt=0.2, laminaprop=CFRP,
                                   offset=offset, shear_correction='constant')
-            # NOTE finite for every offset, see the Notes
+            # NOTE finite for every offset
             assert np.isfinite(lam.e1)
             if abs(offset) <= 1e4:
                 assert lam.e1 > 0
