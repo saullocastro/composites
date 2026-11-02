@@ -40,8 +40,7 @@ Embedding in other documents
 
 :func:`.to_dict` returns a dictionary containing only ``dict``, ``list``,
 ``str``, ``int``, ``float`` and ``None``, such that a laminate can be one
-entry of the input file of a model, read back with :func:`.from_dict`, see
-:doc:`ex_json`.
+entry of the input file of a model, read back with :func:`.from_dict`.
 
 
 Format version

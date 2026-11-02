@@ -38,7 +38,7 @@ such that ``offset = 0`` puts the reference surface at the mid-surface,
 ``offset = +h/2`` at the bottom face and ``offset = -h/2`` at the top face.
 For example, a skin modelled on its mould line, with the laminate above it,
 has ``offset = h/2``. With an offset, ``B`` is not zero even for an
-isotropic plate, `B = d h C`, see :doc:`ex_isotropic_offset`, and the same
+isotropic plate, `B = d h C`, and the same
 holds for the odd moments of the density, see :doc:`mass_integrals`.
 :meth:`.Laminate.make_balanced`, :meth:`.Laminate.make_orthotropic`,
 :meth:`.Laminate.make_symmetric` and :meth:`.Laminate.make_smeared` require
