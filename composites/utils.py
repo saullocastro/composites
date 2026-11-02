@@ -23,10 +23,37 @@ from .core import (MatLamina, Lamina, Laminate, LaminationParameters,
 
 
 def _reciprocal_poisson(nuij, ei, ej, ij):
-    r"""Return ``nuji = nuij*ej/ei``, see :func:`.read_laminaprop`
+    r"""Return the reciprocal Poisson's ratio ``nuji``, see :func:`.read_laminaprop`
 
-    With ``ei = 0``, ``nuji`` is undefined and ``0`` is returned when
-    ``nuij*ej = 0``, which a positive-definite material requires.
+    Returns ``nuij*ej/ei``. With ``ei = 0``, returns ``0`` when ``ej = 0`` or
+    ``nuij = 0`` and raises ``ValueError`` otherwise.
+
+    Parameters
+    ----------
+    nuij : float
+        Poisson's ratio `\nu_{ij}`, dimensionless.
+    ei, ej : float
+        Young moduli `E_i` and `E_j`, force per unit area.
+    ij : str
+        Indices of ``nuij``, e.g. ``'12'``, used in the error message.
+
+    Returns
+    -------
+    nuji : float
+        Poisson's ratio `\nu_{ji}`, dimensionless.
+
+    Raises
+    ------
+    ValueError
+        If ``ei = 0`` while ``ej`` and ``nuij`` are not zero.
+
+    Notes
+    -----
+    The reciprocity relation of an orthotropic material is `\nu_{ij}/E_i =
+    \nu_{ji}/E_j`. With `E_i = 0`, `\nu_{ji}` is undefined and `0` is
+    returned when `\nu_{ij} E_j = 0`, which a positive-definite material
+    requires, since `|\nu_{ij}| < (E_i/E_j)^{1/2}` for `E_j > 0`, see the
+    Notes of :func:`.read_laminaprop`.
     """
     if ei != 0:
         return nuij*ej/ei
@@ -156,6 +183,16 @@ def read_laminaprop(laminaprop, rho=0):
     .. [3] Jones, R. M., Mechanics of Composite Materials, Second Edition,
        Taylor & Francis, Philadelphia, 1999.
 
+    Examples
+    --------
+    >>> from composites.utils import read_laminaprop
+    >>> mat = read_laminaprop((142.5e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.4e9),
+    ...                       rho=1600.)
+    >>> round(mat.nu21, 5)
+    0.01709
+    >>> round(mat.q11/1e9, 3)
+    143.185
+
     """
     matlam = MatLamina()
 
@@ -281,6 +318,21 @@ def laminated_plate(stack, plyt=None, laminaprop=None, rho=0., plyts=None,
         has no in-plane or bending stiffness, e.g. when all plies are
         antiplane cores.
 
+    Examples
+    --------
+    >>> from composites import laminated_plate
+    >>> laminaprop = (142.5e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.4e9)
+    >>> lam = laminated_plate([0, 45, -45, 90, 90, -45, 45, 0], plyt=0.125e-3,
+    ...                       laminaprop=laminaprop)
+    >>> lam.h
+    0.001
+    >>> lam.ABD.shape, lam.Ats.shape
+    ((6, 6), (2, 2))
+    >>> print((lam.A/1e6).round(2))
+    [[60.13 18.28  0.  ]
+     [18.28 60.13  0.  ]
+     [ 0.    0.   20.93]]
+
     """
     lam = Laminate()
     lam.offset = offset
@@ -350,12 +402,9 @@ def isotropic_plate(thickness, E, nu, offset=0., calc_scf=None, rho=0.,
         ``shear_correction=None``, overriding ``shear_correction``, and a
         :class:`DeprecationWarning` is issued. Default ``None``.
     shear_correction : str or None, optional
-        See :func:`.laminated_plate`. For an isotropic plate ``'rohwer'``,
-        ``'vlachoutsis'``, ``'whitney'``, ``'chow'`` and ``'constant'`` give
-        ``A44 = A55 = 5/6 G h``,
-        ``'birman_bert'`` gives ``G h`` and ``'thickness_shear'`` gives
-        ``pi^2/12 G h``, the latter requiring ``rho > 0``. Default
-        ``'rohwer'``.
+        See :func:`.laminated_plate`; ``'thickness_shear'`` requires ``rho
+        > 0``. The resulting ``A44`` and ``A55`` of an isotropic plate are
+        given in the Notes. Default ``'rohwer'``.
 
     Returns
     -------
@@ -365,6 +414,24 @@ def isotropic_plate(thickness, E, nu, offset=0., calc_scf=None, rho=0.,
     See Also
     --------
     laminated_plate
+
+    Notes
+    -----
+    For an isotropic plate of shear modulus `G = E/(2(1 + \nu))` and
+    thickness `h`, the methods ``'rohwer'``, ``'vlachoutsis'``,
+    ``'whitney'``, ``'chow'`` and ``'constant'`` give `A_{44} = A_{55} =
+    5/6 \, G h`, ``'birman_bert'`` gives `G h` and ``'thickness_shear'``
+    gives `\pi^2/12 \, G h`, see
+    :meth:`.Laminate.calc_transverse_shear_stiffness`.
+
+    Examples
+    --------
+    >>> from composites import isotropic_plate
+    >>> lam = isotropic_plate(thickness=2e-3, E=70e9, nu=0.33)
+    >>> round(lam.D11, 3)
+    52.37
+    >>> round(lam.scf_k13, 4)
+    0.8333
 
     """
     shear_correction = _shear_correction_from_calc_scf(calc_scf,
@@ -445,6 +512,16 @@ def double_double_laminate(thickness, phideg, psideg, laminaprop=None, rho=0.):
     .. [2] Melo, J. D. D., Bi, J., and Tsai, S. W., A Novel Invariant-Based
        Design Approach to Carbon Fiber Reinforced Laminates, Composite
        Structures, 159, 44-52, 2017.
+
+    Examples
+    --------
+    >>> from composites.utils import double_double_laminate
+    >>> laminaprop = (142.5e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.4e9)
+    >>> lam = double_double_laminate(1e-3, 30, 60, laminaprop=laminaprop)
+    >>> lam.stack
+    [30, 60]
+    >>> round(lam.e1/1e9, 3), round(lam.e2/1e9, 3)
+    (39.084, 39.084)
 
     """
     m = read_laminaprop(laminaprop, rho)

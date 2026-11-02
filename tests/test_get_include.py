@@ -1,3 +1,5 @@
+"""Smoke test of :func:`composites.get_include`, which must run without error
+"""
 import sys
 sys.path.append('..')
 

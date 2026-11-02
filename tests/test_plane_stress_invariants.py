@@ -1,21 +1,45 @@
 r"""Plane-stress invariants of MatLamina when e3, nu13 and nu23 are given
 
+Verifies that the stiffnesses of :func:`.laminated_plate` and of the
+lamination-parameter route, the invariants, their trace normalization and
+the gradients of GradABD are those of plane stress also when e3, nu13 and
+nu23 are given, against the classical lamination theory of Reddy (2003)
+and Jones (1999) computed in the tests independently of composites; and
+the handling of antiplane cores, of zero Young moduli, of material
+constants that are not positive definite and of singular ABD matrices.
+
+Notes
+-----
 The stiffnesses of a :class:`.Laminate` are those of plane stress,
 `\sigma_{33} = 0`: the reduced stiffnesses depend on E1, E2, nu12, G12, G13
-and G23 only (Reddy, J. N., Mechanics of Laminated Composite Plates and
-Shells: Theory and Analysis, 2nd ed., CRC Press, 2003, Eq. (2.4.4), p. 101;
-Jones, R. M., Mechanics of Composite Materials, 2nd ed., Taylor & Francis,
-1999, Eqs. (2.64) and (2.66), p. 72), and the invariants of Tsai and Pagano
-are those of the reduced stiffnesses (Jones, 1999, Eq. (2.99), p. 86).
+and G23 only ([1]_, Eq. (2.4.4), p. 101; [2]_, Eqs. (2.64) and (2.66),
+p. 72), and the invariants of Tsai and Pagano are those of the reduced
+stiffnesses ([2]_, Eq. (2.99), p. 86).
 
 Reference stiffnesses computed in the tests, independently of composites,
 with the classical lamination theory
 
     (A_ij, B_ij, D_ij) = sum_k int_{z_k}^{z_k+1} Qbar_ij^(k) (1, z, z^2) dz
 
-(Reddy, 2003, Eq. (3.3.38), p. 128; Jones, 1999, Eq. (4.24), p. 198), where
-Qbar^(k) is the plane-stress reduced stiffness of ply k in the laminate
-axes, see ``qbar``.
+([1]_, Eq. (3.3.38), p. 128; [2]_, Eq. (4.24), p. 198), where Qbar^(k) is
+the plane-stress reduced stiffness of ply k in the laminate axes, see
+``qbar``.
+
+Antiplane cores, ``ANTIPLANE_CORES``: "an idealized core in which the
+modulus of elasticity in planes parallel with the faces is zero but the
+shear modulus in planes perpendicular to the faces is finite" ([3]_,
+p. 14), with G13 != G23, given with 6 and with 9 entries, the latter with
+a through-thickness modulus E3, as a honeycomb.
+
+References
+----------
+.. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells:
+   Theory and Analysis, 2nd ed., CRC Press, 2003.
+.. [2] Jones, R. M., Mechanics of Composite Materials, 2nd ed., Taylor &
+   Francis, 1999.
+.. [3] Allen, H. G., Analysis and Design of Structural Sandwich Panels,
+   Pergamon Press, 1969.
+
 """
 import sys
 sys.path.append('..')
@@ -32,16 +56,28 @@ from composites.core import (laminate_from_LaminationParameters,
 def qbar(E1, E2, nu12, G12, thetadeg):
     r"""Plane-stress reduced stiffness of a ply in the laminate axes
 
+    Reference implementation of Jones (1999), Eqs. (2.66) and (2.83), with
+    the direction 1 of the material at ``thetadeg`` from the laminate x
+    axis, counterclockwise; also for ``E1 = 0``, e.g. an antiplane core.
+
+    Notes
+    -----
     ``Q = [[E1, nu12 E2, 0], [nu12 E2, E2, 0], [0, 0, G12 (1 - nu12
     nu21)]]/(1 - nu12 nu21)`` in the material axes, with ``nu21 = nu12
-    E2/E1`` (Jones, 1999, Eq. (2.66), p. 72), and ``Qbar = Ts^-1 Q Te``
-    (Jones, 1999, Eq. (2.83), p. 77, with Reuter's matrix), where ``Ts`` and
-    ``Te`` transform the stresses and the engineering strains ``{xx, yy,
-    xy}`` from the laminate axes to the material axes, whose direction 1 is
-    at ``thetadeg`` from the laminate x axis, counterclockwise. With ``E1 =
+    E2/E1`` ([1]_, Eq. (2.66), p. 72), and ``Qbar = Ts^-1 Q Te`` ([1]_, Eq.
+    (2.83), p. 77, with Reuter's matrix), where ``Ts`` and ``Te`` transform
+    the stresses and the engineering strains ``{xx, yy, xy}`` from the
+    laminate axes to the material axes, whose direction 1 is at
+    ``thetadeg`` from the laminate x axis, counterclockwise. With ``E1 =
     0``, e.g. an antiplane core, ``nu12 E2 = 0`` and ``nu12 nu21 = 0``, the
-    limit of a positive-definite material, ``|nu12| < (E1/E2)**0.5``
-    (Jones, 1999, Eq. (2.51), p. 69).
+    limit of a positive-definite material, ``|nu12| < (E1/E2)**0.5`` ([1]_,
+    Eq. (2.51), p. 69).
+
+    References
+    ----------
+    .. [1] Jones, R. M., Mechanics of Composite Materials, 2nd ed., Taylor &
+       Francis, 1999.
+
     """
     if E1 != 0:
         nu21 = nu12*E2/E1
@@ -78,9 +114,21 @@ def clt_abd(stack, plyts, laminaprops, offset=0.):
 
 
 def abar_ts(stack, plyts, G13, G23):
-    r"""Constant-strain transverse shear stiffness ``sum_k Qbar_s^(k) h_k``,
-    ``[[Qbar44, Qbar45], [Qbar45, Qbar55]]`` of Reddy (2003), Eq. (3.4.17b),
-    p. 137, with ``Q44 = G23`` and ``Q55 = G13``, Eq. (2.4.4b), p. 101"""
+    r"""Constant-strain transverse shear stiffness, reference
+    implementation of Reddy (2003), Eq. (3.4.17b)
+
+    Notes
+    -----
+    ``sum_k Qbar_s^(k) h_k``, ``[[Qbar44, Qbar45], [Qbar45, Qbar55]]`` of
+    [1]_, Eq. (3.4.17b), p. 137, with ``Q44 = G23`` and ``Q55 = G13``, Eq.
+    (2.4.4b), p. 101.
+
+    References
+    ----------
+    .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells:
+       Theory and Analysis, 2nd ed., CRC Press, 2003.
+
+    """
     Abar = np.zeros((2, 2))
     for thetadeg, hk in zip(stack, plyts):
         c = np.cos(np.deg2rad(thetadeg))
@@ -129,11 +177,18 @@ def test_lamination_parameters_three_dimensional_constants(material, layup):
     transverse shear stiffness ``abar_ts``, to round-off, also for e3 != 0,
     and the same values as for the six-entry ``laminaprop`` without e3, nu13
     and nu23.
+
+    Notes
+    -----
+    Without shear correction, ``Ats = Abar_ts`` in both routes. The
+    gradients use the same invariants: at constant lamination parameters A
+    is linear in h and D cubic, ``dA/dh = A/h`` and ``dD/dh = 3 D/h``.
+
     """
     lamprop = LAMINAPROPS_9[material]
     stack, plyts = LAYUPS[layup]
     h = sum(plyts)
-    # NOTE no shear correction, such that Ats = Abar_ts in both routes
+    # NOTE no shear correction
     lam = laminated_plate(stack, plyts=plyts, laminaprop=lamprop,
                           shear_correction=None)
     mat = read_laminaprop(lamprop)
@@ -156,9 +211,7 @@ def test_lamination_parameters_three_dimensional_constants(material, layup):
                  'u3', 'u4', 'u5', 'u6', 'u7'):
         assert getattr(mat, name) == getattr(mat6, name), name
 
-    # NOTE the gradients use the same invariants: at constant lamination
-    #      parameters A is linear in h and D cubic, dA/dh = A/h and dD/dh =
-    #      3 D/h
+    # NOTE thickness derivatives at constant lamination parameters
     grad = GradABD()
     grad.calc_LP_grad(lam.h, mat, lp)
     ij = ((0, 0), (0, 1), (0, 2), (1, 1), (1, 2), (2, 2))
@@ -184,20 +237,35 @@ def test_lamination_parameters_three_dimensional_constants(material, layup):
 def test_lamination_parameters_offset(material, layup, offset):
     r"""Lamination parameters of a laminate with an offset
 
+    :meth:`.Laminate.calc_lamination_parameters` and
+    :func:`.laminate_from_LaminationParameters` with the same offset against
+    the A, B and D of ``clt_abd`` with the offset, themselves checked
+    against the shift to another reference plane of Vasiliev and Morozov
+    (2001), Eq. (5.28); the constant-strain transverse shear stiffness
+    against ``abar_ts``; and the thickness derivatives of GradABD against
+    central differences.
+
+    Notes
+    -----
     With ``offset`` `= e`, the laminate occupies `-h/2 + e \le z \le h/2 +
     e`, and :meth:`.Laminate.calc_lamination_parameters` integrates about
     the reference surface. :func:`.laminate_from_LaminationParameters`
     given the same offset must give the A, B and D of ``clt_abd`` with the
     offset, which also satisfy the shift of the stiffness integrals to
     another reference plane, `B = B^0 + e A` and `D = D^0 + 2 e B^0 + e^2
-    A`, with `B^0`, `D^0` about the mid-surface (Vasiliev and Morozov,
-    Mechanics and Analysis of Composite Materials, Elsevier, 2001, Eq.
-    (5.28), p. 235). The constant-strain transverse shear stiffness does not
-    depend on the offset. The derivatives of GradABD with respect to the
-    thickness, at constant lamination parameters and offset, are compared
-    with central differences of the stiffnesses, polynomials of degree 3 in
-    h, whose truncation error is `(\Delta h/h)^2 = 10^{-12}` and whose
-    round-off error is about `10^{-16} h/\Delta h = 10^{-10}`, relative.
+    A`, with `B^0`, `D^0` about the mid-surface ([1]_, Eq. (5.28), p. 235).
+    The constant-strain transverse shear stiffness does not depend on the
+    offset. The derivatives of GradABD with respect to the thickness, at
+    constant lamination parameters and offset, are compared with central
+    differences of the stiffnesses, polynomials of degree 3 in h, whose
+    truncation error is `(\Delta h/h)^2 = 10^{-12}` and whose round-off
+    error is about `10^{-16} h/\Delta h = 10^{-10}`, relative.
+
+    References
+    ----------
+    .. [1] Vasiliev and Morozov, Mechanics and Analysis of Composite
+       Materials, Elsevier, 2001.
+
     """
     lamprop = LAMINAPROPS_9[material]
     stack, plyts = LAYUPS[layup]
@@ -248,15 +316,31 @@ def test_lamination_parameters_offset(material, layup, offset):
 def test_trace_normalized_three_dimensional_constants(material):
     r"""Trace normalization with e3 given
 
-    The trace of Melo et al. (2017), Eq. (1), p. 45,
-    https://doi.org/10.1016/j.compstruct.2016.09.055, is that of the
-    plane-stress stiffness matrix, ``tr = Q11 + Q22 + 2 Q66`` with ``Q11 =
-    E1/(1 - nu12 nu21)``, ``Q22 = E2/(1 - nu12 nu21)``, ``Q66 = G12`` (Jones,
-    1999, Eq. (2.66), p. 72), independent of e3. The stiffnesses of the
-    lamination-parameter route are linear in the invariants, such that with
-    the trace-normalized invariants they are those of laminated_plate
-    divided by tr. After ``rebuild(plane_stress=False)`` the trace
-    normalization is refused.
+    The trace of the material against the plane-stress trace of Melo et al.
+    (2017), Eq. (1), the stiffnesses of the lamination-parameter route with
+    the trace-normalized invariants against those of laminated_plate
+    divided by the trace, and the refusal of the trace normalization after
+    ``rebuild(plane_stress=False)``.
+
+    Notes
+    -----
+    The trace of [1]_, Eq. (1), p. 45, is that of the plane-stress
+    stiffness matrix, ``tr = Q11 + Q22 + 2 Q66`` with ``Q11 = E1/(1 - nu12
+    nu21)``, ``Q22 = E2/(1 - nu12 nu21)``, ``Q66 = G12`` ([2]_, Eq. (2.66),
+    p. 72), independent of e3. The stiffnesses of the lamination-parameter
+    route are linear in the invariants, such that with the trace-normalized
+    invariants they are those of laminated_plate divided by tr. After
+    ``rebuild(plane_stress=False)`` the trace normalization is refused.
+
+    References
+    ----------
+    .. [1] Melo, J. D. D., Bi, J., and Tsai, S. W., A Novel Invariant-Based
+       Design Approach to Carbon Fiber Reinforced Laminates, Composite
+       Structures, 159, 44-52, 2017.
+       https://doi.org/10.1016/j.compstruct.2016.09.055
+    .. [2] Jones, R. M., Mechanics of Composite Materials, 2nd ed., Taylor &
+       Francis, 1999.
+
     """
     lamprop = LAMINAPROPS_9[material]
     E1, E2, nu12, G12 = lamprop[:4]
@@ -301,12 +385,7 @@ def test_plane_stress_attribute_saved(material):
             assert m2.q11 == m.q11 and m2.u1 == m.u1
 
 
-# Antiplane cores: "an idealized core in which the modulus of elasticity in
-# planes parallel with the faces is zero but the shear modulus in planes
-# perpendicular to the faces is finite" (Allen, H. G., Analysis and Design of
-# Structural Sandwich Panels, Pergamon Press, 1969, p. 14), with G13 != G23,
-# given with 6 and with 9 entries, the latter with a through-thickness
-# modulus E3, as a honeycomb
+# Antiplane cores with G13 != G23, given with 6 and with 9 entries
 G13_CORE, G23_CORE = 50e6, 30e6
 ANTIPLANE_CORES = {
     '6 entries': (0., 0., 0.3, 0., G13_CORE, G23_CORE),
@@ -318,14 +397,31 @@ ANTIPLANE_CORES = {
 def test_antiplane_core_matlamina(core):
     r"""MatLamina of an antiplane core, e1 = e2 = g12 = 0
 
-    The plane-stress reduced stiffnesses of Jones (1999), Eq. (2.66), p. 72,
+    Stiffness constants, invariants and three-dimensional stiffness matrix
+    against their closed form, the latter also against a nearly antiplane
+    positive-definite material, and the refusal of the trace normalization
+    of Melo et al. (2017).
+
+    Notes
+    -----
+    The plane-stress reduced stiffnesses of [1]_, Eq. (2.66), p. 72,
     vanish, Q11 = Q12 = Q22 = Q66 = 0, and Q44 = G23, Q55 = G13, such that
     u1 to u5 vanish and u6 = (G23 + G13)/2, u7 = (G23 - G13)/2. The
     three-dimensional stiffness matrix, the limit e1, e2 -> 0 of the inverse
-    compliance, has C33 = E3, C44 = G23, C55 = G13 and all other terms zero.
-    The reciprocal Poisson's ratios are stored as zero, and the trace of
-    Melo et al. (2017), Eq. (1), being zero, the trace normalization is
-    refused.
+    compliance, has C33 = E3, C44 = G23, C55 = G13 and all other terms zero;
+    the limit is checked with a positive-definite material, e1 = e2 = 1e-8
+    E3. The reciprocal Poisson's ratios are stored as zero, and the trace of
+    [2]_, Eq. (1), being zero, the trace normalization is refused.
+
+    References
+    ----------
+    .. [1] Jones, R. M., Mechanics of Composite Materials, 2nd ed., Taylor &
+       Francis, 1999.
+    .. [2] Melo, J. D. D., Bi, J., and Tsai, S. W., A Novel Invariant-Based
+       Design Approach to Carbon Fiber Reinforced Laminates, Composite
+       Structures, 159, 44-52, 2017.
+       https://doi.org/10.1016/j.compstruct.2016.09.055
+
     """
     lamprop = ANTIPLANE_CORES[core]
     e3 = lamprop[6] if len(lamprop) == 9 else 0.
@@ -344,7 +440,7 @@ def test_antiplane_core_matlamina(core):
     C = np.asarray(m.get_constitutive_matrix())
     assert np.all(np.isfinite(C))
     assert np.array_equal(C, C_ref)
-    # NOTE the limit of a positive-definite material, e1 = e2 = 1e-8 E3
+    # NOTE limit of a positive-definite material
     if e3 > 0:
         eps = 1e-8*e3
         m_eps = read_laminaprop((eps, eps) + lamprop[2:])
@@ -363,13 +459,27 @@ def test_antiplane_core_matlamina(core):
 def test_zero_young_modulus_errors():
     r"""Undefined Poisson's ratios with a zero Young modulus
 
-    A positive-definite material has ``|nu_ij| < (E_i/E_j)**0.5`` (Jones,
-    1999, Eq. (2.51), p. 69), such that ``E_i = 0`` with ``E_j > 0``
-    requires ``nu_ij = 0``; otherwise ``nu_ji = nu_ij E_j/E_i`` is undefined
-    and ``read_laminaprop`` raises ``ValueError``. With ``E_i = E_j = 0``
-    any ``nu_ij`` is accepted. A laminate of antiplane cores only has no
+    ``read_laminaprop`` raises ``ValueError`` for a zero Young modulus with
+    a nonzero Poisson's ratio, against the bound of Jones (1999), Eq.
+    (2.51), and accepts the cases where it is defined; a laminate of
+    antiplane cores only raises ``ValueError``, with and without shear
+    correction.
+
+    Notes
+    -----
+    A positive-definite material has ``|nu_ij| < (E_i/E_j)**0.5`` ([1]_,
+    Eq. (2.51), p. 69), such that ``E_i = 0`` with ``E_j > 0`` requires
+    ``nu_ij = 0``; otherwise ``nu_ji = nu_ij E_j/E_i`` is undefined and
+    ``read_laminaprop`` raises ``ValueError``. With ``E_i = E_j = 0`` any
+    ``nu_ij`` is accepted. A laminate of antiplane cores only has no
     in-plane and bending stiffness, and its equivalent properties and its
     shear correction factors are undefined.
+
+    References
+    ----------
+    .. [1] Jones, R. M., Mechanics of Composite Materials, 2nd ed., Taylor &
+       Francis, 1999.
+
     """
     for lamprop, match in [
             ((0., 8.7e9, 0.28, 5e9, 5e9, 3e9), 'requires nu12 = 0'),
@@ -393,14 +503,27 @@ def test_zero_young_modulus_errors():
 def test_zero_young_modulus_determinant():
     r"""Stiffness constants with ``e1 = 0`` and the positive-definiteness
 
+    The three-dimensional and plane-stress stiffness constants of a material
+    with ``e1 = 0`` against their closed form, from Jones (1999), Eq.
+    (2.66), and ``ValueError`` for a non-positive determinant, Eq. (2.51).
+
+    Notes
+    -----
     With ``e1 = 0`` and ``nu12 = nu13 = 0``, as required, and ``e2 = e3``,
     the 2-3 plane is isotropic, ``nu32 = nu23``, and its stiffnesses are
     those of plane stress in that plane, ``c22 = c33 = e2/(1 - nu23^2)``
-    and ``c23 = nu23 e2/(1 - nu23^2)`` (Jones, 1999, Eq. (2.66), p. 72,
-    written in the 2-3 plane), with ``c11 = c12 = c13 = 0``. The
-    determinant ``1 - nu23 nu32`` must be positive, i.e. ``|nu23| <
-    (e2/e3)**0.5 = 1`` (Jones, 1999, Eq. (2.51), p. 69), and ``ValueError``
-    is raised at ``|nu23| = 1`` and beyond.
+    and ``c23 = nu23 e2/(1 - nu23^2)`` ([1]_, Eq. (2.66), p. 72, written in
+    the 2-3 plane), with ``c11 = c12 = c13 = 0``. In plane stress in the
+    1-2 plane, only ``q22 = e2`` and ``q66 = g12``. The determinant ``1 -
+    nu23 nu32`` must be positive, i.e. ``|nu23| < (e2/e3)**0.5 = 1`` ([1]_,
+    Eq. (2.51), p. 69), and ``ValueError`` is raised at ``|nu23| = 1`` and
+    beyond.
+
+    References
+    ----------
+    .. [1] Jones, R. M., Mechanics of Composite Materials, 2nd ed., Taylor &
+       Francis, 1999.
+
     """
     E = 8.7e9
     for nu23 in [0.3, 0.99, -0.99]:
@@ -409,7 +532,7 @@ def test_zero_young_modulus_determinant():
         for c, ref in [(m.c22, E/(1 - nu23**2)), (m.c33, E/(1 - nu23**2)),
                        (m.c23, nu23*E/(1 - nu23**2))]:
             assert np.isclose(c, ref, rtol=1e-14, atol=0)
-        # NOTE plane stress in the 1-2 plane: only q22 = e2 and q66 = g12
+        # NOTE plane stress in the 1-2 plane
         assert (m.q11, m.q12, m.q22, m.q66) == (0., 0., E, 5e9)
     for nu23 in [1., -1., 1.2]:
         with pytest.raises(ValueError, match='non-positive determinant'):
@@ -522,18 +645,34 @@ def test_antiplane_core_sandwich(core, stack):
 def test_not_positive_definite_rejected():
     r"""Material constants that are not positive definite
 
-    Jones, R. M., Mechanics of Composite Materials, 2nd ed., 1999, Sec.
-    2.4.2, pp. 68-69: ``E_i, G_ij >= 0``, Eq. (2.45) with the zero limits
-    of an antiplane core or of a singular transverse shear stiffness,
-    ``|nu_ij| < (E_i/E_j)**0.5``, Eq. (2.51), and ``1 - nu12 nu21 - nu23
-    nu32 - nu31 nu13 - 2 nu21 nu32 nu13 > 0``, Eq. (2.48). The message
-    names the violated conditions with their values. With 2 or 6 entries
-    only the in-plane conditions apply, e.g. an isotropic ``nu = 0.5`` is
-    accepted in plane stress and rejected with 9 entries, whose determinant
-    ``1 - 3 nu^2 - 2 nu^3`` vanishes.
+    ``read_laminaprop`` and ``MatLamina.rebuild`` reject material constants
+    that violate the conditions of Jones (1999), Sec. 2.4.2, with a message
+    that names the violated conditions with their values, and accept the
+    limits.
+
+    Notes
+    -----
+    [1]_, Sec. 2.4.2, pp. 68-69: ``E_i, G_ij >= 0``, Eq. (2.45) with the
+    zero limits of an antiplane core or of a singular transverse shear
+    stiffness, ``|nu_ij| < (E_i/E_j)**0.5``, Eq. (2.51), and ``1 - nu12
+    nu21 - nu23 nu32 - nu31 nu13 - 2 nu21 nu32 nu13 > 0``, Eq. (2.48). The
+    message names the violated conditions with their values. With 2 or 6
+    entries only the in-plane conditions apply, e.g. an isotropic ``nu =
+    0.5`` is accepted in plane stress and rejected with 9 entries, whose
+    determinant ``1 - 3 nu^2 - 2 nu^3`` vanishes.
+
+    ``e2 = e3`` with ``nu23 = 1`` would give a negative c22. With ``nu =
+    0.6`` the bounds are satisfied and the determinant ``1 - 3 nu^2 - 2
+    nu^3 < 0``.
+
+    References
+    ----------
+    .. [1] Jones, R. M., Mechanics of Composite Materials, 2nd ed., Taylor &
+       Francis, 1999.
+
     """
     E = 8.7e9
-    # NOTE e2 = e3 with nu23 = 1 would give a negative c22
+    # NOTE e2 = e3 with nu23 = 1
     with pytest.raises(ValueError) as exc:
         read_laminaprop((142e9, E, 0.28, 5e9, 5e9, 3e9, E, 0.3, 1.0))
     msg = str(exc.value)
@@ -548,7 +687,7 @@ def test_not_positive_definite_rejected():
             ((70e9, 1.0), ['|nu12| = 1.0', 'Eq. (2.51)'], []),
             ((10e9, 1e9, 3.2, 1e9, 1e9, 1e9), ['|nu12| = 3.2',
                                                 'Eq. (2.51)'], []),
-            # NOTE bounds satisfied, determinant 1 - 3 nu^2 - 2 nu^3 < 0
+            # NOTE bounds satisfied, negative determinant
             ((E, E, 0.6, 1e9, 1e9, 1e9, E, 0.6, 0.6), ['Eq. (2.48)'],
              ['Eq. (2.51)']),
             ((E, E, 0.5, 1e9, 1e9, 1e9, E, 0.5, 0.5), ['= 0.0, Eq. (2.48)'],
@@ -575,6 +714,13 @@ def test_not_positive_definite_rejected():
 def test_singular_ABD_positive_diagonal(thetadeg):
     r"""Singular ABD with a positive diagonal
 
+    A single ply with ``g12 = 0`` at an angle must be rejected by
+    ``calc_equivalent_properties``, raising ``LinAlgError``, a
+    ``ValueError``, also at 0 degrees; ``[0/90]`` with ``g12 = 0`` and a
+    single ply with ``g12 > 0`` are accepted.
+
+    Notes
+    -----
     A single ply with ``g12 = 0`` has a plane-stress stiffness of rank 2, so
     ``A`` and ``D`` are singular in any axes, while at an angle other than 0
     or 90 degrees all their diagonal terms are positive. The equivalent
@@ -586,6 +732,7 @@ def test_singular_ABD_positive_diagonal(thetadeg):
     round-off: ``[0/90]`` has ``A66`` of the order of ``E1 cos^2(90 deg)
     h``, about 1e-22 N/m, decoupled from the other terms, and is accepted
     with a tiny but finite ``g12``. With ``g12 > 0`` all are accepted.
+
     """
     lamprop = (142e9, 8.7e9, 0.28, 0., 5e9, 3e9)
     A, B, D = clt_abd([thetadeg], [1e-3], [lamprop])
@@ -609,6 +756,12 @@ def test_singular_ABD_positive_diagonal(thetadeg):
 def test_singular_ABD_offset_invariant():
     r"""The conditioning check does not depend on the offset
 
+    A singular laminate, a single ply at 45 degrees with ``g12 = 0``, is
+    rejected for every offset, and regular laminates are accepted, also
+    from lamination parameters for ``|offset/h| <= 1e4``.
+
+    Notes
+    -----
     The condition number of the scaled ABD matrix about the reference
     surface grows as ``(offset/h)**2``, 1.6e10 at ``offset/h = 1e4``, and
     is round-off noise near the threshold 1e12 from ``offset/h = 1e5``. The
@@ -620,6 +773,10 @@ def test_singular_ABD_offset_invariant():
     the stored matrix is shifted back, which with the lamination parameters
     of ``calc_lamination_parameters``, carrying the round-off of the cubes of
     the heights, is accurate up to ``offset/h = 1e4``.
+
+    The equivalent properties, about the reference surface, fall as
+    ``(h/offset)**2`` and are round-off from ``offset/h = 1e5``, unchanged.
+
     """
     singular = (142e9, 8.7e9, 0.28, 0., 5e9, 3e9)
     CFRP = (138.0, 9.3, 0.3, 4.6, 4.6, 2.3)
@@ -635,9 +792,7 @@ def test_singular_ABD_offset_invariant():
         for offset in offsets:
             lam = laminated_plate(stack, plyt=0.2, laminaprop=CFRP,
                                   offset=offset, shear_correction='constant')
-            # NOTE the equivalent properties, about the reference surface,
-            #      fall as (h/offset)**2 and are round-off from offset/h =
-            #      1e5, unchanged
+            # NOTE finite for every offset
             assert np.isfinite(lam.e1)
             if abs(offset) <= 1e4:
                 assert lam.e1 > 0
