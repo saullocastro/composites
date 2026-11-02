@@ -1945,7 +1945,7 @@ cdef class Laminate:
         z = np.zeros(N + 1, dtype=DOUBLE)
         z[0] = -h/2.
 
-        # ABD = [[A, B], [B, D]] about the mid-surface, from the plies
+        # ABD matrix about the mid-surface, from the plies
         ABD = np.zeros((6, 6), dtype=DOUBLE)
         for k in range(N):
             ply = self.plies[k]
@@ -1972,8 +1972,8 @@ cdef class Laminate:
                 ABD[4, j+3] += c2[j]*dz3
                 ABD[5, j+3] += c3[j]*dz3
 
-        # Hstar = inv(ABD), with a symmetric diagonal scaling such that the
-        # conditioning check does not depend on the units
+        # inverse Hstar of the ABD matrix, with a symmetric diagonal scaling
+        # such that the conditioning check does not depend on the units
         ABDnp = np.asarray(ABD)
         diag = np.diag(ABDnp)
         if not np.all(diag > 0):
@@ -2015,12 +2015,13 @@ cdef class Laminate:
             c2[0] = ply.q12L; c2[1] = ply.q22L; c2[2] = ply.q26L
             zk = z[k]
             for j in range(6):
-                # c Pi(z) = z c Hstar[:3, :] + z^2/2 c Hstar[3:, :]
+                # rows of the ply stiffnesses times the blocks of Hstar, see
+                # Pi(z) in the Notes
                 p1[j] = c1[0]*Hs[0, j] + c1[1]*Hs[1, j] + c1[2]*Hs[2, j]
                 q1[j] = c1[0]*Hs[3, j] + c1[1]*Hs[4, j] + c1[2]*Hs[5, j]
                 p2[j] = c2[0]*Hs[0, j] + c2[1]*Hs[1, j] + c2[2]*Hs[2, j]
                 q2[j] = c2[0]*Hs[3, j] + c2[1]*Hs[4, j] + c2[2]*Hs[5, j]
-                # a^(k) = sum_{i=1..k} (c^(i) - c^(i-1)) Pi(z_i)
+                # accumulated a^(k) of the interfaces, see the Notes
                 acc_x[j] += zk*(p1[j] - p1_prev[j]) + zk*zk/2.*(q1[j] - q1_prev[j])
                 acc_y[j] += zk*(p2[j] - p2_prev[j]) + zk*zk/2.*(q2[j] - q2_prev[j])
                 p1_prev[j] = p1[j]
@@ -2369,12 +2370,12 @@ cdef class Laminate:
                     f01 = fc[k, 0, 0, 1] + zg*fc[k, 1, 0, 1] + zg2*fc[k, 2, 0, 1]
                     f10 = fc[k, 0, 1, 0] + zg*fc[k, 1, 1, 0] + zg2*fc[k, 2, 1, 0]
                     f11 = fc[k, 0, 1, 1] + zg*fc[k, 1, 1, 1] + zg2*fc[k, 2, 1, 1]
-                    # g = inv(Cs) f
+                    # inverse of Cs times f
                     g00 = i44*f00 + i45*f10
                     g01 = i44*f01 + i45*f11
                     g10 = i45*f00 + i55*f10
                     g11 = i45*f01 + i55*f11
-                    # S += f^T inv(Cs) f
+                    # integrand of the complementary energy, see the Notes
                     S00 += wdz*(f00*g00 + f10*g10)
                     S01 += wdz*(f00*g01 + f10*g11)
                     S11 += wdz*(f01*g01 + f11*g11)
@@ -2392,8 +2393,8 @@ cdef class Laminate:
                 _check_symmetric(self, z, h)
             k13 = 0; k23 = 0
             for alpha in range(2):
-                # alpha = 0: direction 1 (x), uses C11 and G13 = q55L
-                # alpha = 1: direction 2 (y), uses C22 and G23 = q44L
+                # alpha = 0: direction 1 (x), with q11L and q55L
+                # alpha = 1: direction 2 (y), with q22L and q44L
                 num = 0; den = 0; d = 0
                 for k in range(N):
                     ply = self.plies[k]
@@ -2415,7 +2416,8 @@ cdef class Laminate:
                     zn = 0.
                 else:
                     zn = num/den
-                # I = int g^2/G dz (energy), J = int g/G dz (average strain)
+                # integrals I of the energy and J of the average strain,
+                # see the Notes
                 R = 0; I = 0; J = 0; gza = 0
                 for k in range(N):
                     ply = self.plies[k]
@@ -2681,8 +2683,8 @@ cdef class Laminate:
                                            eps_x, eps_y, grad_x, grad_y)
         eps_x = np.atleast_2d(np.asarray(eps_x, dtype=DOUBLE))
         eps_y = np.atleast_2d(np.asarray(eps_y, dtype=DOUBLE))
-        # NOTE integrated about the mid-surface, avoiding the round-off of
-        #      large offsets: eps0 + z eps1 = (eps0 + offset eps1) + zm eps1
+        # NOTE integrated about the mid-surface, with the strains shifted by
+        #      the offset, avoiding the round-off of large offsets
         off = self.offset
         eps_x = np.hstack((eps_x[:, :3] + off*eps_x[:, 3:], eps_x[:, 3:]))
         eps_y = np.hstack((eps_y[:, :3] + off*eps_y[:, 3:], eps_y[:, 3:]))
@@ -3711,9 +3713,8 @@ cpdef Laminate laminate_from_LaminationParameters(double thickness, MatLamina
     lam = Laminate()
     lam.h = thickness
     lam.offset = offset
-    # NOTE int z dz and int z^2 dz of the constant terms with z measured from
-    #      the reference surface: h^2/4 fB = h offset and h^3/12 fD = h^3/12
-    #      + h offset^2
+    # NOTE factors of the constant terms of B and D, integrated with z
+    #      measured from the reference surface, see the Notes
     fB = 4*offset/thickness
     fD = 1 + 12*(offset/thickness)**2
 
