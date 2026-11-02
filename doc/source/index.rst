@@ -104,8 +104,6 @@ Theory and conventions
     notebooks/opt-lightweight-LP-gradient-Le-Riche.nblink
     notebooks/opt-lightweight-smeared-finite-diff-Le-Riche.nblink
     notebooks/opt-lightweight-smeared-gradient-Le-Riche.nblink
-    notebooks/opt1.nblink
-    notebooks/opt2.nblink
 
 
 composites API
