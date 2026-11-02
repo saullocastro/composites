@@ -73,6 +73,21 @@ def calc_Nxx_crit(a, b, m, n, D11, D12, D22, D66):
     .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
        Second Edition, John Wiley & Sons, 2013.
 
+    Examples
+    --------
+    A quasi-isotropic laminate in N and mm, plate of 500 mm by 300 mm, one
+    half-wave across the width and the critical number of half-waves along the
+    length:
+
+    >>> from composites import laminated_plate
+    >>> from composites.kassapoglou import calc_Nxx_crit
+    >>> lam = laminated_plate([0, 45, -45, 90, 90, -45, 45, 0], plyt=0.125,
+    ...     laminaprop=(142.5e3, 8.7e3, 0.28, 5.1e3, 5.1e3, 3.4e3))
+    >>> Nxx = calc_Nxx_crit(500., 300., None, 1, lam.D11, lam.D12, lam.D22,
+    ...                     lam.D66)
+    >>> print(round(Nxx, 3))
+    1.91
+
     """
     if m is None and n is None:
         raise NotImplementedError("Only m or n can be None, not both")
@@ -165,6 +180,19 @@ def calc_Nxy_crit(a, D11, D12, D16, D22, D66, rtol=1e-5, atol=1e-6, max_iter=50)
     ----------
     .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
        Second Edition, John Wiley & Sons, 2013.
+
+    Examples
+    --------
+    The laminate of :func:`.calc_Nxx_crit`, in N and mm, long plate of width
+    300 mm:
+
+    >>> from composites import laminated_plate
+    >>> from composites.kassapoglou import calc_Nxy_crit
+    >>> lam = laminated_plate([0, 45, -45, 90, 90, -45, 45, 0], plyt=0.125,
+    ...     laminaprop=(142.5e3, 8.7e3, 0.28, 5.1e3, 5.1e3, 3.4e3))
+    >>> Nxy = calc_Nxy_crit(300., lam.D11, lam.D12, lam.D16, lam.D22, lam.D66)
+    >>> print(round(Nxy, 3))
+    3.708
 
     """
     alpha = np.pi/6

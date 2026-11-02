@@ -51,6 +51,15 @@ The format of the saved data is::
       "data": {...}
     }
 
+Notes
+-----
+The plane-stress constitutive constants of :meth:`.MatLamina.rebuild` have
+`q_{33} = 0`, and the three-dimensional ones `q_{33} = e_3 (1 -
+\nu_{12}\nu_{21})/\Delta`, which is zero only for `e_3 = 0`, when both sets of
+constants are equal. Hence `q_{33} = 0` identifies the constants that are
+those of plane stress, and ``plane_stress`` is restored from it without being
+stored.
+
 """
 import json
 import math
@@ -157,9 +166,8 @@ def _matlamina_from_data(data):
     _check_keys(data, _MATLAMINA_FIELDS, 'MatLamina')
     mat = MatLamina()
     _decode_fields(mat, data, _MATLAMINA_FIELDS)
-    # NOTE the plane-stress constants of MatLamina.rebuild have q33 = 0, the
-    #      three-dimensional ones q33 = e3 (1 - nu12 nu21)/Delta, which is
-    #      zero only for e3 = 0, when both sets of constants are equal
+    # NOTE plane_stress restored from the stored q33, see the module
+    #      docstring
     mat._set_plane_stress(mat.q33 == 0.)
     return mat
 
@@ -461,6 +469,16 @@ def save_json(obj, fname, indent=2):
     --------
     load_json
 
+    Examples
+    --------
+    >>> import os, tempfile
+    >>> from composites import isotropic_plate, save_json, load_json
+    >>> lam = isotropic_plate(thickness=2e-3, E=70e9, nu=0.33)
+    >>> fname = os.path.join(tempfile.mkdtemp(), 'lam.json')
+    >>> save_json(lam, fname)
+    >>> load_json(fname).D11 == lam.D11
+    True
+
     """
     s = to_json(obj, indent=indent)
     if hasattr(fname, 'write'):
@@ -486,6 +504,16 @@ def load_json(fname):
     -------
     obj : :class:`.Laminate`, :class:`.Lamina`, :class:`.MatLamina`, :class:`.LaminationParameters` or :class:`.GradABD`
         The object.
+
+    Examples
+    --------
+    >>> import os, tempfile
+    >>> from composites import isotropic_plate, save_json, load_json
+    >>> fname = os.path.join(tempfile.mkdtemp(), 'lam.json')
+    >>> save_json(isotropic_plate(thickness=2e-3, E=70e9, nu=0.33), fname)
+    >>> lam = load_json(fname)
+    >>> type(lam).__name__, round(lam.D11, 3)
+    ('Laminate', 52.37)
 
     """
     if hasattr(fname, 'read'):
