@@ -89,7 +89,7 @@ The density of each ply is the ``rho`` of its :class:`.MatLamina`. With
 ``rhos`` one density per ply, e.g. for a sandwich with a light core. The
 default density is zero, giving zero mass integrals, and the shear
 correction ``'thickness_shear'`` requires positive densities: it uses the
-rotary inertia about the centre of mass, `ar{I}_2 = I_2 - I_1^2/I_0`,
+rotary inertia about the centre of mass, `\bar{I}_2 = I_2 - I_1^2/I_0`,
 which does not depend on ``offset``, see :doc:`shear_correction`.
 
 The mass integrals are computed only from the plies: a :class:`.Laminate`
