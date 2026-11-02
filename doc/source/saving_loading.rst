@@ -13,15 +13,6 @@ from JSON by the functions of :mod:`composites.json_io`, all available from
                                                JSON document
 =============================================  ==============================================
 
-::
-
-    from composites import laminated_plate, save_json, load_json
-
-    lam = laminated_plate([0, 45, -45, 90], plyt=0.125e-3,
-                          laminaprop=(142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
-    save_json(lam, 'laminate.json')
-    lam2 = load_json('laminate.json')
-
 All the public attributes are stored, including the derived ones, such as the
 stiffnesses, the mass integrals and the ply stiffnesses, such that the loaded
 object is identical to the saved one without any recomputation. The

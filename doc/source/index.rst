@@ -21,16 +21,18 @@ With the ``composites`` module, you are able to calculate:
 
 * Transverse shear stresses through the thickness, from the shear forces or
   recovered a posteriori from the strain gradients of an FSDT solution (Noor
-  and Peters, 1989), with the corresponding transverse shear strain energies
+  and Peters, 1989), with the corresponding transverse shear strain energies,
+  see :doc:`transverse_shear_stresses`
 
-* Material invariants, trace-normalized or not
+* Material invariants, trace-normalized or not, see :doc:`lamina`
 
-* Lamination parameters based on material invariants
+* Lamination parameters based on material invariants, their gradients, and
+  double-double and N-double laminates, see :doc:`lamination_parameters`
 
 * Stiffness matrices (ABD) based on lamination parameters
 
 * Based on Kassapoglou's book, local buckling under compression, shear, and
-  post-buckling
+  post-buckling, see :doc:`buckling_kassapoglou`
 
 * Saving and loading of laminates, plies, materials and lamination parameters
   in JSON, see :doc:`saving_loading`
@@ -66,9 +68,13 @@ Theory and conventions
     :maxdepth: 1
 
     conventions.rst
+    lamina.rst
     constitutive_matrices.rst
-    mass_integrals.rst
     shear_correction.rst
+    transverse_shear_stresses.rst
+    lamination_parameters.rst
+    mass_integrals.rst
+    buckling_kassapoglou.rst
     saving_loading.rst
 
 

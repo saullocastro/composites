@@ -49,11 +49,8 @@ JupyterLite or in a web page with `Pyodide <https://pyodide.org>`_::
     import micropip
     await micropip.install('composites')
 
-    from composites import laminated_plate, to_json
-    lam = laminated_plate([0, 45, -45, 90], plyt=0.125e-3,
-                          laminaprop=(142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
-    print(lam.ABD)
-    s = to_json(lam)  # strict JSON, readable with JSON.parse in JavaScript
+The objects can be exchanged with JavaScript as strict JSON, see
+:doc:`saving_loading`.
 
 
 Using composites from Cython
