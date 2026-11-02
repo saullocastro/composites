@@ -76,30 +76,30 @@ Theory and conventions
     :maxdepth: 1
     :caption: Worked examples
 
-    notebooks/ex_laminated_plate
-    notebooks/ex_isotropic_offset
-    notebooks/ex_tsdt
-    notebooks/ex_transverse_shear
-    notebooks/ex_json
+    notebooks/ex_laminated_plate.nblink
+    notebooks/ex_isotropic_offset.nblink
+    notebooks/ex_tsdt.nblink
+    notebooks/ex_transverse_shear.nblink
+    notebooks/ex_json.nblink
 
 .. toctree::
     :maxdepth: 1
     :caption: Tutorials
 
-    notebooks/getting-started-plate-properties
-    notebooks/transverse-shear-stresses
-    notebooks/post-polar-plots-laminate-stiffness
+    notebooks/getting-started-plate-properties.nblink
+    notebooks/transverse-shear-stresses.nblink
+    notebooks/post-polar-plots-laminate-stiffness.nblink
 
 .. toctree::
     :maxdepth: 1
     :caption: Optimisation tutorials
 
-    notebooks/opt-lightweight-discrete-ghost-layer
-    notebooks/opt-lightweight-LP-gradient-Le-Riche
-    notebooks/opt-lightweight-smeared-finite-diff-Le-Riche
-    notebooks/opt-lightweight-smeared-gradient-Le-Riche
-    notebooks/opt1
-    notebooks/opt2
+    notebooks/opt-lightweight-discrete-ghost-layer.nblink
+    notebooks/opt-lightweight-LP-gradient-Le-Riche.nblink
+    notebooks/opt-lightweight-smeared-finite-diff-Le-Riche.nblink
+    notebooks/opt-lightweight-smeared-gradient-Le-Riche.nblink
+    notebooks/opt1.nblink
+    notebooks/opt2.nblink
 
 
 composites API
