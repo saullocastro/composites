@@ -3,7 +3,7 @@ r"""Computational cost of the laminate calculations, to assess the build flags
 Times the creation of a laminate with ``laminated_plate`` and the methods and
 functions that recompute its stiffness, for laminates with a different number
 of plies. It is used to assess the Cython directives and the compiler flags of
-``setup.py``, see ``CHANGELOG.md``.
+``setup.py``.
 
 Run it against the build of composites to be assessed, e.g.::
 
