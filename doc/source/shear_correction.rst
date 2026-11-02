@@ -106,7 +106,7 @@ actual FSDT solution, :meth:`.Laminate.calc_equilibrium_transverse_shear`
 recovers the transverse shear stresses by integrating the equilibrium
 equations through the thickness, and :meth:`.Laminate.calc_aposteriori_energy`
 gives their strain energies, which lead to a posteriori factors in the sense
-of Noor and Peters [7]_. See :doc:`ex_transverse_shear`.
+of Noor and Peters [7]_.
 
 
 Verification

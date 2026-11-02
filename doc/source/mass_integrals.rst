@@ -80,8 +80,6 @@ stiffnesses. For a homogeneous plate whose mid-surface is at `z = d`:
     I_0 = \rho h, \qquad I_1 = \rho h d, \qquad I_2 = \rho h \left( d^2 +
     \frac{h^2}{12} \right)
 
-see :doc:`ex_isotropic_offset`, where the higher moments are also checked.
-
 
 Densities of the plies
 ----------------------

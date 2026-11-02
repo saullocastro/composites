@@ -156,8 +156,7 @@ common layouts are:
 These are, for instance, the layouts of the Ritz models of `panels
 <https://github.com/saullocastro/panels>`_. In an FSDT model, a shear
 correction factor of the user's choice is applied to ``Abar_ts`` instead of
-``Ats``, see :doc:`shear_correction`. The assembly of the TSDT matrix is
-shown in :doc:`ex_tsdt`.
+``Ats``, see :doc:`shear_correction`.
 
 The TSDT displacement field above, with the traction-free conditions at `z =
 \pm h/2`, takes the reference surface at the mid-surface, whereas all the
