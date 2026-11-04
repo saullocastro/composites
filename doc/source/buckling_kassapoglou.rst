@@ -190,5 +190,6 @@ the returned load.
 References
 ----------
 
-.. [1] Kassapoglou, C., Design and Analysis of Composite Structures, Second
-   Edition, John Wiley & Sons, 2013. https://doi.org/10.1002/9781118536933
+.. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+   With Applications to Aerospace Structures, 2nd ed., John Wiley &
+   Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933

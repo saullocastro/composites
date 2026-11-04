@@ -17,8 +17,9 @@ The functions implement the equations of Kassapoglou [1]_, chapters 6 and
 
 References
 ----------
-.. [1] Kassapoglou, C., Design and Analysis of Composite Structures, Second
-   Edition, John Wiley & Sons, 2013.
+.. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+   With Applications to Aerospace Structures, 2nd ed., John Wiley &
+   Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
 """
 import numpy as np
@@ -70,8 +71,9 @@ def calc_Nxx_crit(a, b, m, n, D11, D12, D22, D66):
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     Examples
     --------
@@ -178,8 +180,9 @@ def calc_Nxy_crit(a, D11, D12, D16, D22, D66, rtol=1e-5, atol=1e-6, max_iter=50)
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     Examples
     --------
@@ -255,8 +258,9 @@ def calc_beff(b, Px, Pcr, A11, A12, A22):
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     beff = b/(2*(1 + 2*(1 + A12/A11)*(1 - Pcr/Px)*A11/(A11 + 3*A22)))
@@ -315,8 +319,9 @@ def calc_Nxx_crit_combined_shear(k, a, b, D11, D12, D22, D66):
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     den = 2 - 8192/81*a**2*k**2/(b**2*pi**4)
@@ -415,8 +420,9 @@ def calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22, D26, D66):
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     a11 = pi**4*D11*b/(4*a**3) + pi**4*D12/(2*a*b) + pi**4*D22*a/(4*b**3) + pi**4*D66/(a*b)

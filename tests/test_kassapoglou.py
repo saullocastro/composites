@@ -16,8 +16,9 @@ axes.
 
 References
 ----------
-.. [1] Kassapoglou, C., Design and Analysis of Composite Structures, Second
-   Edition, John Wiley & Sons, 2013.
+.. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+   With Applications to Aerospace Structures, 2nd ed., John Wiley &
+   Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
 """
 import sys
@@ -117,7 +118,7 @@ def _distance_to_curve(x, y, points):
 
 
 def test_calc_Nxx_crit():
-    """Kassapoglou's Fig. 6.4, p. 129, Eq. 6.7
+    """Kassapoglou's Fig. 6.4, p. 129, Eq. 6.7 (Eq. 6.6 with n = 1)
 
     The D matrix is that of the figure, in N m as stated on p. 143. The text
     on p. 129 gives a plate with a fixed length of 508 mm, but the figure is
@@ -128,14 +129,15 @@ def test_calc_Nxx_crit():
     The reference values are the curves of Fig. 6.4 of [1]_, the uniaxial
     compression buckling load of a simply supported plate for `m = 1, 2, 3`
     half-waves along the length and one across the width, whose lower
-    envelope is the critical load over `m` (TODO(author): the docstring
-    names Eq. 6.7, the Notes of :func:`.calc_Nxx_crit` Eq. 6.6; which one
-    is right?).
+    envelope is the critical load over `m`. They follow Eq. 6.7 of [1]_
+    (p. 129): Eq. 6.6, which :func:`.calc_Nxx_crit` evaluates, with
+    `n = 1`, the value of `n` that minimizes the load.
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     b = 0.254
@@ -175,8 +177,9 @@ def test_calc_Nxy_crit():
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     laminaprop = (68.9e9, 68.9e9, 0.05, 4.83e9, 4.83e9, 4.83e9)
@@ -212,8 +215,9 @@ def test_calc_Nxx_crit_combined_shear_full():
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     b = 0.254
@@ -255,8 +259,9 @@ def test_calc_beff():
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     b = 1.
@@ -318,8 +323,9 @@ def test_calc_Nxx_crit_combined_shear_full_sign_Nxy():
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     b = 0.254
