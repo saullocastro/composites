@@ -230,9 +230,12 @@ is ``None``.
 The choice matters in proportion to the transverse shear compliance: little
 for thin plates, decisively for thick laminates and sandwiches with a soft
 core, whose factors may be far below 5/6. For the ``[0,90]_s`` CFRP plate of
-Rohwer [1]_, Sec. 4.2, at `a/h = 10`, "the Mindlin displacement exceeds the
-Kirchhoff one by 25% and 28% for Hbar and Hbarbar, respectively, whereas with
-H it is 36% higher" (p. 21), `H` being his equilibrium stiffness.
+Rohwer [1]_, Sec. 4.2, simply supported, with `a/b = 1.5` and a distributed
+load, the transverse shear influence on the centre deflection reaches 10 %
+at `a/h = 19` and exceeds 30 % at `a/h = 11` (p. 21, Fig. 8). At `a/h = 10`,
+"the Mindlin displacement exceeds the Kirchhoff one by 25% and 28% for Hbar
+and Hbarbar, respectively, whereas with H it is 36% higher" (p. 21), `H`
+being his equilibrium stiffness.
 
 A model that requires its own factors, e.g. from a reference solution,
 applies them to the uncorrected matrix, `A_{ts} = \kappa \bar{A}_{ts}` or
