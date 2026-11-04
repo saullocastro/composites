@@ -1837,10 +1837,9 @@ cdef class Laminate:
     cpdef tuple calc_scf(Laminate self):
         r"""Recompute the transverse shear stiffness and return the ratios
 
-        .. deprecated:: 0.9.1
-            Use :meth:`.calc_transverse_shear_stiffness`, called automatically
-            by :meth:`.calc_constitutive_matrix`, and read ``scf_k13`` and
-            ``scf_k23``.
+        Deprecated: use :meth:`.calc_transverse_shear_stiffness`, called
+        automatically by :meth:`.calc_constitutive_matrix`, and read
+        ``scf_k13`` and ``scf_k23``.
 
         The ratios are informative only, since the correction is already
         applied to ``A44``, ``A45``, ``A55`` by

@@ -225,7 +225,7 @@ def test_lamination_parameters_three_dimensional_constants(material, layup):
                        atol=1e-14*np.abs(gradD).max())
 
     # NOTE three-dimensional option: stiffer than plane stress, the
-    #      lamination-parameter route then no longer gives the plane-stress
+    #      lamination-parameter route then does not give the plane-stress
     #      stiffnesses
     mat.rebuild(plane_stress=False)
     lam_3d = laminate_from_LaminationParameters(lam.h, mat, lp)
