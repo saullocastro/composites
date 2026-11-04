@@ -35,6 +35,7 @@ References
 ----------
 .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells:
    Theory and Analysis, 2nd ed., CRC Press, 2003.
+   https://doi.org/10.1201/b12409
 .. [2] Jones, R. M., Mechanics of Composite Materials, 2nd ed., Taylor &
    Francis, 1999.
 .. [3] Allen, H. G., Analysis and Design of Structural Sandwich Panels,
@@ -127,6 +128,7 @@ def abar_ts(stack, plyts, G13, G23):
     ----------
     .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells:
        Theory and Analysis, 2nd ed., CRC Press, 2003.
+       https://doi.org/10.1201/b12409
 
     """
     Abar = np.zeros((2, 2))

@@ -285,16 +285,18 @@ common layouts are:
   0], [B, D, F, 0, 0], [E, F, H, 0, 0], [0, 0, 0, Abar_ts, Dts], [0, 0, 0,
   Dts, Fts]]``.
 
-In an FSDT model with a shear correction factor of the user's choice, the
-factor is applied to ``Abar_ts`` instead of using ``Ats``, see
+These are, for instance, the layouts of the Ritz models of the ``panels``
+library. In an FSDT model with a shear correction factor of the user's
+choice, the factor is applied to ``Abar_ts`` instead of using ``Ats``, see
 :doc:`shear_correction`.
 
 
 References
 ----------
 
-.. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells, CRC
-   Press, 2003. https://doi.org/10.1201/b12409
+.. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells:
+   Theory and Analysis, 2nd ed., CRC Press, 2003.
+   https://doi.org/10.1201/b12409
 .. [2] Rohwer, K., Improved Transverse Shear Stiffnesses for Layered Finite
    Elements, DFVLR-FB 88-32, 1988.
 .. [3] Vasiliev, V. V. and Morozov, E. V., Mechanics and Analysis of

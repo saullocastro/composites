@@ -133,8 +133,9 @@ References
 .. [7] Noor, A. K. and Peters, J. M., A posteriori estimates for the shear
    correction factors in multi-layered composite cylinders, Journal of
    Engineering Mechanics, 115, 1225-1244, 1989.
-.. [8] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells,
-   CRC Press, 2003. https://doi.org/10.1201/b12409
+.. [8] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells:
+   Theory and Analysis, 2nd ed., CRC Press, 2003.
+   https://doi.org/10.1201/b12409
 
 """
 import os

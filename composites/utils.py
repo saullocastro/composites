@@ -175,7 +175,7 @@ def read_laminaprop(laminaprop, rho=0):
     References
     ----------
     .. [1] Reddy, J. N., Mechanics of Laminated Composite Plates and Shells:
-       Theory and Analysis, Second Edition, CRC Press, 2003.
+       Theory and Analysis, 2nd ed., CRC Press, 2003.
        https://doi.org/10.1201/b12409
     .. [2] Allen, H. G., Analysis and Design of Structural Sandwich Panels,
        Pergamon Press, Oxford, 1969, Chap. 2.
