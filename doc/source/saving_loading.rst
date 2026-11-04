@@ -13,6 +13,15 @@ from JSON by the functions of :mod:`composites.json_io`, all available from
                                                JSON document
 =============================================  ==============================================
 
+::
+
+    from composites import laminated_plate, save_json, load_json
+
+    lam = laminated_plate([0, 45, -45, 90], plyt=0.125e-3,
+                          laminaprop=(142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
+    save_json(lam, 'laminate.json')
+    lam2 = load_json('laminate.json')
+
 All the public attributes are stored, including the derived ones, such as the
 stiffnesses, the mass integrals and the ply stiffnesses, such that the loaded
 object is identical to the saved one without any recomputation. The
@@ -23,7 +32,7 @@ are plain text, independent of the Python version and safe to load from
 untrusted sources, unlike pickle, which remains supported for
 ``copy.deepcopy`` and ``multiprocessing`` but is not recommended for
 files. The output is strict JSON, also readable with ``JSON.parse`` in
-JavaScript, e.g. in the browser with Pyodide, see :doc:`install`.
+JavaScript, e.g. in the browser with Pyodide, see :doc:`pyodide`.
 
 
 Embedding in other documents
@@ -42,8 +51,8 @@ Each saved object carries ``'type'``, ``'format_version'`` and
 ``format_version`` is 2, which stores the mass integrals ``intrhoz3``,
 ``intrhoz4`` and ``intrhoz6`` of a :class:`.Laminate`. :func:`.from_dict`
 reads only the ``format_version`` of the installed ``composites`` and raises
-a ``ValueError`` for an older or a newer one, e.g. for the files of format 1
-saved by version 0.9.21, which must be created again. Every key of the format
+a ``ValueError`` for an older or a newer one, e.g. for the files of format 1,
+which must be created again. Every key of the format
 is required: a missing key, at any level, raises a ``ValueError`` naming the
 missing keys and the class, as does an unknown key, such that no attribute
 is ever given a default value silently.

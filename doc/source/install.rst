@@ -42,15 +42,11 @@ The documentation is built with the requirements of
 In the browser, with Pyodide
 ----------------------------
 
-From version 0.9.21, a WebAssembly wheel is published on PyPI for Pyodide 314
-(CPython 3.14), such that ``composites`` runs in the browser, e.g. in
-JupyterLite or in a web page with `Pyodide <https://pyodide.org>`_::
+A WebAssembly wheel is published on PyPI for Pyodide 314 (CPython 3.14),
+installed in the browser with ``micropip``, see :doc:`pyodide`::
 
     import micropip
     await micropip.install('composites')
-
-The objects can be exchanged with JavaScript as strict JSON, see
-:doc:`saving_loading`.
 
 
 Using composites from Cython

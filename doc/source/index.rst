@@ -37,7 +37,7 @@ With the ``composites`` module, you are able to calculate:
 * Saving and loading of laminates, plies, materials and lamination parameters
   in JSON, see :doc:`saving_loading`
 
-``composites`` also runs in the browser with Pyodide, see :doc:`install`.
+``composites`` also runs in the browser with Pyodide, see :doc:`pyodide`.
 
 
 Code repository
@@ -95,11 +95,6 @@ Theory and conventions
     notebooks/getting-started-plate-properties.nblink
     notebooks/transverse-shear-stresses.nblink
     notebooks/post-polar-plots-laminate-stiffness.nblink
-
-.. toctree::
-    :maxdepth: 1
-    :caption: Optimisation tutorials
-
     notebooks/opt-lightweight-discrete-ghost-layer.nblink
     notebooks/opt-lightweight-LP-gradient-Le-Riche.nblink
     notebooks/opt-lightweight-smeared-finite-diff-Le-Riche.nblink
@@ -122,6 +117,14 @@ Installing composites
     :maxdepth: 1
 
     install.rst
+    pyodide.rst
+
+
+.. toctree::
+    :maxdepth: 1
+    :caption: About the documentation
+
+    documentation_levels.rst
 
 
 .. toctree::

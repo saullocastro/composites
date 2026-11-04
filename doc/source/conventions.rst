@@ -5,8 +5,15 @@ A laminate is usually created with :func:`.laminated_plate`, from the ply
 angles, thicknesses, material properties and densities, with
 :func:`.isotropic_plate` for a single isotropic layer, from lamination
 parameters with :func:`.laminate_from_LaminationParameters`, or as a
-double-double or N-double laminate, see :doc:`lamination_parameters`. The
-conventions below apply to every :class:`.Laminate`.
+double-double or N-double laminate, see :doc:`lamination_parameters`::
+
+    from composites import laminated_plate
+
+    laminaprop = (142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9)
+    lam = laminated_plate([0, 45, -45, 90], plyt=0.125e-3,
+                          laminaprop=laminaprop, rho=1600., offset=0.)
+
+The conventions below apply to every :class:`.Laminate`.
 
 
 Stacking sequence and thickness coordinate
