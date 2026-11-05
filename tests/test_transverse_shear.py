@@ -1507,8 +1507,6 @@ def test_sandwich_soft_core():
     r"""Isotropic sandwich with ``c/h = 0.8`` and ``Ef/Ec = 1000``, against
     Vlachoutsis (1992), Eq. (44)
 
-    The previous implementation returned 1.2564.
-
     Notes
     -----
     The closed form of Vlachoutsis (1992) [1]_, Eq. (44), with ``p = 0.8``
@@ -2411,10 +2409,9 @@ def test_deprecated_grad_x_grad_y():
 def test_large_offset(mode):
     r"""``Ats`` of every mode is identical for large offsets
 
-    It is computed about the mid-surface, hence identical for any offset,
-    while the round-off of the heights from the reference surface used to
-    grow with ``(offset/h)^2``, e.g. 2e-3 for ``'rohwer'`` at ``offset/h =
-    1e4``.
+    It is computed about the mid-surface, hence identical for any offset;
+    computed with the heights from the reference surface, its round-off
+    would grow with ``(offset/h)^2``.
     """
     stack = [0, 90, 45, 90, 0] if mode == 'chow' else [0, 90, 45, -45, 30]
     Ats = [laminated_plate(stack, plyt=0.2, laminaprop=CFRP, rho=1.6e-6,
