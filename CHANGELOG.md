@@ -11,9 +11,12 @@
   of Table 3 of the paper is reproduced to relative differences of 7.5e-7
   (buckling) and 4.6e-8 (failure) instead of 4.2e-5 and 5.1e-5. The optimum
   of the genetic algorithm of the ghost-layer tutorial is unchanged (44
-  plies, 0.5768 kg); in the lamination-parameter tutorial the run with
-  finite-difference gradients stops at the thickness of the reference
-  laminate, described in the tutorial.
+  plies, 0.5768 kg). In the lamination-parameter tutorial the SLSQP run with
+  finite-difference gradients uses the relative step
+  `finite_diff_rel_step=1e-8` and reaches the optimum of the run with
+  analytical gradients, 0.5310 kg (with SciPy's default step, 1.49e-8 m for
+  the thickness, it stops at the thickness of the reference laminate,
+  0.6293 kg); the tutorial explains the step and compares five steps.
 
 ## 0.10.3 (2026-10-29)
 
