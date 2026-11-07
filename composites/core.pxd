@@ -62,7 +62,8 @@ cdef class Laminate:
     cdef public list plies
     cdef public list stack
     cdef public object shear_correction
-    # through-thickness transverse shear distribution (Rohwer, 1988)
+    # cached through-thickness distribution of the transverse shear stresses,
+    # see Laminate.calc_transverse_shear_stress
     cdef bint _ts_ready
     cdef double [::1] _ts_z
     cdef double [:, :, :, ::1] _ts_fcoef

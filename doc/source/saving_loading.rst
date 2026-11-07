@@ -32,7 +32,7 @@ are plain text, independent of the Python version and safe to load from
 untrusted sources, unlike pickle, which remains supported for
 ``copy.deepcopy`` and ``multiprocessing`` but is not recommended for
 files. The output is strict JSON, also readable with ``JSON.parse`` in
-JavaScript, e.g. in the browser with Pyodide, see :doc:`install`.
+JavaScript, e.g. in the browser with Pyodide, see :doc:`pyodide`.
 
 
 Embedding in other documents
@@ -40,8 +40,7 @@ Embedding in other documents
 
 :func:`.to_dict` returns a dictionary containing only ``dict``, ``list``,
 ``str``, ``int``, ``float`` and ``None``, such that a laminate can be one
-entry of the input file of a model, read back with :func:`.from_dict`, see
-:doc:`ex_json`.
+entry of the input file of a model, read back with :func:`.from_dict`.
 
 
 Format version
@@ -52,8 +51,8 @@ Each saved object carries ``'type'``, ``'format_version'`` and
 ``format_version`` is 2, which stores the mass integrals ``intrhoz3``,
 ``intrhoz4`` and ``intrhoz6`` of a :class:`.Laminate`. :func:`.from_dict`
 reads only the ``format_version`` of the installed ``composites`` and raises
-a ``ValueError`` for an older or a newer one, e.g. for the files of format 1
-saved by version 0.9.21, which must be created again. Every key of the format
+a ``ValueError`` for an older or a newer one, e.g. for the files of format 1,
+which must be created again. Every key of the format
 is required: a missing key, at any level, raises a ``ValueError`` naming the
 missing keys and the class, as does an unknown key, such that no attribute
 is ever given a default value silently.

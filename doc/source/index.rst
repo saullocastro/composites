@@ -21,21 +21,23 @@ With the ``composites`` module, you are able to calculate:
 
 * Transverse shear stresses through the thickness, from the shear forces or
   recovered a posteriori from the strain gradients of an FSDT solution (Noor
-  and Peters, 1989), with the corresponding transverse shear strain energies
+  and Peters, 1989), with the corresponding transverse shear strain energies,
+  see :doc:`transverse_shear_stresses`
 
-* Material invariants, trace-normalized or not
+* Material invariants, trace-normalized or not, see :doc:`lamina`
 
-* Lamination parameters based on material invariants
+* Lamination parameters based on material invariants, their gradients, and
+  double-double and N-double laminates, see :doc:`lamination_parameters`
 
 * Stiffness matrices (ABD) based on lamination parameters
 
 * Based on Kassapoglou's book, local buckling under compression, shear, and
-  post-buckling
+  post-buckling, see :doc:`buckling_kassapoglou`
 
 * Saving and loading of laminates, plies, materials and lamination parameters
   in JSON, see :doc:`saving_loading`
 
-``composites`` also runs in the browser with Pyodide, see :doc:`install`.
+``composites`` also runs in the browser with Pyodide, see :doc:`pyodide`.
 
 
 Code repository
@@ -66,32 +68,37 @@ Theory and conventions
     :maxdepth: 1
 
     conventions.rst
+    lamina.rst
     constitutive_matrices.rst
-    mass_integrals.rst
     shear_correction.rst
+    transverse_shear_stresses.rst
+    lamination_parameters.rst
+    mass_integrals.rst
+    buckling_kassapoglou.rst
     saving_loading.rst
 
 
-Usage examples
---------------
+.. toctree::
+    :maxdepth: 1
+    :caption: Worked examples
+
+    notebooks/ex_laminated_plate.nblink
+    notebooks/ex_isotropic_offset.nblink
+    notebooks/ex_tsdt.nblink
+    notebooks/ex_transverse_shear.nblink
+    notebooks/ex_json.nblink
 
 .. toctree::
     :maxdepth: 1
+    :caption: Tutorials
 
-    ex_laminated_plate.rst
-    ex_isotropic_offset.rst
-    ex_tsdt.rst
-    ex_transverse_shear.rst
-    ex_json.rst
-
-
-Tutorials
----------
-
-.. toctree::
-    :maxdepth: 2
-
-    tutorials.rst
+    notebooks/getting-started-plate-properties.nblink
+    notebooks/transverse-shear-stresses.nblink
+    notebooks/post-polar-plots-laminate-stiffness.nblink
+    notebooks/opt-lightweight-discrete-ghost-layer.nblink
+    notebooks/opt-lightweight-LP-gradient-Le-Riche.nblink
+    notebooks/opt-lightweight-smeared-finite-diff-Le-Riche.nblink
+    notebooks/opt-lightweight-smeared-gradient-Le-Riche.nblink
 
 
 composites API
@@ -110,13 +117,19 @@ Installing composites
     :maxdepth: 1
 
     install.rst
+    pyodide.rst
 
-
-Changelog
----------
 
 .. toctree::
     :maxdepth: 1
+    :caption: About the documentation
+
+    documentation_levels.rst
+
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Changelog
 
     changelog.rst
 

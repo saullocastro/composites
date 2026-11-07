@@ -48,7 +48,7 @@ The documentation is available on: https://saullocastro.github.io/composites.
 Running in the browser with Pyodide
 -----------------------------------
 
-From version 0.9.21, a WebAssembly wheel is published on PyPI for Pyodide 314
+A WebAssembly wheel is published on PyPI for Pyodide 314
 (CPython 3.14), such that ``composites`` runs in the browser, e.g. in
 JupyterLite or in a web page with Pyodide::
 

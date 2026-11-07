@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased
+
+### Documentation
+
+- The four tutorials after Le Riche and Haftka (1993) convert the ply
+  properties of the paper exactly from psi (`E1 = 18.50e6`, `E2 = 1.89e6`
+  and `G12 = 0.93e6` psi, `1 psi = 4.4482216152605/0.0254**2 Pa`) instead
+  of using the rounded SI values 127.55, 13.03 and 6.41 GPa. The first row
+  of Table 3 of the paper is reproduced to relative differences of 7.5e-7
+  (buckling) and 4.6e-8 (failure) instead of 4.2e-5 and 5.1e-5. The optimum
+  of the genetic algorithm of the ghost-layer tutorial is unchanged (44
+  plies, 0.5768 kg). In the lamination-parameter tutorial the SLSQP run with
+  finite-difference gradients uses the relative step
+  `finite_diff_rel_step=1e-8` and reaches the optimum of the run with
+  analytical gradients, 0.5310 kg (with SciPy's default step, 1.49e-8 m for
+  the thickness, it stops at the thickness of the reference laminate,
+  0.6293 kg); the tutorial explains the step and compares five steps.
+
 ## 0.10.3 (2026-10-29)
 
 ### Behaviour change: plane-stress invariants of `MatLamina` for any `laminaprop`

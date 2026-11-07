@@ -1,3 +1,26 @@
+r"""Buckling loads and effective width of :mod:`composites.kassapoglou`
+
+Verifies :func:`.calc_Nxx_crit`, :func:`.calc_Nxy_crit`,
+:func:`.calc_Nxx_crit_combined_shear`,
+:func:`.calc_Nxx_crit_combined_shear_full` and :func:`.calc_beff` against
+the curves of Figs. 6.4, 6.11, 6.14 and 7.10 of Kassapoglou (2013), and the
+sign convention of ``Nxy`` against the energy of Eq. 6.32 of the same book,
+evaluated in the test.
+
+Notes
+-----
+The reference values ``FIG_6_4``, ``FIG_6_11``, ``FIG_6_14`` and
+``FIG_7_10`` are the vertices of the curves of the figures of [1]_, read
+from the vector graphics of the PDF of the book, in the units of the figure
+axes.
+
+References
+----------
+.. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+   With Applications to Aerospace Structures, 2nd ed., John Wiley &
+   Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
+
+"""
 import sys
 sys.path.append('..')
 
@@ -13,10 +36,8 @@ from composites.kassapoglou import (calc_Nxx_crit,
                                     calc_beff,
                                     )
 
-# NOTE Kassapoglou, C., Design and Analysis of Composite Structures, Second
-#      Edition, John Wiley & Sons. The reference values are the vertices of
-#      the curves of the figures, read from the vector graphics of the PDF of
-#      the book, in the units of the figure axes.
+# NOTE vertices of the curves of the figures of Kassapoglou's book, in the
+#      units of the figure axes, see the module docstring
 
 # Fig. 6.4, p. 129, the curves of m = 1, 2 and 3 half-waves, (length/width,
 # buckling load in N/mm)
@@ -41,7 +62,7 @@ FIG_6_11 = [(101.58, 77.66), (158.78, 35.51), (168.29, 30.06),
             (297.43, 9.37), (314.38, 8.2), (348.17, 6.63), (380.97, 5.45),
             (412.68, 4.69), (444.5, 3.88), (507.93, 3.11)]
 
-# Fig. 6.14, p. 144, the curve "approx", Eq. 6.34, (Nx/Nxcrit, Nxy/Nxycrit)
+# Fig. 6.14, p. 144, the curve "approx", (Nx/Nxcrit, Nxy/Nxycrit)
 FIG_6_14 = [(1.0, 0.0176), (0.9984, 0.0352), (0.9935, 0.0703),
             (0.9851, 0.1055), (0.9735, 0.1407), (0.9603, 0.1716),
             (0.9453, 0.2025), (0.9286, 0.2334), (0.9103, 0.2643),
@@ -97,11 +118,26 @@ def _distance_to_curve(x, y, points):
 
 
 def test_calc_Nxx_crit():
-    """Kassapoglou's Fig. 6.4, p. 129, Eq. 6.7
+    """Kassapoglou's Fig. 6.4, p. 129, Eq. 6.7 (Eq. 6.6 with n = 1)
 
     The D matrix is that of the figure, in N m as stated on p. 143. The text
     on p. 129 gives a plate with a fixed length of 508 mm, but the figure is
     reproduced with a fixed width of 254 mm, used here, within 2 %.
+
+    Notes
+    -----
+    The reference values are the curves of Fig. 6.4 of [1]_, the uniaxial
+    compression buckling load of a simply supported plate for `m = 1, 2, 3`
+    half-waves along the length and one across the width, whose lower
+    envelope is the critical load over `m`. They follow Eq. 6.7 of [1]_
+    (p. 129): Eq. 6.6, which :func:`.calc_Nxx_crit` evaluates, with
+    `n = 1`, the value of `n` that minimizes the load.
+
+    References
+    ----------
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     b = 0.254
@@ -133,6 +169,18 @@ def test_calc_Nxy_crit():
     a = 101.58, 177.80, 242.32, 348.17, 412.68 and 507.93 mm, and within 11 %
     at the other vertices of the drawn curve.
 
+    Notes
+    -----
+    The reference values are the curve of Fig. 6.11 of [1]_, the shear
+    buckling load of a long plate of Eqs. 6.28-6.30, as a function of the
+    plate width `a`.
+
+    References
+    ----------
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
+
     """
     laminaprop = (68.9e9, 68.9e9, 0.05, 4.83e9, 4.83e9, 4.83e9)
     lam = laminated_plate(stack=[0]*8, plyt=0.1905e-3, laminaprop=laminaprop)
@@ -148,19 +196,34 @@ def test_calc_Nxy_crit():
 
 
 def test_calc_Nxx_crit_combined_shear_full():
-    """Kassapoglou's Fig. 6.14, p. 144, Eqs. 6.34, 6.35 and 6.37
+    r"""Kassapoglou's Fig. 6.14, p. 144, Eqs. 6.34, 6.35 and 6.37
 
-    The curve "approx" is Eq. 6.34 normalized by Eqs. 6.35 and 6.37, and it
-    does not depend on the plate dimensions nor on the D matrix, which are
-    not given. The D matrix and the plate width of Fig. 6.4 are used. The
-    computed points lie within 0.005 of the curve of the figure, whose axes
-    run from 0 to 1.
+    The interaction curve of combined compression and shear is checked
+    against the curve "approx" of the figure, and the uniaxial critical load
+    against :func:`.calc_Nxx_crit` and :func:`.calc_Nxx_crit_combined_shear`.
+    The D matrix and the plate width of Fig. 6.4 are used. The computed
+    points lie within 0.005 of the curve of the figure, whose axes run from
+    0 to 1.
+
+    Notes
+    -----
+    The curve "approx" of [1]_ is Eq. 6.34 normalized by Eqs. 6.35 and 6.37,
+    and it does not depend on the plate dimensions nor on the D matrix, which
+    are not given. With `K = D_{11} + 2 (D_{12} + 2 D_{66}) a^2/b^2 + D_{22}
+    a^4/b^4`, the normalizing loads are `N_{x,crit} = \pi^2 K/a^2`, Eq.
+    6.35, and `N_{xy,crit} = 9 \pi^4 b K/(32 a^3)`, Eq. 6.37.
+
+    References
+    ----------
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     b = 0.254
     for a in (b, 2*b):
         K = D11 + 2*(D12 + 2*D66)*a**2/b**2 + D22*a**4/b**4
-        # Eqs. 6.35 and 6.37
+        # normalizing loads of the figure, see the docstring
         Nxcrit = pi**2/a**2*K
         Nxycrit = 9*pi**4*b/(32*a**3)*K
         assert np.isclose(Nxcrit, calc_Nxx_crit(a, b, 1, 1, D11, D12, D22,
@@ -186,6 +249,19 @@ def test_calc_beff():
     The plate width, ``b`` here and `a` in the book, and the forces enter
     only through the ratios shown in the figure. The figure is reproduced
     within 2 %.
+
+    Notes
+    -----
+    The reference values are the curves of Fig. 7.10 of [1]_, the effective
+    width of Eq. 7.15 of a post-buckled plate as a function of the ratio of
+    the buckling load to the applied load, for three ratios `A_{22}/A_{11}`
+    and `A_{12}/A_{11}`.
+
+    References
+    ----------
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     b = 1.
@@ -237,6 +313,19 @@ def test_calc_Nxx_crit_combined_shear_full_sign_Nxy():
     buckling load. The returned compression load, Nx = -No, makes the
     Hessian of the energy of Eq. 6.32 singular for the given Nxy, but not
     for -Nxy.
+
+    Notes
+    -----
+    The reference is the energy of Eq. 6.32 of [1]_ for the two-term
+    deflection of Eq. 6.31, written out and integrated numerically in
+    ``_hessian_eq_6_32``, including `D_{16}` and `D_{26}`: at the buckling
+    load its Hessian with respect to the two amplitudes is singular.
+
+    References
+    ----------
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     b = 0.254

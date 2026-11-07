@@ -1,3 +1,26 @@
+r"""Trace normalization and double-double laminates
+
+Verifies the trace of the plane-stress stiffnesses against Table 1 of Melo
+et al. (2017), the trace-normalized invariants of
+:meth:`.MatLamina.trace_normalize_plane_stress` against those computed in
+the test, and the A and D of :func:`.double_double_laminate` against those
+of :func:`.laminated_plate` with the stack ``[phi/-phi/psi/-psi]``
+repeated.
+
+Notes
+-----
+``data`` holds the materials of [1]_, Table 1, p. 45: Ex, Ey, nux, Es and
+the trace Tr of Eq. (1), p. 45, of the plane-stress stiffness matrix, in
+GPa, printed as integers.
+
+References
+----------
+.. [1] Melo, J. D. D., Bi, J. and Tsai, S. W., "A novel invariant-based
+   design approach to carbon fiber reinforced laminates", Composite
+   Structures, 159, 44-52, 2017,
+   https://doi.org/10.1016/j.compstruct.2016.09.055
+
+"""
 import sys
 sys.path.append('..')
 
@@ -6,11 +29,7 @@ import numpy as np
 from composites.utils import (read_laminaprop, double_double_laminate,
                               laminated_plate)
 
-# Melo, J. D. D., Bi, J. and Tsai, S. W., "A novel invariant-based design
-# approach to carbon fiber reinforced laminates", Composite Structures, 159,
-# 44-52, 2017, https://doi.org/10.1016/j.compstruct.2016.09.055, Table 1,
-# p. 45: Ex, Ey, nux, Es and the trace Tr of Eq. (1), p. 45, of the
-# plane-stress stiffness matrix, in GPa, printed as integers
+# published material constants and traces, in Pa
 data = {
 'IM6/epoxy': dict(Ex=203e9, Ey=11.20e9, vx=0.32, Es=8.40e9, tr=232e9),
 'IM7/977-3': dict(Ex=191e9, Ey=9.94e9, vx=0.35, Es=7.79e9, tr=218e9),
@@ -18,26 +37,36 @@ data = {
 }
 
 def test_trace_normalized():
-    r"""
-    Reference:
+    r"""Trace and trace-normalized invariants against Melo et al. (2017)
 
-        Melo, J. D. D., Bi, J., and Tsai, S. W., 2017, “A Novel Invariant-Based
-        Design Approach to Carbon Fiber Reinforced Laminates,” Compos. Struct.,
-        159, pp. 44–52. https://doi.org/10.1016/j.compstruct.2016.09.055
+    The trace of the plane-stress stiffnesses against the printed trace of
+    Table 1 of Melo et al. (2017), and the invariants of
+    :meth:`.MatLamina.trace_normalize_plane_stress` against those computed
+    here from the trace-normalized stiffnesses.
 
+    Notes
+    -----
     The trace is ``tr = Q11 + Q22 + 2 Q66``, Eq. (1), p. 45, of the
     plane-stress stiffnesses, with the materials of Table 1, p. 45, see
     ``data``. The invariants are written with ``Q66 = G12`` and the
     transverse shear ones with ``Q44 = G23`` and ``Q55 = G13``.
 
+    Tr of [1]_, Table 1, p. 45, is printed as an integer in GPa: the traces
+    of Eq. (1) computed from Ex, Ey, nux and Es differ from it by +0.09 %,
+    -0.09 % and +0.17 %, within half a unit of the last printed digit.
+
+    References
+    ----------
+    .. [1] Melo, J. D. D., Bi, J., and Tsai, S. W., 2017, “A Novel
+       Invariant-Based Design Approach to Carbon Fiber Reinforced
+       Laminates,” Compos. Struct., 159, pp. 44–52.
+       https://doi.org/10.1016/j.compstruct.2016.09.055
+
     """
     for material, d in data.items():
         m = read_laminaprop((d['Ex'], d['Ey'], d['vx'], d['Es'], d['Es'], d['Es']))
         tr = m.q11 + m.q22 + 2*m.q66
-        # NOTE Tr of Melo et al. (2017), Table 1, p. 45, is printed as an
-        #      integer in GPa: the traces of Eq. (1) computed from Ex, Ey,
-        #      nux and Es differ from it by +0.09 %, -0.09 % and +0.17 %,
-        #      within half a unit of the last printed digit
+        # NOTE printed trace rounded to integer GPa
         assert np.isclose(tr, d['tr'], atol=0.5e9, rtol=0)
         q11 = m.q11
         q12 = m.q12
@@ -64,6 +93,8 @@ def test_trace_normalized():
         assert np.allclose(tr_norm_inv, tr_norm_inv2)
 
 def test_ABD():
+    r"""A and D of :func:`.double_double_laminate` against
+    :func:`.laminated_plate` with 32 repeats of ``[phi/-phi/psi/-psi]``"""
     d = data['IM6/epoxy']
     laminaprop = (d['Ex'], d['Ey'], d['vx'], d['Es'], d['Es'], d['Es'])
     thickness = 2.3
