@@ -18,6 +18,14 @@
   the thickness, it stops at the thickness of the reference laminate,
   0.6293 kg); the tutorial explains the step and compares five steps.
 
+### Tests
+
+- `test_thickness_shear_finite_elements` of `tests/test_transverse_shear.py`
+  compares the factors of `'thickness_shear'` with the Richardson
+  extrapolation of the frequencies of 200 and 400 linear elements through
+  the thickness, within 1e-8 (under 0.5 s per case). The comparison with
+  4000 elements is in the notebook `transverse-shear-stresses.ipynb`.
+
 ## 0.10.3 (2026-10-29)
 
 ### Behaviour change: plane-stress invariants of `MatLamina` for any `laminaprop`
