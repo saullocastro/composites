@@ -1999,22 +1999,29 @@ def _thickness_shear_fe(lam, alpha, nelem=4000):
     ])
 def test_thickness_shear_finite_elements(kwargs):
     r"""Factors of ``'thickness_shear'`` against the lowest thickness-shear
-    frequency of linear finite elements through the thickness
+    frequency of linear finite elements through the thickness, extrapolated
+    from 200 and 400 elements
 
     Notes
     -----
     In the FSDT, ``omega^2 = kappa Abar/I2c``, with ``I2c`` the second moment
     of the mass about its centroid, ``intrhoz2 - intrhoz^2/intrho``; the
-    finite element frequency converges as ``O(1/nelem^2)``.
+    finite element frequency converges as ``O(1/nelem^2)``, such that the
+    Richardson extrapolation ``(4 omega_400^2 - omega_200^2)/3`` removes the
+    leading error term. For these laminates the extrapolated factors differ
+    from those of ``'thickness_shear'`` by less than 1e-9 relative, against
+    up to 3.1e-5 with 200 elements and 8e-8 with 4000 elements alone.
     """
     pytest.importorskip('scipy')
     lam = laminated_plate(shear_correction='thickness_shear', **kwargs)
     I2c = lam.intrhoz2 - lam.intrhoz**2/lam.intrho
     for alpha, kappa, Abar in [(0, lam.scf_k13, lam.Abar55),
                                (1, lam.scf_k23, lam.Abar44)]:
-        omega = _thickness_shear_fe(lam, alpha)
+        omega_200 = _thickness_shear_fe(lam, alpha, nelem=200)
+        omega_400 = _thickness_shear_fe(lam, alpha, nelem=400)
+        omega2 = (4*omega_400**2 - omega_200**2)/3
         # FSDT frequency
-        assert np.isclose(kappa, omega**2*I2c/Abar, rtol=1e-6)
+        assert np.isclose(kappa, omega2*I2c/Abar, rtol=1e-8)
 
 
 @pytest.mark.parametrize('mode', ['birman_bert', 'thickness_shear'])
