@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Defining a laminate: conventions &#8212; composites 0.10.3 documentation</title>
+    <title>Defining a laminate: conventions &#8212; composites 0.10.4 documentation</title>
   
   
   
@@ -26,18 +26,18 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <script defer src="_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="_static/documentation_options.js?v=b59eaf29"></script>
+    <script src="_static/documentation_options.js?v=7e173fe4"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -47,7 +47,7 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Laminate constitutive matrices per plate theory" href="constitutive_matrices.html" />
+    <link rel="next" title="Ply constitutive relations and invariants" href="lamina.html" />
     <link rel="prev" title="Documentation for the composites module" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
@@ -100,7 +100,7 @@
   
     <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -120,7 +120,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.3 documentation</p>
+    <p class="title logo__title">composites 0.10.4 documentation</p>
   
 </a></div>
     
@@ -142,29 +142,29 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="constitutive_matrices.html">
-    Laminate constitutive matrices per plate theory
+  <a class="nav-link nav-internal" href="lamina.html">
+    Ply constitutive relations and invariants
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="mass_integrals.html">
-    Thickness integrals for mass matrices
+  <a class="nav-link nav-internal" href="constitutive_matrices.html">
+    Laminate stiffness and plate theories
   </a>
 </li>
 
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="shear_correction.html">
-    Choosing the transverse shear correction
+    Transverse shear stiffness and shear correction
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="saving_loading.html">
-    Saving and loading (JSON)
+  <a class="nav-link nav-internal" href="transverse_shear_stresses.html">
+    Transverse shear stresses and a posteriori energies
   </a>
 </li>
 
@@ -177,43 +177,113 @@
                 <ul id="pst-nav-more-links" class="dropdown-menu">
                     
 <li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="ex_laminated_plate.html">
+  <a class="nav-link dropdown-item nav-internal" href="lamination_parameters.html">
+    Lamination parameters and double-double laminates
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="mass_integrals.html">
+    Thickness integrals for mass matrices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="buckling_kassapoglou.html">
+    Buckling of rectangular plates (Kassapoglou)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="saving_loading.html">
+    Saving and loading (JSON)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="notebooks/ex_laminated_plate.html">
     Laminated plate and ABD matrix
   </a>
 </li>
 
 
 <li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="ex_isotropic_offset.html">
+  <a class="nav-link dropdown-item nav-internal" href="notebooks/ex_isotropic_offset.html">
     Isotropic plate with an offset
   </a>
 </li>
 
 
 <li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="ex_tsdt.html">
+  <a class="nav-link dropdown-item nav-internal" href="notebooks/ex_tsdt.html">
     Matrices of the third-order shear deformation theory
   </a>
 </li>
 
 
 <li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="ex_transverse_shear.html">
+  <a class="nav-link dropdown-item nav-internal" href="notebooks/ex_transverse_shear.html">
     Transverse shear stresses
   </a>
 </li>
 
 
 <li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="ex_json.html">
+  <a class="nav-link dropdown-item nav-internal" href="notebooks/ex_json.html">
     Saving and loading in JSON
   </a>
 </li>
 
 
 <li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="tutorials.html">
-    Tutorials
+  <a class="nav-link dropdown-item nav-internal" href="notebooks/getting-started-plate-properties.html">
+    Getting started: plate properties for CLPT, FSDT and TSDT
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="notebooks/transverse-shear-stresses.html">
+    Transverse shear stresses through the thickness
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="notebooks/post-polar-plots-laminate-stiffness.html">
+    Tutorial: polar plots for laminate stiffness
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="notebooks/opt-lightweight-discrete-ghost-layer.html">
+    Tutorial: discrete-based lightweight optimisation using the ghost layer method
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="notebooks/opt-lightweight-LP-gradient-Le-Riche.html">
+    Tutorial: Lightweight optimisation using a gradient-based lamination parameter approach
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="notebooks/opt-lightweight-smeared-finite-diff-Le-Riche.html">
+    Tutorial: Lightweight optimisation using a gradient-based smeared approach
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="notebooks/opt-lightweight-smeared-gradient-Le-Riche.html">
+    Tutorial: Lightweight optimisation using a gradient-based smeared approach
   </a>
 </li>
 
@@ -228,6 +298,20 @@
 <li class=" ">
   <a class="nav-link dropdown-item nav-internal" href="install.html">
     Installing composites
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="pyodide.html">
+    Running composites in the browser with Pyodide
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="documentation_levels.html">
+    How the documentation is organised
   </a>
 </li>
 
@@ -264,14 +348,14 @@
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
   <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
       
@@ -291,7 +375,7 @@
   
 
   
-    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page" aria-expanded="false" aria-controls="pst-secondary-sidebar-modal">
       <span class="fa-solid fa-outdent"></span>
     </button>
   
@@ -305,7 +389,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
@@ -329,8 +413,36 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="lamina.html">
+    Ply constitutive relations and invariants
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="constitutive_matrices.html">
-    Laminate constitutive matrices per plate theory
+    Laminate stiffness and plate theories
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="shear_correction.html">
+    Transverse shear stiffness and shear correction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="transverse_shear_stresses.html">
+    Transverse shear stresses and a posteriori energies
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="lamination_parameters.html">
+    Lamination parameters and double-double laminates
   </a>
 </li>
 
@@ -343,8 +455,8 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="shear_correction.html">
-    Choosing the transverse shear correction
+  <a class="nav-link nav-internal" href="buckling_kassapoglou.html">
+    Buckling of rectangular plates (Kassapoglou)
   </a>
 </li>
 
@@ -357,43 +469,85 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="ex_laminated_plate.html">
+  <a class="nav-link nav-internal" href="notebooks/ex_laminated_plate.html">
     Laminated plate and ABD matrix
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="ex_isotropic_offset.html">
+  <a class="nav-link nav-internal" href="notebooks/ex_isotropic_offset.html">
     Isotropic plate with an offset
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="ex_tsdt.html">
+  <a class="nav-link nav-internal" href="notebooks/ex_tsdt.html">
     Matrices of the third-order shear deformation theory
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="ex_transverse_shear.html">
+  <a class="nav-link nav-internal" href="notebooks/ex_transverse_shear.html">
     Transverse shear stresses
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="ex_json.html">
+  <a class="nav-link nav-internal" href="notebooks/ex_json.html">
     Saving and loading in JSON
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="tutorials.html">
-    Tutorials
+  <a class="nav-link nav-internal" href="notebooks/getting-started-plate-properties.html">
+    Getting started: plate properties for CLPT, FSDT and TSDT
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="notebooks/transverse-shear-stresses.html">
+    Transverse shear stresses through the thickness
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="notebooks/post-polar-plots-laminate-stiffness.html">
+    Tutorial: polar plots for laminate stiffness
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="notebooks/opt-lightweight-discrete-ghost-layer.html">
+    Tutorial: discrete-based lightweight optimisation using the ghost layer method
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="notebooks/opt-lightweight-LP-gradient-Le-Riche.html">
+    Tutorial: Lightweight optimisation using a gradient-based lamination parameter approach
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="notebooks/opt-lightweight-smeared-finite-diff-Le-Riche.html">
+    Tutorial: Lightweight optimisation using a gradient-based smeared approach
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="notebooks/opt-lightweight-smeared-gradient-Le-Riche.html">
+    Tutorial: Lightweight optimisation using a gradient-based smeared approach
   </a>
 </li>
 
@@ -408,6 +562,20 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="install.html">
     Installing composites
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="pyodide.html">
+    Running composites in the browser with Pyodide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="documentation_levels.html">
+    How the documentation is organised
   </a>
 </li>
 
@@ -432,14 +600,14 @@
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
   <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
         
@@ -496,7 +664,7 @@
     
     <li class="breadcrumb-item breadcrumb-home">
       <a href="index.html" class="nav-link" aria-label="Home">
-        <i class="fa-solid fa-home"></i>
+        <i class="fa-solid fa-house"></i>
       </a>
     </li>
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Defining a laminate: conventions</span></li>
@@ -519,8 +687,10 @@
   <section id="defining-a-laminate-conventions">
 <h1>Defining a laminate: conventions<a class="headerlink" href="#defining-a-laminate-conventions" title="Link to this heading">#</a></h1>
 <p>A laminate is usually created with <a class="reference internal" href="api_utils.html#composites.utils.laminated_plate" title="composites.utils.laminated_plate"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminated_plate()</span></code></a>, from the ply
-angles, thicknesses, material properties and densities, or with
-<a class="reference internal" href="api_utils.html#composites.utils.isotropic_plate" title="composites.utils.isotropic_plate"><code class="xref py py-func docutils literal notranslate"><span class="pre">isotropic_plate()</span></code></a> for a single isotropic layer:</p>
+angles, thicknesses, material properties and densities, with
+<a class="reference internal" href="api_utils.html#composites.utils.isotropic_plate" title="composites.utils.isotropic_plate"><code class="xref py py-func docutils literal notranslate"><span class="pre">isotropic_plate()</span></code></a> for a single isotropic layer, from lamination
+parameters with <a class="reference internal" href="api_core.html#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a>, or as a
+double-double or N-double laminate, see <a class="reference internal" href="lamination_parameters.html"><span class="doc">Lamination parameters and double-double laminates</span></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">composites</span><span class="w"> </span><span class="kn">import</span> <span class="n">laminated_plate</span>
 
 <span class="n">laminaprop</span> <span class="o">=</span> <span class="p">(</span><span class="mf">142e9</span><span class="p">,</span> <span class="mf">8.7e9</span><span class="p">,</span> <span class="mf">0.28</span><span class="p">,</span> <span class="mf">5.1e9</span><span class="p">,</span> <span class="mf">5.1e9</span><span class="p">,</span> <span class="mf">3.2e9</span><span class="p">)</span>
@@ -532,101 +702,32 @@ angles, thicknesses, material properties and densities, or with
 <section id="stacking-sequence-and-thickness-coordinate">
 <h2>Stacking sequence and thickness coordinate<a class="headerlink" href="#stacking-sequence-and-thickness-coordinate" title="Link to this heading">#</a></h2>
 <p>The angles of <code class="docutils literal notranslate"><span class="pre">stack</span></code>, and the lists <code class="docutils literal notranslate"><span class="pre">plyts</span></code>, <code class="docutils literal notranslate"><span class="pre">laminaprops</span></code> and
-<code class="docutils literal notranslate"><span class="pre">rhos</span></code>, run from the bottom to the top ply. The coordinate <span class="math notranslate nohighlight">\(z\)</span> is normal to
-the reference surface, pointing from the bottom to the top face, and it is
-measured from the reference surface, which is the surface of the
-generalized strains, see <a class="reference internal" href="constitutive_matrices.html"><span class="doc">Laminate constitutive matrices per plate theory</span></a>.</p>
+<code class="docutils literal notranslate"><span class="pre">rhos</span></code> of <a class="reference internal" href="api_utils.html#composites.utils.laminated_plate" title="composites.utils.laminated_plate"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminated_plate()</span></code></a>, run from the bottom to the top ply.
+The coordinate <span class="math notranslate nohighlight">\(z\)</span> is normal to the reference surface, pointing from the
+bottom to the top face, and it is measured from the reference surface,
+which is the surface of the generalized strains, see
+<a class="reference internal" href="constitutive_matrices.html"><span class="doc">Laminate stiffness and plate theories</span></a>.</p>
 </section>
 <section id="offset">
 <h2>Offset<a class="headerlink" href="#offset" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">offset</span></code> is the position of the mid-surface relative to the reference
-surface, <span class="math notranslate nohighlight">\(d\)</span> below. The plies run from</p>
-<div class="math notranslate nohighlight">
-\[z_1 = -\frac{h}{2} + d \quad \text{to} \quad z_{N+1} = +\frac{h}{2} + d\]</div>
+surface, <span class="math notranslate nohighlight">\(d\)</span> in the theory pages. The plies run from</p>
+<div class="math notranslate nohighlight" id="equation-conv-offset">
+<span class="eqno">(1)<a class="headerlink" href="#equation-conv-offset" title="Link to this equation">#</a></span>\[z_1 = -\frac{h}{2} + d \quad \text{to} \quad z_{N+1} = +\frac{h}{2} + d\]</div>
 <p>such that <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">0</span></code> puts the reference surface at the mid-surface,
 <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">+h/2</span></code> at the bottom face and <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">-h/2</span></code> at the top face.
 For example, a skin modelled on its mould line, with the laminate above it,
 has <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">h/2</span></code>. With an offset, <code class="docutils literal notranslate"><span class="pre">B</span></code> is not zero even for an
-isotropic plate, <span class="math notranslate nohighlight">\(B = d h C\)</span>, see <a class="reference internal" href="ex_isotropic_offset.html"><span class="doc">Isotropic plate with an offset</span></a>, and the same
-holds for the odd moments of the density, see <a class="reference internal" href="mass_integrals.html"><span class="doc">Thickness integrals for mass matrices</span></a>.
+isotropic plate, and the same holds for the odd moments of the density, see
+<a class="reference internal" href="constitutive_matrices.html"><span class="doc">Laminate stiffness and plate theories</span></a> and <a class="reference internal" href="mass_integrals.html"><span class="doc">Thickness integrals for mass matrices</span></a>; <code class="docutils literal notranslate"><span class="pre">A</span></code> and the
+transverse shear stiffnesses do not change.
 <a class="reference internal" href="api_core.html#composites.core.Laminate.make_balanced" title="composites.core.Laminate.make_balanced"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.make_balanced()</span></code></a>, <a class="reference internal" href="api_core.html#composites.core.Laminate.make_orthotropic" title="composites.core.Laminate.make_orthotropic"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.make_orthotropic()</span></code></a>,
 <a class="reference internal" href="api_core.html#composites.core.Laminate.make_symmetric" title="composites.core.Laminate.make_symmetric"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.make_symmetric()</span></code></a> and <a class="reference internal" href="api_core.html#composites.core.Laminate.make_smeared" title="composites.core.Laminate.make_smeared"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.make_smeared()</span></code></a> require
-<code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">0</span></code>.</p>
-<p>For any laminate, <span class="math notranslate nohighlight">\(B = B_{d=0} + d A\)</span> and <span class="math notranslate nohighlight">\(D = D_{d=0} + 2 d B_{d=0} + d^2
-A\)</span>, the shift of the stiffness integrals to another reference plane
-(Vasiliev and Morozov, Mechanics and Analysis of Composite Materials,
-Elsevier, 2001, Eq. (5.28), p. 235), while <span class="math notranslate nohighlight">\(A\)</span> and the transverse shear
-stiffnesses <code class="docutils literal notranslate"><span class="pre">Abar44</span></code>, <code class="docutils literal notranslate"><span class="pre">Abar45</span></code>, <code class="docutils literal notranslate"><span class="pre">Abar55</span></code> do not change. The lamination
-parameters of <a class="reference internal" href="api_core.html#composites.core.Laminate.calc_lamination_parameters" title="composites.core.Laminate.calc_lamination_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.calc_lamination_parameters()</span></code></a> are integrated
-about the reference surface, i.e. they include the offset, and
+<code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">0</span></code>. The lamination parameters of
+<a class="reference internal" href="api_core.html#composites.core.Laminate.calc_lamination_parameters" title="composites.core.Laminate.calc_lamination_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.calc_lamination_parameters()</span></code></a> are integrated about the
+reference surface, i.e. they include the offset, and
 <a class="reference internal" href="api_core.html#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a> needs the same <code class="docutils literal notranslate"><span class="pre">offset</span></code> to
-give back the stiffnesses:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s1">'offset'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'+0.2 mm'</span><span class="p">,</span> <span class="s1">'-0.2 mm'</span><span class="p">,</span> <span class="s1">'one ply'</span><span class="p">])</span>
-<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s1">'layup'</span><span class="p">,</span> <span class="n">LAYUPS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s1">'material'</span><span class="p">,</span> <span class="n">LAMINAPROPS_9</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">test_lamination_parameters_offset</span><span class="p">(</span><span class="n">material</span><span class="p">,</span> <span class="n">layup</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">"""Lamination parameters of a laminate with an offset</span>
-
-<span class="sd">    With ``offset`` `= e`, the laminate occupies `-h/2 + e \le z \le h/2 +</span>
-<span class="sd">    e`, and :meth:`.Laminate.calc_lamination_parameters` integrates about</span>
-<span class="sd">    the reference surface. :func:`.laminate_from_LaminationParameters`</span>
-<span class="sd">    given the same offset must give the A, B and D of ``clt_abd`` with the</span>
-<span class="sd">    offset, which also satisfy the shift of the stiffness integrals to</span>
-<span class="sd">    another reference plane, `B = B^0 + e A` and `D = D^0 + 2 e B^0 + e^2</span>
-<span class="sd">    A`, with `B^0`, `D^0` about the mid-surface (Vasiliev and Morozov,</span>
-<span class="sd">    Mechanics and Analysis of Composite Materials, Elsevier, 2001, Eq.</span>
-<span class="sd">    (5.28), p. 235). The constant-strain transverse shear stiffness does not</span>
-<span class="sd">    depend on the offset. The derivatives of GradABD with respect to the</span>
-<span class="sd">    thickness, at constant lamination parameters and offset, are compared</span>
-<span class="sd">    with central differences of the stiffnesses, polynomials of degree 3 in</span>
-<span class="sd">    h, whose truncation error is `(\Delta h/h)^2 = 10^{-12}` and whose</span>
-<span class="sd">    round-off error is about `10^{-16} h/\Delta h = 10^{-10}`, relative.</span>
-<span class="sd">    """</span>
-    <span class="n">lamprop</span> <span class="o">=</span> <span class="n">LAMINAPROPS_9</span><span class="p">[</span><span class="n">material</span><span class="p">]</span>
-    <span class="n">stack</span><span class="p">,</span> <span class="n">plyts</span> <span class="o">=</span> <span class="n">LAYUPS</span><span class="p">[</span><span class="n">layup</span><span class="p">]</span>
-    <span class="n">e</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'+0.2 mm'</span><span class="p">:</span> <span class="mf">0.2e-3</span><span class="p">,</span> <span class="s1">'-0.2 mm'</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.2e-3</span><span class="p">,</span> <span class="s1">'one ply'</span><span class="p">:</span> <span class="n">plyts</span><span class="p">[</span><span class="mi">0</span><span class="p">]}[</span><span class="n">offset</span><span class="p">]</span>
-    <span class="n">h</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">plyts</span><span class="p">)</span>
-    <span class="n">lam</span> <span class="o">=</span> <span class="n">laminated_plate</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">plyts</span><span class="o">=</span><span class="n">plyts</span><span class="p">,</span> <span class="n">laminaprop</span><span class="o">=</span><span class="n">lamprop</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">e</span><span class="p">,</span>
-                          <span class="n">shear_correction</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">mat</span> <span class="o">=</span> <span class="n">read_laminaprop</span><span class="p">(</span><span class="n">lamprop</span><span class="p">)</span>
-    <span class="n">lp</span> <span class="o">=</span> <span class="n">lam</span><span class="o">.</span><span class="n">calc_lamination_parameters</span><span class="p">()</span>
-    <span class="n">lam_lp</span> <span class="o">=</span> <span class="n">laminate_from_LaminationParameters</span><span class="p">(</span><span class="n">lam</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">lp</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">lam_lp</span><span class="o">.</span><span class="n">offset</span> <span class="o">==</span> <span class="n">e</span>
-
-    <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">clt_abd</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">plyts</span><span class="p">,</span> <span class="p">[</span><span class="n">lamprop</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">),</span> <span class="n">offset</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
-    <span class="n">A0</span><span class="p">,</span> <span class="n">B0</span><span class="p">,</span> <span class="n">D0</span> <span class="o">=</span> <span class="n">clt_abd</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">plyts</span><span class="p">,</span> <span class="p">[</span><span class="n">lamprop</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">))</span>
-    <span class="n">assert_abd</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">A0</span><span class="p">,</span> <span class="n">B0</span> <span class="o">+</span> <span class="n">e</span><span class="o">*</span><span class="n">A0</span><span class="p">,</span> <span class="n">D0</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">e</span><span class="o">*</span><span class="n">B0</span> <span class="o">+</span> <span class="n">e</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">A0</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
-    <span class="n">Abar</span> <span class="o">=</span> <span class="n">abar_ts</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">plyts</span><span class="p">,</span> <span class="n">lamprop</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">lamprop</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">lam_lp</span><span class="p">):</span>
-        <span class="n">assert_abd</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">B</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">Abar_ts</span><span class="p">,</span> <span class="n">Abar</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">,</span>
-                           <span class="n">atol</span><span class="o">=</span><span class="mf">1e-14</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Abar</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
-    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lam_lp</span><span class="o">.</span><span class="n">Ats</span><span class="p">,</span> <span class="n">lam</span><span class="o">.</span><span class="n">Ats</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">,</span>
-                       <span class="n">atol</span><span class="o">=</span><span class="mf">1e-14</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Abar</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
-
-    <span class="c1"># NOTE the same through the function with the lamination parameters as</span>
-    <span class="c1">#      arguments</span>
-    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'xi</span><span class="si">%s%d</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="s1">'ABD'</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>
-    <span class="n">lam_lp2</span> <span class="o">=</span> <span class="n">laminate_from_lamination_parameters</span><span class="p">(</span><span class="n">lam</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span>
-            <span class="o">*</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">lp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">],</span> <span class="n">lp</span><span class="o">.</span><span class="n">xiAts1</span><span class="p">,</span> <span class="n">lp</span><span class="o">.</span><span class="n">xiAts2</span><span class="p">,</span>
-            <span class="n">offset</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
-    <span class="n">assert_abd</span><span class="p">(</span><span class="n">lam_lp2</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">lam_lp2</span><span class="o">.</span><span class="n">B</span><span class="p">,</span> <span class="n">lam_lp2</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
-
-    <span class="n">grad</span> <span class="o">=</span> <span class="n">GradABD</span><span class="p">()</span>
-    <span class="n">grad</span><span class="o">.</span><span class="n">calc_LP_grad</span><span class="p">(</span><span class="n">lam</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">lp</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-    <span class="n">ij</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'11'</span><span class="p">,</span> <span class="s1">'12'</span><span class="p">,</span> <span class="s1">'16'</span><span class="p">,</span> <span class="s1">'22'</span><span class="p">,</span> <span class="s1">'26'</span><span class="p">,</span> <span class="s1">'66'</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">stiffnesses</span><span class="p">(</span><span class="n">hh</span><span class="p">):</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">laminate_from_LaminationParameters</span><span class="p">(</span><span class="n">hh</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">lp</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">m</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">ij</span><span class="p">])</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="s1">'ABD'</span><span class="p">}</span>
-    <span class="n">dh</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="o">*</span><span class="n">h</span>
-    <span class="n">plus</span><span class="p">,</span> <span class="n">minus</span> <span class="o">=</span> <span class="n">stiffnesses</span><span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="n">dh</span><span class="p">),</span> <span class="n">stiffnesses</span><span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">dh</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="p">((</span><span class="s1">'A'</span><span class="p">,</span> <span class="n">grad</span><span class="o">.</span><span class="n">gradAij</span><span class="p">),</span> <span class="p">(</span><span class="s1">'B'</span><span class="p">,</span> <span class="n">grad</span><span class="o">.</span><span class="n">gradBij</span><span class="p">),</span>
-                 <span class="p">(</span><span class="s1">'D'</span><span class="p">,</span> <span class="n">grad</span><span class="o">.</span><span class="n">gradDij</span><span class="p">)):</span>
-        <span class="n">fd</span> <span class="o">=</span> <span class="p">(</span><span class="n">plus</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">-</span> <span class="n">minus</span><span class="p">[</span><span class="n">m</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">dh</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">g</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">fd</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span>
-                           <span class="n">atol</span><span class="o">=</span><span class="mf">1e-8</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span> <span class="n">m</span>
-</pre></div>
-</div>
+give back the stiffnesses, see <a class="reference internal" href="lamination_parameters.html"><span class="doc">Lamination parameters and double-double laminates</span></a>.</p>
 </section>
 <section id="material-properties">
 <h2>Material properties<a class="headerlink" href="#material-properties" title="Link to this heading">#</a></h2>
@@ -640,27 +741,14 @@ usual case;</p></li>
 the properties of the three-dimensional constitutive matrix of
 <a class="reference internal" href="api_core.html#composites.core.MatLamina.get_constitutive_matrix" title="composites.core.MatLamina.get_constitutive_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.get_constitutive_matrix()</span></code></a>.</p></li>
 </ul>
-<p>The Young moduli may be zero, e.g. <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">nu12,</span> <span class="pre">0,</span> <span class="pre">G13,</span> <span class="pre">G23)</span></code>, or <code class="docutils literal notranslate"><span class="pre">(0,</span>
-<span class="pre">0,</span> <span class="pre">nu12,</span> <span class="pre">0,</span> <span class="pre">G13,</span> <span class="pre">G23,</span> <span class="pre">E33,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>, for an antiplane core, “an idealized
-core in which the modulus of elasticity in planes parallel with the faces is
-zero but the shear modulus in planes perpendicular to the faces is finite”
-(Allen, Analysis and Design of Structural Sandwich Panels, Pergamon Press,
-1969, p. 14), which adds only transverse shear stiffness to a sandwich. A
-zero <code class="docutils literal notranslate"><span class="pre">Ei</span></code> with a non-zero <code class="docutils literal notranslate"><span class="pre">Ej</span></code> requires <code class="docutils literal notranslate"><span class="pre">nuij</span> <span class="pre">=</span> <span class="pre">0</span></code>, see
-<a class="reference internal" href="api_utils.html#composites.utils.read_laminaprop" title="composites.utils.read_laminaprop"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_laminaprop()</span></code></a>.</p>
-<p>The index 1 is the fibre direction, 2 the in-plane transverse direction and 3
-the normal direction. The ply stiffnesses used in the laminate integrals are
-always the plane-stress ones, see <a class="reference internal" href="api_core.html#composites.core.Lamina.rebuild" title="composites.core.Lamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lamina.rebuild()</span></code></a>; <code class="docutils literal notranslate"><span class="pre">G13</span></code> and
-<code class="docutils literal notranslate"><span class="pre">G23</span></code> give the transverse shear stiffnesses <code class="docutils literal notranslate"><span class="pre">q44L</span></code>, <code class="docutils literal notranslate"><span class="pre">q45L</span></code>, <code class="docutils literal notranslate"><span class="pre">q55L</span></code>.
-<code class="docutils literal notranslate"><span class="pre">E33</span></code>, <code class="docutils literal notranslate"><span class="pre">nu13</span></code> and <code class="docutils literal notranslate"><span class="pre">nu23</span></code> do not change them. The constitutive
-constants and the invariants of <a class="reference internal" href="api_core.html#composites.core.MatLamina" title="composites.core.MatLamina"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatLamina</span></code></a>, used by
-<a class="reference internal" href="api_core.html#composites.core.laminate_from_LaminationParameters" title="composites.core.laminate_from_LaminationParameters"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminate_from_LaminationParameters()</span></code></a>, <a class="reference internal" href="api_core.html#composites.core.GradABD" title="composites.core.GradABD"><code class="xref py py-class docutils literal notranslate"><span class="pre">GradABD</span></code></a> and
-<a class="reference internal" href="api_core.html#composites.core.MatLamina.trace_normalize_plane_stress" title="composites.core.MatLamina.trace_normalize_plane_stress"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.trace_normalize_plane_stress()</span></code></a>, are by default those of the
-same plane-stress stiffnesses, also with 9 entries, such that the
-lamination parameters of <a class="reference internal" href="api_core.html#composites.core.Laminate.calc_lamination_parameters" title="composites.core.Laminate.calc_lamination_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.calc_lamination_parameters()</span></code></a> give
-back the stiffnesses of <a class="reference internal" href="api_utils.html#composites.utils.laminated_plate" title="composites.utils.laminated_plate"><code class="xref py py-func docutils literal notranslate"><span class="pre">laminated_plate()</span></code></a>;
-<code class="docutils literal notranslate"><span class="pre">MatLamina.rebuild(plane_stress=False)</span></code> gives the three-dimensional ones,
-e.g. for continuum shell elements, see <a class="reference internal" href="api_core.html#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.rebuild()</span></code></a>.</p>
+<p>The index 1 is the fibre direction, 2 the in-plane transverse direction and
+3 the normal direction. The Young moduli may be zero, e.g. <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">nu12,</span> <span class="pre">0,</span>
+<span class="pre">G13,</span> <span class="pre">G23)</span></code> for an antiplane core, and a zero <code class="docutils literal notranslate"><span class="pre">Ei</span></code> with a non-zero <code class="docutils literal notranslate"><span class="pre">Ej</span></code>
+requires <code class="docutils literal notranslate"><span class="pre">nuij</span> <span class="pre">=</span> <span class="pre">0</span></code>. The stiffnesses used in the laminate integrals are
+always those of plane stress, also with 9 entries; <code class="docutils literal notranslate"><span class="pre">E33</span></code>, <code class="docutils literal notranslate"><span class="pre">nu13</span></code> and
+<code class="docutils literal notranslate"><span class="pre">nu23</span></code> enter only the three-dimensional constants. The constitutive
+relations, the admissible constants and the invariants are described in
+<a class="reference internal" href="lamina.html"><span class="doc">Ply constitutive relations and invariants</span></a>.</p>
 </section>
 <section id="ply-angle">
 <h2>Ply angle<a class="headerlink" href="#ply-angle" title="Link to this heading">#</a></h2>
@@ -694,7 +782,8 @@ M_{xy}\}\)</span> to <span class="math notranslate nohighlight">\(\{\varepsilon^
 <li><p><a class="reference internal" href="api_core.html#composites.core.Lamina.get_constitutive_matrix" title="composites.core.Lamina.get_constitutive_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lamina.get_constitutive_matrix()</span></code></a> is <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">x</span> <span class="pre">5</span></code>, in the laminate axes,
 ordered as <span class="math notranslate nohighlight">\(\{xx, yy, xy, yz, xz\}\)</span>.</p></li>
 <li><p><a class="reference internal" href="api_core.html#composites.core.MatLamina.get_constitutive_matrix" title="composites.core.MatLamina.get_constitutive_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.get_constitutive_matrix()</span></code></a> is <code class="docutils literal notranslate"><span class="pre">6</span> <span class="pre">x</span> <span class="pre">6</span></code>, in the material
-axes, ordered as <span class="math notranslate nohighlight">\(\{11, 22, 33, 23, 13, 12\}\)</span>.</p></li>
+axes, ordered as <span class="math notranslate nohighlight">\(\{11, 22, 33, 23, 13, 12\}\)</span>, as are the stress
+transformations of <a class="reference internal" href="api_core.html#composites.core.Lamina.get_transf_matrix_stress_to_lamina" title="composites.core.Lamina.get_transf_matrix_stress_to_lamina"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lamina.get_transf_matrix_stress_to_lamina()</span></code></a>.</p></li>
 <li><p><a class="reference internal" href="api_core.html#composites.core.Laminate.calc_transverse_shear_stress" title="composites.core.Laminate.calc_transverse_shear_stress"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Laminate.calc_transverse_shear_stress()</span></code></a> receives <code class="docutils literal notranslate"><span class="pre">Qy,</span> <span class="pre">Qx</span></code> and
 returns <code class="docutils literal notranslate"><span class="pre">tau_yz,</span> <span class="pre">tau_xz</span></code>.</p></li>
 </ul>
@@ -721,11 +810,11 @@ returns <code class="docutils literal notranslate"><span class="pre">tau_yz,</sp
       </div>
     </a>
     <a class="right-next"
-       href="constitutive_matrices.html"
+       href="lamina.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Laminate constitutive matrices per plate theory</p>
+        <p class="prev-next-title">Ply constitutive relations and invariants</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -736,7 +825,7 @@ returns <code class="docutils literal notranslate"><span class="pre">tau_yz,</sp
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <dialog id="pst-secondary-sidebar-modal" tabindex="-1"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
@@ -779,8 +868,8 @@ returns <code class="docutils literal notranslate"><span class="pre">tau_yz,</sp
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -813,7 +902,7 @@ returns <code class="docutils literal notranslate"><span class="pre">tau_yz,</sp
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.24.0.
 </p></div>
       
     </div>

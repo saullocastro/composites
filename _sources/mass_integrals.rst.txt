@@ -80,8 +80,6 @@ stiffnesses. For a homogeneous plate whose mid-surface is at `z = d`:
     I_0 = \rho h, \qquad I_1 = \rho h d, \qquad I_2 = \rho h \left( d^2 +
     \frac{h^2}{12} \right)
 
-see :doc:`ex_isotropic_offset`, where the higher moments are also checked.
-
 
 Densities of the plies
 ----------------------
@@ -90,12 +88,13 @@ The density of each ply is the ``rho`` of its :class:`.MatLamina`. With
 :func:`.laminated_plate`, ``rho`` gives the same density to all the plies and
 ``rhos`` one density per ply, e.g. for a sandwich with a light core. The
 default density is zero, giving zero mass integrals, and the shear
-correction ``'thickness_shear'`` requires positive densities, see
-:doc:`shear_correction`.
+correction ``'thickness_shear'`` requires positive densities: it uses the
+rotary inertia about the centre of mass, `\bar{I}_2 = I_2 - I_1^2/I_0`,
+which does not depend on ``offset``, see :doc:`shear_correction`.
 
 The mass integrals are computed only from the plies: a :class:`.Laminate`
 created from lamination parameters, see
 :func:`.laminate_from_LaminationParameters`, or by
-:func:`.double_double_laminate` or :func:`composites.utils.n_double_laminate`
-has no plies,
-and its mass integrals are zero.
+:func:`.double_double_laminate`, :func:`composites.utils.n_double_laminate`
+or :func:`composites.core.n_double_laminate` has no plies, and its mass
+integrals are zero, see :doc:`lamination_parameters`.

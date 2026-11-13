@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Matrices of the third-order shear deformation theory &#8212; composites 0.10.4 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
+
+    <script src="../_static/documentation_options.js?v=7e173fe4"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/ex_tsdt';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Transverse shear stresses" href="ex_transverse_shear.html" />
+    <link rel="prev" title="Isotropic plate with an offset" href="ex_isotropic_offset.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">composites 0.10.4 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../conventions.html">
+    Defining a laminate: conventions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lamina.html">
+    Ply constitutive relations and invariants
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../constitutive_matrices.html">
+    Laminate stiffness and plate theories
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../shear_correction.html">
+    Transverse shear stiffness and shear correction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../transverse_shear_stresses.html">
+    Transverse shear stresses and a posteriori energies
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../lamination_parameters.html">
+    Lamination parameters and double-double laminates
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../mass_integrals.html">
+    Thickness integrals for mass matrices
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../buckling_kassapoglou.html">
+    Buckling of rectangular plates (Kassapoglou)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../saving_loading.html">
+    Saving and loading (JSON)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="ex_laminated_plate.html">
+    Laminated plate and ABD matrix
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="ex_isotropic_offset.html">
+    Isotropic plate with an offset
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="#" aria-current="page">
+    Matrices of the third-order shear deformation theory
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="ex_transverse_shear.html">
+    Transverse shear stresses
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="ex_json.html">
+    Saving and loading in JSON
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="getting-started-plate-properties.html">
+    Getting started: plate properties for CLPT, FSDT and TSDT
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="transverse-shear-stresses.html">
+    Transverse shear stresses through the thickness
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="post-polar-plots-laminate-stiffness.html">
+    Tutorial: polar plots for laminate stiffness
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="opt-lightweight-discrete-ghost-layer.html">
+    Tutorial: discrete-based lightweight optimisation using the ghost layer method
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="opt-lightweight-LP-gradient-Le-Riche.html">
+    Tutorial: Lightweight optimisation using a gradient-based lamination parameter approach
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="opt-lightweight-smeared-finite-diff-Le-Riche.html">
+    Tutorial: Lightweight optimisation using a gradient-based smeared approach
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="opt-lightweight-smeared-gradient-Le-Riche.html">
+    Tutorial: Lightweight optimisation using a gradient-based smeared approach
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../install.html">
+    Installing composites
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../pyodide.html">
+    Running composites in the browser with Pyodide
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../documentation_levels.html">
+    How the documentation is organised
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page" aria-expanded="false" aria-controls="pst-secondary-sidebar-modal">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../conventions.html">
+    Defining a laminate: conventions
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lamina.html">
+    Ply constitutive relations and invariants
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../constitutive_matrices.html">
+    Laminate stiffness and plate theories
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../shear_correction.html">
+    Transverse shear stiffness and shear correction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../transverse_shear_stresses.html">
+    Transverse shear stresses and a posteriori energies
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../lamination_parameters.html">
+    Lamination parameters and double-double laminates
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../mass_integrals.html">
+    Thickness integrals for mass matrices
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../buckling_kassapoglou.html">
+    Buckling of rectangular plates (Kassapoglou)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../saving_loading.html">
+    Saving and loading (JSON)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ex_laminated_plate.html">
+    Laminated plate and ABD matrix
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ex_isotropic_offset.html">
+    Isotropic plate with an offset
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#" aria-current="page">
+    Matrices of the third-order shear deformation theory
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ex_transverse_shear.html">
+    Transverse shear stresses
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="ex_json.html">
+    Saving and loading in JSON
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting-started-plate-properties.html">
+    Getting started: plate properties for CLPT, FSDT and TSDT
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="transverse-shear-stresses.html">
+    Transverse shear stresses through the thickness
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="post-polar-plots-laminate-stiffness.html">
+    Tutorial: polar plots for laminate stiffness
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="opt-lightweight-discrete-ghost-layer.html">
+    Tutorial: discrete-based lightweight optimisation using the ghost layer method
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="opt-lightweight-LP-gradient-Le-Riche.html">
+    Tutorial: Lightweight optimisation using a gradient-based lamination parameter approach
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="opt-lightweight-smeared-finite-diff-Le-Riche.html">
+    Tutorial: Lightweight optimisation using a gradient-based smeared approach
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="opt-lightweight-smeared-gradient-Le-Riche.html">
+    Tutorial: Lightweight optimisation using a gradient-based smeared approach
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Installing composites
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../pyodide.html">
+    Running composites in the browser with Pyodide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../documentation_levels.html">
+    How the documentation is organised
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    Changelog
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-house"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Matrices of the third-order shear deformation theory</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="Matrices-of-the-third-order-shear-deformation-theory">
+<h1>Matrices of the third-order shear deformation theory<a class="headerlink" href="#Matrices-of-the-third-order-shear-deformation-theory" title="Link to this heading">#</a></h1>
+<p>A finite element or Ritz model of the third-order shear deformation theory (TSDT) needs the constitutive matrix of all its generalized strains. This example assembles that <span class="math notranslate nohighlight">\(13 \times 13\)</span> matrix from the matrices of a <code class="docutils literal notranslate"><span class="pre">Laminate</span></code> and verifies it against the strain energy integrated ply by ply through the thickness, see <a class="reference internal" href="../constitutive_matrices.html"><span class="doc">Laminate stiffness and plate theories</span></a>.</p>
+<section id="Theory">
+<h2>Theory<a class="headerlink" href="#Theory" title="Link to this heading">#</a></h2>
+<p>In the TSDT of Reddy [1] the in-plane displacements have a cubic term in <span class="math notranslate nohighlight">\(z\)</span>, chosen such that the transverse shear strains vanish at the faces, and the strains are written with the generalized strains of the reference surface,</p>
+<div class="math notranslate nohighlight">
+\[\varepsilon = \varepsilon^{(0)} + z \varepsilon^{(1)} + z^3
+\varepsilon^{(3)}, \qquad \gamma = \gamma^{(0)} + z^2 \gamma^{(2)},\]</div>
+<p>with <span class="math notranslate nohighlight">\(\varepsilon = \{\varepsilon_{xx}, \varepsilon_{yy}, \gamma_{xy}\}\)</span> and <span class="math notranslate nohighlight">\(\gamma = \{\gamma_{yz}, \gamma_{xz}\}\)</span>. The strain energy per unit area is</p>
+<div class="math notranslate nohighlight">
+\[U = \frac{1}{2} \sum_k \int_{z_k}^{z_{k+1}} \left( \varepsilon^T C^{(k)}
+\varepsilon + \gamma^T C_s^{(k)} \gamma \right) dz = \frac{1}{2} e^T K e,\]</div>
+<p>where, substituting the strains, <span class="math notranslate nohighlight">\(K\)</span> collects the integrals <span class="math notranslate nohighlight">\((A, B, D, E, F, H) = \sum_k \int C^{(k)} (1, z, z^2, z^3, z^4, z^6) dz\)</span> and <span class="math notranslate nohighlight">\((\bar{A}_{ts}, D_{ts}, F_{ts}) = \sum_k \int C_s^{(k)} (1, z^2, z^4) dz\)</span> in the layout of the section “Assembling the matrices in a model” of <a class="reference internal" href="../constitutive_matrices.html"><span class="doc">Laminate stiffness and plate theories</span></a>. The TSDT satisfies the traction-free conditions at the faces and uses the uncorrected <span class="math notranslate nohighlight">\(\bar{A}_{ts}\)</span>, not the corrected
+<code class="docutils literal notranslate"><span class="pre">Ats</span></code> of the FSDT.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
+import numpy as np
+import matplotlib.pyplot as plt
+
+from composites import laminated_plate
+
+def print_table(rows):
+    """Print each result, its reference value and their relative difference
+
+    ``rows`` holds ``(name, value, reference)`` or ``(name, value, reference,
+    scale)``; the difference is divided by ``scale``, by default the absolute
+    value of the reference, e.g. the largest term of the matrix when the
+    reference is zero.
+    """
+    print('%-36s %14s %14s %10s' % ('quantity', 'composites', 'reference',
+                                    'rel. diff.'))
+    for row in rows:
+        name, value, ref = row[:3]
+        scale = row[3] if len(row) &gt; 3 else abs(ref)
+        print('%-36s % 14.6e % 14.6e %10.1e' % (name, value, ref,
+                                               abs(value - ref)/scale))
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Assembling-the-constitutive-matrix">
+<h2>Assembling the constitutive matrix<a class="headerlink" href="#Assembling-the-constitutive-matrix" title="Link to this heading">#</a></h2>
+<p>The laminate is unsymmetric and has an offset, so that <span class="math notranslate nohighlight">\(B\)</span> and <span class="math notranslate nohighlight">\(E\)</span> are not zero and every block of <span class="math notranslate nohighlight">\(K\)</span> contributes. Each block is symmetric, so <span class="math notranslate nohighlight">\(K\)</span> is symmetric.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>laminaprop = (142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9)
+lam = laminated_plate([0, 45, 90, -30], plyts=[0.2e-3, 0.5e-3, 0.3e-3,
+    0.4e-3], laminaprop=laminaprop, offset=0.37e-3)
+# generalized strains {eps0, eps1, eps3, gamma0, gamma2}
+Z32 = np.zeros((3, 2))
+K = np.block([[lam.A, lam.B, lam.E, Z32, Z32],
+              [lam.B, lam.D, lam.F, Z32, Z32],
+              [lam.E, lam.F, lam.H, Z32, Z32],
+              [Z32.T, Z32.T, Z32.T, lam.Abar_ts, lam.Dts],
+              [Z32.T, Z32.T, Z32.T, lam.Dts, lam.Fts]])
+print('K.shape =', K.shape)
+print('max |K - K^T| =', np.abs(K - K.T).max())
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+K.shape = (13, 13)
+max |K - K^T| = 0.0
+</pre></div></div>
+</div>
+</section>
+<section id="Verification-with-the-strain-energy">
+<h2>Verification with the strain energy<a class="headerlink" href="#Verification-with-the-strain-energy" title="Link to this heading">#</a></h2>
+<p>For five random generalized strains <span class="math notranslate nohighlight">\(e\)</span>, <span class="math notranslate nohighlight">\(e^T K e/2\)</span> is compared with <span class="math notranslate nohighlight">\(U\)</span> integrated through the thickness with six Gauss-Legendre points per ply, using the <span class="math notranslate nohighlight">\(5 \times 5\)</span> matrix of <code class="docutils literal notranslate"><span class="pre">Lamina.get_constitutive_matrix</span></code>, which holds <span class="math notranslate nohighlight">\(C^{(k)}\)</span> and <span class="math notranslate nohighlight">\(C_s^{(k)}\)</span> of a ply in the laminate axes, see <a class="reference internal" href="../lamina.html"><span class="doc">Ply constitutive relations and invariants</span></a>. The integrand is a polynomial of degree 6 in <span class="math notranslate nohighlight">\(z\)</span>, which this rule integrates exactly, so the two agree to
+round-off. The strains are scaled with <span class="math notranslate nohighlight">\(1/h\)</span>, <span class="math notranslate nohighlight">\(1/h^3\)</span> and <span class="math notranslate nohighlight">\(1/h^2\)</span> such that all the terms contribute to <span class="math notranslate nohighlight">\(U\)</span> with similar magnitudes.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rng = np.random.default_rng(1)
+h = lam.h
+scale = np.array(3*[1.] + 3*[1/h] + 3*[1/h**3] + 2*[1.] + 2*[1/h**2])
+xi, w = np.polynomial.legendre.leggauss(6)
+zbot = -h/2 + lam.offset
+rows = []
+for i in range(5):
+    e = 1e-3*rng.uniform(-1, 1, 13)*scale
+    U = 0.
+    zk = zbot
+    for ply in lam.plies:
+        C = np.asarray(ply.get_constitutive_matrix())
+        for x, wi in zip(xi, w):
+            z = zk + ply.h*(x + 1)/2
+            eps = e[0:3] + z*e[3:6] + z**3*e[6:9]
+            gamma = e[9:11] + z**2*e[11:13]
+            U += wi*ply.h/2*0.5*(eps @ C[:3, :3] @ eps
+                                 + gamma @ C[3:, 3:] @ gamma)
+        zk += ply.h
+    rows.append(('strain %d: e^T K e/2 vs U [J/m^2]' % (i + 1),
+                 0.5*e @ K @ e, U))
+print_table(rows)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+quantity                                 composites      reference rel. diff.
+strain 1: e^T K e/2 vs U [J/m^2]       5.277895e+01   5.277895e+01    0.0e+00
+strain 2: e^T K e/2 vs U [J/m^2]       1.683985e+01   1.683985e+01    2.1e-16
+strain 3: e^T K e/2 vs U [J/m^2]       4.530303e+01   4.530303e+01    0.0e+00
+strain 4: e^T K e/2 vs U [J/m^2]       5.435136e+01   5.435136e+01    0.0e+00
+strain 5: e^T K e/2 vs U [J/m^2]       3.552772e+01   3.552772e+01    2.0e-16
+</pre></div></div>
+</div>
+</section>
+<section id="Strain-energy-density-through-the-thickness">
+<h2>Strain energy density through the thickness<a class="headerlink" href="#Strain-energy-density-through-the-thickness" title="Link to this heading">#</a></h2>
+<p>For the last strain <span class="math notranslate nohighlight">\(e\)</span>, the strain energy density per unit volume shows the contribution of each ply; the ply interfaces are marked. Its integral over the thickness is the <span class="math notranslate nohighlight">\(U\)</span> of the last row above.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>zs, dens = [], []
+zk = zbot
+for ply in lam.plies:
+    C = np.asarray(ply.get_constitutive_matrix())
+    for z in np.linspace(zk, zk + ply.h, 41):
+        eps = e[0:3] + z*e[3:6] + z**3*e[6:9]
+        gamma = e[9:11] + z**2*e[11:13]
+        zs.append(z)
+        dens.append(0.5*(eps @ C[:3, :3] @ eps + gamma @ C[3:, 3:] @ gamma))
+    zk += ply.h
+fig, ax = plt.subplots(figsize=(4.5, 4))
+ax.plot(np.array(dens)/1e3, np.array(zs)*1e3)
+for zi in zbot + np.cumsum([0] + [ply.h for ply in lam.plies]):
+    ax.axhline(zi*1e3, color='gray', lw=0.5)
+ax.set_xlabel('strain energy density [kJ/m$^3$]')
+ax.set_ylabel('$z$ [mm]')
+fig.tight_layout()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_ex_tsdt_7_0.png" src="../_images/notebooks_ex_tsdt_7_0.png" />
+</div>
+</div>
+</section>
+<section id="References">
+<h2>References<a class="headerlink" href="#References" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Reddy, J. N., Mechanics of Laminated Composite Plates and Shells: Theory and Analysis, 2nd ed., CRC Press, 2003. <a class="reference external" href="https://doi.org/10.1201/b12409">https://doi.org/10.1201/b12409</a></p></li>
+</ol>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ex_isotropic_offset.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Isotropic plate with an offset</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ex_transverse_shear.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Transverse shear stresses</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal" tabindex="-1"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Theory">Theory</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Assembling-the-constitutive-matrix">Assembling the constitutive matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Verification-with-the-strain-energy">Verification with the strain energy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Strain-energy-density-through-the-thickness">Strain energy density through the thickness</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#References">References</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/notebooks/ex_tsdt.nblink.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2012-2026, Saullo G. P. Castro.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.24.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
