@@ -17,8 +17,9 @@ The functions implement the equations of Kassapoglou [1]_, chapters 6 and
 
 References
 ----------
-.. [1] Kassapoglou, C., Design and Analysis of Composite Structures, Second
-   Edition, John Wiley & Sons, 2013.
+.. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+   With Applications to Aerospace Structures, 2nd ed., John Wiley &
+   Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
 """
 import numpy as np
@@ -70,8 +71,24 @@ def calc_Nxx_crit(a, b, m, n, D11, D12, D22, D66):
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
+
+    Examples
+    --------
+    A quasi-isotropic laminate in N and mm, plate of 500 mm by 300 mm, one
+    half-wave across the width and the critical number of half-waves along the
+    length:
+
+    >>> from composites import laminated_plate
+    >>> from composites.kassapoglou import calc_Nxx_crit
+    >>> lam = laminated_plate([0, 45, -45, 90, 90, -45, 45, 0], plyt=0.125,
+    ...     laminaprop=(142.5e3, 8.7e3, 0.28, 5.1e3, 5.1e3, 3.4e3))
+    >>> Nxx = calc_Nxx_crit(500., 300., None, 1, lam.D11, lam.D12, lam.D22,
+    ...                     lam.D66)
+    >>> print(round(Nxx, 3))
+    1.91
 
     """
     if m is None and n is None:
@@ -163,8 +180,22 @@ def calc_Nxy_crit(a, D11, D12, D16, D22, D66, rtol=1e-5, atol=1e-6, max_iter=50)
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
+
+    Examples
+    --------
+    The laminate of :func:`.calc_Nxx_crit`, in N and mm, long plate of width
+    300 mm:
+
+    >>> from composites import laminated_plate
+    >>> from composites.kassapoglou import calc_Nxy_crit
+    >>> lam = laminated_plate([0, 45, -45, 90, 90, -45, 45, 0], plyt=0.125,
+    ...     laminaprop=(142.5e3, 8.7e3, 0.28, 5.1e3, 5.1e3, 3.4e3))
+    >>> Nxy = calc_Nxy_crit(300., lam.D11, lam.D12, lam.D16, lam.D22, lam.D66)
+    >>> print(round(Nxy, 3))
+    3.708
 
     """
     alpha = np.pi/6
@@ -188,11 +219,9 @@ def calc_Nxy_crit(a, D11, D12, D16, D22, D66, rtol=1e-5, atol=1e-6, max_iter=50)
 def calc_beff(b, Px, Pcr, A11, A12, A22):
     r"""Calculate the effective width of a plate
 
-    The effective width `b_{eff}` is defined as:
-
-    `\int_y N_{xx} dy = 2{N_x}_{max} b_{eff}`
-
-    `Px` and `Pcr` enter only through the ratio ``Pcr/Px``, and the terms
+    The effective width `b_{eff}` of a post-buckled plate, defined in the
+    Notes, is computed from the plate width, the ratio of the critical to the
+    applied force and the A matrix. `Px` and `Pcr` enter only through the ratio ``Pcr/Px``, and the terms
     of the A matrix only through ratios between them, such that the result
     has the dimension of `b`.
 
@@ -214,8 +243,9 @@ def calc_beff(b, Px, Pcr, A11, A12, A22):
 
     Notes
     -----
-    The output of this function is the result of Eq. 7.15, section 7.1 page
-    164 of [1]_:
+    The effective width `b_{eff}` is defined by `\int_y N_{xx} dy =
+    2{N_x}_{max} b_{eff}`. The output of this function is the result of Eq.
+    7.15, section 7.1 page 164 of [1]_:
 
     .. math::
 
@@ -228,8 +258,9 @@ def calc_beff(b, Px, Pcr, A11, A12, A22):
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     beff = b/(2*(1 + 2*(1 + A12/A11)*(1 - Pcr/Px)*A11/(A11 + 3*A22)))
@@ -288,8 +319,9 @@ def calc_Nxx_crit_combined_shear(k, a, b, D11, D12, D22, D66):
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     den = 2 - 8192/81*a**2*k**2/(b**2*pi**4)
@@ -388,15 +420,16 @@ def calc_Nxx_crit_combined_shear_full(Nxy, a, b, D11, D12, D16, D22, D26, D66):
 
     References
     ----------
-    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures,
-       Second Edition, John Wiley & Sons, 2013.
+    .. [1] Kassapoglou, C., Design and Analysis of Composite Structures:
+       With Applications to Aerospace Structures, 2nd ed., John Wiley &
+       Sons, Chichester, 2013. https://doi.org/10.1002/9781118536933
 
     """
     a11 = pi**4*D11*b/(4*a**3) + pi**4*D12/(2*a*b) + pi**4*D22*a/(4*b**3) + pi**4*D66/(a*b)
     a12 = -160*pi**2*D16/(9*a**2) - 160*pi**2*D26/(9*b**2)
     a21 = -160*pi**2*D16/(9*a**2) - 160*pi**2*D26/(9*b**2)
     a22 = 4*pi**4*D11*b/a**3 + 8*pi**4*D12/(a*b) + 4*pi**4*D22*a/b**3 + 16*pi**4*D66/(a*b)
-    # NOTE the k*N_o of Eqs. 6.32a and 6.33 is -Nxy
+    # NOTE sign of the shear load as in the Notes
     term = 16384*Nxy**2 - 4608*Nxy*a12 - 4608*Nxy*a21 + 1296*a11**2 - 648*a11*a22 + 1296*a12*a21 + 81*a22**2
     Nxx_crit1 = a*(36*a11 + 9*a22 - sqrt(term))/(18*pi**2*b)
     Nxx_crit2 = a*(36*a11 + 9*a22 + sqrt(term))/(18*pi**2*b)

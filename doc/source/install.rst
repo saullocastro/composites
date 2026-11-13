@@ -42,18 +42,11 @@ The documentation is built with the requirements of
 In the browser, with Pyodide
 ----------------------------
 
-From version 0.9.21, a WebAssembly wheel is published on PyPI for Pyodide 314
-(CPython 3.14), such that ``composites`` runs in the browser, e.g. in
-JupyterLite or in a web page with `Pyodide <https://pyodide.org>`_::
+A WebAssembly wheel is published on PyPI for Pyodide 314 (CPython 3.14),
+installed in the browser with ``micropip``, see :doc:`pyodide`::
 
     import micropip
     await micropip.install('composites')
-
-    from composites import laminated_plate, to_json
-    lam = laminated_plate([0, 45, -45, 90], plyt=0.125e-3,
-                          laminaprop=(142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
-    print(lam.ABD)
-    s = to_json(lam)  # strict JSON, readable with JSON.parse in JavaScript
 
 
 Using composites from Cython

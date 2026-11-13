@@ -1,3 +1,19 @@
+r"""Laminate, MatLamina, Lamina, LaminationParameters and GradABD
+
+Verifies the stiffness matrices of :func:`.laminated_plate`,
+:func:`.isotropic_plate` and of the lamination-parameter route,
+:func:`.laminate_from_lamination_parameters` and
+:func:`.laminate_from_LaminationParameters`; the methods ``make_balanced``,
+``make_orthotropic``, ``make_symmetric`` and ``make_smeared`` and the
+functions :func:`.make_balanced_LP`, :func:`.make_orthotropic_LP` and
+:func:`.make_symmetric_LP`; the gradients of :class:`.GradABD`; the
+constitutive and transformation matrices of :class:`.MatLamina` and
+:class:`.Lamina`; the density moments; and the deprecated aliases. The
+references are closed forms of isotropic plates, the inverse of the
+compliance matrix, integration through the thickness done in the tests,
+central differences, the shear correction of Rohwer (1988) as implemented
+independently in ``tests/test_transverse_shear.py``, and stored values.
+"""
 import sys
 sys.path.append('..')
 
@@ -16,6 +32,35 @@ from test_transverse_shear import RohwerReference, stack_from_laminate
 
 
 def test_lampar_tri_axial():
+    r"""Lamination-parameter route, isotropic material with nine constants
+
+    A, B, D, Ats and Abar_ts of :func:`.laminate_from_lamination_parameters`
+    against the closed form of an isotropic plate, in plane stress (the
+    default) and with the three-dimensional option, and against stored
+    values.
+
+    Notes
+    -----
+    With e3 given, the invariants are by default those of the plane-stress
+    reduced stiffnesses, see MatLamina.rebuild: ``Q = E/(1 - nu^2) [[1, nu,
+    0], [nu, 1, 0], [0, 0, (1 - nu)/2]]``, [1]_, Eq. (2.71), p. 73. For an
+    isotropic material ``u2 = u3 = u7 = 0``, such that the lamination
+    parameters have no effect: ``A = h Q``, ``B = 0``, ``D = h^3/12 Q``,
+    ``Abar_ts = G h I``.
+
+    With the three-dimensional option, the invariants are those of the
+    three-dimensional stiffness, which for an isotropic material are the
+    Lame constants, ``C11 = lambda + 2 mu``, ``C12 = lambda``, ``C66 = mu``.
+
+    There is no shear correction from lamination parameters, ``Ats =
+    Abar_ts = G h I`` for an isotropic material.
+
+    References
+    ----------
+    .. [1] Jones, R. M., Mechanics of Composite Materials, Second Edition,
+       Taylor & Francis, Philadelphia, 1999.
+
+    """
     E = 71e9
     nu = 0.33
     G = E/(2*(1+nu))
@@ -39,12 +84,7 @@ def test_lampar_tri_axial():
         0.5, 0.4, -0.3, -0.6,
         0.5, 0.4, -0.3, -0.6,
         0.5, 0.4)
-    # NOTE with e3 given, the invariants are by default those of the
-    #      plane-stress reduced stiffnesses, see MatLamina.rebuild: Q = E/(1 -
-    #      nu^2) [[1, nu, 0], [nu, 1, 0], [0, 0, (1 - nu)/2]], Jones (1999),
-    #      Eq. (2.71), p. 73. For an isotropic material u2 = u3 = u7 = 0, such
-    #      that the lamination parameters have no effect: A = h Q, B = 0, D =
-    #      h^3/12 Q, Abar_ts = G h I
+    # NOTE plane-stress reduced stiffnesses by default
     assert matlamina.plane_stress
     Q = E/(1 - nu**2)*np.array([[1., nu, 0.],
                                 [nu, 1., 0.],
@@ -57,9 +97,7 @@ def test_lampar_tri_axial():
     assert np.allclose(lam.Abar_ts, G*thickness*np.eye(2), rtol=1e-12,
                        atol=1e-14*G*thickness)
 
-    # NOTE three-dimensional option: the invariants are those of the
-    #      three-dimensional stiffness, which for an isotropic material are
-    #      the Lame constants, C11 = lambda + 2 mu, C12 = lambda, C66 = mu
+    # NOTE three-dimensional option, Lame constants
     matlamina.rebuild(plane_stress=False)
     assert not matlamina.plane_stress
     lam = laminate_from_lamination_parameters(thickness, matlamina,
@@ -81,8 +119,7 @@ def test_lampar_tri_axial():
     D = np.array([[8.76640130e+09, 4.31777974e+09, 0.00000000e+00],
                   [4.31777974e+09, 8.76640130e+09, 0.00000000e+00],
                   [0.00000000e+00, 0.00000000e+00, 2.22431078e+09]])
-    # NOTE no shear correction from lamination parameters, Ats = Abar_ts
-    #      = G h I for an isotropic material
+    # NOTE no shear correction from lamination parameters
     Ats = E/(2*(1 + nu))*thickness*np.eye(2)
     assert np.allclose(lam.A, A)
     lam.make_symmetric()
@@ -96,6 +133,18 @@ def test_lampar_tri_axial():
 
 
 def test_lampar_plane_stress():
+    r"""Lamination-parameter route, isotropic material with two constants
+
+    A, B and D of :func:`.laminate_from_lamination_parameters` against
+    stored values, E, F and H symmetric, and Ats and Abar_ts against the
+    closed form of an isotropic plate.
+
+    Notes
+    -----
+    There is no shear correction from lamination parameters, ``Ats =
+    Abar_ts = G h I`` for an isotropic material.
+
+    """
     E = 71e9
     nu = 0.33
     lamprop = (E, nu)
@@ -127,8 +176,7 @@ def test_lampar_plane_stress():
     D = np.array([[6.63973366e+09, 2.19111211e+09, 9.53674316e-08],
                   [2.19111211e+09, 6.63973366e+09, -9.53674316e-08],
                   [9.53674316e-08, -9.53674316e-08, 2.22431078e+09]])
-    # NOTE no shear correction from lamination parameters, Ats = Abar_ts
-    #      = G h I for an isotropic material
+    # NOTE no shear correction from lamination parameters
     Ats = E/(2*(1 + nu))*thickness*np.eye(2)
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.E, lam.E.T)
@@ -145,6 +193,23 @@ def test_lampar_plane_stress():
 
 
 def test_laminated_plate_tri_axial():
+    r"""Laminate of :func:`.laminated_plate`, material with nine constants
+
+    A, B, D and Abar_ts of a ``[0/45/90]`` laminate against stored values,
+    and Ats against the shear correction of Rohwer (1988), Eq. (43).
+
+    Notes
+    -----
+    Ats is that of [1]_, Eq. (43), with the independent implementation of
+    tests/test_transverse_shear.py, instead of the values 2014905.27 and
+    -27210.29 copied from the output of the code.
+
+    References
+    ----------
+    .. [1] Rohwer, K., Improved transverse shear stiffnesses for layered
+       finite elements, DFVLR-FB 88-32, 1988.
+
+    """
     lamprop = (71e9, 7e9, 0.28, 7e9, 7e9, 7e9, 7e9, 0.28, 0.28)
     stack = [0, 45, 90]
     plyt = 0.000125
@@ -160,9 +225,7 @@ def test_laminated_plate_tri_axial():
                   [ 0.00262445, 0.00262445, 0.0326602 ]])
     Abar_ts = np.array([[ 2625000.,       0.],
                         [       0., 2625000.]])
-    # NOTE Rohwer (1988), Eq. (43), with the independent implementation of
-    #      tests/test_transverse_shear.py, instead of the values
-    #      2014905.27 and -27210.29 copied from the output of the code
+    # NOTE independent implementation of the shear correction
     Ats = RohwerReference(stack_from_laminate(lam)).Ats
     assert np.allclose(lam.A, A)
     assert np.allclose(lam.B, B)
@@ -172,6 +235,28 @@ def test_laminated_plate_tri_axial():
 
 
 def test_laminated_plate_plane_stress():
+    r"""Laminate of :func:`.laminated_plate`, material with six constants
+
+    A, B, D, E, F, H, Abar_ts, Dts and Fts of a ``[0/45/90]`` laminate
+    against stored values, and Ats against the shear correction of Rohwer
+    (1988), Eq. (43). The lamination parameters of the laminate, also after
+    ``make_balanced``, ``make_orthotropic`` and ``make_symmetric`` and the
+    respective functions, give the same A, B and D through
+    :func:`.laminate_from_LaminationParameters`; ``make_smeared`` gives ``B
+    = 0`` and D from A.
+
+    Notes
+    -----
+    Ats is that of [1]_, Eq. (43), with the independent implementation of
+    tests/test_transverse_shear.py, instead of the values 2014905.27 and
+    -27210.29 copied from the output of the code.
+
+    References
+    ----------
+    .. [1] Rohwer, K., Improved transverse shear stiffnesses for layered
+       finite elements, DFVLR-FB 88-32, 1988.
+
+    """
     lamprop = (71e9, 7e9, 0.28, 7e9, 7e9, 7e9)
     stack = [0, 45, 90]
     plyt = 0.000125
@@ -196,9 +281,7 @@ def test_laminated_plate_plane_stress():
                   [1.71625578e-20, 1.71625578e-20, 1.63068348e-17]])
     Abar_ts = np.array([[ 2625000.,       0.],
                         [       0., 2625000.]])
-    # NOTE Rohwer (1988), Eq. (43), with the independent implementation of
-    #      tests/test_transverse_shear.py, instead of the values
-    #      2014905.27 and -27210.29 copied from the output of the code
+    # NOTE independent implementation of the shear correction
     Ats = RohwerReference(stack_from_laminate(lam)).Ats
     Dts = np.array([[0.03076172, 0.],
                     [0., 0.03076172]])
@@ -261,6 +344,8 @@ def test_laminated_plate_plane_stress():
 
 
 def test_isotropic_plate():
+    r"""A, B, D and Abar_ts of :func:`.isotropic_plate` against stored
+    values, and Ats against 5/6 of Abar_ts"""
     E = 71e9
     nu = 0.28
     thick = 0.000125
@@ -283,6 +368,8 @@ def test_isotropic_plate():
 
 
 def test_errors():
+    r"""Methods of a laminate with an offset and without plies that raise
+    errors, run without failing the test"""
     E = 71e9
     nu = 0.28
     thick = 0.000125
@@ -312,6 +399,8 @@ def test_errors():
 
 
 def test_laminate_LP_gradients():
+    r"""GradABD.calc_LP_grad runs for an isotropic material; the values are
+    checked in ``test_laminate_LP_gradients_finite_differences``"""
     E = 71e9
     nu = 0.33
     lamprop = (E, nu)
@@ -337,6 +426,8 @@ def test_laminate_LP_gradients():
 
 
 def test_laminated_plate_missing_arguments():
+    r""":func:`.laminated_plate` raises ValueError without ply thicknesses
+    or material properties"""
     laminaprop = (71e3, 71e3, 0.33)
     with pytest.raises(ValueError, match='plyt or plyts'):
         laminated_plate([0, 90], laminaprop=laminaprop)
@@ -345,6 +436,8 @@ def test_laminated_plate_missing_arguments():
 
 
 def test_deprecated_xiAtrans():
+    r"""Deprecated aliases ``xiAtrans1`` and ``xiAtrans2`` of ``xiAts1`` and
+    ``xiAts2``: warning and same values"""
     lp = LaminationParameters()
     with pytest.warns(DeprecationWarning, match='xiAts1'):
         lp.xiAtrans1 = 0.3
@@ -366,6 +459,8 @@ def test_deprecated_xiAtrans():
 
 
 def test_deprecated_gradAtransij():
+    r"""Deprecated alias ``gradAtransij`` of ``gradAtsij``: warning and same
+    values, read and write"""
     lam = laminated_plate([0, 45, 90], plyt=0.125e-3,
             laminaprop=(142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
     grad = GradABD()
@@ -380,6 +475,8 @@ def test_deprecated_gradAtransij():
 
 
 def test_deprecated_Dtrans_Ftrans():
+    r"""Deprecated aliases ``Dtrans`` and ``Ftrans`` of ``Dts`` and ``Fts``:
+    warning and same values"""
     lam = laminated_plate([0, 45, 90], plyt=0.125e-3,
             laminaprop=(142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
     with pytest.warns(DeprecationWarning, match='Dts'):
@@ -401,7 +498,19 @@ def _abd_lp(thickness, matlamina, xiA, xiB, xiD, xiAts):
 
 
 def test_laminate_LP_gradients_finite_differences():
-    # NOTE orthotropic material, since u2 = u3 = u7 = 0 for an isotropic one
+    r"""Gradients of :class:`.GradABD` against central differences
+
+    The derivatives of A, B, D and Ats of the lamination-parameter route
+    with respect to the thickness and to each lamination parameter are
+    compared with central differences, for an orthotropic material.
+
+    Notes
+    -----
+    The material is orthotropic, since ``u2 = u3 = u7 = 0`` for an
+    isotropic one. The stiffnesses are linear in the lamination parameters.
+
+    """
+    # NOTE orthotropic material
     matlamina = read_laminaprop((142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9))
     thickness = 1.3e-3
     xi = {'A': [0.5, 0.4, -0.3, -0.6],
@@ -448,14 +557,42 @@ def test_laminate_LP_gradients_finite_differences():
 
 
 def test_matlamina_constitutive_matrix_inverse_compliance():
-    # NOTE e2 != e3 and nu23 != 0, otherwise nu23*nu23 = nu23*nu32
+    r"""Constitutive matrix of :class:`.MatLamina` against the inverse
+    compliance
+
+    The constitutive matrix against the inverse of the compliance matrix,
+    and the constitutive constants q_ij against the plane-stress reduced
+    stiffnesses of Jones (1999), Eqs. (2.61), (2.62) and (2.64), by
+    default, and against the inverse compliance with
+    ``plane_stress=False``.
+
+    Notes
+    -----
+    The constants have e2 != e3 and nu23 != 0, otherwise ``nu23*nu23 =
+    nu23*nu32``. The compliance matrix, rows and columns ordered as 11, 22,
+    33, 23, 13, 12, is written with ``nu21/e2 = nu12/e1``, ``nu31/e3 =
+    nu13/e1`` and ``nu32/e3 = nu23/e2``.
+
+    By default the constitutive constants q_ij are those of plane stress:
+    the inverse of the reduced compliance ``S11 = 1/e1``, ``S12 =
+    -nu12/e1``, ``S22 = 1/e2`` ([1]_, Eqs. (2.61) and (2.62), p. 71), equal
+    to the condensed ``C_ij - C_i3 C_j3/C_33``, Eq. (2.64), p. 72. With
+    ``plane_stress=False``, the 3D constitutive constants q_ij are the same
+    inverse as C.
+
+    References
+    ----------
+    .. [1] Jones, R. M., Mechanics of Composite Materials, Second Edition,
+       Taylor & Francis, Philadelphia, 1999.
+
+    """
+    # NOTE e2 != e3 and nu23 != 0
     e1, e2, e3 = 142e9, 8.7e9, 10.1e9
     nu12, nu13, nu23 = 0.28, 0.31, 0.45
     g12, g13, g23 = 5.1e9, 5.3e9, 3.2e9
     matlamina = read_laminaprop((e1, e2, nu12, g12, g13, g23, e3, nu13,
                                  nu23))
-    # compliance matrix, rows and columns ordered as 11, 22, 33, 23, 13, 12,
-    # with nu21/e2 = nu12/e1, nu31/e3 = nu13/e1 and nu32/e3 = nu23/e2
+    # compliance matrix, rows and columns ordered as 11, 22, 33, 23, 13, 12
     S = np.array([[1/e1, -nu12/e1, -nu13/e1, 0, 0, 0],
                   [-nu12/e1, 1/e2, -nu23/e2, 0, 0, 0],
                   [-nu13/e1, -nu23/e2, 1/e3, 0, 0, 0],
@@ -465,10 +602,7 @@ def test_matlamina_constitutive_matrix_inverse_compliance():
     C_ref = np.linalg.inv(S)
     C = np.asarray(matlamina.get_constitutive_matrix())
     assert np.allclose(C, C_ref, rtol=1e-12, atol=1e-12*C_ref.max())
-    # NOTE by default the constitutive constants q_ij are those of plane
-    #      stress: the inverse of the reduced compliance S11 = 1/e1, S12 =
-    #      -nu12/e1, S22 = 1/e2 (Jones, 1999, Eqs. (2.61) and (2.62), p. 71),
-    #      equal to the condensed C_ij - C_i3 C_j3/C_33, Eq. (2.64), p. 72
+    # NOTE plane-stress constants by default
     assert matlamina.plane_stress
     Q_ref = np.linalg.inv(np.array([[1/e1, -nu12/e1], [-nu12/e1, 1/e2]]))
     assert np.allclose(Q_ref, C_ref[:2, :2]
@@ -480,8 +614,7 @@ def test_matlamina_constitutive_matrix_inverse_compliance():
     Q_ref3 = np.zeros((3, 3))
     Q_ref3[:2, :2] = Q_ref
     assert np.allclose(Q, Q_ref3, rtol=1e-12, atol=0)
-    # with plane_stress=False, the 3D constitutive constants q_ij are the
-    # same inverse as C
+    # three-dimensional option
     matlamina.rebuild(plane_stress=False)
     assert not matlamina.plane_stress
     Q = np.array([[matlamina.q11, matlamina.q12, matlamina.q13],
@@ -493,8 +626,16 @@ def test_matlamina_constitutive_matrix_inverse_compliance():
 
 
 def test_density_moments():
-    # unsymmetric laminate, ply densities and an offset, against an
-    # independent Gauss-Legendre integration of rho*z**n ply by ply
+    r"""Density moments ``intrho`` to ``intrhoz6`` of an unsymmetric
+    laminate with ply densities and an offset, against an independent
+    Gauss-Legendre integration through the thickness, ply by ply
+
+    Notes
+    -----
+    The reference moments are the integrals of ``rho*z**n``, ply by ply.
+
+    """
+    # unsymmetric laminate, ply densities and an offset
     plyts = [0.2e-3, 0.5e-3, 0.3e-3, 0.4e-3]
     rhos = [1600., 1200., 2700., 900.]
     offset = 0.37e-3
@@ -517,7 +658,7 @@ def test_density_moments():
     lam.calc_constitutive_matrix()
     for n, name in names.items():
         assert np.isclose(getattr(lam, name), ref[n], rtol=1e-12, atol=0), name
-    # not computed from lamination parameters, see the docstring
+    # not computed from lamination parameters
     lam_lp = laminate_from_LaminationParameters(sum(plyts),
             lam.plies[0].matlamina, lam.calc_lamination_parameters())
     for name in names.values():
@@ -525,6 +666,9 @@ def test_density_moments():
 
 
 def test_example_laminated_plate():
+    r"""Quasi-isotropic laminate of :func:`.laminated_plate`: ABD layout, no
+    membrane-bending coupling, quasi-isotropic membrane stiffness,
+    equivalent properties, shear correction and mass per unit area"""
     # quasi-isotropic CFRP laminate [0/45/-45/90]s, SI units
     laminaprop = (142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9) # E11, E22, nu12, G12, G13, G23
     stack = [0, 45, -45, 90, 90, -45, 45, 0] # from the bottom to the top
@@ -557,7 +701,21 @@ def test_example_laminated_plate():
 
 
 def test_example_isotropic_plate_offset():
-    # closed form of an isotropic plate whose mid-surface is at z = d
+    r"""Isotropic plate with an offset against the closed form
+
+    A, B, D, E, F, H, Ats and the density moments of
+    :func:`.isotropic_plate` with an offset against their closed form.
+
+    Notes
+    -----
+    The mid-surface of the plate is at ``z = d``. With ``s`` uniform in
+    ``[-h/2, h/2]``: ``<s^2> = h^2/12``, ``<s^4> = h^4/80``, ``<s^6> =
+    h^6/448``, and ``int (d + s)^n ds = h <(d + s)^n>``. The shear
+    correction of an isotropic plate is 5/6. Without offset the odd moments
+    vanish.
+
+    """
+    # isotropic plate with an offset d
     E, nu, h, d, rho = 70e9, 0.3, 2e-3, 0.6e-3, 2700.
     lam = isotropic_plate(thickness=h, E=E, nu=nu, offset=d, rho=rho)
     C = E/(1 - nu**2)*np.array([[1, nu, 0], [nu, 1, 0], [0, 0, (1 - nu)/2]])
@@ -566,11 +724,10 @@ def test_example_isotropic_plate_offset():
     assert np.allclose(lam.A, h*C, rtol=1e-12, atol=atol*h)
     assert np.allclose(lam.B, d*h*C, rtol=1e-12, atol=atol*h*d)
     assert np.allclose(lam.D, h*(d**2 + h**2/12)*C, rtol=1e-12, atol=atol*h**3)
-    # the shear correction of an isotropic plate is 5/6
+    # shear correction of an isotropic plate
     assert np.allclose(lam.Ats, 5/6*G*h*np.eye(2), rtol=1e-12, atol=atol*h)
-    # with s uniform in [-h/2, h/2]: <s^2> = h^2/12, <s^4> = h^4/80,
-    # <s^6> = h^6/448, and int (d + s)^n ds = h <(d + s)^n>
-    m = [1., d, d**2 + h**2/12, d**3 + d*h**2/4,
+    # moments of z through the thickness
+    m =[1., d, d**2 + h**2/12, d**3 + d*h**2/4,
          d**4 + d**2*h**2/2 + h**4/80, None,
          d**6 + 15/12*d**4*h**2 + 15/80*d**2*h**4 + h**6/448]
     assert np.allclose(lam.E, h*m[3]*C, rtol=1e-12, atol=atol*h**4)
@@ -587,13 +744,25 @@ def test_example_isotropic_plate_offset():
 
 
 def test_example_tsdt_matrices():
+    r"""Constitutive matrix of the third-order shear deformation theory
+
+    The 13 x 13 matrix assembled from A, B, D, E, F, H, Abar_ts, Dts and
+    Fts of an unsymmetric laminate with an offset is symmetric, and its
+    strain energy per unit area against an integration ply by ply.
+
+    Notes
+    -----
+    The generalized strains are ``{eps0, eps1, eps3, gamma0, gamma2}``, with
+    ``eps = eps0 + z eps1 + z^3 eps3`` and ``gamma = {gamma_yz, gamma_xz} =
+    gamma0 + z^2 gamma2``. The strain energy per unit area integrated ply by
+    ply is compared with ``e^T K e / 2``.
+
+    """
     # unsymmetric laminate with an offset
     laminaprop = (142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9)
     lam = laminated_plate([0, 45, 90, -30], plyts=[0.2e-3, 0.5e-3, 0.3e-3,
         0.4e-3], laminaprop=laminaprop, offset=0.37e-3)
-    # 13 x 13 constitutive matrix of the TSDT, the generalized strains being
-    # {eps0, eps1, eps3, gamma0, gamma2}, with eps = eps0 + z eps1 + z^3 eps3
-    # and gamma = {gamma_yz, gamma_xz} = gamma0 + z^2 gamma2
+    # 13 x 13 constitutive matrix of the TSDT
     Z3 = np.zeros((3, 3))
     Z32 = np.zeros((3, 2))
     K = np.block([[lam.A, lam.B, lam.E, Z32, Z32],
@@ -602,7 +771,7 @@ def test_example_tsdt_matrices():
                   [Z32.T, Z32.T, Z32.T, lam.Abar_ts, lam.Dts],
                   [Z32.T, Z32.T, Z32.T, lam.Dts, lam.Fts]])
     assert np.allclose(K, K.T, rtol=0, atol=0)
-    # strain energy per unit area integrated ply by ply, against e^T K e / 2
+    # strain energy per unit area integrated ply by ply
     rng = np.random.default_rng(1)
     h = lam.h
     scale = np.array(3*[1.] + 3*[1/h] + 3*[1/h**3] + 2*[1.] + 2*[1/h**2])
@@ -625,6 +794,9 @@ def test_example_tsdt_matrices():
 
 
 def test_transf_matrix_displ_to_lamina():
+    r"""Displacement transformation of :class:`.Lamina`: maps the material
+    direction 1 given in laminate axes to ``[1, 0, 0]``, is orthogonal, and
+    the deprecated alias returns the same matrix"""
     ply = Lamina()
     ply.thetadeg = 30.
     ply.h = 1.
@@ -642,7 +814,14 @@ def test_transf_matrix_displ_to_lamina():
 
 
 def test_transf_matrix_stress_order():
-    # {s11, s22, s33, t23, t13, t12} = T {sxx, syy, szz, tyz, txz, txy}
+    r"""Stress transformations of :class:`.Lamina` against the rotation of
+    the stress tensor, with the order of the components
+
+    Notes
+    -----
+    ``{s11, s22, s33, t23, t13, t12} = T {sxx, syy, szz, tyz, txz, txy}``.
+
+    """
     ply = Lamina()
     ply.thetadeg = 30.
     ply.h = 1.
@@ -662,6 +841,8 @@ def test_transf_matrix_stress_order():
 
 
 def test_make_symmetric_keeps_even_powers():
+    r"""``make_symmetric`` keeps the terms of the even powers of z, against
+    their integration ply by ply, and zeroes B and E"""
     # [30/-45/60]s: the integrals of the even powers of z are not zero
     stack = [30, -45, 60, 60, -45, 30]
     plyt = 0.125e-3
@@ -684,6 +865,8 @@ def test_make_symmetric_keeps_even_powers():
 
 
 def test_make_orthotropic_zeroes_all_couplings():
+    r"""``make_orthotropic`` zeroes every term integrated from q16L, q26L or
+    q45L, as they are for a ``[0/90/0/90]`` laminate, and keeps the others"""
     # terms that are integrals of q16L, q26L or q45L, all zero for 0/90 plies
     names16 = ['%s%s' % (m, ij) for m in 'ABDEFH' for ij in ('16', '26')]
     names45 = ['A45', 'Abar45', 'Abarbar45', 'D45', 'F45']
@@ -715,6 +898,8 @@ def test_make_orthotropic_zeroes_all_couplings():
 
 
 def test_make_orthotropic_LP_transverse_shear():
+    r""":func:`.make_orthotropic_LP` zeroes ``xiAts2``, and the stiffnesses
+    from the lamination parameters equal those of ``make_orthotropic``"""
     # G13 != G23, such that xiAts2 gives Abar45
     laminaprop = (142.5e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.0e9)
     lam = laminated_plate([30, -45, 60, 60, -45, 30], plyt=0.125e-3,
@@ -733,8 +918,17 @@ def test_make_orthotropic_LP_transverse_shear():
 
 
 def test_make_balanced_zeroes_only_vanishing_terms():
-    # in a balanced laminate only the integrals of z^0 of the odd q16L, q26L
-    # and q45L vanish, for any position of the +theta and -theta plies
+    r"""``make_balanced`` zeroes only the terms that vanish in a balanced
+    laminate, for every shear correction and with or without offset, and
+    keeps B16, B26 of an antisymmetric laminate and A45 of ``'rohwer'``
+
+    Notes
+    -----
+    In a balanced laminate only the integrals of ``z^0`` of the odd q16L,
+    q26L and q45L vanish, for any position of the +theta and -theta plies.
+
+    """
+    # balanced laminates
     laminaprop = (142.5e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.0e9)
     plyt = 0.125e-3
     names = (['%s%s' % (m, ij) for m in 'ABDEFH'
@@ -787,6 +981,9 @@ def test_make_balanced_zeroes_only_vanishing_terms():
 
 
 def test_make_balanced_LP():
+    r""":func:`.make_balanced_LP` zeroes only the vanishing lamination
+    parameters of an antisymmetric laminate, and the stiffnesses from them
+    equal those of ``make_balanced``"""
     # antisymmetric [+45/-45]: xiA2, xiA4 and xiAts2 vanish, xiB2 does not
     laminaprop = (142.5e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.0e9)
     lam = laminated_plate([45, -45], plyt=0.125e-3, laminaprop=laminaprop)
@@ -809,8 +1006,17 @@ def test_make_balanced_LP():
 
 
 def test_make_orthotropic_make_balanced_keep_nan_Abarbar45():
-    # a ply with G13 = 0 has a singular C_s: the constant-stress Abarbar44,
-    # Abarbar45, Abarbar55 are nan, and both methods keep Abarbar45 nan
+    r"""``make_orthotropic`` and ``make_balanced`` keep the nan Abarbar45 of
+    a ply with G13 = 0
+
+    Notes
+    -----
+    A ply with G13 = 0 has a singular ``C_s``: the constant-stress
+    Abarbar44, Abarbar45, Abarbar55 are nan, and both methods keep
+    Abarbar45 nan.
+
+    """
+    # ply with G13 = 0
     laminaprops = [(142.5e9, 8.7e9, 0.28, 5.1e9, 0., 3.0e9)]*4
     for stack, method in (([0, 90, 0, 90], 'make_orthotropic'),
                           ([30, -30, -30, 30], 'make_balanced')):

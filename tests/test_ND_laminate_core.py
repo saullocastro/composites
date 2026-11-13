@@ -1,3 +1,20 @@
+r"""N-double laminate of :mod:`composites.core`
+
+Verifies that the ``A11``, ``A12``, ``A22``, ``A66`` and ``D11``, ``D12``,
+``D22``, ``D66`` of :func:`composites.core.n_double_laminate`, called with
+a :class:`.MatLamina`, with the angles ``[15, 30]`` are those of
+:func:`.laminated_plate` with the stack ``[15/-15/30/-30]`` repeated 32
+times, for the IM6/epoxy material of ``data``, the material data of
+``tests/test_DD_laminate.py``.
+
+Notes
+-----
+The stiffnesses of the N-double laminate are those of the homogenized
+limit of many plies, see the Notes of :func:`composites.utils.n_double_laminate`;
+the ``A`` and ``D`` of the stack of 128 plies agree with them within the
+default tolerance of :func:`numpy.allclose`.
+
+"""
 import sys
 sys.path.append('..')
 
