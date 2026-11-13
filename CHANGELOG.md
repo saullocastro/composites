@@ -1,32 +1,6 @@
 # Changelog
 
-## Unreleased
-
-### Documentation
-
-- The four tutorials after Le Riche and Haftka (1993) convert the ply
-  properties of the paper exactly from psi (`E1 = 18.50e6`, `E2 = 1.89e6`
-  and `G12 = 0.93e6` psi, `1 psi = 4.4482216152605/0.0254**2 Pa`) instead
-  of using the rounded SI values 127.55, 13.03 and 6.41 GPa. The first row
-  of Table 3 of the paper is reproduced to relative differences of 7.5e-7
-  (buckling) and 4.6e-8 (failure) instead of 4.2e-5 and 5.1e-5. The optimum
-  of the genetic algorithm of the ghost-layer tutorial is unchanged (44
-  plies, 0.5768 kg). In the lamination-parameter tutorial the SLSQP run with
-  finite-difference gradients uses the relative step
-  `finite_diff_rel_step=1e-8` and reaches the optimum of the run with
-  analytical gradients, 0.5310 kg (with SciPy's default step, 1.49e-8 m for
-  the thickness, it stops at the thickness of the reference laminate,
-  0.6293 kg); the tutorial explains the step and compares five steps.
-
-### Tests
-
-- `test_thickness_shear_finite_elements` of `tests/test_transverse_shear.py`
-  compares the factors of `'thickness_shear'` with the Richardson
-  extrapolation of the frequencies of 200 and 400 linear elements through
-  the thickness, within 1e-8 (under 0.5 s per case). The comparison with
-  4000 elements is in the notebook `transverse-shear-stresses.ipynb`.
-
-## 0.10.3 (2026-10-29)
+## 0.10.4 (2026-11-13)
 
 ### Behaviour change: plane-stress invariants of `MatLamina` for any `laminaprop`
 
@@ -152,6 +126,11 @@
   which stated "deviations up to about 7 % are observed at 45 degrees",
   now names these quantities and the source; `A44` or `A55` alone deviate
   by up to 7.2 %, at 41 and 49 degrees.
+- `test_thickness_shear_finite_elements` of `tests/test_transverse_shear.py`
+  compares the factors of `'thickness_shear'` with the Richardson
+  extrapolation of the frequencies of 200 and 400 linear elements through
+  the thickness, within 1e-8 (under 0.5 s per case). The comparison with
+  4000 elements is in the notebook `transverse-shear-stresses.ipynb`.
 
 ### New: zero Young moduli, antiplane cores
 
@@ -373,6 +352,19 @@ unchanged, the compression load `N_o = -N_x`, positive in compression.
   sensitivities of the gradient-based optimisation tutorials follow the same
   naming, e.g. `lambda_b_h0`, `D_h0`, `D11_xiD1` instead of `dlambda_b_dh0`,
   `dD_dh0`, `dD11_dxiD1`.
+- The four tutorials after Le Riche and Haftka (1993) convert the ply
+  properties of the paper exactly from psi (`E1 = 18.50e6`, `E2 = 1.89e6`
+  and `G12 = 0.93e6` psi, `1 psi = 4.4482216152605/0.0254**2 Pa`) instead
+  of using the rounded SI values 127.55, 13.03 and 6.41 GPa. The first row
+  of Table 3 of the paper is reproduced to relative differences of 7.5e-7
+  (buckling) and 4.6e-8 (failure) instead of 4.2e-5 and 5.1e-5. The optimum
+  of the genetic algorithm of the ghost-layer tutorial is unchanged (44
+  plies, 0.5768 kg). In the lamination-parameter tutorial the SLSQP run with
+  finite-difference gradients uses the relative step
+  `finite_diff_rel_step=1e-8` and reaches the optimum of the run with
+  analytical gradients, 0.5310 kg (with SciPy's default step, 1.49e-8 m for
+  the thickness, it stops at the thickness of the reference laminate,
+  0.6293 kg); the tutorial explains the step and compares five steps.
 
 ## 0.9.21 (2026-10-08)
 
