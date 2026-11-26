@@ -33,9 +33,7 @@ The read-only ``plane_stress`` of a :class:`.MatLamina` is not stored: it is res
 from the stored constitutive constants, ``True`` when ``q33 = 0``, which
 holds for the plane-stress constants of :meth:`.MatLamina.rebuild` and,
 with ``e3 = 0``, for the three-dimensional ones, which are then equal to
-them, and ``False`` otherwise. The files saved before ``plane_stress``
-existed, whose constants were three-dimensional when ``e3 != 0``, are
-therefore loaded with the attribute that describes them.
+them, and ``False`` otherwise.
 
 The values ``nan``, ``inf`` and ``-inf``, e.g. ``Abarbar44`` of a ply with a
 singular transverse shear matrix, are stored as the strings ``"NaN"``,
@@ -47,9 +45,12 @@ The format of the saved data is::
     {
       "type": "Laminate",
       "format_version": 2,
-      "composites_version": "0.10.4",
+      "composites_version": "x.y.z",
       "data": {...}
     }
+
+where ``"composites_version"`` is the version of ``composites`` that saved
+the data.
 
 Notes
 -----

@@ -48,11 +48,9 @@ Format version
 
 Each saved object carries ``'type'``, ``'format_version'`` and
 ``'composites_version'``, next to the attributes in ``'data'``. The current
-``format_version`` is 2, which stores the mass integrals ``intrhoz3``,
-``intrhoz4`` and ``intrhoz6`` of a :class:`.Laminate`. :func:`.from_dict`
+``format_version`` is 2. :func:`.from_dict`
 reads only the ``format_version`` of the installed ``composites`` and raises
-a ``ValueError`` for an older or a newer one, e.g. for the files of format 1,
-which must be created again. Every key of the format
+a ``ValueError`` for an older or a newer one. Every key of the format
 is required: a missing key, at any level, raises a ``ValueError`` naming the
 missing keys and the class, as does an unknown key, such that no attribute
 is ever given a default value silently.
