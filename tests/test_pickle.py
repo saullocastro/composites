@@ -208,7 +208,7 @@ def test_gradabd_new():
 
 
 def test_gradabd_old_state():
-    # state pickled before 'gradAtransij' became 'gradAtsij'
+    # a state with the key 'gradAtransij' sets 'gradAtsij'
     grad = GradABD.__new__(GradABD)
     grad.__setstate__({'gradAtransij': np.ones((3, 3))})
     np.testing.assert_array_equal(grad.gradAtsij, np.ones((3, 3)))

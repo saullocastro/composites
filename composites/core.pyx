@@ -380,8 +380,8 @@ cdef class MatLamina:
     isotropic material given as ``laminaprop = (e, nu)``,
     :func:`.read_laminaprop` sets ``g12 = g13 = g23 = e/(2*(1 + nu))``,
     i.e. `G = E/(2(1 + \nu))`; with 6 or 9 entries of ``laminaprop`` the
-    shear moduli are taken as given. Otherwise, the user must set the shear
-    moduli consistently with `E` and `\nu`.
+    shear moduli are taken as given, and the relation holds only if they are
+    given accordingly.
 
     """
     def __init__(MatLamina self):
@@ -2860,9 +2860,8 @@ cdef class Laminate:
         mid-surface makes the check independent of ``offset``, while the
         condition number of the matrix about the reference surface, `B = B^0
         + e A`, `D = D^0 + 2 e B^0 + e^2 A` (Vasiliev and Morozov [1]_, Eq.
-        (5.28), p. 235), grows as `(e/h)^2`, e.g. from 2.3 to `1.6 \cdot
-        10^{10}` at `e/h = 10^4` and to round-off noise near `10^{12}` from
-        `e/h = 10^5`. With ``offset = 0`` the matrix is the stored ``ABD``;
+        (5.28), p. 235), grows as `(e/h)^2`. With ``offset = 0`` the matrix
+        is the stored ``ABD``;
         otherwise it is integrated from the plies, with `z` measured from the
         mid-surface, exactly as for ``offset = 0``, such that the check gives
         the same result for any offset. The matrix about the reference
@@ -2872,21 +2871,15 @@ cdef class Laminate:
         \approx 10^5`. Without plies, e.g. created from lamination
         parameters, the stored matrix is shifted back, `B^0 = B - e A`, `D^0
         = D - 2 e B + e^2 A`, with a relative round-off of about `12 \epsilon
-        (e/h)^2`, measured `8 \cdot 10^{-4}` at `e/h = 10^6` and 0.16 at
-        `e/h = 10^7` for exact lamination parameters, plus the round-off of
-        the stored matrix itself: the `\xi_{Di}` of
-        :meth:`.calc_lamination_parameters`, integrated about the reference
-        surface, carry that of the cubes, `\epsilon (e/h)^3`: the shifted
-        `D^0_{11}` of the five-ply laminates of the tests is off by about
-        `2 \cdot 10^{-4}` at `e/h = 10^4` and by 20 to 50 per cent at `e/h =
-        10^5`, such that a valid laminate given with them is accepted up to
-        `e/h = 10^4` and may be rejected from `e/h = 10^5`. The condition
-        number is that of the
-        1-norm, `\kappa_1(M) = \|M\|_1 \|M^{-1}\|_1`, with `M^{-1}` by
-        Gauss-Jordan elimination with partial pivoting of the 6x6 matrix,
-        which, with the integration over the plies, adds about 1 us, while
-        ``np.linalg.cond``, of the 2-norm, would add about 20 us;
-        `\kappa_2/6 \le \kappa_1 \le 6 \kappa_2` for a 6x6 matrix. Being
+        (e/h)^2`, plus the round-off of the stored matrix itself: the
+        `\xi_{Di}` of :meth:`.calc_lamination_parameters`, integrated about
+        the reference surface, carry that of the cubes, `\epsilon (e/h)^3`,
+        such that a valid laminate given with them is accepted up to `e/h =
+        10^4` and may be rejected from `e/h = 10^5`. The condition number is
+        that of the 1-norm, `\kappa_1(M) = \|M\|_1 \|M^{-1}\|_1`, with
+        `M^{-1}` by Gauss-Jordan elimination with partial pivoting of the
+        6x6 matrix; `\kappa_2/6 \le \kappa_1 \le 6 \kappa_2` for a 6x6
+        matrix. Being
         invariant to the scaling, the check does not detect a term that
         vanishes only to round-off and is decoupled from the others, e.g.
         ``A66`` of a ``[0/90]`` laminate with ``g12 = 0``, of the order of
@@ -3947,7 +3940,7 @@ cdef class GradABD:
 
     def __setstate__(GradABD self, dict state):
         for name, value in state.items():
-            # NOTE pickles created before 'gradAtransij' became 'gradAtsij'
+            # NOTE the key 'gradAtransij' of a state sets 'gradAtsij'
             if name == 'gradAtransij':
                 name = 'gradAtsij'
             setattr(self, name, np.ascontiguousarray(value, dtype=DOUBLE))
@@ -3997,9 +3990,7 @@ cdef class GradABD:
         ``[2, 2]`` of ``gradAtsij``, which do not depend on the lamination
         parameters, are not updated. All six rows of ``gradAij``,
         ``gradBij`` and ``gradDij`` are updated, including row 5 (``A66``,
-        ``B66``, ``D66``), whose derivatives with respect to `\xi_{A3}`,
-        `\xi_{B3}` and `\xi_{D3}` are `-h u_3`, `-h^2/4 \, u_3` and `-h^3/12
-        \, u_3`.
+        ``B66``, ``D66``).
 
         Parameters
         ----------
@@ -4034,7 +4025,10 @@ cdef class GradABD:
         \xi_D\}` and `\partial \bar{A}_{ts}/\partial h = U_{ts} \{1,
         \xi_{A_{ts}}\}`, and at constant thickness the derivatives with respect to the
         lamination parameters are the columns of `U` multiplied by `h`,
-        `h^2/4` and `h^3/12`, respectively, and those of `U_{ts}` by `h`.
+        `h^2/4` and `h^3/12`, respectively, and those of `U_{ts}` by `h`. For
+        row 5, the derivatives of `A_{66}`, `B_{66}` and `D_{66}` with
+        respect to `\xi_{A3}`, `\xi_{B3}` and `\xi_{D3}` are `-h u_3`,
+        `-h^2/4 \, u_3` and `-h^3/12 \, u_3`.
 
         """
         cdef int i, j

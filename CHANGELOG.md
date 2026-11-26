@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.10.4 (2026-11-13)
+## 0.10.5 (2026-11-26)
 
 ### Behaviour change: plane-stress invariants of `MatLamina` for any `laminaprop`
 
@@ -131,6 +131,12 @@
   extrapolation of the frequencies of 200 and 400 linear elements through
   the thickness, within 1e-8 (under 0.5 s per case). The comparison with
   4000 elements is in the notebook `transverse-shear-stresses.ipynb`.
+- `Notes` with the relations checked added to
+  `test_example_laminated_plate` and
+  `test_make_symmetric_keeps_even_powers` of `tests/test_core.py`, and to
+  `test_upper_bound`, `test_upper_bound_sandwich` and the helper
+  `_birman_bert_eq14` of `tests/test_transverse_shear.py`. No test added
+  or removed.
 
 ### New: zero Young moduli, antiplane cores
 
@@ -365,6 +371,17 @@ unchanged, the compression load `N_o = -N_x`, positive in compression.
   analytical gradients, 0.5310 kg (with SciPy's default step, 1.49e-8 m for
   the thickness, it stops at the thickness of the reference laminate,
   0.6293 kg); the tutorial explains the step and compares five steps.
+- The derivative values of `GradABD.calc_LP_grad` are in the `Notes` of
+  its docstring, and the `Notes` of `MatLamina` and of
+  `calc_equivalent_properties` are limited to the theory of the class and
+  of the function.
+- The docstring of `composites.json_io`, the page on saving and loading
+  in JSON and the docstrings of the tests describe the current behaviour
+  only: the version history is in this changelog. The example of the
+  saved format shows `"composites_version": "x.y.z"`.
+- The tutorial on the transverse shear stresses stores its two figures,
+  and three optimisation tutorials no longer store the warnings of the
+  run that produced them.
 
 ## 0.9.21 (2026-10-08)
 
