@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.10.5 (2026-11-27)
+## 0.10.5 (2026-11-26)
 
 ### Behaviour change: plane-stress invariants of `MatLamina` for any `laminaprop`
 
