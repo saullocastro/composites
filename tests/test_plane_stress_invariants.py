@@ -771,13 +771,13 @@ def test_singular_ABD_offset_invariant():
     ``calc_equivalent_properties``: a singular laminate, a single ply at 45
     degrees with ``g12 = 0``, is rejected for every offset, and regular
     laminates are accepted, with the equivalent properties computed from
-    the stored matrix, as before. Without plies, from lamination parameters,
+    the stored matrix. Without plies, from lamination parameters,
     the stored matrix is shifted back, which with the lamination parameters
     of ``calc_lamination_parameters``, carrying the round-off of the cubes of
     the heights, is accurate up to ``offset/h = 1e4``.
 
     The equivalent properties, about the reference surface, fall as
-    ``(h/offset)**2`` and are round-off from ``offset/h = 1e5``, unchanged.
+    ``(h/offset)**2`` and are round-off from ``offset/h = 1e5``.
 
     """
     singular = (142e9, 8.7e9, 0.28, 0., 5e9, 3e9)

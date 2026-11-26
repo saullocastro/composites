@@ -1124,7 +1124,16 @@ def test_offset_invariance(seed):
 @pytest.mark.parametrize('seed', SEEDS)
 def test_upper_bound(seed):
     r"""The constant-strain stiffness bounds Ats from above, and the factors
-    are at most 1, for random laminates"""
+    are at most 1, for random laminates
+
+    Notes
+    -----
+    With the constant-strain stiffness `\bar{A}_{ts} = \sum_k C_s^{(k)}
+    h_k`, the matrix `\bar{A}_{ts} - A_{ts}` must be positive definite, all
+    eigenvalues positive, and `k_{13} = A_{55}/\bar{A}_{55} \le 1`, `k_{23}
+    = A_{44}/\bar{A}_{44} \le 1`.
+
+    """
     lam = random_laminate(seed)
     eig = np.linalg.eigvalsh(lam.Abar_ts - lam.Ats)
     assert np.all(eig > 0)
@@ -1133,7 +1142,15 @@ def test_upper_bound(seed):
 
 
 def test_upper_bound_sandwich():
-    r"""The constant-strain stiffness bounds Ats from above for a sandwich"""
+    r"""The constant-strain stiffness bounds Ats from above for a sandwich
+
+    Notes
+    -----
+    With the constant-strain stiffness `\bar{A}_{ts} = \sum_k C_s^{(k)}
+    h_k`, the matrix `\bar{A}_{ts} - A_{ts}` must be positive definite, all
+    eigenvalues positive.
+
+    """
     lam = sandwich()
     assert np.all(np.linalg.eigvalsh(lam.Abar_ts - lam.Ats) > 0)
 
@@ -1903,7 +1920,31 @@ def test_homogeneous_limits(mode, K, nu, offset):
 
 
 def _birman_bert_eq14(Qf, Gf, Qc, Gc, hf, hc):
-    r"""Eq. (14) of Birman and Bert (2002), symmetric sandwich beam"""
+    r"""Eq. (14) of Birman and Bert (2002), symmetric sandwich beam
+
+    Notes
+    -----
+    As written here, with `x = h_c/(2 h_f + h_c)`, the beam stiffnesses
+    `Q_f`, `Q_c` and the shear moduli `G_f`, `G_c` of the faces and of the
+    core:
+
+    .. math::
+
+        K = \frac{\frac{2}{3} \left( Q_f (1 - x^3) + Q_c x^3 \right)}
+        {\left( G_f (1 - x) + G_c x \right) \left( \frac{Q_f}{G_f}
+        \left( \frac{2}{3} - x + \frac{x^3}{3} \right) + \frac{Q_f}{G_c}
+        x (1 - x^2) + \frac{2}{3} \frac{Q_c}{G_c} x^3 \right)}
+
+    which is the factor of the column "Average shear strain" of [1]_,
+    Table 1.
+
+    References
+    ----------
+    .. [1] Birman, V. and Bert, C. W. "On the choice of shear correction
+       factor in sandwich structures", Journal of Sandwich Structures and
+       Materials, Vol. 4, 83-95, 2002.
+
+    """
     x = hc/(2*hf + hc)
     num = 2/3*(Qf*(1 - x**3) + Qc*x**3)
     den = ((Gf*(1 - x) + Gc*x)*(Qf*(2/3 - x + x**3/3)/Gf

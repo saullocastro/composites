@@ -201,8 +201,7 @@ def test_laminated_plate_tri_axial():
     Notes
     -----
     Ats is that of [1]_, Eq. (43), with the independent implementation of
-    tests/test_transverse_shear.py, instead of the values 2014905.27 and
-    -27210.29 copied from the output of the code.
+    tests/test_transverse_shear.py.
 
     References
     ----------
@@ -248,8 +247,7 @@ def test_laminated_plate_plane_stress():
     Notes
     -----
     Ats is that of [1]_, Eq. (43), with the independent implementation of
-    tests/test_transverse_shear.py, instead of the values 2014905.27 and
-    -27210.29 copied from the output of the code.
+    tests/test_transverse_shear.py.
 
     References
     ----------
@@ -668,7 +666,20 @@ def test_density_moments():
 def test_example_laminated_plate():
     r"""Quasi-isotropic laminate of :func:`.laminated_plate`: ABD layout, no
     membrane-bending coupling, quasi-isotropic membrane stiffness,
-    equivalent properties, shear correction and mass per unit area"""
+    equivalent properties, shear correction and mass per unit area
+
+    Notes
+    -----
+    For the symmetric ``[0/45/-45/90]s`` laminate `B = 0`, and the membrane
+    stiffness is isotropic: `A_{11} = A_{22}`, `A_{66} = (A_{11} -
+    A_{12})/2`, `A_{16} = A_{26} = 0`, such that the equivalent membrane
+    properties satisfy `e_1 = e_2` and `g_{12} = e_1/(2(1 + \nu_{12}))`. The
+    bending stiffness is not isotropic: the plies at +45 and -45 degrees
+    give `D_{16} \ne 0`. The factors are `k_{13} = A_{55}/\bar{A}_{55}` and
+    `k_{23} = A_{44}/\bar{A}_{44}`, and the mass per unit area is `\rho h`
+    for plies of the same density `\rho`.
+
+    """
     # quasi-isotropic CFRP laminate [0/45/-45/90]s, SI units
     laminaprop = (142e9, 8.7e9, 0.28, 5.1e9, 5.1e9, 3.2e9) # E11, E22, nu12, G12, G13, G23
     stack = [0, 45, -45, 90, 90, -45, 45, 0] # from the bottom to the top
@@ -842,7 +853,17 @@ def test_transf_matrix_stress_order():
 
 def test_make_symmetric_keeps_even_powers():
     r"""``make_symmetric`` keeps the terms of the even powers of z, against
-    their integration ply by ply, and zeroes B and E"""
+    their integration ply by ply, and zeroes B and E
+
+    Notes
+    -----
+    The reference of a term of the power `n` of `z` is `\sum_k \bar{Q}^{(k)}
+    (z_{k+1}^{n+1} - z_k^{n+1})/(n+1)`, with `\bar{Q}^{(k)}` the ply term
+    ``q16L``, ``q26L`` or ``q45L`` and `z_k` the interfaces measured from
+    the mid-surface: `n = 2` for D, 4 for F and 6 for H. For the
+    ``[30/-45/60]s`` laminate these integrals of even `n` are not zero.
+
+    """
     # [30/-45/60]s: the integrals of the even powers of z are not zero
     stack = [30, -45, 60, 60, -45, 30]
     plyt = 0.125e-3
