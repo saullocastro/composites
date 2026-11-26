@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Saving and loading in JSON (composites.json_io) &#8212; composites 0.10.4 documentation</title>
+    <title>Saving and loading in JSON (composites.json_io) &#8212; composites 0.10.5 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="_static/documentation_options.js?v=7e173fe4"></script>
+    <script src="_static/documentation_options.js?v=da6fbbfd"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -120,7 +120,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.4 documentation</p>
+    <p class="title logo__title">composites 0.10.5 documentation</p>
   
 </a></div>
     
@@ -750,9 +750,7 @@ type of the base class.</p>
 from the stored constitutive constants, <code class="docutils literal notranslate"><span class="pre">True</span></code> when <code class="docutils literal notranslate"><span class="pre">q33</span> <span class="pre">=</span> <span class="pre">0</span></code>, which
 holds for the plane-stress constants of <a class="reference internal" href="api_core.html#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.rebuild()</span></code></a> and,
 with <code class="docutils literal notranslate"><span class="pre">e3</span> <span class="pre">=</span> <span class="pre">0</span></code>, for the three-dimensional ones, which are then equal to
-them, and <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise. The files saved before <code class="docutils literal notranslate"><span class="pre">plane_stress</span></code>
-existed, whose constants were three-dimensional when <code class="docutils literal notranslate"><span class="pre">e3</span> <span class="pre">!=</span> <span class="pre">0</span></code>, are
-therefore loaded with the attribute that describes them.</p>
+them, and <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
 <p>The values <code class="docutils literal notranslate"><span class="pre">nan</span></code>, <code class="docutils literal notranslate"><span class="pre">inf</span></code> and <code class="docutils literal notranslate"><span class="pre">-inf</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">Abarbar44</span></code> of a ply with a
 singular transverse shear matrix, are stored as the strings <code class="docutils literal notranslate"><span class="pre">&quot;NaN&quot;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;Infinity&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;-Infinity&quot;</span></code>, such that the output is strict JSON,
@@ -761,11 +759,13 @@ readable by <code class="docutils literal notranslate"><span class="pre">JSON.pa
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"Laminate"</span><span class="p">,</span>
   <span class="s2">"format_version"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-  <span class="s2">"composites_version"</span><span class="p">:</span> <span class="s2">"0.10.4"</span><span class="p">,</span>
+  <span class="s2">"composites_version"</span><span class="p">:</span> <span class="s2">"x.y.z"</span><span class="p">,</span>
   <span class="s2">"data"</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+<p>where <code class="docutils literal notranslate"><span class="pre">&quot;composites_version&quot;</span></code> is the version of <code class="docutils literal notranslate"><span class="pre">composites</span></code> that saved
+the data.</p>
 <section id="notes">
 <h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">#</a></h2>
 <p>The plane-stress constitutive constants of <a class="reference internal" href="api_core.html#composites.core.MatLamina.rebuild" title="composites.core.MatLamina.rebuild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MatLamina.rebuild()</span></code></a> have

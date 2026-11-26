@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Composites Core Module (composites.core) &#8212; composites 0.10.4 documentation</title>
+    <title>Composites Core Module (composites.core) &#8212; composites 0.10.5 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="_static/documentation_options.js?v=7e173fe4"></script>
+    <script src="_static/documentation_options.js?v=da6fbbfd"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -120,7 +120,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.4 documentation</p>
+    <p class="title logo__title">composites 0.10.5 documentation</p>
   
 </a></div>
     
@@ -833,9 +833,7 @@ lamination parameters and <code class="docutils literal notranslate"><span class
 <code class="docutils literal notranslate"><span class="pre">[2,</span> <span class="pre">2]</span></code> of <code class="docutils literal notranslate"><span class="pre">gradAtsij</span></code>, which do not depend on the lamination
 parameters, are not updated. All six rows of <code class="docutils literal notranslate"><span class="pre">gradAij</span></code>,
 <code class="docutils literal notranslate"><span class="pre">gradBij</span></code> and <code class="docutils literal notranslate"><span class="pre">gradDij</span></code> are updated, including row 5 (<code class="docutils literal notranslate"><span class="pre">A66</span></code>,
-<code class="docutils literal notranslate"><span class="pre">B66</span></code>, <code class="docutils literal notranslate"><span class="pre">D66</span></code>), whose derivatives with respect to <span class="math notranslate nohighlight">\(\xi_{A3}\)</span>,
-<span class="math notranslate nohighlight">\(\xi_{B3}\)</span> and <span class="math notranslate nohighlight">\(\xi_{D3}\)</span> are <span class="math notranslate nohighlight">\(-h u_3\)</span>, <span class="math notranslate nohighlight">\(-h^2/4 \, u_3\)</span> and <span class="math notranslate nohighlight">\(-h^3/12
-\, u_3\)</span>.</p>
+<code class="docutils literal notranslate"><span class="pre">B66</span></code>, <code class="docutils literal notranslate"><span class="pre">D66</span></code>).</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
@@ -872,7 +870,10 @@ D/\partial h = (h^2/4 + e^2) \, U \{1, 0\} + h^2/4 \, U \{0,
 \xi_D\}\)</span> and <span class="math notranslate nohighlight">\(\partial \bar{A}_{ts}/\partial h = U_{ts} \{1,
 \xi_{A_{ts}}\}\)</span>, and at constant thickness the derivatives with respect to the
 lamination parameters are the columns of <span class="math notranslate nohighlight">\(U\)</span> multiplied by <span class="math notranslate nohighlight">\(h\)</span>,
-<span class="math notranslate nohighlight">\(h^2/4\)</span> and <span class="math notranslate nohighlight">\(h^3/12\)</span>, respectively, and those of <span class="math notranslate nohighlight">\(U_{ts}\)</span> by <span class="math notranslate nohighlight">\(h\)</span>.</p>
+<span class="math notranslate nohighlight">\(h^2/4\)</span> and <span class="math notranslate nohighlight">\(h^3/12\)</span>, respectively, and those of <span class="math notranslate nohighlight">\(U_{ts}\)</span> by <span class="math notranslate nohighlight">\(h\)</span>. For
+row 5, the derivatives of <span class="math notranslate nohighlight">\(A_{66}\)</span>, <span class="math notranslate nohighlight">\(B_{66}\)</span> and <span class="math notranslate nohighlight">\(D_{66}\)</span> with
+respect to <span class="math notranslate nohighlight">\(\xi_{A3}\)</span>, <span class="math notranslate nohighlight">\(\xi_{B3}\)</span> and <span class="math notranslate nohighlight">\(\xi_{D3}\)</span> are <span class="math notranslate nohighlight">\(-h u_3\)</span>,
+<span class="math notranslate nohighlight">\(-h^2/4 \, u_3\)</span> and <span class="math notranslate nohighlight">\(-h^3/12 \, u_3\)</span>.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1854,9 +1855,8 @@ Singularity is a property of the laminate, and the matrix about the
 mid-surface makes the check independent of <code class="docutils literal notranslate"><span class="pre">offset</span></code>, while the
 condition number of the matrix about the reference surface, <span class="math notranslate nohighlight">\(B = B^0
 + e A\)</span>, <span class="math notranslate nohighlight">\(D = D^0 + 2 e B^0 + e^2 A\)</span> (Vasiliev and Morozov <a class="reference internal" href="#r77e9884dc270-1" id="id14">[1]</a>, Eq.
-(5.28), p. 235), grows as <span class="math notranslate nohighlight">\((e/h)^2\)</span>, e.g. from 2.3 to <span class="math notranslate nohighlight">\(1.6 \cdot
-10^{10}\)</span> at <span class="math notranslate nohighlight">\(e/h = 10^4\)</span> and to round-off noise near <span class="math notranslate nohighlight">\(10^{12}\)</span> from
-<span class="math notranslate nohighlight">\(e/h = 10^5\)</span>. With <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">0</span></code> the matrix is the stored <code class="docutils literal notranslate"><span class="pre">ABD</span></code>;
+(5.28), p. 235), grows as <span class="math notranslate nohighlight">\((e/h)^2\)</span>. With <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">0</span></code> the matrix
+is the stored <code class="docutils literal notranslate"><span class="pre">ABD</span></code>;
 otherwise it is integrated from the plies, with <span class="math notranslate nohighlight">\(z\)</span> measured from the
 mid-surface, exactly as for <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">=</span> <span class="pre">0</span></code>, such that the check gives
 the same result for any offset. The matrix about the reference
@@ -1866,21 +1866,15 @@ surface cannot be shifted back accurately at large offsets: its
 \approx 10^5\)</span>. Without plies, e.g. created from lamination
 parameters, the stored matrix is shifted back, <span class="math notranslate nohighlight">\(B^0 = B - e A\)</span>, <span class="math notranslate nohighlight">\(D^0
 = D - 2 e B + e^2 A\)</span>, with a relative round-off of about <span class="math notranslate nohighlight">\(12 \epsilon
-(e/h)^2\)</span>, measured <span class="math notranslate nohighlight">\(8 \cdot 10^{-4}\)</span> at <span class="math notranslate nohighlight">\(e/h = 10^6\)</span> and 0.16 at
-<span class="math notranslate nohighlight">\(e/h = 10^7\)</span> for exact lamination parameters, plus the round-off of
-the stored matrix itself: the <span class="math notranslate nohighlight">\(\xi_{Di}\)</span> of
-<a class="reference internal" href="#composites.core.Laminate.calc_lamination_parameters" title="composites.core.Laminate.calc_lamination_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_lamination_parameters()</span></code></a>, integrated about the reference
-surface, carry that of the cubes, <span class="math notranslate nohighlight">\(\epsilon (e/h)^3\)</span>: the shifted
-<span class="math notranslate nohighlight">\(D^0_{11}\)</span> of the five-ply laminates of the tests is off by about
-<span class="math notranslate nohighlight">\(2 \cdot 10^{-4}\)</span> at <span class="math notranslate nohighlight">\(e/h = 10^4\)</span> and by 20 to 50 per cent at <span class="math notranslate nohighlight">\(e/h =
-10^5\)</span>, such that a valid laminate given with them is accepted up to
-<span class="math notranslate nohighlight">\(e/h = 10^4\)</span> and may be rejected from <span class="math notranslate nohighlight">\(e/h = 10^5\)</span>. The condition
-number is that of the
-1-norm, <span class="math notranslate nohighlight">\(\kappa_1(M) = \|M\|_1 \|M^{-1}\|_1\)</span>, with <span class="math notranslate nohighlight">\(M^{-1}\)</span> by
-Gauss-Jordan elimination with partial pivoting of the 6x6 matrix,
-which, with the integration over the plies, adds about 1 us, while
-<code class="docutils literal notranslate"><span class="pre">np.linalg.cond</span></code>, of the 2-norm, would add about 20 us;
-<span class="math notranslate nohighlight">\(\kappa_2/6 \le \kappa_1 \le 6 \kappa_2\)</span> for a 6x6 matrix. Being
+(e/h)^2\)</span>, plus the round-off of the stored matrix itself: the
+<span class="math notranslate nohighlight">\(\xi_{Di}\)</span> of <a class="reference internal" href="#composites.core.Laminate.calc_lamination_parameters" title="composites.core.Laminate.calc_lamination_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_lamination_parameters()</span></code></a>, integrated about
+the reference surface, carry that of the cubes, <span class="math notranslate nohighlight">\(\epsilon (e/h)^3\)</span>,
+such that a valid laminate given with them is accepted up to <span class="math notranslate nohighlight">\(e/h =
+10^4\)</span> and may be rejected from <span class="math notranslate nohighlight">\(e/h = 10^5\)</span>. The condition number is
+that of the 1-norm, <span class="math notranslate nohighlight">\(\kappa_1(M) = \|M\|_1 \|M^{-1}\|_1\)</span>, with
+<span class="math notranslate nohighlight">\(M^{-1}\)</span> by Gauss-Jordan elimination with partial pivoting of the
+6x6 matrix; <span class="math notranslate nohighlight">\(\kappa_2/6 \le \kappa_1 \le 6 \kappa_2\)</span> for a 6x6
+matrix. Being
 invariant to the scaling, the check does not detect a term that
 vanishes only to round-off and is decoupled from the others, e.g.
 <code class="docutils literal notranslate"><span class="pre">A66</span></code> of a <code class="docutils literal notranslate"><span class="pre">[0/90]</span></code> laminate with <code class="docutils literal notranslate"><span class="pre">g12</span> <span class="pre">=</span> <span class="pre">0</span></code>, of the order of
@@ -2631,8 +2625,8 @@ uses the moduli and the Poisson’s ratios as they are set. For an
 isotropic material given as <code class="docutils literal notranslate"><span class="pre">laminaprop</span> <span class="pre">=</span> <span class="pre">(e,</span> <span class="pre">nu)</span></code>,
 <a class="reference internal" href="api_utils.html#composites.utils.read_laminaprop" title="composites.utils.read_laminaprop"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_laminaprop()</span></code></a> sets <code class="docutils literal notranslate"><span class="pre">g12</span> <span class="pre">=</span> <span class="pre">g13</span> <span class="pre">=</span> <span class="pre">g23</span> <span class="pre">=</span> <span class="pre">e/(2*(1</span> <span class="pre">+</span> <span class="pre">nu))</span></code>,
 i.e. <span class="math notranslate nohighlight">\(G = E/(2(1 + \nu))\)</span>; with 6 or 9 entries of <code class="docutils literal notranslate"><span class="pre">laminaprop</span></code> the
-shear moduli are taken as given. Otherwise, the user must set the shear
-moduli consistently with <span class="math notranslate nohighlight">\(E\)</span> and <span class="math notranslate nohighlight">\(\nu\)</span>.</p>
+shear moduli are taken as given, and the relation holds only if they are
+given accordingly.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="composites.core.MatLamina.get_constitutive_matrix">
 <span class="sig-name descname"><span class="pre">get_constitutive_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#composites.core.MatLamina.get_constitutive_matrix" title="Link to this definition">#</a></dt>

@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Tutorial: Lightweight optimisation using a gradient-based smeared approach &#8212; composites 0.10.4 documentation</title>
+    <title>Tutorial: Lightweight optimisation using a gradient-based smeared approach &#8212; composites 0.10.5 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=7e173fe4"></script>
+    <script src="../_static/documentation_options.js?v=da6fbbfd"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -121,7 +121,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.4 documentation</p>
+    <p class="title logo__title">composites 0.10.5 documentation</p>
   
 </a></div>
     
@@ -969,7 +969,7 @@ for name, value, ref in (('buckling load factor', lambda_cb_ref_analytical,
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
@@ -980,15 +980,6 @@ lambda_cs_ref 13518.659375437137
 first row of Table 3                    this notebook  Le Riche 1993 rel. diff.
 buckling load factor                         12182.05       14168.12    1.4e-01
 failure load factor                          13518.66       13518.66    4.6e-08
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/home/saullogiovanip/align2026/runs/w7LR-20261106-091218/tmp/ipykernel_99217/308541800.py:24: RuntimeWarning: divide by zero encountered in divide
-  gamma_12_allowable/abs(gamma_i_12) - 1
 </pre></div></div>
 </div>
 </section>
@@ -1150,28 +1141,12 @@ x_opt = res.x*ply_thickness
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Starting SLSQP Optimization with Scipy...
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/home/saullogiovanip/align2026/runs/w7LR-20261106-091218/tmp/ipykernel_99217/308541800.py:24: RuntimeWarning: divide by zero encountered in divide
-  gamma_12_allowable/abs(gamma_i_12) - 1
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+Starting SLSQP Optimization with Scipy...
 Optimization terminated successfully    (Exit mode 0)
             Current function value: 0.5713031699561171
             Iterations: 27
@@ -1200,7 +1175,7 @@ print('lambda_cs_opt', lambda_cs_opt)
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
@@ -1210,15 +1185,6 @@ ms_buckling_opt -1.1432998991978138e-10
 ms_failure_opt -5.8036435990338475e-08
 lambda_cb_opt_analytical 9999.9999988567
 lambda_cs_opt 9999.99941963564
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/home/saullogiovanip/align2026/runs/w7LR-20261106-091218/tmp/ipykernel_99217/308541800.py:24: RuntimeWarning: divide by zero encountered in divide
-  gamma_12_allowable/abs(gamma_i_12) - 1
 </pre></div></div>
 </div>
 <p>Both constraints are active at the optimum: the buckling load and the strain allowables both limit the design at the target load factor. The 90 degree plies are close to their lower bound of one ply thickness.</p>

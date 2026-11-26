@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Tutorial: discrete-based lightweight optimisation using the ghost layer method &#8212; composites 0.10.4 documentation</title>
+    <title>Tutorial: discrete-based lightweight optimisation using the ghost layer method &#8212; composites 0.10.5 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=7e173fe4"></script>
+    <script src="../_static/documentation_options.js?v=da6fbbfd"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -121,7 +121,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.4 documentation</p>
+    <p class="title logo__title">composites 0.10.5 documentation</p>
   
 </a></div>
     
@@ -917,7 +917,7 @@ for name, value, ref in (('buckling load factor', lambda_cb_ref_analytical,
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
@@ -928,15 +928,6 @@ lambda_cs_ref 13518.659375437172
 first row of Table 3                    this notebook  Le Riche 1993 rel. diff.
 buckling load factor                         14168.13       14168.12    7.5e-07
 failure load factor                          13518.66       13518.66    4.6e-08
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/home/saullogiovanip/align2026/runs/w7LR-20261106-091218/tmp/ipykernel_99239/2935206276.py:25: RuntimeWarning: divide by zero encountered in divide
-  gamma_12_allowable/abs(gamma_i_12) - 1
 </pre></div></div>
 </div>
 </section>
@@ -1128,15 +1119,6 @@ print("Constraint violation: %s" % res.CV)
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/home/saullogiovanip/align2026/runs/w7LR-20261106-091218/tmp/ipykernel_99239/2935206276.py:25: RuntimeWarning: divide by zero encountered in divide
-  gamma_12_allowable/abs(gamma_i_12) - 1
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
@@ -1170,7 +1152,7 @@ print('lambda_cs_opt', lambda_cs_opt)
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
@@ -1184,15 +1166,6 @@ optimal layup [ 90  90  45 -45  90  90  45 -45  45 -45   0   0   0   0   0   0  
  -45  45  90  90 -45  45  90  90]
 lambda_cb_opt_analytical 10032.980710809676
 lambda_cs_opt 12853.676837722707
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/home/saullogiovanip/align2026/runs/w7LR-20261106-091218/tmp/ipykernel_99239/2935206276.py:25: RuntimeWarning: divide by zero encountered in divide
-  gamma_12_allowable/abs(gamma_i_12) - 1
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">

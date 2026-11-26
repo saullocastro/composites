@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Saving and loading (JSON) &#8212; composites 0.10.4 documentation</title>
+    <title>Saving and loading (JSON) &#8212; composites 0.10.5 documentation</title>
   
   
   
@@ -37,7 +37,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="_static/documentation_options.js?v=7e173fe4"></script>
+    <script src="_static/documentation_options.js?v=da6fbbfd"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -118,7 +118,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.4 documentation</p>
+    <p class="title logo__title">composites 0.10.5 documentation</p>
   
 </a></div>
     
@@ -732,11 +732,9 @@ entry of the input file of a model, read back with <a class="reference internal"
 <h2>Format version<a class="headerlink" href="#format-version" title="Link to this heading">#</a></h2>
 <p>Each saved object carries <code class="docutils literal notranslate"><span class="pre">'type'</span></code>, <code class="docutils literal notranslate"><span class="pre">'format_version'</span></code> and
 <code class="docutils literal notranslate"><span class="pre">'composites_version'</span></code>, next to the attributes in <code class="docutils literal notranslate"><span class="pre">'data'</span></code>. The current
-<code class="docutils literal notranslate"><span class="pre">format_version</span></code> is 2, which stores the mass integrals <code class="docutils literal notranslate"><span class="pre">intrhoz3</span></code>,
-<code class="docutils literal notranslate"><span class="pre">intrhoz4</span></code> and <code class="docutils literal notranslate"><span class="pre">intrhoz6</span></code> of a <a class="reference internal" href="api_core.html#composites.core.Laminate" title="composites.core.Laminate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Laminate</span></code></a>. <a class="reference internal" href="api_json_io.html#composites.json_io.from_dict" title="composites.json_io.from_dict"><code class="xref py py-func docutils literal notranslate"><span class="pre">from_dict()</span></code></a>
+<code class="docutils literal notranslate"><span class="pre">format_version</span></code> is 2. <a class="reference internal" href="api_json_io.html#composites.json_io.from_dict" title="composites.json_io.from_dict"><code class="xref py py-func docutils literal notranslate"><span class="pre">from_dict()</span></code></a>
 reads only the <code class="docutils literal notranslate"><span class="pre">format_version</span></code> of the installed <code class="docutils literal notranslate"><span class="pre">composites</span></code> and raises
-a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> for an older or a newer one, e.g. for the files of format 1,
-which must be created again. Every key of the format
+a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> for an older or a newer one. Every key of the format
 is required: a missing key, at any level, raises a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> naming the
 missing keys and the class, as does an unknown key, such that no attribute
 is ever given a default value silently.</p>
