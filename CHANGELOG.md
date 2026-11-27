@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.10.5 (2026-11-26)
+## 0.10.6 (2026-11-28)
 
 ### Behaviour change: plane-stress invariants of `MatLamina` for any `laminaprop`
 
@@ -382,6 +382,11 @@ unchanged, the compression load `N_o = -N_x`, positive in compression.
 - The tutorial on the transverse shear stresses stores its two figures,
   and three optimisation tutorials no longer store the warnings of the
   run that produced them.
+- The notebooks are stored with outputs of the present version: the
+  example of saving and loading in JSON is executed again and no longer
+  prints the value of `"composites_version"`, and the tutorial on the
+  transverse shear stresses stores the figures and the numbers of one
+  execution.
 
 ## 0.9.21 (2026-10-08)
 
