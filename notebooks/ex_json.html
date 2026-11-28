@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Saving and loading in JSON &#8212; composites 0.10.5 documentation</title>
+    <title>Saving and loading in JSON &#8212; composites 0.10.6 documentation</title>
   
   
   
@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=da6fbbfd"></script>
+    <script src="../_static/documentation_options.js?v=ed973197"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -121,7 +121,7 @@
   
   
   
-    <p class="title logo__title">composites 0.10.5 documentation</p>
+    <p class="title logo__title">composites 0.10.6 documentation</p>
   
 </a></div>
     
@@ -709,7 +709,7 @@ tmp_path = Path(tempfile.mkdtemp())
 </div>
 <section id="Saving-and-loading-a-file">
 <h2>Saving and loading a file<a class="headerlink" href="#Saving-and-loading-a-file" title="Link to this heading">#</a></h2>
-<p>An unsymmetric laminate with an offset and ply densities, so that every matrix and every moment of the density is non-trivial. The file starts with the keys <code class="docutils literal notranslate"><span class="pre">'type'</span></code>, <code class="docutils literal notranslate"><span class="pre">'format_version'</span></code> and <code class="docutils literal notranslate"><span class="pre">'composites_version'</span></code>, followed by the attributes in <code class="docutils literal notranslate"><span class="pre">'data'</span></code>.</p>
+<p>An unsymmetric laminate with an offset and ply densities, so that every matrix and every moment of the density is non-trivial. The file starts with the keys <code class="docutils literal notranslate"><span class="pre">'type'</span></code>, <code class="docutils literal notranslate"><span class="pre">'format_version'</span></code> and <code class="docutils literal notranslate"><span class="pre">'composites_version'</span></code>, followed by the attributes in <code class="docutils literal notranslate"><span class="pre">'data'</span></code>. The value of <code class="docutils literal notranslate"><span class="pre">'composites_version'</span></code>, the version of composites that wrote the file, is left out of the printout below.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -720,7 +720,9 @@ lam = laminated_plate([0, 45, -30, 90], plyts=[0.2e-3, 0.3e-3, 0.25e-3,
                       offset=0.1e-3)
 fname = tmp_path / 'laminate.json'
 save_json(lam, fname)
-print(fname.read_text()[:400], '...')
+lines = [line for line in fname.read_text().splitlines()
+         if '"composites_version"' not in line]
+print('\n'.join(lines[:14] + ['  ...']))
 </pre></div>
 </div>
 </div>
@@ -732,7 +734,6 @@ print(fname.read_text()[:400], '...')
 {
   &#34;type&#34;: &#34;Laminate&#34;,
   &#34;format_version&#34;: 2,
-  &#34;composites_version&#34;: &#34;0.10.3&#34;,
   &#34;data&#34;: {
     &#34;A11&#34;: 64490040.283638485,
     &#34;A12&#34;: 17575300.75732787,
@@ -744,7 +745,7 @@ print(fname.read_text()[:400], '...')
     &#34;B12&#34;: 1846.216531491547,
     &#34;B16&#34;: -2932.446395141969,
     &#34;B22&#34;: 11006.478600873827,
-   ...
+  ...
 </pre></div></div>
 </div>
 </section>
